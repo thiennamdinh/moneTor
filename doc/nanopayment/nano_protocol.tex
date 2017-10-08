@@ -1,0 +1,195 @@
+\documentclass{article}
+\usepackage{blindtext}
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\usepackage{parskip}
+\begin{document}
+
+\section{Bolt Overview}
+
+This section is an overview of the scheme that is presented in the original Bolt paper so that we are all on the same page. The paper actually outlines a few different protocols with optional configurations so this only describes the configuration that is relevant to us.
+
+\subsection{Micropayment Primer}: There are three roles in a micropayment network.
+\begin{itemize}
+\item End Users: These users send payments to each other by updating payment channels with mutual intermediaries.
+\item Intermediary: These are high-bandwidth nodes who route payments between end users.
+\item Ledger: This party maintains the global state of the network. It resolves conflicts betwen end users and intermediaries by executing an agreed-upon resolution procedure.
+
+In our particular application, our end users will primarily be clients and relays. We will use $C$, $R$, and $I$ to denote clients, relays, and intermediaries, respectively.
+\end{itemize}
+
+Every payment in a micropayment channel network needs to route payment information in two separate channels, one between $C$ and $I$ and one between $I$ and $R$. In such a network, the challenge is to ensure that both legs of the payment complete atomically such that no party can cheat by prematurely aborting. In an anonymous micropayment network, the additional challenge is to make each payment unlinkable with any past or future payments.
+
+\subsection{Procedure:}
+\begin{enumerate}
+\item At the start of time, the ledger either runs a trusted setup to generate public parameters for the system. These are used to form zero-knowledge proofs throughout.
+\item $I$ runs an $Init$ procedure then escrows some amount of funds to the ledger. The amount that $I$ is able to escrow effectively determines the throughput of payments that it can handle. Since there is an opportunity cost to locking up money, the intermediary should charge some fee for its services.
+\item End end users ($C$ and $R$) similarly run their own $Init$ procedure to escrow some amount of money to the ledger.
+\item Each user runs an $Establish$ protocol along with $I$ to turn their escrowed funds into a micropayment channel. The user receives a ``wallet'' which is a piece of data that encodes their balance on the channel. At this phase, the balance of the wallet is simply the amount that the user originally escrowed.
+\item Suppose that $C$ would like to pay some relay $R$ that is also connected to $I$, then the three of them initiate a $Pay$ protocol. C creates a zero-knowledge proof that he owns a valid wallet (with a balance $B_C$) without revealing the actual balance. He then sends it to $I$ along with a commitment to a new wallet that is updated with the new balance ($B_C - \epsilon_C$). $R$ does the same thing. $I$ then sends $C$ a ``refund token'' which gives $C$ the power to close the channel and collect exactly $B_C - \epsilon_C$ From the ledger. Keep in mind that $I$ should only do this because $C$ the one paying $I$. $I$ cannot simply send a similar refund token to $R$, otherwise $R$ might collect the payment while $C$ aborts and keeps his old wallet instead. To protect its money, $I$ sends $R$ a conditional refund token which says that $R$ can only collect funds if it also reveals proof that $C$ has revoked his old wallet. To continue the protocol, $C$ then sends a ``revocation token'' to $R$. $R$ now has the power to close out her channel and collect $B_R + \epsilon_R$ funds.
+
+Note that $\epsilon_C$ and $\epsilon_R$ do not have to be equal. If $\epsilon_C$ is higher in value, then $I$ gets to keep the remainder of the transaction as a fee.
+
+While all parties now have the necessary tokens to cash our their microchannels, they will typically opt to keep it open. The intermediary, having obtained proof of revocation of $C$'s old wallet, can safely issue $C$ a new one with the updated balance by way of a blind signature. Similarly, $I$ also provides $R$ with an updated wallet. These new wallets are completely unlinkable to the old wallets at the beginning of the interaction and in this way, $C$ and $R$ can continue making anonymous payments so long as can prove ownership of sufficient funds on their channel.
+
+\item In the event of a dispute or intentional channel closure, an end user can post their revocation token along with other data to submit a claim on the ledger. If this is an invalid (perhaps outdated) token, then $I$ should be able to refute the claim using the revocation token that it should have saved. The ledger verifies the validity of these tokens and makes a fair decision on the final payouts.
+\end{enumerate}
+
+\emph{Security:}: Ledgers are trustless in the sense that everything they do is publically verifiable. Intermediaries are trustless in the sense that they are self-interested. Assuming the end users also follow the protocol, $I$ cannot steal money. Any deviation on the part of $I$ will only cause them to lose money. A payment by an end user is anonymous because neither the sender nor recipient can be identified from the pool of end users that are connected to $I$.
+
+\section{Nanopayment Overview}
+
+This section describes a nanopayment extension to Bolt which allows for linkable but extremely fast payments between end users in a micropayment network.
+
+\subsection{Mo Anonymity, Mo Problems:} It is debatable as to how ``micro'' Bolt micropayments actually are. Since they did not provide an implementation, there are no hard numbers. However, if we trust them on their knowledge of the cryptographic primitives, then they make some qualitative remarks that we can reinterpret. Here is by slightly-informed guess of the performance of a single execution of the $Pay$ protocol:
+
+\begin{itemize}
+  \item Number of messages: $\approx$7
+  \item Bandwidth: $\approx$1 kilobyte
+  \item Client Computational Time: $\approx$1 second
+\end{itemize}
+
+These costs are arguably a bit steep. It's also unlikely that we would be able to make any direct improvements on their protocol since the authors really seem to know what they are talking about.
+
+\subsection{Solution} The good news is that Bolt has more anonymity then we actually need. We can exploit this fact to improve efficiency for certain types of transactions. In Bolt, every single payment is totally unlinkable to any prior payment to anyone but the payer. That would not strictly be necessary for Tor payments. A relay that supports a circuit definitely know that any messages coming along that circuit are coming from the same (albeit anonymous) client. Rather than routing a stream of expensive micropayments through a circuit, we can instead set up a transparent ``nanoypayment'' channel. This channe can be used to make very fast incremental payments between the same client and relay. It doesn't matter that these intra-circuit payments are linkable as long as the original channel setup and closure procedures remain anonymous.
+
+The process to set up, use, and close down a nanopayment channel are meant to replace an instance of the Bolt $Pay$ protocol. Assume that all parties already successfully created micropayment channels using the standard of the Bolt $Init$ and $Establish$ procedures. With a given wallet, a user can \emph{either} make a micropayment \emph{or} set up of a nanopayment channel. The user alternate make micropayments and setting up nanopayment channels in any order as long as they still haves on their micropayment balance. Nanopayment channels, therefore, are just a specialized type of micropayment.
+
+\subsection{Procedure}
+\begin{enumerate}
+\item At this point, $C$ should have an open micropayment channel with the intermediary and therefore access to a valid wallet. $C$ first computes a hashchain of some desired length based on the number of nanopayments he would like to be able to make. $C$ then uses this hash chain along with his current wallet to initiate a $nInit$ protocol with the intermediary. Just like in the Bolt $Pay$ protocol, the client receives a refund token that allows him to claim funds on the ledger. This token allows him to retrieve some value between $B_C$ and $B_C + \epsilon_C$. The variable $n$ is the number of hash preimages $C$ is willing to reveal if he ends up posting the refund token to the ledger.
+
+\item Through the $nInit$ protocol, $C$ has the ability to actually set up a nanopayment channel with any other end user at some point in the future. As soon as $C$ wishes to do this, he runs the $nEstablish$ protocol with, for instance, a relay $R$. In this protocol, $C$ sends some information about his wallet and the hash chain to $R$. $C$ also sends a revocation token invalidating his old wallet. He can do this because he already posseses $I$'s refund token for the payment channel.
+
+When $R$ receives this information, she has no way to confirm its validity. She must forward it to $I$ so that $I$ can check that it has some record of this nanopayment channel. If $I$ is satisfied with authentication of the channel, then I confirms with $R$ via a signed message. Also included in the message is a conditional refund token for $R$'s channel. The token reads the following:
+
+$R$ is entitled to collect $B_R + \delta_R * k$ funds from the channel so long as she provides:
+\begin{itemize}
+\item A recovation token on $C$'s old wallet
+\item The $k^{th}$ preimage in the nanopayment hash chain
+\end{itemize}
+
+\item At this point, $R$ is convinced of the validity of the nanopayment channel. To make a payment  of value $\delta$, $C$ simply pops off the next preimage of the hash chain and sends it to $R$. $R$ verfifies the hash and accepts the payment. This can be repeated any number of times (up to $n$) to make each incremental payment in the channel
+
+\item At any time, $R$ has all of the information necessary to cash out on the ledger and claim the most recent amount. If she does not wish to do this, then she can instead keep the channel alive by initializing a $Close$ protocol with $I$. $R$ simply sends $I$ information about the latest preimage that she received from $C$. $I$ needs this information so that it can refute any false claims by $C$ about how many preimages he did or did not send to $R$. Now that both parties have the most updated information, they engage in a standard Bolt $Pay$ protocol to issue a new anonymous wallet to $R$ containing a balance $B_R + \epsilon_R$ where $\epsilon_R$ is simply the amount that was transferred on the nanopayment channel ($\delta_R * k$). $I$ is happy because all prior wallets with $R$ have been revoked and $R$ is happy because she now has a fresh new anonymous wallet to use.
+
+\item Similarly, $C$ can complete a similar $Close$ protocol with $I$. However, it is important to $I$ that $C$ closes his channel after $R$ closes hers. Just as before, $I$ leaves this protocol with the assurance that all of $C$'s prior wallets have been revoked and $C$ leaves with a fresh wallet containing $B_C + \delta_C * k$ funds. Since the order of the closure protocols is important, $R$ can enact a petty denial of service attack on $C$ by refusing to close her channel. We will have to combat this by adding a ``timeout'' condition by which $R$ forfeits the nanopayments she received if she does not close within a reasonable time.
+
+\item In the event of channel closure, the procedure is similar to the one outlined in Bolt. The end user posts some information containing the refund token that they should have obtained from $I$ and $I$ gets a chance to refute the claim if necessary. When $C$ wishes to close a nanopayment channel on the ledger, then he posts his refund token along with the last preimage that \emph{he claims to have sent to $R$}. If $I$ agrees with the number of pay, then no action is necessary. However, if $I$ disagrees, then it should have some reccord of an earlier preimage it received from $R$. This would allow $I$ to collect its fair share along with some penalty on $C$'s attempt to cheat.
+\end{enumerate}
+
+\subsection{Security}
+The econonmic security of the nanopayment extension is identical to Bolt. The anonymity appears to be identical as well with the exception that $I$ can now observe the number of payments made in each nanopayment channel. Assuming nanopayment channel lifetimes map exactly to Tor circuit lifetimes, $I$ effectively learns the following piece of informaiton that it otherwise would not have in the current version of Tor:
+
+\emph{Somewhere among my pool of end users, there exists a circuit $X$ that lasted for $k$ payments across $t$ time for $v$ value.}
+
+Some notes about the above statement:
+\begin{itemize}
+\item It would be possible to add some uncertainty to $I$'s knowledge about circuits by initiating and closing multiple nanopayment channels in a single circuit or maintaining the same nanochannel across multiple circuits (for instance with long-lived entry guard relationships). However, this may not be optimal from a performance standpoint.
+\item In Bolt, the monetary value transferred in a micropayment can be hidden from $I$. It's \emph{probably} possible to adapt this feature for nanopayments as well so that $I$ in fact does \emph{not} see the value $v$ in the above statement.
+\end{itemize}
+The information learned by $I$ is no more than what any single relay on the circuit already knows. Thus, it might be useful to model $I$ as a $4^{th}$ relay on the circuit from an anonymity standpoint.
+
+\section{API}
+
+\textit{Notation remarks: Suffixes and prefixes of $C$, $R$, and $I$ correspond to variables relating to the client, the relay, and the intermediary, respectively. Both clients and relays are considered to also be ``End Users'', denoted $E$. Function definitions prefaced with ($\forall E$) should be understood to mean that the procedure is meant to be run once for both the client and the relay separately (i.e. $\forall E \in \{C, R\}$). Finally, the notation $I$:$E$ marks a variable that ``belongs'' to $I$ but is associated with a channel that it maintains with $E$.}
+
+\subsection{Bolt Procedures}
+
+\begin{onehalfspacing}
+\begin{tabbing}
+  \hspace*{1cm}\= \hspace*{1cm}\= \kill
+  \> KeyGen$(pp) \rightarrow (pk, sk)$ \\
+  $\forall E$: \> Init\_E$(pp, B^E_0, B^{I:E}_0, pk_E, sk_E) \rightarrow (T_E, csk_E)$ \\
+  $\forall E$: \> Init\_I$(pp, B^{I:E}_0, B^E_0, pk_I, sk_I) \rightarrow (T_{I:E}, csk_{I:E})$ \\
+  $\forall E$: \> \emph{Protocol}: Establish \\
+  \> \> End\_User$(pp, T_{I:E}, csk_E) \rightarrow (pp, w_E)$ \\
+  \> \> Intermediary$(pp, T_E, csk_{I:E}) \rightarrow (established)$ \\
+  \> \emph{Protocol}: Pay \\
+  \> \> Client$(pp, \epsilon_C, w_C) \rightarrow (w_C, rt_C)$ \\
+  \> \> Relay$(pp, \epsilon_R, w_R) \rightarrow (w_R, rt_R)$ \\
+  \> \> Intermediary$(pp, Commit(\epsilon_C), Commit(\epsilon_R), S_I) \rightarrow (S_I)$ \\
+  $\forall E$: \> Refund$(pp, T_{I:E}, csk_E, rt_E) \rightarrow (rc_E)$ \\
+  $\forall E$: \> Refute$(pp, T_E, S_I, rc_E) \rightarrow (rc_{I:E})$ \\
+  $\forall E$: \> Resolve$(pp, T_E, T_{I:E}, rc_C, rc_{I:E}) \rightarrow (B^E_{final}, B^{I:E}_{final})$
+\end{tabbing}
+\end{onehalfspacing}
+
+\subsection{Bolt Symbols}
+
+\begin{itemize}
+\item Public Parameters ($pp$) - Public CRS parameters for the
+  zero-knowledge proof scheme.
+\item Key Pair ($pk_x, sk_x$) - Public/private encryption key pair belonging to x.
+\item Balance ($B^x_y$) - Balance of party $x$ at time $y$ (integer)
+\item Channel Token ($T_x$) - Public micropayment channel token. This
+  information should be posted to the ledger in association with the
+  $x$'s escrowed funds.
+\item Channel Secrets ($csk_x$) - Secrets associated with a channel.
+\item Established ($established$) - Boolean signaling successful protocol completion.
+\item Wallet ($w_x$)- Encodes the wallet belonging to
+  $x$. Contains the current channel balance along with information
+  necessary to prove validity of the wallet (along with $csk_x$).
+\item Micropayment Value ($\epsilon_x$) - Value of the next payment to be
+  made by $x$.
+\item Refund Token ($rt_x$) - Encodes the information necessary for
+  $x$ to make a claim on channel funds in the event of channel closure.
+\item Intermediary State ($S_I$) - Global list maintained by the intermediary that
+  tracks all used (and therefore revealed) wallets to prevent doubles
+  spending.
+\item Channel Closure Message ($rc_x$) - Final token that each party
+  submits to the ledger in order to make a claim on channel funds.
+\end{itemize}
+
+\subsection{Nanopayment Procedures}
+
+\begin{onehalfspacing}
+  \begin{tabbing}
+    \hspace*{1cm}\= \hspace*{1cm}\= \kill
+    \> \emph{Protocol}: nInit \\
+    \> \> Client$(pp, w_c, \delta, n) \rightarrow (nT, ncsk_C, nrt_c, nS_C)$ \\
+    \> \> Intermediary$(pp, S_I, nS_I) \rightarrow (S_I, nS_I)$ \\
+    \> \emph{Protocol}: nEstablish \\
+    \> \> Client$(nT, ncsk_C) \rightarrow (established)$ \\
+    \> \> Intermediary$(nT, nS_I) \rightarrow (established)$ \\
+    \> \> Relay$(nT, w_R) \rightarrow (nS_R, rt_R) $ \\
+    \> \emph{Protocol}: nPay \\
+    \> \> Client$(nT, nS_C, ncsk_C) \rightarrow (nS_C)$ \\
+    \> \> Relay$(nT, nS_R) \rightarrow (nS_R)$ \\
+    $\forall E$: \> \emph{Protocol}: nClose\_E \\
+    \> \> Relay$(nT, nS_E, rt_E) \rightarrow (w_E)$ \\
+    \> \> Intermediary$(nT, nS_I) \rightarrow (nS_I)$ \\
+    $\forall E$: \> nRefund\_E$(nT, rt_E, nS_E) \rightarrow (nrc_C) $ \\
+    $\forall E$: \> nRefute$(pp, T_E, nS_I, S_I, nrc_E) \rightarrow (nrc_{I:E})$ \\
+    $\forall E$: \> nResolve\_E$(pp, nT, T_E, T_{I:E}, nrc_{I:E}, nrc_E)$
+  \end{tabbing}
+\end{onehalfspacing}
+
+\subsection{Nanopayment Symbols}
+
+\begin{itemize}
+\item Nano Value ($\delta$) - Value of a single nanopayment (all
+  nanopayments values within a channel are uniform).
+\item Maximum Payments ($n$) - The maximum number of nanopayments that
+  can be made on the current channel.
+\item Nano Channel Token ($nT$) - Defines the setup information about
+  the nanopayment channel. Unlike micropayments, there is only one
+  token that can be freely passed around since privacy is not a
+  concern within the channel scope.
+\item Nano Channel Secrets ($ncsk_C$) - Secrets owned by the client
+  that allow it to send nanopayments.
+\item Nano Refund Token ($nrt_x$) - Identical to a micropayment refund
+  token ($rt_x$) except that it can be used to claim the latest
+  payment on a nanopayment channel as well.
+\item Nano State ($nS_x$) - For endpoint users (clients and relays),
+  the state simply tracks the number of nanopayments that have been
+  made on the single open channel. Since intermediaries have many
+  channels open at once, its nanopayment state holds similar
+  information for all past and present channels as well.
+\item Nano Channel Closure Message ($nrc_x$) - Final token that each
+  party submits to claim funds. This is similar to a micropayment
+  channel closure message except that it allows for additional
+  granularity to claim funds within the most recent nanopayment
+  channel.
+\end{itemize}
+\end{document}
