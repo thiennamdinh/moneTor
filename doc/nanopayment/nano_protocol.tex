@@ -3,6 +3,11 @@
 \usepackage[utf8]{inputenc}
 \usepackage{setspace}
 \usepackage{parskip}
+\usepackage[table]{xcolor}
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash }b{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash }b{#1}}
+\newcommand{\flo}[1]{ {\color{red} [[FR: #1]]}}
+
 \begin{document}
 
 \section{Bolt Overview}
@@ -49,9 +54,10 @@ This section describes a nanopayment extension to Bolt which allows for linkable
   \item Client Computational Time: $\approx$1 second
 \end{itemize}
 
+
 These costs are arguably a bit steep. It's also unlikely that we would be able to make any direct improvements on their protocol since the authors really seem to know what they are talking about.
 
-\subsection{Solution} The good news is that Bolt has more anonymity then we actually need. We can exploit this fact to improve efficiency for certain types of transactions. In Bolt, every single payment is totally unlinkable to any prior payment to anyone but the payer. That would not strictly be necessary for Tor payments. A relay that supports a circuit definitely know that any messages coming along that circuit are coming from the same (albeit anonymous) client. Rather than routing a stream of expensive micropayments through a circuit, we can instead set up a transparent ``nanoypayment'' channel. This channe can be used to make very fast incremental payments between the same client and relay. It doesn't matter that these intra-circuit payments are linkable as long as the original channel setup and closure procedures remain anonymous.
+\subsection{Solution} The good news is that Bolt has more anonymity then we actually need. We can exploit this fact to improve efficiency for certain types of transactions. In Bolt, every single payment is totally unlinkable to any prior payment to anyone but the payer. That would not strictly be necessary for Tor payments. A relay that supports a circuit definitely know that any messages coming along that circuit are coming from the same (albeit anonymous) client. Rather than routing a stream of expensive micropayments through a circuit, we can instead set up a transparent ``nanoypayment'' channel. This channel can be used to make very fast incremental payments between the same client and relay. It doesn't matter that these intra-circuit payments are linkable as long as the original channel setup and closure procedures remain anonymous.
 
 The process to set up, use, and close down a nanopayment channel are meant to replace an instance of the Bolt $Pay$ protocol. Assume that all parties already successfully created micropayment channels using the standard of the Bolt $Init$ and $Establish$ procedures. With a given wallet, a user can \emph{either} make a micropayment \emph{or} set up of a nanopayment channel. The user alternate make micropayments and setting up nanopayment channels in any order as long as they still haves on their micropayment balance. Nanopayment channels, therefore, are just a specialized type of micropayment.
 
@@ -59,27 +65,33 @@ The process to set up, use, and close down a nanopayment channel are meant to re
 \begin{enumerate}
 \item At this point, $C$ should have an open micropayment channel with the intermediary and therefore access to a valid wallet. $C$ first computes a hashchain of some desired length based on the number of nanopayments he would like to be able to make. $C$ then uses this hash chain along with his current wallet to initiate a $nInit$ protocol with the intermediary. Just like in the Bolt $Pay$ protocol, the client receives a refund token that allows him to claim funds on the ledger. This token allows him to retrieve some value between $B_C$ and $B_C + \epsilon_C$. The variable $n$ is the number of hash preimages $C$ is willing to reveal if he ends up posting the refund token to the ledger.
 
-\item Through the $nInit$ protocol, $C$ has the ability to actually set up a nanopayment channel with any other end user at some point in the future. As soon as $C$ wishes to do this, he runs the $nEstablish$ protocol with, for instance, a relay $R$. In this protocol, $C$ sends some information about his wallet and the hash chain to $R$. $C$ also sends a revocation token invalidating his old wallet. He can do this because he already posseses $I$'s refund token for the payment channel.
+\item Through the $nInit$ protocol, $C$ has the ability to actually set up a nanopayment channel with any other end user at some point in the future. As soon as $C$ wishes to do this, he runs the $nEstablish$ protocol with, for instance, a relay $R$. In this protocol, $C$ sends some information about his wallet and the hash chain to $R$. $C$ also sends a revocation token invalidating his old wallet. He can do this because he already possesses $I$'s refund token for the payment channel.
 
 When $R$ receives this information, she has no way to confirm its validity. She must forward it to $I$ so that $I$ can check that it has some record of this nanopayment channel. If $I$ is satisfied with authentication of the channel, then I confirms with $R$ via a signed message. Also included in the message is a conditional refund token for $R$'s channel. The token reads the following:
 
 $R$ is entitled to collect $B_R + \delta_R * k$ funds from the channel so long as she provides:
 \begin{itemize}
-\item A recovation token on $C$'s old wallet
+\item A revocation token on $C$'s old wallet
 \item The $k^{th}$ preimage in the nanopayment hash chain
 \end{itemize}
 
-\item At this point, $R$ is convinced of the validity of the nanopayment channel. To make a payment  of value $\delta$, $C$ simply pops off the next preimage of the hash chain and sends it to $R$. $R$ verfifies the hash and accepts the payment. This can be repeated any number of times (up to $n$) to make each incremental payment in the channel
+\item At this point, $R$ is convinced of the validity of the nanopayment channel. To make a payment  of value $\delta$, $C$ simply pops off the next preimage of the hash chain and sends it to $R$. $R$ verifies the hash and accepts the payment. This can be repeated any number of times (up to $n$) to make each incremental payment in the channel
 
-\item At any time, $R$ has all of the information necessary to cash out on the ledger and claim the most recent amount. If she does not wish to do this, then she can instead keep the channel alive by initializing a $Close$ protocol with $I$. $R$ simply sends $I$ information about the latest preimage that she received from $C$. $I$ needs this information so that it can refute any false claims by $C$ about how many preimages he did or did not send to $R$. Now that both parties have the most updated information, they engage in a standard Bolt $Pay$ protocol to issue a new anonymous wallet to $R$ containing a balance $B_R + \epsilon_R$ where $\epsilon_R$ is simply the amount that was transferred on the nanopayment channel ($\delta_R * k$). $I$ is happy because all prior wallets with $R$ have been revoked and $R$ is happy because she now has a fresh new anonymous wallet to use.
+\item At any time, $R$ has all of the information necessary to cash out on the ledger and claim the most recent amount. If she does not wish to do this, then she can instead keep the channel alive by initializing a $Close$ protocol with $I$ \flo{This is ambiguous: you keep the micropayment channel alive but close the nanopayment channel, right?}. $R$ simply sends $I$ information about the latest preimage that she received from $C$. $I$ needs this information so that it can refute any false claims by $C$ about how many preimages he did or did not send to $R$. Now that both parties have the most updated information, they engage in a standard Bolt $Pay$ protocol to issue a new anonymous wallet to $R$ containing a balance $B_R + \epsilon_R$ where $\epsilon_R$ is simply the amount that was transferred on the nanopayment channel ($\delta_R * k$). $I$ is happy because all prior wallets with $R$ have been revoked and $R$ is happy because she now has a fresh new anonymous wallet to use.
+
+\flo{We don't want relay's funds to be anonymous - any transaction to a relay should be observable (including the amount). Could we cash-out to a public wallet?}
+
+\flo{What's the cost of the R-side in the Pay protocol?}
+
+\flo{How do we enable the Tax system with this? The Pay protocol could involve a third-party (tax collector)?}
 
 \item Similarly, $C$ can complete a similar $Close$ protocol with $I$. However, it is important to $I$ that $C$ closes his channel after $R$ closes hers. Just as before, $I$ leaves this protocol with the assurance that all of $C$'s prior wallets have been revoked and $C$ leaves with a fresh wallet containing $B_C + \delta_C * k$ funds. Since the order of the closure protocols is important, $R$ can enact a petty denial of service attack on $C$ by refusing to close her channel. We will have to combat this by adding a ``timeout'' condition by which $R$ forfeits the nanopayments she received if she does not close within a reasonable time.
 
-\item In the event of channel closure, the procedure is similar to the one outlined in Bolt. The end user posts some information containing the refund token that they should have obtained from $I$ and $I$ gets a chance to refute the claim if necessary. When $C$ wishes to close a nanopayment channel on the ledger, then he posts his refund token along with the last preimage that \emph{he claims to have sent to $R$}. If $I$ agrees with the number of pay, then no action is necessary. However, if $I$ disagrees, then it should have some reccord of an earlier preimage it received from $R$. This would allow $I$ to collect its fair share along with some penalty on $C$'s attempt to cheat.
+\item In the event of channel closure, the procedure is similar to the one outlined in Bolt. The end user posts some information containing the refund token that they should have obtained from $I$ and $I$ gets a chance to refute the claim if necessary. When $C$ wishes to close a nanopayment channel on the ledger, then he posts his refund token along with the last preimage that \emph{he claims to have sent to $R$}. If $I$ agrees with the number of pay, then no action is necessary. However, if $I$ disagrees, then it should have some record of an earlier preimage it received from $R$. This would allow $I$ to collect its fair share along with some penalty on $C$'s attempt to cheat.
 \end{enumerate}
 
 \subsection{Security}
-The econonmic security of the nanopayment extension is identical to Bolt. The anonymity appears to be identical as well with the exception that $I$ can now observe the number of payments made in each nanopayment channel. Assuming nanopayment channel lifetimes map exactly to Tor circuit lifetimes, $I$ effectively learns the following piece of informaiton that it otherwise would not have in the current version of Tor:
+The econonmic security of the nanopayment extension is identical to Bolt. The anonymity appears to be identical as well with the exception that $I$ can now observe the number of payments made in each nanopayment channel. Assuming nanopayment channel lifetimes map exactly to Tor circuit lifetimes, $I$ effectively learns the following piece of information that it otherwise would not have in the current version of Tor:
 
 \emph{Somewhere among my pool of end users, there exists a circuit $X$ that lasted for $k$ payments across $t$ time for $v$ value.}
 
@@ -89,6 +101,12 @@ Some notes about the above statement:
 \item In Bolt, the monetary value transferred in a micropayment can be hidden from $I$. It's \emph{probably} possible to adapt this feature for nanopayments as well so that $I$ in fact does \emph{not} see the value $v$ in the above statement.
 \end{itemize}
 The information learned by $I$ is no more than what any single relay on the circuit already knows. Thus, it might be useful to model $I$ as a $4^{th}$ relay on the circuit from an anonymity standpoint.
+
+\flo{I disagree on the Tor-related security claim. What $I$ learns alone is no more than what a single relay learns, as you said. However, what colluding $Is$ learn is the secrecy of your circuit, assuming that $Intermadiaries$ correlates perfectly and instantaneously, which is a widely used threat model assumption in the Tor community. As you said in your preamble, $Intermediaries$ would be high-bandwidth nodes. Consequently, the secrecy of Tor circuits would be backed by a few high-bandwidth nodes?}
+
+\flo{Why would we use an Intermediary to pay the Guard relays since it already knows us? Could we directly open a nanopayment channel to our Guard, giving it a wallet? If it cheats and we detect a problem with the balance when we close the nanopayment channel, we just rotate the Guard relay and fire a complain to the dirauths (that could help to exclude it from the network). When we have non-cheater guard relay, we keep it lifetime as this is anyway what Tor is moving to. The objective here is simply to reduce CPU cost when we don't really need what Bolt offers.}
+
+\flo{To fix both above problems, I would suggest to do the following: direct payment to the Guard and $i_{th}$ relay of the circuit used as Intermediary of the $i+1_{th}$. Exit relays would not have to handle any Intermediary job (they already have too much pressure) and this would give the same circuit secrecy as Tor has today. However, the CPU cost of intermediaries is moved to Guard and Middle relays and Tor clients need to run the establish channel procotol with each of them at least once in days/weeks/months. There is some trade-off there between cumulative deposit and CPU cost for relays, if such thing is doable in practice...}
 
 \section{API}
 
