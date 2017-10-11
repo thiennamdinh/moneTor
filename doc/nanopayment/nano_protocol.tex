@@ -7,7 +7,7 @@
 \newcolumntype{R}[1]{>{\raggedleft\arraybackslash }b{#1}}
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash }b{#1}}
 \newcommand{\flo}[1]{ {\color{blue} [[FR: #1]]}}
-\newcommand{\dinh}[1]{ {\color{brown} [[TD: #1]]}}
+\newcommand{\thi}[1]{ {\color{red} [[TD: #1]]}}
 
 \begin{document}
 
@@ -78,19 +78,19 @@ $R$ is entitled to collect $B_R + \delta_R * k$ funds from the channel so long a
 
 \item At this point, $R$ is convinced of the validity of the nanopayment channel. To make a payment  of value $\delta$, $C$ simply pops off the next preimage of the hash chain and sends it to $R$. $R$ verifies the hash and accepts the payment. This can be repeated any number of times (up to $n$) to make each incremental payment in the channel
 
-\item At any time, $R$ has all of the information necessary to cash out on the ledger and claim the most recent amount. If she does not wish to do this, then she can instead keep the channel alive by initializing a $nClose$ protocol with $I$ \flo{This is ambiguous: you keep the micropayment channel alive but close the nanopayment channel, right?} \dinh{Yes! Sorry, I changed the previous sentence to say ``$nClose$'', which closes out the nanopayment channel but keeps the micropayment channel}. $R$ simply sends $I$ information about the latest preimage that she received from $C$. $I$ needs this information so that it can refute any false claims by $C$ about how many preimages he did or did not send to $R$. Now that both parties have the most updated information, they engage in a standard Bolt $Pay$ protocol to issue a new anonymous wallet to $R$ containing a balance $B_R + \epsilon_R$ where $\epsilon_R$ is simply the amount that was transferred on the nanopayment channel ($\delta_R * k$). $I$ is happy because all prior wallets with $R$ have been revoked and $R$ is happy because she now has a fresh new anonymous wallet to use.
+\item At any time, $R$ has all of the information necessary to cash out on the ledger and claim the most recent amount. If she does not wish to do this, then she can instead keep the channel alive by initializing a $nClose$ protocol with $I$ \flo{This is ambiguous: you keep the micropayment channel alive but close the nanopayment channel, right?} \thi{Yes! Sorry, I changed the previous sentence to say ``$nClose$'', which closes out the nanopayment channel but keeps the micropayment channel}. $R$ simply sends $I$ information about the latest preimage that she received from $C$. $I$ needs this information so that it can refute any false claims by $C$ about how many preimages he did or did not send to $R$. Now that both parties have the most updated information, they engage in a standard Bolt $Pay$ protocol to issue a new anonymous wallet to $R$ containing a balance $B_R + \epsilon_R$ where $\epsilon_R$ is simply the amount that was transferred on the nanopayment channel ($\delta_R * k$). $I$ is happy because all prior wallets with $R$ have been revoked and $R$ is happy because she now has a fresh new anonymous wallet to use.
 
 \flo{We don't want relay's funds to be anonymous - any transaction to a relay should be observable (including the amount). Could we cash-out to a public wallet?}
-\dinh{Yeah, that should still work. In that case, only the sum total that they made over the microchannel will be revealed.}
+\thi{Yeah, that should still work. In that case, only the sum total that they made over the microchannel will be revealed.}
 
 \flo{What's the cost of the R-side in the Pay protocol?}
-\dinh{Basically negligible :) Since everything was frontloaded in the $nEstablish$ phase, the $R$-side payment is literally just the following: \\
+\thi{Basically negligible :) Since everything was frontloaded in the $nEstablish$ phase, the $R$-side payment is literally just the following: \\
 $*\quad if(Hash(new\_payment) == last\_payment)$ \\
 $*\qquad last\_payment = new\_payment$ \\
 Maybe we might want to send a confirmation message back to $C$ or something at some point, but otherwise that's it.}
 
 \flo{How do we enable the Tax system with this? The Pay protocol could involve a third-party (tax collector)?}
-\dinh{The tax would probably be collected when an intermediary and an end user complete a micropayment $Close$ protocol, since that's the first time that anyone will be able to use their money anyways. We could force the intermediary to close out to a transparent account and have the ledger implement a rule so that some percentage of intermediary closures automatically get awarded to a Tor authority account.}
+\thi{The tax would probably be collected when an intermediary and an end user complete a micropayment $Close$ protocol, since that's the first time that anyone will be able to use their money anyways. We could force the intermediary to close out to a transparent account and have the ledger implement a rule so that some percentage of intermediary closures automatically get awarded to a Tor authority account.}
 
 \item Similarly, $C$ can complete a similar $nClose$ protocol with $I$. However, it is important to $I$ that $C$ closes his channel after $R$ closes hers. Just as before, $I$ leaves this protocol with the assurance that all of $C$'s prior wallets have been revoked and $C$ leaves with a fresh wallet containing $B_C + \delta_C * k$ funds. Since the order of the closure protocols is important, $R$ can enact a petty denial of service attack on $C$ by refusing to close her channel. We will have to combat this by adding a ``timeout'' condition by which $R$ forfeits the nanopayments she received if she does not close within a reasonable time.
 
@@ -110,13 +110,13 @@ Some notes about the above statement:
 The information learned by $I$ is no more than what any single relay on the circuit already knows. Thus, it might be useful to model $I$ as a $4^{th}$ relay on the circuit from an anonymity standpoint.
 
 \flo{I disagree on the Tor-related security claim. What $I$ learns alone is no more than what a single relay learns, as you said. However, what colluding $Is$ learn is the secrecy of your circuit, assuming that $Intermadiaries$ correlate perfectly and instantaneously, which is a widely used threat model assumption in the Tor community. As you said in your preamble, $Intermediaries$ would be high-bandwidth nodes. Consequently, the secrecy of Tor circuits would be backed by a few high-bandwidth nodes?}
-\dinh{Hmm... well what if we ammend the statement to be ``$I$ leans no more than what any \emph{middle} relay already knows''? As far as I can tell, no amount of colluding middle relays can deanonymize anybody. Same with the intermediary. Even if we have a single intermediary (the ultimate ``colluding intermediaries'' scenario), they would just see a bunch of circuits popping into existence without know who they are associated with. Would that be problematic? $I$ would all of a sudden have access to some cool statistical information about Tor usage, but it feels like that is okay as long as the privacy of the individual client get preserved, which it is.}
+\thi{Hmm... well what if we ammend the statement to be ``$I$ leans no more than what any \emph{middle} relay already knows''? As far as I can tell, no amount of colluding middle relays can deanonymize anybody. Same with the intermediary. Even if we have a single intermediary (the ultimate ``colluding intermediaries'' scenario), they would just see a bunch of circuits popping into existence without know who they are associated with. Would that be problematic? $I$ would all of a sudden have access to some cool statistical information about Tor usage, but it feels like that is okay as long as the privacy of the individual client get preserved, which it is.}
 
 \flo{Why would we use an Intermediary to pay the Guard relays since it already knows us? Could we directly open a nanopayment channel to our Guard, giving it a wallet? If it cheats and we detect a problem with the balance when we close the nanopayment channel, we just rotate the Guard relay and fire a complain to the dirauths (that could help to exclude it from the network). When we have non-cheater guard relay, we keep it lifetime as this is anyway what Tor is moving to. The objective here is simply to reduce CPU cost when we don't really need what Bolt offers.}
-\dinh{Yeah that's a great point, actually. The entire point of the intermediary business is that a longer relationship with the intermediary allows us to limit the size of the ledger, but if we have an equally long relationship with the Guard then it makes total sense to skip the overhead. I'm on board with this change!}
+\thi{Yeah that's a great point, actually. The entire point of the intermediary business is that a longer relationship with the intermediary allows us to limit the size of the ledger, but if we have an equally long relationship with the Guard then it makes total sense to skip the overhead. I'm on board with this change!}
 
 \flo{To fix both above problems, I would suggest to do the following: direct payment to the Guard and $i_{th}$ relay of the circuit used as Intermediary of the $i+1_{th}$. Exit relays would not have to handle any Intermediary job (they already have too much pressure) and this would give the same circuit secrecy as Tor has today. However, the CPU cost of intermediaries is moved to Guard and Middle relays and Tor clients need to run the establish channel procotol with each of them at least once in days/weeks/months. There is some trade-off there between cumulative deposit and CPU cost for relays, if such thing is doable in practice...}
-\dinh{I'm not sure I understand... could you elaborate? It vaguely sounds like we would be switching intermediaries every circuit, which would be very costly for the ledger}
+\thi{I'm not sure I understand... could you elaborate? It vaguely sounds like we would be switching intermediaries every circuit, which would be very costly for the ledger}
 
 \section{API}
 
