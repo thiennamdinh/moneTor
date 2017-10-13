@@ -8,7 +8,7 @@
 \usepackage{placeins}
 \usepackage{xcolor}
 \newcommand{\flo}[1]{ {\color{blue} [[FR: #1]]}}
-\newcommand{\thi}[1]{ {\color{green} [[TD: #1]]}}
+\newcommand{\thi}[1]{ {\color{red} [[TD: #1]]}}
 
 \begin{document}
 
@@ -30,47 +30,85 @@ Outline of where it fits into the entire incentive system
 
 \section{Variable Index} \label{variable index}
 
-In following with the Bolt style, variables in the section \ref{algorithms} are separated into two levels. The first level of variables are used for actual cryptographic and accounting operations. These are bundled into groups of higher level variable names meant to represent abstraction concepts such as payment channels and party states. Only these high level variables are saved outside the context of the algorithms.
+In following with the Bolt style, variables in the section
+\ref{algorithms} are separated into two levels. The first level of
+variables are used for actual cryptographic and accounting
+operations. These are bundled into groups of higher level variable
+names meant to represent abstraction concepts such as payment channels
+and party states. Only these high level variables are saved outside
+the context of the algorithms.
 
 \textbf{Shared}
 
-$nT = (\delta_C, \delta_R, n, hc^0)$ - ``Nanopayment Channel Token'' - This token stores the static, public information that defines a nanopayment channel including the payment values on both legs, the max number of payments, and the hashchain head. This can be passed around freely by all parties.
+$nT = (\delta_C, \delta_R, n, hc^0)$ - ``Nanopayment Channel Token'' -
+This token stores the static, public information that defines a
+nanopayment channel including the payment values on both legs, the max
+number of payments, and the hashchain head. This can be passed around
+freely by all parties.
 
 \textbf{Client}
 
-$ncsk_C = (nwpk_C, nwsk_C, HC)$ - ``Client Nanopayment Secrets'' - The public/private key pair allows the client to setup and close a nanopayment channel while the precomputed hash chain stores the ability to make incremental nanopayments
+$ncsk_C = (nwpk_C, nwsk_C, HC)$ - ``Client Nanopayment Secrets'' - The
+public/private key pair allows the client to setup and close a
+nanopayment channel while the precomputed hash chain stores the
+ability to make incremental nanopayments
 
-$nS_C = (k, hc^k)$ - ``Client Nanopayment State'' - The mutable state of the nanopayment is simply the count of payments made so far and the latest sent hash pre-image
+$nS_C = (k, hc^k)$ - ``Client Nanopayment State'' - The mutable state
+of the nanopayment is simply the count of payments made so far and the
+latest sent hash pre-image
 
-$nrt_C$ - ``Client Nanopayment Refund'' - The refund token allows the client to make a claim to the ledger on escrowed money. This refund is signed by the intermediary and conditioned on revealing the latest hash pre-image that the client claims to have sent.
+$nrt_C$ - ``Client Nanopayment Refund'' - The refund token allows the
+client to make a claim to the ledger on escrowed money. This refund is
+signed by the intermediary and conditioned on revealing the latest
+hash pre-image that the client claims to have sent.
 
 \textbf{Intermediary}
 
-$nS_I = \{nT: channel\_state\}$ - ``Intermediary Nanopayment State'' The intermediary's nanopayment state is a map of all past and present nanopayment channels and the corresponding channel state. Possible states are:
+$nS_I = \{nT: channel\_state\}$ - ``Intermediary Nanopayment State''
+The intermediary's nanopayment state is a map of all past and present
+nanopayment channels and the corresponding channel state. Possible
+states are:
 \begin{itemize}
 \item $\bot$ - failed attempt at setting up a nanopayment channel
 \item $ready$ - channel has been set up by the sender (client)
-\item $established$ - channel has been established with a recipient (relay)
-\item $closed||hc^k$ - channel has been closed and no further payments are allowed
+\item $established$ - channel has been established with a recipient
+  (relay)
+\item $closed||hc^k$ - channel has been closed and no further payments
+  are allowed
 \end{itemize}
 
 \textbf{Relay}
 
-$ncsk_R (nwpk_C, nwsk_C, \bot)$ - ``Relay Nanopayment Secrets'' - The public/private key pair allows the relay to setup and close a nanopayment channel. Since relays cannot make payments in this setup, the last field is left blank.
+$ncsk_R (nwpk_C, nwsk_C, \bot)$ - ``Relay Nanopayment Secrets'' - The
+public/private key pair allows the relay to setup and close a
+nanopayment channel. Since relays cannot make payments in this setup,
+the last field is left blank.
 
-$nS_R = (k, hc^k)$ - ``Relay Nanopayment State'' - The mutable state of the nanopayment is simply the count of payments made so far and the latest received hash pre-image
+$nS_R = (k, hc^k)$ - ``Relay Nanopayment State'' - The mutable state
+of the nanopayment is simply the count of payments made so far and the
+latest received hash pre-image
 
-$nrt_R$ - ``Relay Nanopayment Refund'' - The refund token allows the relay to make a claim to the ledger on escrowed money. This refund is signed by the intermediary and conditioned on revealing the latest hash pre-image that the relay has received.
+$nrt_R$ - ``Relay Nanopayment Refund'' - The refund token allows the
+relay to make a claim to the ledger on escrowed money. This refund is
+signed by the intermediary and conditioned on revealing the latest
+hash pre-image that the relay has received.
+
 \flo{How does the transaction happens on the ledger?}
-
+\thi{Basically, the client/relay would send the refund token to the ledger and that transaction would be posted. There would be some delay period in which the intermediary might want to refute the claim by posting a revocation token and it should be obvious to the ledger/network that one of them is right. These steps should probably be formalized in nRefund, nRefute, and nResolve algorithms}
 \section{Algorithms} \label{algorithms}
 
 Conventions:
 \begin{itemize}
 \item All variable names in this section are globally unique.
-\item Variable subscripts denote a party or role ((I)ntermediary, (C)lient, (R)elay, (E)nd user).
-\item New nanopayment variables are prefixed with the character (n). All other variables reference a value from the original Bolt scheme, although the name might be altered somewhat.
-\item Payment values ($\epsilon, \delta$) are signed integers with respect to the end user. For example, $\delta_C$ is negative and $\delta_R$ is positive in the typical case where a client is paying a relay.
+\item Variable subscripts denote a party or role ((I)ntermediary,
+  (C)lient, (R)elay, (E)nd user).
+\item New nanopayment variables are prefixed with the character
+  (n). All other variables reference a value from the original Bolt
+  scheme, although the name might be altered somewhat.
+\item Payment values ($\epsilon, \delta$) are signed integers with
+  respect to the end user. For example, $\delta_C$ is negative and
+  $\delta_R$ is positive in the typical case where a client is paying
+  a relay.
 \end{itemize}
 
 \begin{algorithm}
@@ -81,7 +119,7 @@ Conventions:
     \State{$(wsk', wpk') \gets $KeyGen$(pp)$}
     \State{$r' \gets $Random$()$}
     \State{$wCom' \gets $Commit$(wpk', B + \epsilon, r')$}
-    \State{$\pi \gets PK\{(B, r', \sigma^{w_{old}})\}$: \par}
+    \State{$\pi \gets PK\{(wpk', B, r', \sigma^{w_{old}})\}$: \par}
     \State{\hskip\algorithmicindent{} $wCom' = $Commit$(wpk', B + \epsilon, r')\ \wedge$}
     \State{\hskip\algorithmicindent{} Verify$(pk_{payee}, (wpk, B), \sigma^w) = 1\ \wedge$}
     \State{\hskip\algorithmicindent{} $0 \leq (B + \epsilon)$ \par}
@@ -89,16 +127,17 @@ Conventions:
     \EndFunction{}
   \end{algorithmic}
   \flo{(7) is redundant with (5)?}
+  \thi{Not quite; line (5) is where the commitment is actually created. Line (7) is part of a zero-knowledge proof $(\pi)$ that shows that the commitment was properly constructed since the other party ($I$ in this case) doesn't know wpk', B, or r'}
 \end{algorithm}
-
 
 \begin{algorithm}
   \caption{Nanopayment Channel Setup}
   \begin{algorithmic}[1]
     \Procedure{Client}{$pp, pk_I, w_C, \delta_C, n$}
       \State{parse $w_C$ as $(B_C, wpk_C, wsk_C, r_C, \sigma^w_C)$}
-      \If{$B_{C} - (\delta_C * n) < 0$}
-      \flo{is $\delta_C$ supposed to be negative as you said above?}
+      \If{$B_{C} + (\delta_C * n) < 0$}
+        \flo{is $\delta_C$ supposed to be negative as you said above?}
+        \thi{Yep, just fixed it. Thanks!}
         \State{Abort(Consider opening a new micropayment channel)}
       \EndIf{}
       \State{$(nwpk_C, nwsk_C, nwCom_C, n\pi_C) \gets $CommitWallet$(pp, pk_I, w_C, \delta_C * n)$}
@@ -201,6 +240,7 @@ Conventions:
       \If{$k >= n$}
         \State{Abort(Out of nanopayments to send, setup a new channel)}
         \flo{nClose here?}
+        \thi{Maybe... I'm not sure whether it makes more sense to specify it locally here or push it off to the ``higher level'' control loop of whoever is calling this algorithm. We'd also have to send a signal to the relay to close his channel first and then go through setup/establish steps again. Also, to save cpu cycles, this would be where we look ``rolling into the next nanopayment channel'' efficiency shortcuts that Dan was talking about}
       \EndIf{}
 
       \State{$nS_C \gets (k+1, HC[k])$}
