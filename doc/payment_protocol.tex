@@ -7,8 +7,11 @@
 \usepackage{varwidth}
 \usepackage{placeins}
 \usepackage{xcolor}
+
 \newcommand{\flo}[1]{ {\color{blue} [[FR: #1]]}}
 \newcommand{\thi}[1]{ {\color{red} [[TD: #1]]}}
+
+\algrenewcommand{\algorithmiccomment}[1]{{\color{gray} \hskip1em $\triangleright$ #1}}
 
 \begin{document}
 
@@ -95,11 +98,12 @@ hash pre-image that the relay has received.
 
 \flo{How does the transaction happens on the ledger?}
 \thi{Basically, the client/relay would send the refund token to the ledger and that transaction would be posted. There would be some delay period in which the intermediary might want to refute the claim by posting a revocation token and it should be obvious to the ledger/network that one of them is right. These steps should probably be formalized in nRefund, nRefute, and nResolve algorithms}
-\section{Algorithms} \label{algorithms}
+\section{Algorithms}\label{algorithms}
 
 Conventions:
 \begin{itemize}
-\item All variable names in this section are globally unique.
+\item All variable names in this section, except for possibly helper
+  functions, are globally unique.
 \item Variable subscripts denote a party or role ((I)ntermediary,
   (C)lient, (R)elay, (E)nd user).
 \item New nanopayment variables are prefixed with the character
@@ -113,16 +117,16 @@ Conventions:
 
 \begin{algorithm}
   \begin{algorithmic}[1]
-    \caption{Helper Functions}
+    \caption{Collection of functions called by other algorithms in this section}
     \Function{CommitWallet}{$pp, pk_{payee}, w, \epsilon$}
     \State{parse $w$ as $(B, wpk, wsk, r, \sigma^w)$}
     \State{$(wsk', wpk') \gets $KeyGen$(pp)$}
     \State{$r' \gets $Random$()$}
     \State{$wCom' \gets $Commit$(wpk', B + \epsilon, r')$}
-    \State{$\pi \gets PK\{(wpk', B, r', \sigma^{w_{old}})\}$: \par}
+    \State{$\pi \gets PK\{(wpk', B, r', \sigma^w)\}$: \par}
     \State{\hskip\algorithmicindent{} $wCom' = $Commit$(wpk', B + \epsilon, r')\ \wedge$}
     \State{\hskip\algorithmicindent{} Verify$(pk_{payee}, (wpk, B), \sigma^w) = 1\ \wedge$}
-    \State{\hskip\algorithmicindent{} $0 \leq (B + \epsilon)$ \par}
+    \State{\hskip\algorithmicindent{} $B + \epsilon \geq 0$}\\
     \Return{$(wsk', wpk', wCom', \pi)$}
     \EndFunction{}
   \end{algorithmic}
@@ -131,56 +135,54 @@ Conventions:
 \end{algorithm}
 
 \begin{algorithm}
-  \caption{Nanopayment Channel Setup}
+  \caption{Nanopayment Channel Setup --- Protocol between a relay and intermediary to create a new nanopayment channel from an existing micropayment wallet. This can be run prior to circuit setup.}
   \begin{algorithmic}[1]
     \Procedure{Client}{$pp, pk_I, w_C, \delta_C, n$}
       \State{parse $w_C$ as $(B_C, wpk_C, wsk_C, r_C, \sigma^w_C)$}
       \If{$B_{C} + (\delta_C * n) < 0$}
         \flo{is $\delta_C$ supposed to be negative as you said above?}
         \thi{Yep, just fixed it. Thanks!}
-        \State{Abort(Consider opening a new micropayment channel)}
+        \State{Abort$()$ \Comment{consider opening a new micropayment channel}}
       \EndIf{}
-      \State{$(nwpk_C, nwsk_C, nwCom_C, n\pi_C) \gets $CommitWallet$(pp, pk_I, w_C, \delta_C * n)$}
-      \State{$\delta_R \gets -(tax - \delta_C)$}
-      \State{$HC \gets \{\}$}
-      \State{$HC[n-1] \gets $Random$()$}
-      \For{$i = \{n-2, \ldots, 0\}$}
+      \State{$(nwpk_C, nwsk_C, nwCom_C, n\pi_C) \gets$ CommitWallet$(pp, pk_I, w_C, \delta_C * n)$}
+      \State{$\delta_R \gets -(\delta_C  + tax)$} \Comment{the tax represents a net profit for the intermediary}
+      \State{$HC \gets \{n$: Random$()\}$} \Comment{payment hash chain}
+      \For{$i = \{n-1, \ldots, 0\}$}
         \State{$HC[i] = $Hash$(HC[i+1])$}
       \EndFor{}
       \State{$nT \gets (\delta_C, \delta_R, n, HC[0])$}
-      \State{Intermediary.Send$(wpk_C, nwCom_C, n\pi_C, nT)$}
+      \State{Intermediary.Send$(wpk_C, nwpk_C, nwCom_C, n\pi_C, nT)$}
     \EndProcedure{}
 
     \Procedure{Intermediary}{$pp, S_I, nS_I$}
-      \State{$(wpk_C, nwpk_C, nwCom_C, n\pi_C, nT) \gets $Client.Receive()}
+      \State{$(wpk_C, nwpk_C, nwCom_C, n\pi_C, nT) \gets $Client.Receive$()$}
       \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
       \If{$wpk_C \in S_I \vee \neg $Verify$(n\pi_C)$}
-        \State{Abort(Invalid wallet)}
+        \State{Abort$()$ \Comment{invalid wallet}}
       \EndIf{}
-      \If{$-\delta_C = price \vee \delta_R + \delta_C + tax = 0$}
-        \State{Abort(Incorrect payment prices)}
+      \If{$-\delta_C \ne price \vee \delta_R + \delta_C + tax \ne 0$}
+        \State{Abort$()$ \Comment{incorrect payment prices}}
       \EndIf{}
-      \State{$S_I \gets S_I \cup (wpk_C : \bot)$}
-      \State{$S_I \gets S_I \cup (nwpk_C : \bot)$}
-      \State{$nS_I \gets nS_I \cup (nT : \bot)$}
+      \State{$S_I \gets S_I \cup \{wpk_C : \bot, nwpk_C: \bot\}$}
+      \State{$nS_I \gets nS_I \cup \{nT : \bot\}$}
       \State{Client.Send$(verified)$}
     \EndProcedure{}
 
     \Procedure{Client}{}
-      \State{$ver \gets $Intermediary.Receive()}
-      \State{$nrt_C \gets $Intermediary.Blindsig$(v, refund || HC[0] || nwpk_C || B + (\delta_C * n))$}
+      \State{$ver \gets $Intermediary.Receive$()$}
+      \State{$nrt_C \gets $Intermediary.Blindsig$(ver, refund || HC[0] || nwpk_C || B + (\delta_C * n))$}
       \State{$nS_C \gets (0, HC[0])$}
       \State{$ncsk_C \gets (nwpk_C, nwsk_C, HC)$}
       \State{$\sigma^{rev(w)}_C \gets $Sign$(wsk_C, revoke||wpk_C)$}
-      \State{Intermediary.Send$(\sigma^{recv(w)}$)}
+      \State{Intermediary.Send$(\sigma^{recv(w)}_C$)}
     \EndProcedure{}
 
     \Procedure{Intermediary}{}
-      \State{$\sigma^{recv(w)} \gets $Client.Receive()}
-      \If{$if(\neg $Verify$(wpk, revoke||wpk_C, \sigma^{recv(w)}) = 1)$}
-        \State{Abort(Invalid revocation token)}
+      \State{$\sigma^{recv(w)}_C \gets $Client.Receive$()$}
+      \If{$\neg $Verify$(wpk, revoke||wpk_C, \sigma^{recv(w)}_C) = 1$}
+        \State{Abort$()$ \Comment{invalid revocation token}}
       \EndIf{}
-      \State{$S_I[wpk_C] \gets \sigma^{recv(w)}$}
+      \State{$S_I[wpk_C] \gets \sigma^{recv(w)}_C$}
       \State{$nS_I[nT] \gets ready$}
       \State{Client.Send$(established)$}
     \EndProcedure{}
@@ -189,69 +191,71 @@ Conventions:
 \end{algorithm}
 
 \begin{algorithm}
-  \caption{Nanopayment Channel Establish}
+  \caption{Nanopayment Channel Establish --- Protocol between a client, intermediary, and relay to establish the nanopayment channel between the client and relay. This should be run at the start of circuit setup.}
   \begin{algorithmic}[1]
 
     \Procedure{Client}{$nT$}
       \State{Relay.Send$(nT)$}
     \EndProcedure{}
 
-    \Procedure{Relay}{$pp, pk_I, w_R$}
-      \State{$(nT) \gets $Client.Receive()}
+    \Procedure{Relay}{$pp, pk_I, B_{I:B}, w_R$}
+      \State{$nT \gets $Client.Receive$()$}
       \State{parse $w_R$ as $(B_R, wpk_R, wsk_R, r_R, \sigma^w_R)$}
       \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
       \If{$B_{I:B} - (\delta_B * n) < 0$}
-        \State{Abort(Consider opening a new micropayment channel)}
+        \State{Abort$()$ \Comment{consider opening a new micropayment channel}}
       \EndIf{}
       \State{$(nwpk_R, nwsk_R, nwCom_R, n\pi_R) \gets $CommitWallet$(pp, pk_I, w_R, \delta_R * n)$}
-      \State{Intermediary.Send$(nwpk_R, nwCom_R, n\pi_R, nT)$}
+      \State{Intermediary.Send$(wpk_R, nwpk_R, nwCom_R, n\pi_R, nT)$}
     \EndProcedure{}
 
     \Procedure{Intermediary}{$pp, S_I, nS_I$}
-      \State{$(nwpk_R, nwCom_R, \pi_R, nT) \gets $Relay.Receive()}
+      \State{$(wpk_R, nwpk_R, nwCom_R, n\pi_R, nT) \gets $Relay.Receive$()$}
       \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
-      \If{$nS_I[nT] \ne ready$}
-        \State{Abort(Unregistered nanopayment channel)}
+      \If{$wpk_R \in S_I \vee \neg $Verify$(n\pi_R)$}
+        \State{Abort (invalid wallet)}
       \EndIf{}
-
-      \State{$S_I \gets S_I \cup (nwpk_R, \bot)$}
+      \If{$nS_I[nT] \ne ready$}
+        \State{Abort (unregistered nanopayment channel)}
+      \EndIf{}
+      \State{$S_I \gets S_I \cup \{nwpk_R, \bot\}$}
       \State{$nS_I[nT] \gets established$}
       \State{Relay.Send$(verified)$}
     \EndProcedure{}
 
     \Procedure{Relay}{}
-      \State{$ver \gets $Intermediary.Receive()}
+      \State{$ver \gets $Intermediary.Receive$()$}
       \State{$nrt_R \gets $Intermediary.Blindsig$(ver, refund || hc^0 || nwpk_R || B_R + (\delta_R * n))$}
-      \State{$ncsk_R \gets (nwpk_R, nwsk_R, \bot)$}
+      \State{$ncsk_R \gets (nwpk_R, nwsk_R, \bot)$} \Comment{3rd null value to match client format}
       \State{$nS_R \gets (0, hc^0)$}
     \EndProcedure{}
   \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}
-  \caption{Nanopayment Channel Pay}
+  \caption{Nanopayment Channel Pay --- Protocol between the client and relay to forward a single nanopayment. This should be run periodically throughout the lifetime of the circuit.}
   \begin{algorithmic}[1]
 
     \Procedure{Client}{$nT, ncsk_C, nS_C$}
       \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
       \State{parse $ncsk_C$ as $(nwpk_C, nwsk_C, HC)$}
-      \State{parse $nS_C$ as $(k, HC[k])$}
+      \State{parse $nS_C$ as $(k, hc^k)$}
 
       \If{$k >= n$}
-        \State{Abort(Out of nanopayments to send, setup a new channel)}
+        \State{Abort$()$ \Comment{out of nanopayments to send, setup a new channel}}
         \flo{nClose here?}
         \thi{Maybe... I'm not sure whether it makes more sense to specify it locally here or push it off to the ``higher level'' control loop of whoever is calling this algorithm. We'd also have to send a signal to the relay to close his channel first and then go through setup/establish steps again. Also, to save cpu cycles, this would be where we look ``rolling into the next nanopayment channel'' efficiency shortcuts that Dan was talking about}
       \EndIf{}
 
-      \State{$nS_C \gets (k+1, HC[k])$}
+      \State{$nS_C \gets (k+1, HC[k+1])$}
       \State{Relay.Send$(HC[k+1])$}
     \EndProcedure{}
 
     \Procedure{Relay}{$nT, nS_R$}
-      \State{$hc^{k+1} \gets $Client.Receive()}
-      \State{parse $nS_R$ as $(hs^k, k)$}
-      \If{$k >= n \vee Hash(hc^{k+1}) \ne hc^k$}
-        \State{Abort(Invalid nanopayment)}
+      \State{$hc^{k+1} \gets $Client.Receive$()$}
+      \State{parse $nS_R$ as $(k, hs^k)$}
+      \If{$k+1 >= n \vee Hash(hc^{k+1}) \ne hc^k$}
+        \State{Abort$()$ \Comment{invalid nanopayment}}
       \EndIf{}
       \State{$nS_R \gets (hs^{k+1}, k+1)$}
     \EndProcedure{}
@@ -259,60 +263,61 @@ Conventions:
 \end{algorithm}
 
 \begin{algorithm}
-  \caption{Nanopayment Channel Close}
+  \caption{Nanopayment Channel Close --- Protocol between an end user (client or relay) and an intermediary to close out the nanopayment channel and receive a micropayment wallet. This should be done any time after the circuit closure and the relay must close first}
   \begin{algorithmic}[1]
-    \State{$\forall E \in \{Client, Relay\}$}
-    \Procedure{Relay}{$pp, pk_I, w_E, nT, ncsk_E, nS_E$}
+    \State{$\forall E \in \{Client, End User\}$}
+    \Procedure{EndUser}{$pp, pk_I, w_E, nT, ncsk_E, nS_E$}
       \State{parse $w_E$ as $(B_E, wpk_E, wsk_E, r, \sigma^w_E)$}
       \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
       \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E, \_)$}
       \State{parse $nS_E$ as $(k, hc^k)$}
       \State{$\epsilon_E \gets \delta_C * k$ if (End User = Client) else $ \delta_R * k$}
-      \State{$(wCom'_E, \pi'_E) \gets $CommitWallet$(pp, pk_I, wpk_B, \sigma^w_E, B_E, \epsilon_E$)}
-      \State{Intermediary.Send$(wpk_E, wCom'_E, \pi_E, nT, \epsilon_E, hc^k)$}
+      \State{$(wpk'_E, wsk'_E, wCom'_E, \pi'_E) \gets $CommitWallet$(pp, pk_I, wpk_B, \sigma^w_E, B_E, \epsilon_E$)}
+      \State{Intermediary.Send$(wpk_E, wCom'_E, \pi_E, nT, \epsilon_E, k, hc^k)$}
     \EndProcedure{}
 
     \Procedure{Intermediary}{$pp, S_I, nS_I$}
-      \State{$(wpk_E, wCom'_E, \pi_E, nT, \epsilon_E, hc^k) \gets $Relay.Receive()}
+      \State{$(wpk_E, wCom'_E, \pi_E, nT, \epsilon_E, k, hc^k) \gets $EndUser.Receive$()$}
+      \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
       \If{$\epsilon_E < 0 \wedge closed \not\in nS_I[nT]$}
-        \State{Abort(Client attempting to close before relay)}
+        \State{Abort$()$ \Comment{client attempting to close before relay}}
       \EndIf{}
-      \State{parse $nT$ as $(\delta_C, \delta_E, n, hc^0)$}
       \State{$hc^i \gets hc^k$}
-      \For{$i \gets \{k-1, \ldots , 0\}$}
+      \For{$i \gets \{k-1, \ldots , 0\}$} \Comment{verify hash chain}
         \State{$hc^i \gets Hash(hc^i)$}
       \EndFor{}
-      \If{Verify$(\pi_E) \vee nS_I[nT] \ne established \vee hc^i \ne hc^0$}
-        \State{Abort(Invalid wallet, channel, or hash chain)}
+      \If{Verify$(\pi_E) \vee nS_I[nT] \ne established$}
+        \State{Abort$()$ \Comment{invalid wallet or channel}}
       \EndIf{}
-      \State{$nS_I[nT] \gets (nT, closed||hc^k)$}
-      \State{Relay.Send$(verified)$}
+      \If{$k > n \vee hc^i \ne hc^0$}
+        \State{Abort$()$ \Comment{invalid payment hash chain}}
+      \EndIf{}
+      \State{$nS_I[nT] \gets closed||hc^k$}
+      \State{EndUser.Send$(verified)$}
     \EndProcedure{}
 
-    \Procedure{Relay}{}
-      \State{$ver \gets $Intermediary.Receive()}
-      \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E)$}
-      \State{$nrt_E \gets $Intermediary.Blindsig$(ver, refund || hc^0 || nwpk_E || B_E + (\delta_E * n))$}
+    \Procedure{EndUser}{}
+      \State{$ver \gets $Intermediary.Receive$()$}
+      \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E, \bot)$}
+      \State{$rt'_E \gets $Intermediary.Blindsig$(ver, refund || wpk'_E || B_E + (\delta_E * k))$}
       \State{$\sigma^{rev(nrt)}_E \gets $Sign$(nwsk_E, revoke||nwpk_E)$}
       \State{Intermediary.Send$(nwpk_E, \sigma^{rev(nrt)})$}
     \EndProcedure{}
 
     \Procedure{Intermediary}{}
-      \State{$\sigma^{rev(nrt)}_E \gets $Relay.Receive()}
+      \State{$(nwpk_E, \sigma^{rev(nrt)}_E) \gets $EndUser.Receive$()$}
       \If{$nwpk_E n\in S_I \vee \neg $Verify$(nwpk_E, \sigma^{rev(nrt)})$}
-        \State{Abort(Unregistered nanopayment channel or revocation token)}
+        \State{Abort$()$ \Comment{unregistered nanopayment channel or revocation token}}
       \EndIf{}
       \State{$S_I[nwpk_E] \gets \sigma^{rev(nrt)}$}
-      \State{Relay.Send$(verified)$}
+      \State{EndUser.Send$(verified)$}
     \EndProcedure{}
 
-    \Procedure{Relay}{}
-      \State{$ver \gets $Intermediary.Receive()}
+    \Procedure{EndUser}{}
+      \State{$ver \gets $Intermediary.Receive$()$}
       \State{$w'_E \gets $Intermediary.Blindsig$(ver, wpk_E'||B_E + \epsilon_E)$}
     \EndProcedure{}
 
   \end{algorithmic}
 \end{algorithm}
-
-
 \end{document}
