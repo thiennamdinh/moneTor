@@ -1,0 +1,54 @@
+Date: TODO
+From: Florentin Rochet <florentin.rochet@uclouvain.be>, Thien-Nam Dinh
+<td18@rice.edu>
+Subject: logging sensitive data from an exit node
+
+We are looking for more realistic information about lifetime and
+bandwidth consumption through time of Tor circuits. We would like to
+obtain typically the following information:
+
+- The distribution lifetime of Tor circuit, for each of the port we
+  allow (non-origin Tor circuits).
+- How many cells they handled during their lifetime (in and out
+  direction) with 1 sec granularity.
+
+Obviously, the second metrics implies the first one.
+
+
+== What are you trying to learn, and why is that useful for the world?
+   That is, what are the hoped-for benefits of your experiment?
+
+We are doing research to incentive people to run relays by rewarding
+relay operators with a crypto-currency internal to Tor. The design of
+the scheme as well as a proof of feasibility (or non-feasibility) from a
+performance viewpoint is part of the project. In consequence, we are
+trying to learn what is the typical use of Tor clients to design a
+payment system for bandwidth prioritization that would make sense.
+
+== What exactly is your plan? That is, what are the steps of your
+   experiment, what will you collect, how will you keep it safe, and so
+   on.
+
+I (Florentin) run some exit nodes. I plan to modify one of them to
+strictly log the information mentioned above and nothing else. All
+information transfer between the VPS holding the exit relay is done
+through an authenticated and encrypted channel. Once we are satisfied
+with the post-processing of the data (basically doing graphs), we would
+erase the data.
+
+== What attacks or risks might be introduced or assisted because of your
+   actions or your data sets, and how well do you resolve each of them?
+
+A granularity bandwidth consumption of Tor circuits could potentially be
+interesting to some malicious party. Moreover, it could bring attention
+to my exit relays even months after the research took place.
+
+== Walk us through why the benefits from item 1 outweigh the remaining
+   risks from item 3: why is this plan worthwhile despite the remaining
+   risks?
+
+item 3 is more or less a worst-case scenario, while our research could
+potentially turns to be something that would improve Tor's anonymity
+(best-case scenario). In the middle, nothing happens.
+There are maybe other risks we did not notice. We will be glad to take
+them in account if you raise them.
