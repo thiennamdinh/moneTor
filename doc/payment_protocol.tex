@@ -6,7 +6,7 @@
 \usepackage{parskip}
 \usepackage{varwidth}
 \usepackage{placeins}
-
+\usepackage{xcolor}
 \newcommand{\flo}[1]{ {\color{blue} [[FR: #1]]}}
 \newcommand{\thi}[1]{ {\color{green} [[TD: #1]]}}
 
@@ -61,6 +61,7 @@ $ncsk_R (nwpk_C, nwsk_C, \bot)$ - ``Relay Nanopayment Secrets'' - The public/pri
 $nS_R = (k, hc^k)$ - ``Relay Nanopayment State'' - The mutable state of the nanopayment is simply the count of payments made so far and the latest received hash pre-image
 
 $nrt_R$ - ``Relay Nanopayment Refund'' - The refund token allows the relay to make a claim to the ledger on escrowed money. This refund is signed by the intermediary and conditioned on revealing the latest hash pre-image that the relay has received.
+\flo{How does the transaction happens on the ledger?}
 
 \section{Algorithms} \label{algorithms}
 
@@ -87,6 +88,7 @@ Conventions:
     \Return{$(wsk', wpk', wCom', \pi)$}
     \EndFunction{}
   \end{algorithmic}
+  \flo{(7) is redundant with (5)?}
 \end{algorithm}
 
 
@@ -96,6 +98,7 @@ Conventions:
     \Procedure{Client}{$pp, pk_I, w_C, \delta_C, n$}
       \State{parse $w_C$ as $(B_C, wpk_C, wsk_C, r_C, \sigma^w_C)$}
       \If{$B_{C} - (\delta_C * n) < 0$}
+      \flo{is $\delta_C$ supposed to be negative as you said above?}
         \State{Abort(Consider opening a new micropayment channel)}
       \EndIf{}
       \State{$(nwpk_C, nwsk_C, nwCom_C, n\pi_C) \gets $CommitWallet$(pp, pk_I, w_C, \delta_C * n)$}
@@ -197,6 +200,7 @@ Conventions:
 
       \If{$k >= n$}
         \State{Abort(Out of nanopayments to send, setup a new channel)}
+        \flo{nClose here?}
       \EndIf{}
 
       \State{$nS_C \gets (k+1, HC[k])$}
