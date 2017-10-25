@@ -376,7 +376,7 @@ Conventions:
     \State{parse $ncsk_E$ as $(nwpk_E, \_, \_)$}
     \State{parse $nS_E$ as $(k, hc^k)$}
     \State{$\delta_E \gets \delta_C$ if (EndUser = Client) else $ \delta_R$}
-    \State{$m_E \gets (refund || nT || nwpk_E || B_E + \delta_E * n, hc^k_E, nrt_E)$}
+    \State{$m_E \gets (refund || nT || nwpk_E || B_E + \delta_E * n, nrt_E, hc^k_E, k_E)$}
     \State{$nrc_E \gets (m_E, Sign(sk_E, m_E))$}
     \State{\Return{$nrc_E$}}
     \EndFunction{}
@@ -389,7 +389,7 @@ Conventions:
     \State{$\forall E \in \{Client, Relay\}$}
     \Function{Intermediary}{$pp, T_E, S_I, nS_I, nrc_E$}
     \State{parse $nrc_E$ as $(m_E, \sigma^m_E)$}
-    \State{parse $m_E$ as $(refund || nT || nwpk_E || B^{full}_E, k_E, hc^k_E, nrt_E)$}
+    \State{parse $m_E$ as $(refund || nT || nwpk_E || B^{full}_E, nrt_E, k_E, hc^k_E)$}
     \State{\Comment{$B^{full}_E$ is the  balance of the nanopayment channel were fully saturated}}
     % however we get nrc_E... need to decide
     \State{parse $T_E$ as $(pk_E, \_)$}
@@ -420,7 +420,7 @@ Conventions:
     \State{$B^{total} = B_E^{init} + B_I^{init}$}
     \State{parse $nrc_E$ as $(m_E, \sigma^m_E)$}
     \State{parse $nrc_I$ as $(m_I, \sigma^m_I)$}
-    \State{parse $m_E$ as $(refund || nT || nwpk_E || B^{full}_E, hc^k_E, nrt_E)$}
+    \State{parse $m_E$ as $(refund || nT || nwpk_E || B^{full}_E, nrt_E, k_E, hc^k_E)$}
     \State{\Comment{$B^{full}_E$ is the  balance of the nanopayment channel were fully saturated}}
     \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
     \State{$\delta_E \gets \delta_C$ if (EndUser = Client) else $ \delta_R$}
