@@ -17,7 +17,7 @@ typedef struct {
     byte sig[SIZE_SIG];
 } signed_msg;
 
-byte pack_signed_msg(signed_msg token);
+int pack_signed_msg(signed_msg token, byte* str_out);
 signed_msg unpack_signed_msg(byte* str);
 
 void pk_to_addr(byte (*pk)[SIZE_KEY], byte (*addr_out)[SIZE_ADDR]);

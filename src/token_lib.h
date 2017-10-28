@@ -271,24 +271,24 @@ ttype token_type(byte* str);
 
 // convert semantically meaningful structs to sendable byte strings & sizes
 
-int pack_chn_end_chantok(chn_end_chantok token, byte* str_out);
-int pack_chn_int_chantok(chn_int_chantok token, byte* str_out);
-int pack_nan_any_chantok(nan_any_chantok token, byte* str_out);
-int pack_chn_end_revoke(chn_end_revoke token, byte* str_out);
-int pack_chn_end_refund(chn_end_refund token, byte* str_out);
+int pack_chn_end_chantok(chn_end_chantok token, byte** str_out);
+int pack_chn_int_chantok(chn_int_chantok token, byte** str_out);
+int pack_nan_any_chantok(nan_any_chantok token, byte** str_out);
+int pack_chn_end_revoke(chn_end_revoke token, byte** str_out);
+int pack_chn_end_refund(chn_end_refund token, byte** str_out);
 
-int pack_mac_aut_mint(mac_aut_mint token, byte* str_out);
-int pack_mac_any_trans(mac_any_trans token, byte* str_out);
-int pack_chn_end_escrow(chn_end_escrow token, byte* str_out);
-int pack_chn_int_escrow(chn_int_escrow token, byte* str_out);
-int pack_chn_int_reqclose(chn_int_reqclose token, byte* str_out);
-int pack_chn_end_close(chn_end_close token, byte* str_out);
-int pack_chn_int_close(chn_int_close token, byte* str_out);
-int pack_chn_end_cashout(chn_end_cashout token, byte* str_out);
-int pack_chn_int_cashout(chn_int_cashout token, byte* str_out);
+int pack_mac_aut_mint(mac_aut_mint token, byte** str_out);
+int pack_mac_any_trans(mac_any_trans token, byte** str_out);
+int pack_chn_end_escrow(chn_end_escrow token, byte** str_out);
+int pack_chn_int_escrow(chn_int_escrow token, byte** str_out);
+int pack_chn_int_reqclose(chn_int_reqclose token, byte** str_out);
+int pack_chn_end_close(chn_end_close token, byte** str_out);
+int pack_chn_int_close(chn_int_close token, byte** str_out);
+int pack_chn_end_cashout(chn_end_cashout token, byte** str_out);
+int pack_chn_int_cashout(chn_int_cashout token, byte** str_out);
 
-int pack_mac_led_data(mac_led_data token, byte* str_out);
-int pack_chn_led_data(chn_led_data token, byte* str_out);
+int pack_mac_led_data(mac_led_data token, byte** str_out);
+int pack_chn_led_data(chn_led_data token, byte** str_out);
 
 // convert sendable byte strings to semantically meaningful structs
 

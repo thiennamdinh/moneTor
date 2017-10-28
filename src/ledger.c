@@ -143,7 +143,7 @@ int query(byte* str, byte* data_out){
 	    if(mac_ptr == NULL)
 		return -1;
 
-	    return pack_mac_led_data(*mac_ptr, data_out);
+	    return pack_mac_led_data(*mac_ptr, &data_out);
 
 	case TTYPE_CHN_LED_QUERY:;
 
@@ -154,7 +154,7 @@ int query(byte* str, byte* data_out){
 	    if(chn_ptr == NULL)
 		return -1;
 
-	    return pack_chn_led_data(*chn_ptr, data_out);
+	    return pack_chn_led_data(*chn_ptr, &data_out);
     }
 
     return -1;
