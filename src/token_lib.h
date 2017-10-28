@@ -42,37 +42,37 @@
 
 typedef enum {
     // tokens that are maintained locally by a single party
-    TOK_chn_int_state,       // intermediary micropayment state
-    TOK_chn_end_secret,      // end user micropayment secrets
-    TOK_mic_end_wallet,      // end user wallet
-    TOK_nan_int_state,       // end user nanopayment state
-    TOK_nan_end_state,       // intermediary nanopayment state
-    TOK_nan_end_secret,      // end user nanopayment secrets
+    TTYPE_CHN_INT_STATE,       // intermediary micropayment state
+    TTYPE_CHN_END_SECRET,      // end user micropayment secrets
+    TTYPE_MIC_END_WALLET,      // end user wallet
+    TTYPE_NAN_INT_STATE,       // end user nanopayment state
+    TTYPE_NAN_END_STATE,       // intermediary nanopayment state
+    TTYPE_NAN_END_SECRET,      // end user nanopayment secrets
 
     // tokens that get sent to other  parties within the channel protocols
-    TOK_chn_end_chantok,     // end user micropayment channel token
-    TOK_chn_int_chantok,     // intermediary micropayment channel token
-    TOK_nan_any_chantok,     // nanopayment channel token
-    TOK_chn_end_revoke,      // end user revocation of a wallet/nano channel
-    TOK_chn_end_refund,      // end user nanopayment refund token
+    TTYPE_CHN_END_CHANTOK,     // end user micropayment channel token
+    TTYPE_CHN_INT_CHANTOK,     // intermediary micropayment channel token
+    TTYPE_NAN_ANY_CHANTOK,     // nanopayment channel token
+    TTYPE_CHN_END_REVOKE,      // end user revocation of a wallet/nano channel
+    TTYPE_CHN_END_REFUND,      // end user nanopayment refund token
 
     // tokens for posting to the ledger
-    TOK_mac_aut_mint,        // message by tor authority to mint coins
-    TOK_mac_any_trans,       // macropayment transaction
-    TOK_chn_end_escrow,      // end user escrow transaction
-    TOK_chn_int_escrow,      // intermediary escrow transaction
-    TOK_chn_int_reqclose,    // intermediary msg to request a user closure
-    TOK_chn_end_close,       // end user microchannel closure message
-    TOK_chn_int_close,       // intermediary microchannel closure message
-    TOK_chn_end_cashout,     // cash out of closed channel
-    TOK_chn_int_cashout,     // cash out of closed channel
+    TTYPE_MAC_AUT_MINT,        // message by tor authority to mint coins
+    TTYPE_MAC_ANY_TRANS,       // macropayment transaction
+    TTYPE_CHN_END_ESCROW,      // end user escrow transaction
+    TTYPE_CHN_INT_ESCROW,      // intermediary escrow transaction
+    TTYPE_CHN_INT_REQCLOSE,    // intermediary msg to request a user closure
+    TTYPE_CHN_END_CLOSE,       // end user microchannel closure message
+    TTYPE_CHN_INT_CLOSE,       // intermediary microchannel closure message
+    TTYPE_CHN_END_CASHOUT,     // cash out of closed channel
+    TTYPE_CHN_INT_CASHOUT,     // cash out of closed channel
 
     // tokens for querying the ledger
-    TOK_mac_led_data,        // macropayment ledger data mapped to an address
-    TOK_chn_led_data,        // channel ledger data mapped to an address
-    TOK_mac_led_query,       // request to query macropayment data
-    TOK_chn_led_query,       // request to query channel data
-} type;
+    TTYPE_MAC_LED_DATA,        // macropayment ledger data mapped to an address
+    TTYPE_CHN_LED_DATA,        // channel ledger data mapped to an address
+    TTYPE_MAC_LED_QUERY,       // request to query macropayment data
+    TTYPE_CHN_LED_QUERY,       // request to query channel data
+} ttype;
 
 // special codes used to identify types of signed tokens
 typedef enum {
@@ -267,7 +267,7 @@ typedef struct {
 //-------------------------- Pack/Unpack Functions --------------------------//
 
 // extract the token type from the packed message
-int token_type(byte* str);
+ttype token_type(byte* str);
 
 // convert semantically meaningful structs to sendable byte strings & sizes
 

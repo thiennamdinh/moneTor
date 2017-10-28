@@ -93,31 +93,31 @@ int post(byte* str) {
 
     // message is authentic, now pass on to specific handlers for processing
     switch(token_type(post_str.msg)){
-	case TOK_mac_aut_mint:
+	case TTYPE_MAC_AUT_MINT:
 	    result = execute_mac_aut_mint(post_str.msg, &addr);
 	    break;
-	case TOK_mac_any_trans:
+	case TTYPE_MAC_ANY_TRANS:
 	    result = execute_mac_any_trans(post_str.msg, &addr);
 	    break;
-	case TOK_chn_end_escrow:
+	case TTYPE_CHN_END_ESCROW:
 	    result = execute_chn_end_escrow(post_str.msg, &addr);
 	    break;
-	case TOK_chn_int_escrow:
+	case TTYPE_CHN_INT_ESCROW:
 	    result = execute_chn_int_escrow(post_str.msg, &addr);
 	    break;
-	case TOK_chn_int_reqclose:
+	case TTYPE_CHN_INT_REQCLOSE:
 	    result = execute_chn_int_reqclose(post_str.msg, &addr);
 	    break;
-	case TOK_chn_end_close:
+	case TTYPE_CHN_END_CLOSE:
 	    result = execute_chn_end_close(post_str.msg, &addr);
 	    break;
-	case TOK_chn_int_close:
+	case TTYPE_CHN_INT_CLOSE:
 	    result = execute_chn_int_close(post_str.msg, &addr);
 	    break;
-	case TOK_chn_end_cashout:
+	case TTYPE_CHN_END_CASHOUT:
 	    result = execute_chn_end_cashout(post_str.msg, &addr);
 	    break;
-	case TOK_chn_int_cashout:
+	case TTYPE_CHN_INT_CASHOUT:
 	    result = execute_chn_int_cashout(post_str.msg, &addr);
 	    break;
 	default:
@@ -134,7 +134,7 @@ int query(byte* str, byte* data_out){
     signed_msg query_str = unpack_signed_msg(str);
 
     switch(token_type(query_str.msg)){
-	case TOK_mac_led_query:;
+	case TTYPE_MAC_LED_QUERY:;
 
 	    mac_led_query mac_query = unpack_mac_led_query(query_str.msg);
 	    mac_led_data* mac_ptr = g_tree_lookup(mac_accounts, mac_query.addr);
@@ -145,7 +145,7 @@ int query(byte* str, byte* data_out){
 
 	    return pack_mac_led_data(*mac_ptr, data_out);
 
-	case TOK_chn_led_query:;
+	case TTYPE_CHN_LED_QUERY:;
 
 	    chn_led_query chn_query = unpack_chn_led_query(query_str.msg);
 	    chn_led_data* chn_ptr = g_tree_lookup(mac_accounts, chn_query.addr);
