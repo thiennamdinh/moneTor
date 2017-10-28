@@ -15,72 +15,95 @@
 #define token_lib_h
 
 #include <glib.h>
-
 #include "crypto_lib.h" // only needed for the defined byte array sizes
 
-//----------------------------- Token Types ---------------------------------//
-// These tokens should have a (hopefully straightforward) 1:1 mapping with
-// mathematical symbols found in the algorithm documentation.
-//---------------------------------------------------------------------------//
-
-// tokens that are maintained locally by a single party
-#define TYPE_mic_int_state 1;    // intermediary micropayment state
-#define TYPE_mic_end_wallet 2;   // end user wallet
-#define TYPE_mic_end_secret 3;   // end user micropayment secrets
-#define TYPE_nan_int_state 4;    // end user nanopayment state
-#define TYPE_nan_end_state 5;    // intermediary nanopayment state
-#define TYPE_nan_end_secret 6;   // end user nanopayment secrets
-
-// tokens that get sent to other parties within the channel protocols
-#define TYPE_mic_end_chan 7;     // end user micropayment channel token
-#define TYPE_mic_int_chan 8;     // intermediary micropayment channel token
-#define TYPE_mic_end_refund 9;   // end user micropayment refund token
-#define TYPE_nan_all_chan 10;    // nanopayment channel token
-#define TYPE_nan_end_refund 11;  // end user nanopayment refund token
-
-// tokens that get posted to the ledger
-#define TYPE_mac_aut_mint 12;    // message by tor authority to mint coins
-#define TYPE_mac_all_trans 13;   // macropayment transaction
-#define TYPE_mac_end_escrow 14;  // end user escrow transaction
-#define TYPE_mac_int_escrow 15;  // intermediary escrow transaction
-#define TYPE_mac_all_cashout 16; // cash out of closed channel
-#define TYPE_mic_int_close 17;   // intermediary msg to force end user close
-#define TYPE_mic_end_close 18;   // end user microchannel closure message
-#define TYPE_mic_int_refute 19;  // intermediary microchannel closure message
-#define TYPE_nan_end_refute 20;   // end user nanochannel closure message
-#define TYPE_nan_int_close 21;   // intermediary nanochannel closure message
-
-//----------------------------- Miscellaneous -------------------------------//
-
-// special cryptographic string sizes
 #define SIZE_ADDR 32
-#define SIZE_REV 32   //TODO: fill in correct size for rev
 
-// closure messages
-enum closure_msg {
-    refund,                      // end user initiates channel closure
-    accept,                      // intermediary accepts channel closure
-    refute,                      // intermediary refutes end user's closure
-    force                        // intermediary forces the end user to close
-};
+//----------------------------- Token Types ---------------------------------//
+
+/**
+ * High-level token structures housing the information necessary to operate the
+ * moneTor payment scheme. Most have 1:1 correlations with symbols in the formal
+ * protocol algorithm documentation. The following conventions are maintained:
+ *
+ * prefix 1: token type
+ *     mic - pertains to micropayments only
+ *     nan - pertains to nanopayments only
+ *     chn - pertains to both nano and micropayments
+ *     mac - macropayments (normal transfers on the ledger)
+ *
+ * prefix 2: party
+ *     end - end user (Tor client or relay)
+ *     int - intermediary
+ *     any - any party (either end user or intermediary)
+ *     aut - Tor authority
+ *     led - ledger
+ */
+
+typedef enum {
+    // tokens that are maintained locally by a single party
+    TOK_chn_int_state,       // intermediary micropayment state
+    TOK_chn_end_secret,      // end user micropayment secrets
+    TOK_mic_end_wallet,      // end user wallet
+    TOK_nan_int_state,       // end user nanopayment state
+    TOK_nan_end_state,       // intermediary nanopayment state
+    TOK_nan_end_secret,      // end user nanopayment secrets
+
+    // tokens that get sent to other  parties within the channel protocols
+    TOK_chn_end_chantok,     // end user micropayment channel token
+    TOK_chn_int_chantok,     // intermediary micropayment channel token
+    TOK_nan_any_chantok,     // nanopayment channel token
+    TOK_chn_end_revoke,      // end user revocation of a wallet/nano channel
+    TOK_chn_end_refund,      // end user nanopayment refund token
+
+    // tokens for posting to the ledger
+    TOK_mac_aut_mint,        // message by tor authority to mint coins
+    TOK_mac_any_trans,       // macropayment transaction
+    TOK_chn_end_escrow,      // end user escrow transaction
+    TOK_chn_int_escrow,      // intermediary escrow transaction
+    TOK_chn_int_reqclose,    // intermediary msg to request a user closure
+    TOK_chn_end_close,       // end user microchannel closure message
+    TOK_chn_int_close,       // intermediary microchannel closure message
+    TOK_chn_end_cashout,     // cash out of closed channel
+    TOK_chn_int_cashout,     // cash out of closed channel
+
+    // tokens for querying the ledger
+    TOK_mac_led_data,        // macropayment ledger data mapped to an address
+    TOK_chn_led_data,        // channel ledger data mapped to an address
+    TOK_mac_led_query,       // request to query macropayment data
+    TOK_chn_led_query,       // request to query channel data
+} type;
+
+// special codes used to identify types of signed tokens
+typedef enum {
+    CODE_REFUND,
+    CODE_ACCEPT,
+    CODE_REVOKE,
+    CODE_REQCLOSE,
+} code;
+
+// possible states for micropayment channels
+typedef enum {
+    CSTATE_EMPTY,                  // channel has not yet been initialized
+    CSTATE_INIT,                   // channel initialized by the end user
+    CSTATE_OPEN,                   // channel is open (payments can be sent)
+    CSTATE_INT_REQCLOSED,          // channel closure request sent by intermediary
+    CSTATE_END_CLOSED,             // channel closed by end user
+    CSTATE_INT_CLOSED,             // channel closed by both parties
+    CSTATE_RESOLVED,               // final channel balances are set
+} cstate;
 
 //----------------------------- Token Structs -------------------------------//
 
-// Since most tokens need to be signed by the sender, this wrapper removes the
-// public key and signature from the underlying token so that it can be verified
-// immediately.
 typedef struct {
-    int type;
-    int msg_size;
-
-    byte* msg;
-    byte pk[SIZE_KEY];
+    byte rev[SIZE_KEY];
     byte sig[SIZE_SIG];
-} signed_msg;
+} chn_end_revoke;
 
 typedef struct {
-    GHashTable* state;   // public key (byte*) -> state (byte*)
-} mic_int_state;
+    // public keys -> revocation tokens
+    GHashTable* state;
+} chn_int_state;
 
 typedef struct {
     int num_payments;
@@ -88,173 +111,206 @@ typedef struct {
 } nan_end_state;
 
 typedef struct {
-    GHashTable* state;   // nanochannel token (byte*) -> state (byte*)
+    // nanochannel tokens -> nanopayment states
+    GHashTable* state;
 } nan_int_state;
 
 typedef struct {
     int balance;
-    byte wallet_pk[SIZE_KEY];
-    byte wallet_sk[SIZE_KEY];
+    byte wpk[SIZE_KEY];
+    byte wsk[SIZE_KEY];
     byte rand[SIZE_HASH];
-    byte revocation[SIZE_REV];
-    byte rev_sig[SIZE_SIG];
+    chn_end_revoke revocation;
 } mic_end_wallet;
 
 typedef struct {
     int balance;
     byte commitment[SIZE_COM];
-    byte escrow_pk[SIZE_KEY];
-    byte wallet_pk[SIZE_KEY];
-    byte wallet_sk[SIZE_KEY];
+    byte esc_pk[SIZE_KEY];
+    byte wpk[SIZE_KEY];
+    byte wsk[SIZE_KEY];
     byte rand[SIZE_HASH];
-} mic_end_secret;
+} chn_end_secret;
 
 typedef struct {
-    byte wallet_pk[SIZE_KEY];
-    byte wallet_sk[SIZE_KEY];
+    byte wpk[SIZE_KEY];
+    byte wsk[SIZE_KEY];
     byte hash_head[SIZE_HASH];
 } nan_end_secret;
 
 typedef struct {
-    byte escrow_pk[SIZE_KEY];
+    int balance;
+    byte esc_pk[SIZE_KEY];
     byte commitment[SIZE_COM];
-} mic_end_chan;
+} chn_end_chantok;
 
 typedef struct {
-    byte escrow_pk[SIZE_KEY];
-} mic_int_chan;
+    int balance;
+    byte esc_pk[SIZE_KEY];
+} chn_int_chantok;
 
 typedef struct {
-    int payer_val;
-    int payee_val;
+    int val_from;
+    int val_to;
     int num_payments;
     byte hash_tail[SIZE_HASH];
-} nan_all_chan;
+} nan_any_chantok;
 
 typedef struct {
-    int closure_msg;
-    byte wallet_pk[SIZE_KEY];
+    code code;
+    byte wpk[SIZE_KEY];
     int balance;
 
+    // blank if refund for micropayment
+    nan_any_chantok channel_token;
+
+    // partial blind sig on everything but the code
     byte sig[SIZE_SIG];
     byte unblinder[SIZE_UBLR];
-
-} mic_end_refund;
-
-typedef struct {
-    int closure_msg;
-    nan_all_chan channel_token;
-    byte nan_wallet_pk[SIZE_KEY];
-    int balance;
-
-    // partial blind sig on prior four attributes (closure_msg is transparently signed)
-    byte sig[SIZE_SIG];
-    byte unblinder[SIZE_UBLR];
-} nan_end_refund;
+} chn_end_refund;
 
 typedef struct {
     int value;
 } mac_aut_mint;
 
 typedef struct {
-    int payee_val;
-    int payer_val;
+    int val_to;
+    int val_from;
     byte from[SIZE_ADDR];
     byte to[SIZE_ADDR];
-} mac_all_trans;
+} mac_any_trans;
 
 typedef struct {
-    int payee_val;
-    int payer_val;
+    int val_to;
+    int val_from;
     byte from[SIZE_ADDR];
     byte chan[SIZE_ADDR];
-    mic_end_chan channel_token;
-} mac_end_escrow;
+    chn_end_chantok chn_token;
+} chn_end_escrow;
 
 typedef struct {
-    int payee_val;
-    int payer_val;
+    int val_to;
+    int val_from;
     byte from[SIZE_ADDR];
     byte chan[SIZE_ADDR];
-    mic_int_chan channel_token;
-} mac_int_escrow;
+    chn_int_chantok chn_token;
+} chn_int_escrow;
 
 typedef struct {
     byte chan[SIZE_ADDR];
-} mic_int_close;
+    byte sig[SIZE_SIG];
+} chn_int_reqclose;
 
 typedef struct {
-    mic_end_refund refund_token;
     byte chan[SIZE_ADDR];
-} mic_end_close;
+    chn_end_refund refund_token;
 
-typedef struct {
-    int closure_msg;
-    byte revocation[SIZE_REV];
-    byte rev_sig[SIZE_SIG];
-
-    byte chan[SIZE_ADDR];
-} mic_int_refute;
-
-typedef struct {
-    nan_end_refund refund_token;
     int last_pay_num;
     byte last_hash[SIZE_HASH];
-    byte chan[SIZE_ADDR];
-} nan_end_refute;
+} chn_end_close;
 
 typedef struct {
-    int closure_msg;
+    int code;
+    byte chan[SIZE_ADDR];
+    chn_end_revoke revocation;
+
     int last_pay_num;
     byte last_hash[SIZE_HASH];
-    byte chan[SIZE_ADDR];
-} nan_int_close;
+} chn_int_close;
 
 typedef struct {
-    int payer_val;
-    int payee_val;
+    int val_from;
+    int val_to;
     byte chan[SIZE_ADDR];
     byte from[SIZE_ADDR];
     byte to[SIZE_ADDR];
-} mac_all_cashout;
+} chn_end_cashout;
 
+typedef struct {
+    int val_from;
+    int val_to;
+    byte chan[SIZE_ADDR];
+    byte from[SIZE_ADDR];
+    byte to[SIZE_ADDR];
+} chn_int_cashout;
+
+typedef struct {
+    int balance;
+} mac_led_data;
+
+typedef struct{
+    cstate state;
+
+    byte end_addr[SIZE_ADDR];
+    byte int_addr[SIZE_ADDR];
+
+    int end_balance;
+    int int_balance;
+
+    chn_end_chantok end_chn_token;
+    chn_int_chantok int_chn_token;
+
+    chn_end_close end_close_token;
+    chn_int_close int_close_token;
+
+    int close_epoch;
+} chn_led_data;
+
+typedef struct {
+    byte addr[SIZE_ADDR];
+} mac_led_query;
+
+typedef struct {
+    byte addr[SIZE_ADDR];
+} chn_led_query;
 
 //-------------------------- Pack/Unpack Functions --------------------------//
 
-// Converts the specified token structs to byte arrays that are capable of being
-// sent across a network. The return value points to dynamically allocated
-// memory and should be freed by the calling procedure.
-byte* pack_signed_msg(signed_msg token);
-byte* pack_mic_end_chan(mic_end_chan token);
-byte* pack_mic_int_chan(mic_int_chan token);
-byte* pack_mic_end_refund(mic_end_refund token);
-byte* pack_nan_all_chan(nan_all_chan token);
-byte* pack_nan_end_refund(nan_end_refund token);
-byte* pack_mac_all_trans(mac_all_trans token);
-byte* pack_mac_end_escrow(mac_end_escrow token);
-byte* pack_mac_int_escrow(mac_int_escrow token);
-byte* pack_mac_all_cashout(mac_all_cashout token);
-byte* pack_mic_int_close(mic_int_refute token);
-byte* pack_mic_end_close(mic_end_close token);
-byte* pack_mic_int_refute(mic_int_refute token);
-byte* pack_nan_end_refute(nan_end_refute token);
-byte* pack_nan_int_close(nan_int_close token);
+// extract the token type from the packed message
+int token_type(byte* str);
 
-// Converts a byte array into the specified token struct.
-signed_msg unpack_signed_msg(byte* str);
-mic_end_chan unpack_mic_end_chan(byte* str);
-mic_int_chan unpack_mic_int_chan(byte* str);
-mic_end_refund unpack_mic_end_refund(byte* str);
-nan_all_chan unpack_nan_all_chan(byte* str);
-nan_end_refund unpack_nan_end_refund(byte* str);
-mac_all_trans unpack_mac_all_trans(byte* str);
-mac_end_escrow unpack_mac_end_escrow(byte* str);
-mac_int_escrow unpack_mac_int_escrow(byte* str);
-mac_all_cashout unpack_mac_all_cashout(byte* str);
-mic_int_close unpack_mic_int_close(byte* str);
-mic_end_close unpack_mic_end_close(byte* str);
-mic_int_refute unpack_mic_int_refute(byte* str);
-nan_end_refute unpack_nan_end_refute(byte* str);
-nan_int_close unpack_nan_int_refute(byte* str);
+// convert semantically meaningful structs to sendable byte strings & sizes
+
+int pack_chn_end_chantok(chn_end_chantok token, byte* str_out);
+int pack_chn_int_chantok(chn_int_chantok token, byte* str_out);
+int pack_nan_any_chantok(nan_any_chantok token, byte* str_out);
+int pack_chn_end_revoke(chn_end_revoke token, byte* str_out);
+int pack_chn_end_refund(chn_end_refund token, byte* str_out);
+
+int pack_mac_aut_mint(mac_aut_mint token, byte* str_out);
+int pack_mac_any_trans(mac_any_trans token, byte* str_out);
+int pack_chn_end_escrow(chn_end_escrow token, byte* str_out);
+int pack_chn_int_escrow(chn_int_escrow token, byte* str_out);
+int pack_chn_int_reqclose(chn_int_reqclose token, byte* str_out);
+int pack_chn_end_close(chn_end_close token, byte* str_out);
+int pack_chn_int_close(chn_int_close token, byte* str_out);
+int pack_chn_end_cashout(chn_end_cashout token, byte* str_out);
+int pack_chn_int_cashout(chn_int_cashout token, byte* str_out);
+
+int pack_mac_led_data(mac_led_data token, byte* str_out);
+int pack_chn_led_data(chn_led_data token, byte* str_out);
+
+// convert sendable byte strings to semantically meaningful structs
+
+chn_end_chantok unpack_chn_end_chantok(byte* str);
+chn_int_chantok unpack_chn_int_chantok(byte* str);
+nan_any_chantok unpack_nan_any_chantok(byte* str);
+chn_end_revoke unpack_chn_end_revoke(byte* str);
+chn_end_refund unpack_chn_end_refund(byte* str);
+
+mac_aut_mint unpack_mac_aut_mint(byte* str);
+mac_any_trans unpack_mac_any_trans(byte* str);
+chn_end_escrow unpack_chn_end_escrow(byte* str);
+chn_int_escrow unpack_chn_int_escrow(byte* str);
+chn_int_reqclose unpack_chn_int_reqclose(byte* str);
+chn_end_close unpack_chn_end_close(byte* str);
+chn_int_close unpack_chn_int_close(byte* str);
+chn_end_cashout unpack_chn_end_cashout(byte* str);
+chn_int_cashout unpack_chn_int_cashout(byte* str);
+
+mac_led_data unpack_mac_led_data(byte* str);
+chn_led_data unpack_chn_led_data(byte* str);
+mac_led_query unpack_mac_led_query(byte* str);
+chn_led_query unpack_chn_led_query(byte* str);
 
 #endif

@@ -33,14 +33,14 @@ typedef unsigned char byte;
 // common
 void setup(byte (*pp_out)[SIZE_PP]);
 void keygen(byte (*pp)[SIZE_PP], byte (*pk_out)[SIZE_KEY], byte (*sk_out)[SIZE_KEY]);
-void random(int size, byte* rand_out);
+void random_bytes(int size, byte* rand_out);
 
 // hash scheme
-void hash(byte* msg, int msg_length, byte (*hash_out)[SIZE_HASH]);
+void hash(byte* msg, int msg_size, byte (*hash_out)[SIZE_HASH]);
 
 // signature scheme
-void sig_sign(byte* msg, int msg_length, byte (*sk)[SIZE_KEY], byte (*sig_out)[SIZE_SIG]);
-int sig_verify(byte* msg, int msg_length, byte (*pk)[SIZE_KEY], byte (*sig)[SIZE_SIG]);
+void sig_sign(byte* msg, int msg_size, byte (*sk)[SIZE_KEY], byte (*sig_out)[SIZE_SIG]);
+int sig_verify(byte* msg, int msg_size, byte (*pk)[SIZE_KEY], byte (*sig)[SIZE_SIG]);
 
 // commitment scheme
 void com_commit(byte* inputs, int input_size, byte (*rand)[SIZE_HASH], byte (*com_out)[SIZE_COM]);
