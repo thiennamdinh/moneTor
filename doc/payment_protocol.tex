@@ -460,4 +460,42 @@ Conventions:
   \end{algorithmic}
 \end{algorithm}
 
+
+\section{Implementation notes}
+
+\subsection{Tor overview}
+
+I am going to explain here a high-level overview of the Tor implementation logic. The idea is to get both the intuition about how the payment protocol is going to be incorporated in the Tor codebase, where it is going to be tricky and what part does not really need to be fully implemented (e.g. maybe we can assume no cheater $\rightarrow$ no need to code all logic about detect \& punish users).
+
+Tor can be abstracted by a event-driven network process that responds to network events to tight together instance of the Tor program through what we call ''circuits". Every Tor instance share the same codebase but respond differently to network events,  following some pieces of the Tor protocol\footnote{https://gitweb.torproject.org/torspec.git/tree/tor-spec.txt} depending of their configuration. The payment protocol must be seen as an extension of the current Tor protocol, hence a good knowledge overview of the Tor protocol is somewhat necessary.
+
+Tor is mostly single-threaded and pulls work from a queue of events constructed by Libevent. Tor handles CPU-intensive tasks in worker threads (note: checks how Tor hanldes multiple CPU and if we can use other CPUs for channel opening/closing).
+
+The Tor control protocol\footnote{https://gitweb.torproject.org/torspec.git/tree/control-spec.txt} is used by other programs (such as a browser) to communicate with the Tor process. Enabling/disabling payments should work through an extension of this protocol.
+
+A lot of implementation documentation/details/logic are provided in the torguts repository: https://gitweb.torproject.org/user/nickm/torguts.git/. 
+
+Most of our implementation is going to use/extend *\_edge.c files from src/or/ since every payment logic happens at "edges" of Tor circuits. A circuit edge t is defined w.r.t to the cell being forwarded through the circuit. E.g. a 2-time onion encrypted cell is going to be recognized by the middle relay, hence the edge of the circuit for that particular cell is the middle relay. This is also called "leaky-pipe design" in the original Tor paper.
+
+\subsection{Payment specifications}
+	\label{sec:payment_spec}
+	
+ Overall idea: Algorithms above are going to be written is standalone functions in some new file in "src/or/". When some cells related to a payment arrive on circuit, circuit\_receive\_relay\_cell() from src/or/relay.c is going call the entry point of payment management (e.g. circuit\_manage\_payment()) and manage itself circuit states, payment states, etc.
+
+In normal use of circuit, when the payment is enabled, each client-relay handle a payment flow control in a similar way that bandwidth flow control is currently designed in Tor (using windows). The idea is that the client uses the nanopayment channel with the relay for maintaining this window above 0. If the window reaches 0, the relay stop prioritize the traffic from this circuit.
+ \subsubsection{Cell specification}
+ \label{sec:cell_spec}
+ 
+ This part specify the extension of cells used for payment. We are going to use link-level cell(s) to pay the Guard and relay level cell(s) to discuss with the intermediary (channel operations) and to pay the middle and the exit relays (nanopayment channel operations). 
+ 
+ \subsubsection{Circuit specification}
+ 
+ 	\paragraph*{Intermediary circuit}
+ 	
+ 	\paragraph*{Payment-flow control}
+ 	
+ \subsubsection{Intermediary specification}
+ 	\#Note: explains how a particular relay chooses intermediaries
+\subsection{Payment scheduler specification}
+	\#Note: 
 \end{document}
