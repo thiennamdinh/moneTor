@@ -74,7 +74,7 @@ int paycrypt_keygen(byte (*pp)[SIZE_PP], byte (*pk_out)[SIZE_PK], byte  (*sk_out
     BIGNUM *exponent = BN_new();
     BN_dec2bn(&exponent, exp_str);
     RSA* rsa = RSA_new();
-    if(RSA_generate_key_ex(rsa, num_bits, exponent, NULL))
+    if(RSA_generate_key_ex(rsa, num_bits, exponent, NULL) != 1)
 	return MT_ERROR;
 
     // write public key
@@ -91,7 +91,7 @@ int paycrypt_keygen(byte (*pp)[SIZE_PP], byte (*pk_out)[SIZE_PK], byte  (*sk_out
 
     // write private key
     BIO* bio_sk = BIO_new(BIO_s_mem());
-    if(PEM_write_bio_RSAPrivateKey(bio_sk, rsa, NULL, NULL, 0, NULL, NULL))
+    if(PEM_write_bio_RSAPrivateKey(bio_sk, rsa, NULL, NULL, 0, NULL, NULL) != 1)
 	return MT_ERROR;
 
     int size_sk = BIO_pending(bio_sk);
