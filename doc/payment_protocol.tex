@@ -483,6 +483,8 @@ Most of our implementation is going to use/extend *\_edge.c files from src/or/ s
  Overall idea: Algorithms above are going to be written is standalone functions in some new file in "src/or/". When some cells related to a payment arrive on circuit, circuit\_receive\_relay\_cell() from src/or/relay.c is going call the entry point of payment management (e.g. circuit\_manage\_payment()) and manage itself circuit states, payment states, etc.
 
 In normal use of circuit, when the payment is enabled, each client-relay handle a payment flow control in a similar way that bandwidth flow control is currently designed in Tor (using windows). The idea is that the client uses the nanopayment channel with the relay for maintaining this window above 0. If the window reaches 0, the relay stop prioritize the traffic from this circuit.
+
+The client must handle some pre-build nano-payment channels with Intermediaries that he chose is such a way that when attaching a stream to a circuit, only the establish phase must be done. This design bears some similarities with the way Tor pre-built circuit and should speed up the time to the first nanopayment issued.
  \subsubsection{Cell specification}
  \label{sec:cell_spec}
  
