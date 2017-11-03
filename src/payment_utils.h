@@ -11,21 +11,23 @@
  */
 typedef struct {
     byte* msg;
-    int msg_size;
+    int size;
 
-    byte pk[SIZE_ADDR];
+    byte pk[SIZE_PK];
     byte sig[SIZE_SIG];
 } signed_msg;
 
-int pack_signed_msg(signed_msg token, byte* str_out);
-signed_msg unpack_signed_msg(byte* str);
+int pack_signed_msg(signed_msg token, byte** str_out);
+int unpack_signed_msg(byte* str, signed_msg* struct_out);
+int create_signed_msg(byte* msg, int size, byte (*pk)[SIZE_PK], byte (*sk)[SIZE_SK], byte** str_out);
 
-void pk_to_addr(byte (*pk)[SIZE_KEY], byte (*addr_out)[SIZE_ADDR]);
+int pk_to_addr(byte (*pk)[SIZE_PK], byte (*addr_out)[SIZE_ADDR]);
+int addr_to_hex(byte (*addr)[SIZE_ADDR], char (*hex_out)[SIZE_ADDR * 2 + 3]);
 
-void hash_create_chain(byte (*head)[SIZE_HASH], byte** hc_out);
-int hash_verify_chain(byte (*preimage)[SIZE_HASH], byte** hc, int k);
+int hash_create_chain(int size, byte (*head)[SIZE_HASH], byte (*hc_out)[][SIZE_HASH]);
+int hash_verify_chain(byte (*tail)[SIZE_HASH], byte (*preimage)[SIZE_HASH], int k);
 
-void commit_wallet(byte (*pp)[SIZE_PP], byte (*pk_payee)[SIZE_KEY], byte *wallet, int pay_val,
+int commit_wallet(byte (*pp)[SIZE_PP], byte (*pk_payee)[SIZE_PK], byte *wallet, int pay_val,
 		   byte (*com_out)[SIZE_COM]);
 
 int chn_refund_verify(chn_end_close token);
