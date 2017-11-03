@@ -488,8 +488,59 @@ The client must handle some pre-build nano-payment channels with Intermediaries 
  \subsubsection{Cell specification}
  \label{sec:cell_spec}
  
- This part specify the extension of cells used for payment. We are going to use link-level cell(s) to pay the Guard and relay level cell(s) to discuss with the intermediary (channel operations) and to pay the middle and the exit relays (nanopayment channel operations). 
+ This part specifies the extension of cells used for payment. We are going to use link-level cell(s) to pay the Guard and relay level cell(s) to discuss with the intermediary (channel operations) and to pay the middle and the exit relays (nanopayment channel operations). 
+
+ \#TODO: estimate the payload size for each data of sent over the network by above algorithms.
  
+ \begin{center}
+ \begin{tabular}{l r}
+        CircID        &                        [CIRCID\_LEN octets] \\
+        Command       &                        [1 octet] \\
+        Length        &                        [2 octets; big-endian integer]\\
+        Payload       &                        [Length bytes]\\
+
+\end{tabular}\\
+ \end{center}
+
+New link-level cells:
+
+\begin{center}
+\begin{tabular}{l c c r}
+13 -- & PAY\_ENTRY & (pay the entry node without Intermediary) & see Section~\ref{sec:pay_entry} \\
+14 -- & PAYD\_ENTRY & (acknowledge payment) & see Section~\ref{sec:pay_entry} \\
+\end{tabular}
+\end{center}
+
+Regarding Channel interaction with intermediary and relays, everything will happen with relay-level cells. The payload of each unencrypted RELAY cell consists of:
+
+\begin{center}
+	\begin{tabular}{l r}
+	     Relay command       &    [1 byte]\\
+         'Recognized'        &    [2 bytes]\\
+         StreamID            &    [2 bytes]\\
+         Digest              &    [4 bytes]\\
+         Length              &    [2 bytes]\\
+         Data                &    [PAYLOAD\_LEN-11 bytes]
+
+	\end{tabular}
+\end{center}
+
+new relay-level cells:
+\begin{center}
+	\begin{tabular}{l c c r}
+		16 -- & RELAY\_MP\_SETUP & () & See Section~\ref{sec:micro_payment} \\
+		17 -- & RELAY\_MP\_VERIFIED  & () & See Section \\
+		2X -- & RELAY\_NP\_SETUP & () & See Section~\ref{sec:nano_payment} \\
+		2X -- & RELAY\_NP\_VERIFIED & () & See Section~\ref{sec:nano_payment} \\
+		2X -- & RELAY\_NP\_CLOSE & () & See Section~\ref{sec:nano_payment_close} \\
+		2X -- & RELAY\_NP\_CLOSED & () & See Section~\ref{sec:nano_payment_close} \\
+		2X -- & RELAY\_NP\_REFUND & () & See Sectio~\ref{sec:nano_payment_refund}\\
+		2X -- & RELAY\_NP\_REFUNDED & () & See Section~\ref{sec:nano_payment_refund}\\
+		2X -- & RELAY\_NP\_REFUTE  & () & To not implement?\\
+		
+	\end{tabular}
+\end{center}
+      \#Todo: missing some MicroPayment control cells
  \subsubsection{Circuit specification}
  
  	\paragraph*{Intermediary circuit}
