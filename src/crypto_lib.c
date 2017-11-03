@@ -44,7 +44,7 @@ int num_bits = 1024;
 char* exp_str = "65537";
 
 // random byte string used to simulate a "blinder" for bsig operations
-byte* bsig_fake_blinder = "1234567812345678123456781234567812345678";
+byte* bsig_fake_blinder = (byte*)"1234567812345678123456781234567812345678";
 
 /**
  * Call system nanosleep() to delay the thread for given the microseconds
@@ -142,7 +142,7 @@ int paycrypt_hash(byte* msg, int msg_size, byte (*hash_out)[SIZE_HASH]){
  * Accept a message of arbitrary length, compute the digest, and output a signature
  */
 int sig_sign(byte* msg, int msg_size, byte (*sk)[SIZE_SK], byte (*sig_out)[SIZE_SIG]){
-    BIO* bio = BIO_new_mem_buf(sk, strlen(*sk));
+    BIO* bio = BIO_new_mem_buf(sk, strlen((char*)*sk));
     RSA* rsa = PEM_read_bio_RSAPrivateKey(bio, NULL, NULL, NULL);
 
     if(bio == NULL || rsa == NULL)
@@ -152,7 +152,7 @@ int sig_sign(byte* msg, int msg_size, byte (*sk)[SIZE_SK], byte (*sig_out)[SIZE_
     if(paycrypt_hash(msg, msg_size, &digest) != 0)
 	return MT_ERROR;
 
-    int sig_len;
+    uint sig_len;
     if(RSA_sign(NID_sha256, digest, SIZE_HASH, *sig_out, &sig_len, rsa) != 1)
 	return MT_ERROR;
 
@@ -169,7 +169,7 @@ int sig_sign(byte* msg, int msg_size, byte (*sk)[SIZE_SK], byte (*sig_out)[SIZE_
  * provided signature
  */
 int sig_verify(byte* msg, int msg_size, byte (*pk)[SIZE_PK], byte  (*sig)[SIZE_SIG]){
-    BIO* bio = BIO_new_mem_buf(pk, strlen(*pk));
+    BIO* bio = BIO_new_mem_buf(pk, strlen((char*)*pk));
     RSA* rsa = PEM_read_bio_RSA_PUBKEY(bio, NULL, NULL, NULL);
 
     if(bio == NULL || rsa == NULL)

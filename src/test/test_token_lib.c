@@ -12,7 +12,7 @@ typedef unsigned char byte;
  * Take a void pointer and overwrite the given number of bytes with random numbers
  *
  * terminal command (until we have a make file)
- * gcc ledger.c token_lib.c payment_utils.c crypto_lib.c -o test_token_lib
+ * gcc test_token_lib.c token_lib.c payment_utils.c crypto_lib.c -o test_token_lib
  * `pkg-config --cflags --libs glib-2.0` && ./test_token_lib
  */
 void write_random_bytes(void* data, int size){

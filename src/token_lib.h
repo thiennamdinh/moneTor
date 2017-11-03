@@ -17,7 +17,7 @@
 #include <glib.h>
 #include "crypto_lib.h" // only needed for the defined byte array sizes
 
-#define SIZE_ADDR 32
+#define SIZE_ADDR 20
 
 //----------------------------- Token Types ---------------------------------//
 
@@ -96,7 +96,7 @@ typedef enum {
 //----------------------------- Token Structs -------------------------------//
 
 typedef struct {
-    byte rev[SIZE_KEY];
+    byte rev[SIZE_PK];
     byte sig[SIZE_SIG];
 } chn_end_revoke;
 
@@ -117,8 +117,8 @@ typedef struct {
 
 typedef struct {
     int balance;
-    byte wpk[SIZE_KEY];
-    byte wsk[SIZE_KEY];
+    byte wpk[SIZE_PK];
+    byte wsk[SIZE_SK];
     byte rand[SIZE_HASH];
     chn_end_revoke revocation;
 } mic_end_wallet;
@@ -126,27 +126,27 @@ typedef struct {
 typedef struct {
     int balance;
     byte commitment[SIZE_COM];
-    byte esc_pk[SIZE_KEY];
-    byte wpk[SIZE_KEY];
-    byte wsk[SIZE_KEY];
+    byte esc_pk[SIZE_PK];
+    byte wpk[SIZE_PK];
+    byte wsk[SIZE_SK];
     byte rand[SIZE_HASH];
 } chn_end_secret;
 
 typedef struct {
-    byte wpk[SIZE_KEY];
-    byte wsk[SIZE_KEY];
+    byte wpk[SIZE_PK];
+    byte wsk[SIZE_SK];
     byte hash_head[SIZE_HASH];
 } nan_end_secret;
 
 typedef struct {
     int balance;
-    byte esc_pk[SIZE_KEY];
+    byte esc_pk[SIZE_PK];
     byte commitment[SIZE_COM];
 } chn_end_chantok;
 
 typedef struct {
     int balance;
-    byte esc_pk[SIZE_KEY];
+    byte esc_pk[SIZE_PK];
 } chn_int_chantok;
 
 typedef struct {
@@ -158,7 +158,7 @@ typedef struct {
 
 typedef struct {
     code code;
-    byte wpk[SIZE_KEY];
+    byte wpk[SIZE_PK];
     int balance;
 
     // blank if refund for micropayment
