@@ -19,6 +19,7 @@ typedef struct {
 
 int pack_signed_msg(signed_msg token, byte** str_out);
 int unpack_signed_msg(byte* str, signed_msg* struct_out);
+int create_signed_msg(byte* msg, int size, byte (*pk)[SIZE_PK], byte (*sk)[SIZE_SK], byte** str_out);
 
 int pk_to_addr(byte (*pk)[SIZE_PK], byte (*addr_out)[SIZE_ADDR]);
 int addr_to_hex(byte (*addr)[SIZE_ADDR], char (*hex_out)[SIZE_ADDR * 2 + 3]);

@@ -34,7 +34,6 @@ void test_payment_utils(){
     pack_signed_msg(msg_struct, &net_msg_str);
 
     signed_msg msg_struct_out;
-    msg_struct_out.size = 333;
     unpack_signed_msg(net_msg_str, &msg_struct_out);
 
     // make sure the structure is identical in data
@@ -49,7 +48,30 @@ void test_payment_utils(){
     assert(msg_struct.sig != msg_struct_out.sig);
 
     // make sure the sig still verifies
-    assert(sig_verify(msg_struct_out.msg, msg_struct_out.size, &(msg_struct_out.pk), &(msg_struct_out.sig)) == MT_SUCCESS);
+    assert(sig_verify(msg_struct_out.msg, msg_struct_out.size,  &(msg_struct_out.pk), &(msg_struct_out.sig)) == MT_SUCCESS);
+
+    //------------------------ Test Create Signed Msg Shortcut -------------------//
+
+    byte* created_msg_str;
+    create_signed_msg(msg, msg_size, &pk, &sk, &created_msg_str);
+
+    signed_msg msg_struct_created;
+    unpack_signed_msg(created_msg_str, &msg_struct_created);
+
+    // make sure the structure is identical in data
+    assert(msg_struct.size == msg_struct_created.size);
+    assert(memcmp(msg_struct.msg, msg_struct_created.msg, msg_struct.size) ==  0);
+    assert(memcmp(msg_struct.pk, msg_struct_created.pk, SIZE_PK) ==  0);
+    assert(memcmp(msg_struct.sig, msg_struct_created.sig, SIZE_SIG) ==  0);
+
+    // make the pointers are actually referencing different copies
+    assert(msg_struct.msg != msg_struct_created.msg);
+    assert(msg_struct.pk != msg_struct_created.pk);
+    assert(msg_struct.sig != msg_struct_created.sig);
+
+    // make sure the sig still verifies
+    assert(sig_verify(msg_struct_created.msg, msg_struct_created.size,  &(msg_struct_created.pk), &(msg_struct_created.sig)) == MT_SUCCESS);
+
 
     //----------------------------- Test PK to Address ---------------------------//
 
