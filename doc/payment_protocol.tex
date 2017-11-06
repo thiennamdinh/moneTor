@@ -544,11 +544,22 @@ new relay-level cells:
  \subsubsection{Circuit specification}
  
  	\paragraph*{Intermediary circuit}
+	
+	We have some design choice to consider regarding Intermediary circuit: we can reasonably assume that Intermediaries are going to hold a tor socket for each of the relay in the consensus even if this does not scale (socket are 16 bits sized). The easiest way to handle Intermediary circuits would be to imitate how onion services handle Introduction circuits since we mostly have the same constraint: We always need to have at least one circuit open towards a particular relay (Introduction Point in the case of onion services and Intermediary in the case of a payment channel).\\
+	\#TODO: agree on the kind of structure that hold payment channels and link them to Intermediary circuit and "general" circuits.
+ 	
+ 	\paragraph*{Ledger circuit}
+ 	
+ 	IP of the ledger hardcoded in torrc. We extend on the fly an internal 3-hop circuit towards the ledger. This circuit is closed after the refund took place.
  	
  	\paragraph*{Payment-flow control}
  	
+ 	The Tor clients should hold a payment window of the same size of the flow-control window for each of the relay in the circuit. These windows should be synchronized in classical use of Tor circuits (end-to-end data) but we do not enforce it for compatibility with further other designs (such as link padding). However we should have some rate-limited control of the de-synchronization (e.g. the middle node sending garbage to get payments). Typically such thing that would not be implemented but specified as part of the design.
+ 	
  \subsubsection{Intermediary specification}
  	\#Note: explains how a particular relay chooses intermediaries
+ 	
+ \subsubsection{•}
 \subsection{Payment scheduler specification}
 	\#Note: 
 \end{document}
