@@ -1,0 +1,157 @@
+\documentclass{article}
+\usepackage{parskip}
+
+\title{Overview of Payment Modules and API}
+\date{}
+
+\begin{document}
+\section{Front(Tor)-facing API}
+
+This section describes the various functions required to interact with the
+payment module. The rest of the Tor codebase should interact with the payment
+scheme exclusively through this API.
+
+In return, the payment modules will need to interact with the rest of the Tor
+codebase sending cells to some given destination.
+
+\subsection{Client Payment Controller}
+
+\textbf{\emph{Init Payments}}
+
+Inputs: Cryptocurrency keys and any existing channel info (possibly from torcc files), info to
+communicate with the ledger
+
+Trigger: Start of the Tor application.
+
+\textbf{\emph{Establish Nanopayment Channels}}
+
+Inputs: Circuit info (needs to include some way to reach all 3 relays
+along the path)
+
+Trigger: Some time just after circuit creation
+
+\textbf{\emph{Make Payments}}
+
+Inputs: Circuit info
+
+Trigger: Called once every time the circuit has processed X number of cells
+
+\textbf{\emph{Close Nanopayment Channels}}
+
+Inputs: Circuit info
+
+Trigger: Circuit close
+
+\textbf{\emph{Cashout Channel}}
+
+Inputs: Channel ID
+
+Trigger: Caused by some deliberate user command.
+
+\textbf{\emph{Handle Incoming Cell}}
+
+Inputs: Circuit ID, cell
+
+Trigger: Cell is received from the network
+
+\subsection{Relay Payment Controller}
+
+\textbf{\emph{Init Payments}}
+
+Inputs: Cryptocurrency keys and any existing channel info (possibly from torcc files), info to
+communicate with the ledger, payment processed callback function
+
+Trigger: Start of the Tor application.
+
+\textbf{\emph{Cashout Channel}}
+
+Inputs: Channel ID
+
+Trigger: Caused by some deliberate user command.
+
+\textbf{\emph{Handle Incoming Cell}}
+
+Inputs: Circuit info, cell
+
+Trigger: Cell is received from the network
+
+\textbf{\emph{**Payment Processed Callback**}};
+
+This is a callback function that is provided to the module. It is invoked every
+time the payment module processes a successful payment by a client. The callback
+should handle any network-related effects related to the priority bandwidth.
+
+\subsection{Intermediary Payment Controller}
+
+\textbf{\emph{Init Payments}}
+
+Inputs: Cryptocurrency keys and any existing channel info (possibly from torcc files), info to
+communicate with the ledger
+
+Trigger: Start of the Tor application.
+
+\textbf{\emph{Cashout Channel}}
+
+Inputs: Channel ID
+
+Trigger: Caused by some deliberate user command.
+
+\textbf{\emph{Handle Incoming Cell}}
+
+Inputs: Circuit info, cell
+
+Trigger: Cell is received from the network
+
+\subsection{Ledger}
+
+\textbf{\emph{Init Ledger}}
+
+Inputs: Policy info (fees, taxes, Tor authority address, etc)
+
+Trigger: Start of system creation
+
+\textbf{\emph{Handle Incoming Cell}}
+
+Inputs: Circuit info, cell
+
+Trigger: Cell is received from the network
+
+\section{Back End}
+
+This section provides a brief description of other background modules needed to
+support the main payment controllers.
+
+\subsection{Micropayment  Algorithms}
+
+These are direct implementation of the micropayment algorithms described in the
+protocol documentation. There should be one function for each step in the
+multi-party protocols (i.e. init1(), init2(), init3()...).
+
+\subsection{Nanopayment Algorithms}
+
+These are direct implementation of the nanopayment algorithms described in the
+protocol documentation. There should be one function for each step in the
+multi-party protocols (i.e. init1(), init2(), init3()...).
+
+\subsection{Cryptography}
+
+A cryptography module will serve as a libary providing cryptographic operations such as
+signatures, blind signatures, and zero-knowledge proofs. By isolating the
+crytographic operations here, the idea is that the fake crytographic simulations
+can later be replaced with calls to real crypto libraries with minimal code
+change.
+
+\subsection{Tokens}
+
+A tokens  module will serve as a libary which defines structs for all of the various
+tokens used by the payment scheme. This is useful in it of itself as a reference
+index for the absurd number of tokens flying around. Furthermore, it also
+provides authenticated ``pack/unpack'' functionality to convert between
+semantically meaningful c structs and byte strings that can be readily sent
+across the network.
+
+\subsection{Utils}
+
+This final module simply provides some miscallenous common functions
+
+\end{document}
