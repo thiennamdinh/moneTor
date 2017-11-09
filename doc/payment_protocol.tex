@@ -528,17 +528,35 @@ Regarding Channel interaction with intermediary and relays, everything will happ
 new relay-level cells:
 \begin{center}
 	\begin{tabular}{l c c r}
-		16 -- & RELAY\_MP\_SETUP & () & See Section~\ref{sec:micro_payment} \\
-		17 -- & RELAY\_MP\_VERIFIED  & () & See Section \\
-		2X -- & RELAY\_NP\_SETUP & () & See Section~\ref{sec:nano_payment} \\
-		2X -- & RELAY\_NP\_VERIFIED & () & See Section~\ref{sec:nano_payment} \\
-		2X -- & RELAY\_NP\_CLOSE & () & See Section~\ref{sec:nano_payment_close} \\
-		2X -- & RELAY\_NP\_CLOSED & () & See Section~\ref{sec:nano_payment_close} \\
-		2X -- & RELAY\_NP\_REFUND & () & See Sectio~\ref{sec:nano_payment_refund}\\
-		2X -- & RELAY\_NP\_REFUNDED & () & See Section~\ref{sec:nano_payment_refund}\\
-		2X -- & RELAY\_NP\_REFUTE  & () & To not implement?\\
-		
+		16 -- & RELAY\_MP & () & See Section~\ref{sec:micro_payment} \\
+		17 -- & RELAY\_NP  & () & See Section~\ref{sec:nano_payment}\\	
 	\end{tabular}
+\end{center}
+
+These 2 relay cells should have the following structure:
+
+\begin{center}
+	\begin{tabular}{l r}
+	     Relay command       &    [1 byte]\\
+         'Recognized'        &    [2 bytes]\\
+         StreamID            &    [2 bytes]\\
+         Digest              &    [4 bytes]\\
+         Length              &    [2 bytes]\\
+         Payment command     &    [1 bytes] \\
+         Data                &    [PAYLOAD\_LEN-12 bytes]
+
+	\end{tabular}
+\end{center}
+
+Differentiating Nano payment cells:
+
+\begin{center}
+\begin{tabular}{l c c r}
+1 -- & RELAY\_NP\_INIT & () & see Section~\ref{sec:nano_payment} \\
+2 -- & RELAY\_NP\_VERIFIED & () & see Section~\ref{sec:nano_payment} \\
+3 -- & RELAY\_NP\_SETUP & () & see Section~\ref{sec:nano_payment}\\
+... & &
+\end{tabular}
 \end{center}
       \#Todo: missing some MicroPayment control cells
  \subsubsection{Circuit specification}
