@@ -10,51 +10,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "payment_utils.h"
-
-/**
- * Accepts a signed_msg struct and packs it into a network-sendable byte
- * string. The provided str_out pointer will be written with a malloc'd byte
- * string. The user is responsible for freeing this string after use. The size
- * of the outputted string is returned
- */
-int pack_signed_msg(signed_msg msg_struct, byte** str_out){
-    *str_out = malloc(sizeof(signed_msg) + msg_struct.size);
-    memcpy((*str_out) + sizeof(signed_msg), msg_struct.msg, msg_struct.size);
-    msg_struct.msg = NULL;  // avoid complications by copying old location
-    memcpy(*str_out, &msg_struct, sizeof(signed_msg));
-
-    return sizeof(msg_struct) + msg_struct.size;
-}
-
-/**
- * Accepts a byte string and converts it into a signed_msg struct. Returns an
- * integer indicating success for the sake of convention, but the function
- * technically cannot tell if it outputs garbage.
- */
-int unpack_signed_msg(byte* str, signed_msg* struct_out){
-
-    memcpy(struct_out, str, sizeof(signed_msg));
-    struct_out->msg = malloc(struct_out->size);
-    memcpy(struct_out->msg, str + sizeof(signed_msg), struct_out->size);
-
-    return MT_SUCCESS;
-}
-
-/**
- * Shortcut to sign and create a network-sendable message in less lines than
- * manually calling pack_signed_msg
- */
-int create_signed_msg(byte* msg, int size, byte (*pk)[SIZE_PK], byte (*sk)[SIZE_SK], byte** str_out){
-    signed_msg msg_struct;
-    msg_struct.msg = msg;
-    msg_struct.size = size;
-    memcpy(msg_struct.pk, *pk, SIZE_PK);
-    if(sig_sign(msg, size, sk, &(msg_struct.sig)) == MT_ERROR)
-	return MT_ERROR;
-
-    return pack_signed_msg(msg_struct, str_out);
-}
+#include "mt_utils.h"
 
 /**
  * Converts a public key into an address for use on the ledger. The address is
@@ -124,7 +80,7 @@ int hash_verify_chain(byte (*tail)[SIZE_HASH], byte (*preimage)[SIZE_HASH], int 
     return MT_SUCCESS;
 }
 
-int commit_wallet(byte (*pp)[SIZE_PP], byte (*pk_payee)[SIZE_PK], byte *wallet, int pay_val,
+int commit_wallet(byte (*pp)[SIZE_PP], byte (*pk_payee)[SIZE_PK], mic_end_wallet wallet, int pay_val,
 		  byte (*com_out)[SIZE_COM]){
     return 0;
 }

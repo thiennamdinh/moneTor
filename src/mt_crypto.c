@@ -1,5 +1,5 @@
 /**
- * \file crypto_lib.c
+ * \file mt_crypto.c
  *
  * This module provides a simplified interface for cryptographic operations
  * required from by the moneTor payment scheme. Since the original design of
@@ -37,7 +37,7 @@
 #include <openssl/err.h>
 #include <openssl/sha.h>
 
-#include "crypto_lib.h"
+#include "mt_crypto.h"
 
 // global parameters for key generation
 int num_bits = 1024;

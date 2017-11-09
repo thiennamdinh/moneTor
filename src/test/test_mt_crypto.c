@@ -2,13 +2,14 @@
 #include <string.h>
 #include <assert.h>
 
-#include "../crypto_lib.h"
+#include "../mt_crypto.h"
+#include "test_mt_main.h"
 
 /**
  * terminal command: gcc test/test_crypto_lib.c -o test/test_crypto_lib crypto_lib.c -lssl -lcrypto && ./test/test_crypto_lib
  */
 
-void test_crypto_lib(){
+void test_mt_crypto(){
 
     // test strings
     char* str_1 = "This is a test message that is longer than the size of a single hash";
@@ -133,7 +134,6 @@ void test_crypto_lib(){
     //------------------------------- test bsig ------------------------------//
 
     //TODO: not sure if we can have bsig only apply to the hash
-    byte msg_1_hash[SIZE_HASH];
     byte blinded[SIZE_BL];
     byte unblinder[SIZE_UBLR];
     byte blind_sig[SIZE_SIG];
@@ -169,9 +169,4 @@ void test_crypto_lib(){
 
     // check that incorrect proofs are incorrect
     assert(zkp_verify(&pp, &proof_3) == MT_ERROR);
-}
-
-int main(){
-    test_crypto_lib();
-    return 0;
 }

@@ -1,13 +1,13 @@
 /**
-   \file moneTor_crypto_lib.h
+   \file mt_crypto.h
 
    This module serves as a cryptographic library for all payment-related moneTor
    operations. Some calls (such as hashing) will perform real operations while
    others (such as zero knowledge proofs) are simply modeled as a time delay.
 */
 
-#ifndef crypto_lib_h
-#define crypto_lib_h
+#ifndef mt_crypto_h
+#define mt_crypto_h
 
 typedef unsigned char byte;
 

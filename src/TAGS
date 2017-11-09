@@ -1,0 +1,96 @@
+
+crypto_lib.c,450
+int num_bits 43,1638
+char* exp_str 44,1659
+byte* bsig_fake_blinder 47,1756
+void micro_sleep(52,1916
+int paycrypt_setup(62,2133
+int paycrypt_keygen(71,2473
+int paycrypt_rand_bytes(114,3561
+int paycrypt_hash(126,3816
+int sig_sign(144,4239
+int sig_verify(171,4933
+int com_commit(196,5713
+int com_decommit(217,6440
+int bsig_blind(234,7060
+int bsig_unblind(256,7784
+int bsig_verify(268,8260
+int zkp_prove(292,9075
+int zkp_verify(314,9863
+
+ledger.c,708
+GTree* mac_accounts;36,1372
+GTree* chn_accounts;37,1447
+byte pp[pp39,1499
+int fee;40,1569
+double tax;41,1641
+int epoch;42,1721
+int close_window;43,1783
+byte roger[roger45,1864
+int addr_compare(47,1917
+int ledger_setup(54,2074
+void update_epoch(79,2766
+int post(88,3039
+int query(141,4511
+int handle_mac_aut_mint(183,5555
+int handle_mac_any_trans(203,6152
+int handle_chn_end_escrow(237,7346
+int handle_chn_int_escrow(283,8866
+int handle_chn_int_reqclose(319,10106
+int handle_chn_end_close(345,10977
+int handle_chn_int_close(372,11906
+int handle_chn_end_cashout(398,12782
+int handle_chn_int_cashout(431,13851
+int transfer(468,15109
+int close_channel(494,15930
+void resolve(529,16990
+
+payment_utils.c,262
+int pack_signed_msg(21,593
+int unpack_signed_msg(35,1186
+int create_signed_msg(48,1563
+int pk_to_addr(63,2078
+int addr_to_hex(74,2440
+int hash_create_chain(93,3062
+int hash_verify_chain(110,3538
+int commit_wallet(127,3969
+int chn_refund_verify(132,4120
+
+token_lib.c,1459
+ttype token_type(19,534
+int pack_chn_end_chantok(23,590
+int pack_chn_int_chantok(31,877
+int pack_nan_any_chantok(39,1164
+int pack_chn_end_revoke(47,1451
+int pack_chn_end_refund(55,1733
+int pack_mac_aut_mint(63,2015
+int pack_mac_any_trans(71,2287
+int pack_chn_end_escrow(79,2564
+int pack_chn_int_escrow(87,2846
+int pack_chn_int_reqclose(95,3128
+int pack_chn_end_close(103,3420
+int pack_chn_int_close(111,3697
+int pack_chn_end_cashout(119,3974
+int pack_chn_int_cashout(127,4261
+int pack_mac_led_data(135,4548
+int pack_chn_led_data(143,4820
+int pack_mac_led_query(151,5092
+int pack_chn_led_query(159,5369
+chn_end_chantok unpack_chn_end_chantok(167,5646
+chn_int_chantok unpack_chn_int_chantok(172,5788
+nan_any_chantok unpack_nan_any_chantok(177,5930
+chn_end_revoke unpack_chn_end_revoke(182,6072
+chn_end_refund unpack_chn_end_refund(187,6210
+mac_aut_mint unpack_mac_aut_mint(192,6348
+mac_any_trans unpack_mac_any_trans(197,6478
+chn_end_escrow unpack_chn_end_escrow(202,6612
+chn_int_escrow unpack_chn_int_escrow(207,6750
+chn_int_reqclose unpack_chn_int_reqclose(212,6888
+chn_end_close unpack_chn_end_close(217,7034
+chn_int_close unpack_chn_int_close(222,7168
+chn_end_cashout unpack_chn_end_cashout(227,7302
+chn_int_cashout unpack_chn_int_cashout(232,7444
+mac_led_data unpack_mac_led_data(237,7586
+chn_led_data unpack_chn_led_data(242,7716
+mac_led_query unpack_mac_led_query(247,7846
+chn_led_query unpack_chn_led_query(252,7980
