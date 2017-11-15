@@ -43,46 +43,46 @@ int close_channel(mt_ledger* ledger, chn_led_data* data);
 
 // formal protocol algorithm to resolve disputes (this will replaced with algs call)
 void resolve(byte (*pp)[SIZE_PP], chn_end_chntok T_E, chn_int_chntok T_I,
-	     chn_end_close rc_E, chn_int_close rc_I, int* end_bal, int*  int_bal);
+    chn_end_close rc_E, chn_int_close rc_I, int* end_bal, int*  int_bal);
 
 /**
  * Called at the system setup to create brand new ledger.
  */
 int mt_ledger_init(mt_ledger* ledger, byte (*pp)[SIZE_PP], int fee, double  tax,  int close_window,
-		 byte (*roger_pk)[SIZE_PK], mt_send_cb send){
+    byte (*roger_pk)[SIZE_PK], mt_send_cb send){
 
-    // set callback functions
-    ledger->send = send;
+  // set callback functions
+  ledger->send = send;
 
-    // initialize state
-    ledger->mac_accounts = g_tree_new((GCompareFunc) addr_compare);
-    ledger->chn_accounts = g_tree_new((GCompareFunc) addr_compare);
+  // initialize state
+  ledger->mac_accounts = g_tree_new((GCompareFunc) addr_compare);
+  ledger->chn_accounts = g_tree_new((GCompareFunc) addr_compare);
 
-    if(ledger->mac_accounts == NULL || ledger->chn_accounts == NULL)
-	return MT_ERROR;
+  if(ledger->mac_accounts == NULL || ledger->chn_accounts == NULL)
+    return MT_ERROR;
 
-    // set ledger attributes
-    memcpy(ledger->pp, pp, SIZE_PP);
-    ledger->fee = fee;
-    ledger->tax = tax;
-    ledger->close_window = close_window;
-    ledger->epoch = 0;
+  // set ledger attributes
+  memcpy(ledger->pp, pp, SIZE_PP);
+  ledger->fee = fee;
+  ledger->tax = tax;
+  ledger->close_window = close_window;
+  ledger->epoch = 0;
 
-    // add roger's address as the first node in the state
-    if(pk_to_addr(roger_pk, &ledger->roger) != MT_SUCCESS)
-	return MT_ERROR;
+  // add roger's address as the first node in the state
+  if(pk_to_addr(roger_pk, &ledger->roger) != MT_SUCCESS)
+    return MT_ERROR;
 
-    // generate ledger keys/address
-    paycrypt_keygen(&ledger->pp, &ledger->pk, &ledger->sk);
-    if(pk_to_addr(&ledger->pk, &ledger->addr) != MT_SUCCESS)
-	return MT_ERROR;
+  // generate ledger keys/address
+  paycrypt_keygen(&ledger->pp, &ledger->pk, &ledger->sk);
+  if(pk_to_addr(&ledger->pk, &ledger->addr) != MT_SUCCESS)
+    return MT_ERROR;
 
-    g_tree_insert(ledger->mac_accounts, ledger->roger, calloc(1, sizeof(mac_led_data)));
-    return MT_SUCCESS;
+  g_tree_insert(ledger->mac_accounts, ledger->roger, calloc(1, sizeof(mac_led_data)));
+  return MT_SUCCESS;
 }
 
 void mt_update_epoch(){
-    //TODO: either check clock or receive external output
+  //TODO: either check clock or receive external output
 }
 
 /**
@@ -91,107 +91,107 @@ void mt_update_epoch(){
  * done with the request.
  */
 int mt_ledger_handle(mt_ledger* ledger, cell_t* cell, mt_ctx ctx) {
-    /*
-    // need to aggregate cells
+  /*
+  // need to aggregate cells
 
-    byte pk[SIZE_PK];
-    byte addr[SIZE_ADDR];
-    int result;
+  byte pk[SIZE_PK];
+  byte addr[SIZE_ADDR];
+  int result;
 
-    int placeholder = 4;
-    switch(placeholder){
-	case NTYPE_MAC_AUT_MINT:;
-	    mac_aut_mint mac_aut_mint_tkn;
-	    if(unpack_mac_aut_mint(str, &mac_aut_mint_tkn, &pk) != MT_SUCCESS)
-		return MT_ERROR;
-	    pk_to_addr(&pk, &addr);
-	    result = handle_mac_aut_mint(ledger, &mac_aut_mint_tkn, &addr);
-	    break;
+  int placeholder = 4;
+  switch(placeholder){
+  case NTYPE_MAC_AUT_MINT:;
+  mac_aut_mint mac_aut_mint_tkn;
+  if(unpack_mac_aut_mint(str, &mac_aut_mint_tkn, &pk) != MT_SUCCESS)
+  return MT_ERROR;
+  pk_to_addr(&pk, &addr);
+  result = handle_mac_aut_mint(ledger, &mac_aut_mint_tkn, &addr);
+  break;
 
-	case NTYPE_MAC_ANY_TRANS:;
-	    mac_any_trans mac_any_trans_tkn;
-	    if(unpack_mac_any_trans(str, &mac_any_trans_tkn, &pk) != MT_SUCCESS)
-		return MT_ERROR;
-	    pk_to_addr(&pk, &addr);
-	    result = handle_mac_any_trans(ledger, &mac_any_trans_tkn, &addr);
-	    break;
+  case NTYPE_MAC_ANY_TRANS:;
+  mac_any_trans mac_any_trans_tkn;
+  if(unpack_mac_any_trans(str, &mac_any_trans_tkn, &pk) != MT_SUCCESS)
+  return MT_ERROR;
+  pk_to_addr(&pk, &addr);
+  result = handle_mac_any_trans(ledger, &mac_any_trans_tkn, &addr);
+  break;
 
-	case NTYPE_CHN_END_ESCROW:;
-	    chn_end_escrow chn_end_escrow_tkn;
-	    if(unpack_chn_end_escrow(str, &chn_end_escrow_tkn, &pk) != MT_SUCCESS)
-		return MT_ERROR;
-	    pk_to_addr(&pk, &addr);
-	    result = handle_chn_end_escrow(ledger, &chn_end_escrow_tkn, &addr);
-	    break;
+  case NTYPE_CHN_END_ESCROW:;
+  chn_end_escrow chn_end_escrow_tkn;
+  if(unpack_chn_end_escrow(str, &chn_end_escrow_tkn, &pk) != MT_SUCCESS)
+  return MT_ERROR;
+  pk_to_addr(&pk, &addr);
+  result = handle_chn_end_escrow(ledger, &chn_end_escrow_tkn, &addr);
+  break;
 
-	case NTYPE_CHN_INT_ESCROW:;
-	    chn_int_escrow chn_int_escrow_tkn;
-	    if(unpack_chn_int_escrow(str, &chn_int_escrow_tkn, &pk) != MT_SUCCESS)
-		return MT_ERROR;
-	    pk_to_addr(&pk, &addr);
-	    result = handle_chn_int_escrow(ledger, &chn_int_escrow_tkn, &addr);
-	    break;
+  case NTYPE_CHN_INT_ESCROW:;
+  chn_int_escrow chn_int_escrow_tkn;
+  if(unpack_chn_int_escrow(str, &chn_int_escrow_tkn, &pk) != MT_SUCCESS)
+  return MT_ERROR;
+  pk_to_addr(&pk, &addr);
+  result = handle_chn_int_escrow(ledger, &chn_int_escrow_tkn, &addr);
+  break;
 
-	case NTYPE_CHN_INT_REQCLOSE:;
-	    chn_int_reqclose chn_int_reqclose_tkn;
-	    if(unpack_chn_int_reqclose(str, &chn_int_reqclose_tkn, &pk) != MT_SUCCESS)
-		return MT_ERROR;
-	    pk_to_addr(&pk, &addr);
-	    result = handle_chn_int_reqclose(ledger, &chn_int_reqclose_tkn, &addr);
-	    break;
+  case NTYPE_CHN_INT_REQCLOSE:;
+  chn_int_reqclose chn_int_reqclose_tkn;
+  if(unpack_chn_int_reqclose(str, &chn_int_reqclose_tkn, &pk) != MT_SUCCESS)
+  return MT_ERROR;
+  pk_to_addr(&pk, &addr);
+  result = handle_chn_int_reqclose(ledger, &chn_int_reqclose_tkn, &addr);
+  break;
 
-	case NTYPE_CHN_END_CLOSE:;
-	    chn_end_close chn_end_close_tkn;
-	    if(unpack_chn_end_close(str, &chn_end_close_tkn, &pk) != MT_SUCCESS)
-		return MT_ERROR;
-	    pk_to_addr(&pk, &addr);
-	    result = handle_chn_end_close(ledger, &chn_end_close_tkn, &addr);
-	    break;
+  case NTYPE_CHN_END_CLOSE:;
+  chn_end_close chn_end_close_tkn;
+  if(unpack_chn_end_close(str, &chn_end_close_tkn, &pk) != MT_SUCCESS)
+  return MT_ERROR;
+  pk_to_addr(&pk, &addr);
+  result = handle_chn_end_close(ledger, &chn_end_close_tkn, &addr);
+  break;
 
-	case NTYPE_CHN_INT_CLOSE:;
-	    chn_int_close chn_int_close_tkn;
-	    if(unpack_chn_int_close(str, &chn_int_close_tkn, &pk) != MT_SUCCESS)
-		return MT_ERROR;
-	    pk_to_addr(&pk, &addr);
-	    result = handle_chn_int_close(ledger, &chn_int_close_tkn, &addr);
-	    break;
+  case NTYPE_CHN_INT_CLOSE:;
+  chn_int_close chn_int_close_tkn;
+  if(unpack_chn_int_close(str, &chn_int_close_tkn, &pk) != MT_SUCCESS)
+  return MT_ERROR;
+  pk_to_addr(&pk, &addr);
+  result = handle_chn_int_close(ledger, &chn_int_close_tkn, &addr);
+  break;
 
-	case NTYPE_CHN_END_CASHOUT:;
-	    chn_end_cashout chn_end_cashout_tkn;
-	    if(unpack_chn_end_cashout(str, &chn_end_cashout_tkn, &pk) != MT_SUCCESS)
-		return MT_ERROR;
-	    pk_to_addr(&pk, &addr);
-	    result = handle_chn_end_cashout(ledger, &chn_end_cashout_tkn, &addr);
-	    break;
+  case NTYPE_CHN_END_CASHOUT:;
+  chn_end_cashout chn_end_cashout_tkn;
+  if(unpack_chn_end_cashout(str, &chn_end_cashout_tkn, &pk) != MT_SUCCESS)
+  return MT_ERROR;
+  pk_to_addr(&pk, &addr);
+  result = handle_chn_end_cashout(ledger, &chn_end_cashout_tkn, &addr);
+  break;
 
-	case NTYPE_CHN_INT_CASHOUT:;
-	    chn_int_cashout chn_int_cashout_tkn;
-	    if(unpack_chn_int_cashout(str, &chn_int_cashout_tkn, &pk) != MT_SUCCESS)
-		return MT_ERROR;
-	    pk_to_addr(&pk, &addr);
-	    result = handle_chn_int_cashout(ledger, &chn_int_cashout_tkn, &addr);
-	    break;
+  case NTYPE_CHN_INT_CASHOUT:;
+                             chn_int_cashout chn_int_cashout_tkn;
+                             if(unpack_chn_int_cashout(str, &chn_int_cashout_tkn, &pk) != MT_SUCCESS)
+                               return MT_ERROR;
+                             pk_to_addr(&pk, &addr);
+                             result = handle_chn_int_cashout(ledger, &chn_int_cashout_tkn, &addr);
+                             break;
 
-	case NTYPE_MAC_LED_QUERY:;
-	    mac_led_query mac_led_query_tkn;
-	    if(unpack_mac_led_query(str, &mac_led_query_tkn, &pk) != MT_SUCCESS)
-		return MT_ERROR;
-	    pk_to_addr(&pk, &addr);
-	    result = handle_mac_led_query(ledger, &mac_led_query_tkn, ctx);
-	    break;
+  case NTYPE_MAC_LED_QUERY:;
+                           mac_led_query mac_led_query_tkn;
+                           if(unpack_mac_led_query(str, &mac_led_query_tkn, &pk) != MT_SUCCESS)
+                             return MT_ERROR;
+                           pk_to_addr(&pk, &addr);
+                           result = handle_mac_led_query(ledger, &mac_led_query_tkn, ctx);
+                           break;
 
-	case NTYPE_CHN_LED_QUERY:;
-	    chn_led_query chn_led_query_tkn;
-	    if(unpack_chn_led_query(str, &chn_led_query_tkn, &pk) != MT_SUCCESS)
-		return MT_ERROR;
-	    pk_to_addr(&pk, &addr);
-	    result = handle_mac_led_query(ledger, &mac_led_query_tkn, ctx);
-	    break;
+  case NTYPE_CHN_LED_QUERY:;
+                           chn_led_query chn_led_query_tkn;
+                           if(unpack_chn_led_query(str, &chn_led_query_tkn, &pk) != MT_SUCCESS)
+                             return MT_ERROR;
+                           pk_to_addr(&pk, &addr);
+                           result = handle_mac_led_query(ledger, &mac_led_query_tkn, ctx);
+                           break;
 
-	default:
-	    result = MT_ERROR;
-	    }
-	    return result;*/ return 0;
+  default:
+                           result = MT_ERROR;
+}
+return result;*/ return 0;
 }
 
 //---------------------------- Transaction Handler Functions ----------------------------//
@@ -201,18 +201,18 @@ int mt_ledger_handle(mt_ledger* ledger, cell_t* cell, mt_ctx ctx) {
  */
 int handle_mac_aut_mint(mt_ledger* ledger, mac_aut_mint* token, byte (*addr)[SIZE_ADDR]){
 
-    // make sure the message is signed by the ledger authority
-    if(memcmp(ledger->roger, addr, SIZE_ADDR) != 0)
-	return MT_ERROR;
+  // make sure the message is signed by the ledger authority
+  if(memcmp(ledger->roger, addr, SIZE_ADDR) != 0)
+    return MT_ERROR;
 
-    // make sure value isn't negative for some reason
-    if(token->value < 0)
-	return MT_ERROR;
+  // make sure value isn't negative for some reason
+  if(token->value < 0)
+    return MT_ERROR;
 
-    // address is guaranteed to exist if module was setup with init()
-    mac_led_data* data = g_tree_lookup(ledger->mac_accounts, ledger->roger);
-    data->balance += token->value;
-    return MT_SUCCESS;
+  // address is guaranteed to exist if module was setup with init()
+  mac_led_data* data = g_tree_lookup(ledger->mac_accounts, ledger->roger);
+  data->balance += token->value;
+  return MT_SUCCESS;
 }
 
 /**
@@ -220,31 +220,31 @@ int handle_mac_aut_mint(mt_ledger* ledger, mac_aut_mint* token, byte (*addr)[SIZ
  */
 int handle_mac_any_trans(mt_ledger* ledger, mac_any_trans* token, byte (*addr)[SIZE_ADDR]){
 
-    // check that the message originates from the payer
-    if(memcmp(addr, token->from, SIZE_ADDR) != 0)
-	return MT_ERROR;
+  // check that the message originates from the payer
+  if(memcmp(addr, token->from, SIZE_ADDR) != 0)
+    return MT_ERROR;
 
-    mac_led_data* data_from = g_tree_lookup(ledger->mac_accounts, token->from);
+  mac_led_data* data_from = g_tree_lookup(ledger->mac_accounts, token->from);
 
-    // check that the "from" address exists
-    if(data_from == NULL)
-	return MT_ERROR;
+  // check that the "from" address exists
+  if(data_from == NULL)
+    return MT_ERROR;
 
-    mac_led_data* data_to = g_tree_lookup(ledger->mac_accounts, token->to);
-    // if the address doesn't exist then create it
+  mac_led_data* data_to = g_tree_lookup(ledger->mac_accounts, token->to);
+  // if the address doesn't exist then create it
 
-    if(data_to == NULL){
-	byte* new_addr = malloc(SIZE_ADDR);
-	memcpy(new_addr, token->to, SIZE_ADDR);
-	data_to = calloc(1, sizeof(mac_led_data));
-	g_tree_insert(ledger->mac_accounts, new_addr, data_to);
-    }
+  if(data_to == NULL){
+    byte* new_addr = malloc(SIZE_ADDR);
+    memcpy(new_addr, token->to, SIZE_ADDR);
+    data_to = calloc(1, sizeof(mac_led_data));
+    g_tree_insert(ledger->mac_accounts, new_addr, data_to);
+  }
 
-    int* bal_from = &(data_from->balance);
-    int* bal_to = &(data_to->balance);
-    if(transfer(ledger, bal_from, bal_to, token->val_from, token->val_to, ledger->fee) != MT_SUCCESS)
-	return MT_ERROR;
-    return 0;
+  int* bal_from = &(data_from->balance);
+  int* bal_to = &(data_to->balance);
+  if(transfer(ledger, bal_from, bal_to, token->val_from, token->val_to, ledger->fee) != MT_SUCCESS)
+    return MT_ERROR;
+  return 0;
 }
 
 /**
@@ -255,42 +255,42 @@ int handle_mac_any_trans(mt_ledger* ledger, mac_any_trans* token, byte (*addr)[S
  */
 int handle_chn_end_escrow(mt_ledger* ledger, chn_end_escrow* token, byte (*addr)[SIZE_ADDR]){
 
-    // check that the message originates from the payer
-    if(memcmp(addr, token->from, SIZE_ADDR) != 0)
-	return MT_ERROR;
+  // check that the message originates from the payer
+  if(memcmp(addr, token->from, SIZE_ADDR) != 0)
+    return MT_ERROR;
 
-    mac_led_data* data_from = g_tree_lookup(ledger->mac_accounts, token->from);
-    chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
+  mac_led_data* data_from = g_tree_lookup(ledger->mac_accounts, token->from);
+  chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
 
-    // check that the from address exists
-    if(data_from == NULL)
-	return MT_ERROR;
+  // check that the from address exists
+  if(data_from == NULL)
+    return MT_ERROR;
 
-    // if the channel doesn't exist then create one
-    if(data_chn == NULL){
-	byte* new_addr = malloc(SIZE_ADDR);
-	memcpy(new_addr, token->chn, SIZE_ADDR);
-	data_chn = calloc(1, sizeof(chn_led_data));
-	data_chn->state = LSTATE_EMPTY;
-	g_tree_insert(ledger->chn_accounts, new_addr, data_chn);
-    }
+  // if the channel doesn't exist then create one
+  if(data_chn == NULL){
+    byte* new_addr = malloc(SIZE_ADDR);
+    memcpy(new_addr, token->chn, SIZE_ADDR);
+    data_chn = calloc(1, sizeof(chn_led_data));
+    data_chn->state = LSTATE_EMPTY;
+    g_tree_insert(ledger->chn_accounts, new_addr, data_chn);
+  }
 
-    // check that we have a new and unused channel address
-    if(data_chn->state != LSTATE_EMPTY)
-	return MT_ERROR;
+  // check that we have a new and unused channel address
+  if(data_chn->state != LSTATE_EMPTY)
+    return MT_ERROR;
 
-    int* bal_from = &(data_from->balance);
-    int* bal_to = &(data_chn->end_balance);
+  int* bal_from = &(data_from->balance);
+  int* bal_to = &(data_chn->end_balance);
 
-    // check that the escrow transfer goes through
-    if(transfer(ledger, bal_from, bal_to, token->val_from, token->val_to, ledger->fee) == MT_ERROR){
-	return MT_ERROR;
-    }
+  // check that the escrow transfer goes through
+  if(transfer(ledger, bal_from, bal_to, token->val_from, token->val_to, ledger->fee) == MT_ERROR){
+    return MT_ERROR;
+  }
 
-    memcpy(data_chn->end_addr, addr, SIZE_ADDR);
-    data_chn->end_chn_token = token->chn_token;
-    data_chn->state = LSTATE_INIT;
-    return 0;
+  memcpy(data_chn->end_addr, addr, SIZE_ADDR);
+  data_chn->end_chn_token = token->chn_token;
+  data_chn->state = LSTATE_INIT;
+  return 0;
 }
 
 /**
@@ -301,32 +301,32 @@ int handle_chn_end_escrow(mt_ledger* ledger, chn_end_escrow* token, byte (*addr)
  */
 int handle_chn_int_escrow(mt_ledger* ledger, chn_int_escrow* token, byte (*addr)[SIZE_ADDR]){
 
-    // check that the message originates from the payer
-    if(memcmp(addr, token->from, SIZE_ADDR) != 0)
-	return MT_ERROR;
+  // check that the message originates from the payer
+  if(memcmp(addr, token->from, SIZE_ADDR) != 0)
+    return MT_ERROR;
 
-    mac_led_data* data_from = g_tree_lookup(ledger->mac_accounts, token->from);
-    chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
+  mac_led_data* data_from = g_tree_lookup(ledger->mac_accounts, token->from);
+  chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
 
-    // check that both channels exist
-    if(data_from == NULL || data_chn == NULL)
-	return MT_ERROR;
+  // check that both channels exist
+  if(data_from == NULL || data_chn == NULL)
+    return MT_ERROR;
 
-    // check that the channel address is in the right state
-    if(data_chn->state != LSTATE_INIT)
-	return MT_ERROR;
+  // check that the channel address is in the right state
+  if(data_chn->state != LSTATE_INIT)
+    return MT_ERROR;
 
-    int* bal_from = &(data_from->balance);
-    int* bal_to = &(data_chn->int_balance);
+  int* bal_from = &(data_from->balance);
+  int* bal_to = &(data_chn->int_balance);
 
-    // check that the escrow transfer goes through
-    if(transfer(ledger, bal_from, bal_to, token->val_from, token->val_to, ledger->fee) == MT_ERROR)
-	return MT_ERROR;
+  // check that the escrow transfer goes through
+  if(transfer(ledger, bal_from, bal_to, token->val_from, token->val_to, ledger->fee) == MT_ERROR)
+    return MT_ERROR;
 
-    memcpy(data_chn->int_addr, addr, SIZE_ADDR);
-    data_chn->int_chn_token = token->chn_token;
-    data_chn->state = LSTATE_OPEN;
-    return 0;
+  memcpy(data_chn->int_addr, addr, SIZE_ADDR);
+  data_chn->int_chn_token = token->chn_token;
+  data_chn->state = LSTATE_OPEN;
+  return 0;
 }
 
 /**
@@ -337,23 +337,23 @@ int handle_chn_int_escrow(mt_ledger* ledger, chn_int_escrow* token, byte (*addr)
  */
 int handle_chn_int_reqclose(mt_ledger* ledger, chn_int_reqclose* token, byte (*addr)[SIZE_ADDR]){
 
-    chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
+  chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
 
-    // check that the channel address exists
-    if(data_chn == NULL)
-	return MT_ERROR;
+  // check that the channel address exists
+  if(data_chn == NULL)
+    return MT_ERROR;
 
-    // check that message is coming from the intermediary
-    if(memcmp(data_chn->int_addr, addr, SIZE_ADDR) != 0)
-	return MT_ERROR;
+  // check that message is coming from the intermediary
+  if(memcmp(data_chn->int_addr, addr, SIZE_ADDR) != 0)
+    return MT_ERROR;
 
-    // check that the channel is in the right state
-    if(!(data_chn->state == LSTATE_OPEN))
-	return MT_ERROR;
+  // check that the channel is in the right state
+  if(!(data_chn->state == LSTATE_OPEN))
+    return MT_ERROR;
 
-    data_chn->close_epoch = ledger->epoch + ledger->close_window;
-    data_chn->state = LSTATE_INT_REQCLOSED;
-    return 0;
+  data_chn->close_epoch = ledger->epoch + ledger->close_window;
+  data_chn->state = LSTATE_INT_REQCLOSED;
+  return 0;
 }
 
 /**
@@ -363,24 +363,24 @@ int handle_chn_int_reqclose(mt_ledger* ledger, chn_int_reqclose* token, byte (*a
  */
 int handle_chn_end_close(mt_ledger* ledger, chn_end_close* token, byte (*addr)[SIZE_ADDR]){
 
-    chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
+  chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
 
-    // check that the channel address exists
-    if(data_chn == NULL)
-	return MT_ERROR;
+  // check that the channel address exists
+  if(data_chn == NULL)
+    return MT_ERROR;
 
-    // check that message is coming from the end user
-    if(memcmp(data_chn->end_addr, addr, SIZE_ADDR) != 0)
-	return MT_ERROR;
+  // check that message is coming from the end user
+  if(memcmp(data_chn->end_addr, addr, SIZE_ADDR) != 0)
+    return MT_ERROR;
 
-    // check that the channel is in the right state
-    if(!(data_chn->state == LSTATE_OPEN || data_chn->state == LSTATE_INT_REQCLOSED))
-	return MT_ERROR;
+  // check that the channel is in the right state
+  if(!(data_chn->state == LSTATE_OPEN || data_chn->state == LSTATE_INT_REQCLOSED))
+    return MT_ERROR;
 
-    data_chn->end_close_token = *token;
-    data_chn->close_epoch = ledger->epoch + ledger->close_window;
-    data_chn->state = LSTATE_END_CLOSED;
-    return 0;
+  data_chn->end_close_token = *token;
+  data_chn->close_epoch = ledger->epoch + ledger->close_window;
+  data_chn->state = LSTATE_END_CLOSED;
+  return 0;
 }
 
 /**
@@ -390,23 +390,23 @@ int handle_chn_end_close(mt_ledger* ledger, chn_end_close* token, byte (*addr)[S
  */
 int handle_chn_int_close(mt_ledger* ledger, chn_int_close* token, byte (*addr)[SIZE_ADDR]){
 
-    chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
+  chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
 
-    // check that the channel address exists and is a channel address
-    if(data_chn == NULL)
-	return MT_ERROR;
+  // check that the channel address exists and is a channel address
+  if(data_chn == NULL)
+    return MT_ERROR;
 
-    // check that message is coming from the intermediary
-    if(memcmp(data_chn->int_addr, addr, SIZE_ADDR) != 0)
-	return MT_ERROR;
+  // check that message is coming from the intermediary
+  if(memcmp(data_chn->int_addr, addr, SIZE_ADDR) != 0)
+    return MT_ERROR;
 
-    // check that the channel address is in the right state
-    if(!(data_chn->state == LSTATE_END_CLOSED))
-	return MT_ERROR;
+  // check that the channel address is in the right state
+  if(!(data_chn->state == LSTATE_END_CLOSED))
+    return MT_ERROR;
 
-    data_chn->int_close_token = *token;
-    data_chn->state = LSTATE_INT_CLOSED;
-    return 0;
+  data_chn->int_close_token = *token;
+  data_chn->state = LSTATE_INT_CLOSED;
+  return 0;
 }
 
 /**
@@ -416,27 +416,27 @@ int handle_chn_int_close(mt_ledger* ledger, chn_int_close* token, byte (*addr)[S
  */
 int handle_chn_end_cashout(mt_ledger* ledger, chn_end_cashout* token, byte (*addr)[SIZE_ADDR]){
 
-    chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
+  chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
 
-    // check that the channel address exists
-    if(data_chn == NULL)
-	return MT_ERROR;
+  // check that the channel address exists
+  if(data_chn == NULL)
+    return MT_ERROR;
 
-    // check that the from address is the channel end user
-    if(memcmp(addr, data_chn->end_addr, SIZE_ADDR))
-	return MT_ERROR;
+  // check that the from address is the channel end user
+  if(memcmp(addr, data_chn->end_addr, SIZE_ADDR))
+    return MT_ERROR;
 
-    mac_led_data* data_to = g_tree_lookup(ledger->mac_accounts, addr);
+  mac_led_data* data_to = g_tree_lookup(ledger->mac_accounts, addr);
 
-    // attempt to close the channel if it isn't already
-    if(close_channel(ledger, data_chn) == MT_ERROR)
-	return MT_ERROR;
+  // attempt to close the channel if it isn't already
+  if(close_channel(ledger, data_chn) == MT_ERROR)
+    return MT_ERROR;
 
-    int* bal_from = &(data_chn->end_balance);
-    int* bal_to = &(data_to->balance);
+  int* bal_from = &(data_chn->end_balance);
+  int* bal_to = &(data_to->balance);
 
-    // check that the transfer goes through
-    return transfer(ledger, bal_from, bal_to, token->val_from, token->val_to, ledger->fee);
+  // check that the transfer goes through
+  return transfer(ledger, bal_from, bal_to, token->val_from, token->val_to, ledger->fee);
 }
 
 /**
@@ -445,66 +445,66 @@ int handle_chn_end_cashout(mt_ledger* ledger, chn_end_cashout* token, byte (*add
  */
 int handle_chn_int_cashout(mt_ledger* ledger, chn_int_cashout* token, byte (*addr)[SIZE_ADDR]){
 
-    chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
+  chn_led_data* data_chn = g_tree_lookup(ledger->chn_accounts, token->chn);
 
-    // check that the channel address exists
-    if(data_chn == NULL)
-	return MT_ERROR;
+  // check that the channel address exists
+  if(data_chn == NULL)
+    return MT_ERROR;
 
-    // check that the from address is the channel intermediary
-    if(memcmp(addr, data_chn->int_addr, SIZE_ADDR))
-	return MT_ERROR;
+  // check that the from address is the channel intermediary
+  if(memcmp(addr, data_chn->int_addr, SIZE_ADDR))
+    return MT_ERROR;
 
-    mac_led_data* data_to = g_tree_lookup(ledger->mac_accounts, addr);
+  mac_led_data* data_to = g_tree_lookup(ledger->mac_accounts, addr);
 
-    // attempt to close the channel if it isn't already
-    if(close_channel(ledger, data_chn) == MT_ERROR)
-	return MT_ERROR;
+  // attempt to close the channel if it isn't already
+  if(close_channel(ledger, data_chn) == MT_ERROR)
+    return MT_ERROR;
 
-    int* bal_from = &(data_chn->int_balance);
-    int* bal_to = &(data_to->balance);
+  int* bal_from = &(data_chn->int_balance);
+  int* bal_to = &(data_to->balance);
 
-    // check that the transfer goes through
-    int val_roger = ledger->fee + token->val_to * ledger->tax;
-    return transfer(ledger, bal_from, bal_to, token->val_from, token->val_to, val_roger);
+  // check that the transfer goes through
+  int val_roger = ledger->fee + token->val_to * ledger->tax;
+  return transfer(ledger, bal_from, bal_to, token->val_from, token->val_to, val_roger);
 }
 
 int handle_mac_led_query(mt_ledger* ledger, mac_led_query* token, mt_ctx* ctx){
 
-    mac_led_data* mac_ptr = g_tree_lookup(ledger->mac_accounts, token->addr);
+  mac_led_data* mac_ptr = g_tree_lookup(ledger->mac_accounts, token->addr);
 
-    // check that address exists
-    if(mac_ptr == NULL)
-	return MT_ERROR;
+  // check that address exists
+  if(mac_ptr == NULL)
+    return MT_ERROR;
 
-    cell_t* cells;
-    int num_cells = pack_mac_led_data(*mac_ptr, &ledger->pk, &ledger->sk, &cells);
-    if(num_cells < 0)
-	return MT_ERROR;
+  cell_t* cells;
+  int num_cells = pack_mac_led_data(*mac_ptr, &ledger->pk, &ledger->sk, &cells);
+  if(num_cells < 0)
+    return MT_ERROR;
 
-    if(ledger->send(ctx, cells, num_cells) != MT_SUCCESS)
-	return MT_ERROR;
+  if(ledger->send(ctx, cells, num_cells) != MT_SUCCESS)
+    return MT_ERROR;
 
-    return MT_SUCCESS;
+  return MT_SUCCESS;
 }
 
 int handle_chn_led_query(mt_ledger* ledger, chn_led_query* token, mt_ctx* ctx){
 
-    chn_led_data* chn_ptr = g_tree_lookup(ledger->chn_accounts, token->addr);
+  chn_led_data* chn_ptr = g_tree_lookup(ledger->chn_accounts, token->addr);
 
-    // check that address exists
-    if(chn_ptr == NULL)
-	return MT_ERROR;
+  // check that address exists
+  if(chn_ptr == NULL)
+    return MT_ERROR;
 
-    cell_t* cells;
-    int num_cells = pack_chn_led_data(*chn_ptr, &ledger->pk, &ledger->sk, &cells);
-    if(num_cells < 0)
-	return MT_ERROR;
+  cell_t* cells;
+  int num_cells = pack_chn_led_data(*chn_ptr, &ledger->pk, &ledger->sk, &cells);
+  if(num_cells < 0)
+    return MT_ERROR;
 
-    if(ledger->send(ctx, cells, num_cells) != MT_SUCCESS)
-		return MT_ERROR;
+  if(ledger->send(ctx, cells, num_cells) != MT_SUCCESS)
+    return MT_ERROR;
 
-    return MT_SUCCESS;
+  return MT_SUCCESS;
 }
 
 
@@ -512,7 +512,7 @@ int handle_chn_led_query(mt_ledger* ledger, chn_led_query* token, mt_ctx* ctx){
 //------------------------------- Helper Functions --------------------------------------//
 
 int addr_compare(gconstpointer a, gconstpointer b){
-    return memcmp(a, b, SIZE_ADDR);
+  return memcmp(a, b, SIZE_ADDR);
 }
 
 /**
@@ -521,23 +521,23 @@ int addr_compare(gconstpointer a, gconstpointer b){
  * cost of transaction.
  */
 int transfer(mt_ledger* ledger, int* bal_from, int* bal_to, int val_from, int val_to, int val_roger){
-    // check that the payment values make sense
-    if(!(val_from > val_to && val_to > 0))
-	return MT_ERROR;
+  // check that the payment values make sense
+  if(!(val_from > val_to && val_to > 0))
+    return MT_ERROR;
 
-    // check that the payer has a sufficient balance
-    if(*bal_from < val_from)
-	return MT_ERROR;
-    // check that the payment different covers the ledger profit
-    if(val_from - val_to < val_roger)
-	return MT_ERROR;
+  // check that the payer has a sufficient balance
+  if(*bal_from < val_from)
+    return MT_ERROR;
+  // check that the payment different covers the ledger profit
+  if(val_from - val_to < val_roger)
+    return MT_ERROR;
 
-    *bal_from -= val_from;
-    *bal_to += val_to;
+  *bal_from -= val_from;
+  *bal_to += val_to;
 
-    mac_led_data* roger_data = g_tree_lookup(ledger->mac_accounts, ledger->roger);
-    roger_data->balance += (val_from - val_to);
-    return 0;
+  mac_led_data* roger_data = g_tree_lookup(ledger->mac_accounts, ledger->roger);
+  roger_data->balance += (val_from - val_to);
+  return 0;
 }
 
 /**
@@ -547,31 +547,31 @@ int transfer(mt_ledger* ledger, int* bal_from, int* bal_to, int val_from, int va
  */
 int close_channel(mt_ledger* ledger, chn_led_data* data){
 
-    // channel is already closed
-    if(data->state == LSTATE_RESOLVED)
-	return 0;
-
-    // cannot close channel
-    if(data->state == LSTATE_EMPTY || data->state == LSTATE_OPEN)
-	return MT_ERROR;
-
-    // one part has closed the channel but not enough time has passed
-    if((data->state == LSTATE_INT_REQCLOSED || data->state == LSTATE_END_CLOSED) &&
-	data->close_epoch + ledger->close_window < ledger->epoch)
-	return MT_ERROR;
-
-    int* end_bal = NULL;
-    int* int_bal = NULL;
-    resolve(&ledger->pp, data->end_chn_token, data->int_chn_token,
-	    data->end_close_token, data->int_close_token, end_bal, int_bal);
-
-    if(end_bal != NULL && int_bal != NULL){
-	data->end_balance = *end_bal;
-	data->int_balance = *int_bal;
-    }
-
-    data->state = LSTATE_RESOLVED;
+  // channel is already closed
+  if(data->state == LSTATE_RESOLVED)
     return 0;
+
+  // cannot close channel
+  if(data->state == LSTATE_EMPTY || data->state == LSTATE_OPEN)
+    return MT_ERROR;
+
+  // one part has closed the channel but not enough time has passed
+  if((data->state == LSTATE_INT_REQCLOSED || data->state == LSTATE_END_CLOSED) &&
+      data->close_epoch + ledger->close_window < ledger->epoch)
+    return MT_ERROR;
+
+  int* end_bal = NULL;
+  int* int_bal = NULL;
+  resolve(&ledger->pp, data->end_chn_token, data->int_chn_token,
+      data->end_close_token, data->int_close_token, end_bal, int_bal);
+
+  if(end_bal != NULL && int_bal != NULL){
+    data->end_balance = *end_bal;
+    data->int_balance = *int_bal;
+  }
+
+  data->state = LSTATE_RESOLVED;
+  return 0;
 }
 
 //------------------------------- moneTor Algorithms ------------------------------------//
@@ -581,4 +581,4 @@ int close_channel(mt_ledger* ledger, chn_led_data* data){
  * channel information at closure and makes a determination on the final balances.
  */
 void resolve(byte (*pp)[SIZE_PP], chn_end_chntok T_E, chn_int_chntok T_I,
-	    chn_end_close rc_E, chn_int_close rc_I, int* end_bal, int* int_bal){}
+    chn_end_close rc_E, chn_int_close rc_I, int* end_bal, int* int_bal){}
