@@ -30,6 +30,7 @@
 #include <string.h>
 #include <time.h>
 
+#include <glib.h>
 #include <openssl/bn.h>
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
@@ -39,12 +40,19 @@
 
 #include "mt_crypto.h"
 
+#define PEM_LINE_SIZE 64
+
 // global parameters for key generation
 int num_bits = 1024;
 char* exp_str = "65537";
 
 // random byte string used to simulate a "blinder" for bsig operations
 byte* bsig_fake_blinder = (byte*)"1234567812345678123456781234567812345678";
+
+char* pk_header = "-----BEGIN PUBLIC KEY-----\n";
+char* pk_footer = "-----END PUBLIC KEY-----\n";
+char* sk_header = "-----BEGIN RSA PRIVATE KEY-----\n";
+char* sk_footer = "-----END RSA PRIVATE KEY-----\n";
 
 /**
  * Call system nanosleep() to delay the thread for given the microseconds
@@ -64,6 +72,65 @@ int paycrypt_setup(byte (*pp_out)[SIZE_PP]){
 }
 
 /**
+ * Convert a base64 encoded PEM string into a decoded output
+ */
+void decode_key(char* in, byte* out){
+    //strip header and footer
+    int body_start;
+    int body_end;
+
+    for(int i = 0; in[i] != '\n'; i++)
+	body_start = i + 1;
+
+    for(int i = strlen(in) - 2; in[i] != '\n'; i--)
+	body_end = i;
+
+    char in_body[body_end + 1];
+    memcpy(in_body, in + body_start, body_end - body_start);
+    in_body[body_end - body_start] = '\0';
+    unsigned long decoded_size;
+    byte* decoded = g_base64_decode(in_body, &decoded_size);
+    memcpy(out, decoded, decoded_size);
+    g_free(decoded);
+}
+
+/**
+ * Convert raw bytes into a base64 PEM-style string with the given header,
+ * footer, and linebreaks every 64 characters
+ */
+void encode_key(char* header, char* footer, byte* in, int in_size, char** out){
+    char* encoded = g_base64_encode(in, in_size);
+
+    int newlines = (strlen(encoded) + PEM_LINE_SIZE - 1) / PEM_LINE_SIZE;
+    int out_size = strlen(header) + strlen(encoded) + strlen(footer) + newlines;
+    *out = malloc(out_size + 1);
+
+    // copy header and footer
+    memcpy(*out, header, strlen(header));
+    memcpy(*out + strlen(header) + strlen(encoded) + newlines, footer,  strlen(footer));
+    (*out)[out_size] = '\0';
+
+    for(int i = strlen(header); i < strlen(header) + strlen(encoded) + newlines;  i++)
+	(*out)[i] = '1';
+
+    // copy encoded in 64 byte increments
+    char* pos1 = *out + strlen(header);
+    char* pos2 = encoded;
+    for(int i = 0; i < newlines - 1; i++){
+	memcpy(pos1, pos2, PEM_LINE_SIZE);
+	pos1 += PEM_LINE_SIZE;
+	pos2 += PEM_LINE_SIZE;
+	*pos1 = '\n';
+	pos1++;
+    }
+    memcpy(pos1, pos2, strlen(pos2));
+    pos1 += strlen(pos2);
+    *pos1 = '\n';
+
+    g_free(encoded);
+}
+
+/**
  * Generate a public and private keypair outputted as RSA PEM c-strings. For
  * simulation purposes, keys are simply RSA keys. In the final implementation,
  * it may be necessary for the keys to carry extra information for ZKP scheme
@@ -77,29 +144,35 @@ int paycrypt_keygen(byte (*pp)[SIZE_PP], byte (*pk_out)[SIZE_PK], byte  (*sk_out
     if(RSA_generate_key_ex(rsa, num_bits, exponent, NULL) != 1)
 	return MT_ERROR;
 
-    // write public key
+    // write public key in PEM form
     BIO* bio_pk = BIO_new(BIO_s_mem());
     if(PEM_write_bio_RSA_PUBKEY(bio_pk, rsa) != 1)
 	return MT_ERROR;
 
-    int size_pk = BIO_pending(bio_pk);
-    if(size_pk > SIZE_SK + 1)
-	return MT_ERROR;
+    int pk_encoded_size = BIO_pending(bio_pk);
+    char pk_encoded[pk_encoded_size];
+    BIO_read(bio_pk, pk_encoded, pk_encoded_size);
+    (pk_encoded)[pk_encoded_size] = '\0';
 
-    BIO_read(bio_pk, *pk_out, size_pk);
-    (*pk_out)[size_pk] = '\0';
+    // decode PEM public key into a smaller byte string
+    byte pk_decoded[SIZE_PK];
+    decode_key(pk_encoded, pk_decoded);
+    memcpy(*pk_out, pk_decoded, SIZE_PK);
 
     // write private key
     BIO* bio_sk = BIO_new(BIO_s_mem());
     if(PEM_write_bio_RSAPrivateKey(bio_sk, rsa, NULL, NULL, 0, NULL, NULL) != 1)
 	return MT_ERROR;
 
-    int size_sk = BIO_pending(bio_sk);
-    if(size_pk > SIZE_SK + 1)
-	return MT_ERROR;
+    int sk_encoded_size = BIO_pending(bio_sk);
+    char sk_encoded[sk_encoded_size];
+    BIO_read(bio_sk, sk_encoded, sk_encoded_size);
+    (sk_encoded)[sk_encoded_size] = '\0';
 
-    BIO_read(bio_sk, *sk_out, size_sk);
-    (*sk_out)[size_sk] = '\0';
+    // decode PEM public key into a smaller byte string
+    byte sk_decoded[SIZE_SK];
+    decode_key(sk_encoded, sk_decoded);
+    memcpy(*sk_out, sk_decoded, SIZE_SK);
 
     RSA_free(rsa);
     BIO_free(bio_pk);
@@ -141,8 +214,12 @@ int paycrypt_hash(byte* msg, int msg_size, byte (*hash_out)[SIZE_HASH]){
 /**
  * Accept a message of arbitrary length, compute the digest, and output a signature
  */
-int sig_sign(byte* msg, int msg_size, byte (*sk)[SIZE_SK], byte (*sig_out)[SIZE_SIG]){
-    BIO* bio = BIO_new_mem_buf(sk, strlen((char*)*sk));
+int sig_sign(byte* msg, int msg_size, byte (*sk_in)[SIZE_SK], byte (*sig_out)[SIZE_SIG]){
+
+    char* sk;
+    encode_key(sk_header, sk_footer, *sk_in, SIZE_SK, &sk);
+
+    BIO* bio = BIO_new_mem_buf(sk, strlen(sk));
     RSA* rsa = PEM_read_bio_RSAPrivateKey(bio, NULL, NULL, NULL);
 
     if(bio == NULL || rsa == NULL)
@@ -159,6 +236,7 @@ int sig_sign(byte* msg, int msg_size, byte (*sk)[SIZE_SK], byte (*sig_out)[SIZE_
     if(sig_len != SIZE_SIG)
 	return MT_ERROR;
 
+    free(sk);
     RSA_free(rsa);
     BIO_free(bio);
     return MT_SUCCESS;
@@ -168,8 +246,12 @@ int sig_sign(byte* msg, int msg_size, byte (*sk)[SIZE_SK], byte (*sig_out)[SIZE_
  * Accept a message of arbitrary length, compute the digest, and verify the
  * provided signature
  */
-int sig_verify(byte* msg, int msg_size, byte (*pk)[SIZE_PK], byte  (*sig)[SIZE_SIG]){
-    BIO* bio = BIO_new_mem_buf(pk, strlen((char*)*pk));
+int sig_verify(byte* msg, int msg_size, byte (*pk_in)[SIZE_PK], byte   (*sig)[SIZE_SIG]){
+
+    char* pk;
+    encode_key(pk_header, pk_footer, *pk_in, SIZE_PK, &pk);
+
+    BIO* bio = BIO_new_mem_buf(pk, strlen(pk));
     RSA* rsa = PEM_read_bio_RSA_PUBKEY(bio, NULL, NULL, NULL);
 
     if(bio == NULL || rsa == NULL)
@@ -183,6 +265,7 @@ int sig_verify(byte* msg, int msg_size, byte (*pk)[SIZE_PK], byte  (*sig)[SIZE_S
     if(RSA_verify(NID_sha256, digest, SIZE_HASH, *sig, SIZE_SIG, rsa) != 1)
 	return MT_ERROR;
 
+    free(pk);
     RSA_free(rsa);
     BIO_free(bio);
     return MT_SUCCESS;

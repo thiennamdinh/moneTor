@@ -1,8 +1,11 @@
-#ifndef mt_utils_h
-#define mt_utils_h
+#ifndef mt_common_h
+#define mt_common_h
 
+#include "mt.h"
 #include "mt_crypto.h"
 #include "mt_tokens.h"
+
+int payment_command(ntype type, int number);
 
 int create_signed_msg(byte* msg, int size, byte (*pk)[SIZE_PK], byte (*sk)[SIZE_SK], byte** str_out);
 

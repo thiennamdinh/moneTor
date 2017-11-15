@@ -2,6 +2,7 @@
 #include <string.h>
 #include <assert.h>
 
+#include "../mt.h"
 #include "../mt_crypto.h"
 #include "test_mt_main.h"
 

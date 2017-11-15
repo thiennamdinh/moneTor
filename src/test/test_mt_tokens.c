@@ -3,6 +3,7 @@
 #include <string.h>
 #include <assert.h>
 
+#include "../mt.h"
 #include "../mt_crypto.h"
 #include "../mt_tokens.h"
 #include "test_mt_main.h"
@@ -54,26 +55,26 @@ void test_mt_tokens(){
     write_random_bytes(&tk1_chn_int_cashout, sizeof(chn_int_cashout));
 
     // string pointers that will point to the network sendable strings
-    byte* str_mac_aut_mint;
-    byte* str_mac_any_trans;
-    byte* str_chn_end_escrow;
-    byte* str_chn_int_escrow;
-    byte* str_chn_int_reqclose;
-    byte* str_chn_end_close;
-    byte* str_chn_int_close;
-    byte* str_chn_end_cashout;
-    byte* str_chn_int_cashout;
+    cell_t* cell_mac_aut_mint;
+    cell_t* cell_mac_any_trans;
+    cell_t* cell_chn_end_escrow;
+    cell_t* cell_chn_int_escrow;
+    cell_t* cell_chn_int_reqclose;
+    cell_t* cell_chn_end_close;
+    cell_t* cell_chn_int_close;
+    cell_t* cell_chn_end_cashout;
+    cell_t* cell_chn_int_cashout;
 
     // pack the original tokens into the strings
-    pack_mac_aut_mint(tk1_mac_aut_mint, &pk, &sk, &str_mac_aut_mint);
-    pack_mac_any_trans(tk1_mac_any_trans, &pk, &sk, &str_mac_any_trans);
-    pack_chn_end_escrow(tk1_chn_end_escrow, &pk, &sk, &str_chn_end_escrow);
-    pack_chn_int_escrow(tk1_chn_int_escrow, &pk, &sk, &str_chn_int_escrow);
-    pack_chn_int_reqclose(tk1_chn_int_reqclose, &pk, &sk, &str_chn_int_reqclose);
-    pack_chn_end_close(tk1_chn_end_close, &pk, &sk, &str_chn_end_close);
-    pack_chn_int_close(tk1_chn_int_close, &pk, &sk, &str_chn_int_close);
-    pack_chn_end_cashout(tk1_chn_end_cashout, &pk, &sk, &str_chn_end_cashout);
-    pack_chn_int_cashout(tk1_chn_int_cashout, &pk, &sk, &str_chn_int_cashout);
+    pack_mac_aut_mint(tk1_mac_aut_mint, &pk, &sk, &cell_mac_aut_mint);
+    pack_mac_any_trans(tk1_mac_any_trans, &pk, &sk, &cell_mac_any_trans);
+    pack_chn_end_escrow(tk1_chn_end_escrow, &pk, &sk, &cell_chn_end_escrow);
+    pack_chn_int_escrow(tk1_chn_int_escrow, &pk, &sk, &cell_chn_int_escrow);
+    pack_chn_int_reqclose(tk1_chn_int_reqclose, &pk, &sk, &cell_chn_int_reqclose);
+    pack_chn_end_close(tk1_chn_end_close, &pk, &sk, &cell_chn_end_close);
+    pack_chn_int_close(tk1_chn_int_close, &pk, &sk, &cell_chn_int_close);
+    pack_chn_end_cashout(tk1_chn_end_cashout, &pk, &sk, &cell_chn_end_cashout);
+    pack_chn_int_cashout(tk1_chn_int_cashout, &pk, &sk, &cell_chn_int_cashout);
 
     // declare each type of token
     mac_aut_mint tk2_mac_aut_mint;
@@ -87,15 +88,15 @@ void test_mt_tokens(){
     chn_int_cashout tk2_chn_int_cashout;
 
     // extract new tokens from the strings
-    unpack_mac_aut_mint(str_mac_aut_mint, &tk2_mac_aut_mint, &pk);
-    unpack_mac_any_trans(str_mac_any_trans, &tk2_mac_any_trans, &pk);
-    unpack_chn_end_escrow(str_chn_end_escrow, &tk2_chn_end_escrow, &pk);
-    unpack_chn_int_escrow(str_chn_int_escrow, &tk2_chn_int_escrow, &pk);
-    unpack_chn_int_reqclose(str_chn_int_reqclose, &tk2_chn_int_reqclose, &pk);
-    unpack_chn_end_close(str_chn_end_close, &tk2_chn_end_close, &pk);
-    unpack_chn_int_close(str_chn_int_close, &tk2_chn_int_close, &pk);
-    unpack_chn_end_cashout(str_chn_end_cashout, &tk2_chn_end_cashout, &pk);
-    unpack_chn_int_cashout(str_chn_int_cashout, &tk2_chn_int_cashout, &pk);
+    unpack_mac_aut_mint(cell_mac_aut_mint, &tk2_mac_aut_mint, &pk);
+    unpack_mac_any_trans(cell_mac_any_trans, &tk2_mac_any_trans, &pk);
+    unpack_chn_end_escrow(cell_chn_end_escrow, &tk2_chn_end_escrow, &pk);
+    unpack_chn_int_escrow(cell_chn_int_escrow, &tk2_chn_int_escrow, &pk);
+    unpack_chn_int_reqclose(cell_chn_int_reqclose, &tk2_chn_int_reqclose, &pk);
+    unpack_chn_end_close(cell_chn_end_close, &tk2_chn_end_close, &pk);
+    unpack_chn_int_close(cell_chn_int_close, &tk2_chn_int_close, &pk);
+    unpack_chn_end_cashout(cell_chn_end_cashout, &tk2_chn_end_cashout, &pk);
+    unpack_chn_int_cashout(cell_chn_int_cashout, &tk2_chn_int_cashout, &pk);
 
     // assert that the original tokens are identical to the new torkns
     assert(memcmp(&tk1_mac_aut_mint, &tk2_mac_aut_mint, sizeof(mac_aut_mint)) == 0);

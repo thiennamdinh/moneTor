@@ -90,19 +90,20 @@ void mt_update_epoch(){
  * function is responsible for parsing the message to interpret what should be
  * done with the request.
  */
-int mt_ledger_handle(mt_ledger* ledger, cell_t* cell, mt_ctx ctx) {
-    /*
-    // need to aggregate cells
+
+
+int mt_ledger_handle(mt_ledger* ledger, cell_t* cells, mt_ctx* ctx) {
+
+    //TODO need to aggregate cells... we're justing pretending they come it at once right now
 
     byte pk[SIZE_PK];
     byte addr[SIZE_ADDR];
     int result;
 
-    int placeholder = 4;
-    switch(placeholder){
+    switch(token_type(cells)){
 	case NTYPE_MAC_AUT_MINT:;
 	    mac_aut_mint mac_aut_mint_tkn;
-	    if(unpack_mac_aut_mint(str, &mac_aut_mint_tkn, &pk) != MT_SUCCESS)
+	    if(unpack_mac_aut_mint(cells, &mac_aut_mint_tkn, &pk) != MT_SUCCESS)
 		return MT_ERROR;
 	    pk_to_addr(&pk, &addr);
 	    result = handle_mac_aut_mint(ledger, &mac_aut_mint_tkn, &addr);
@@ -110,7 +111,7 @@ int mt_ledger_handle(mt_ledger* ledger, cell_t* cell, mt_ctx ctx) {
 
 	case NTYPE_MAC_ANY_TRANS:;
 	    mac_any_trans mac_any_trans_tkn;
-	    if(unpack_mac_any_trans(str, &mac_any_trans_tkn, &pk) != MT_SUCCESS)
+	    if(unpack_mac_any_trans(cells, &mac_any_trans_tkn, &pk) != MT_SUCCESS)
 		return MT_ERROR;
 	    pk_to_addr(&pk, &addr);
 	    result = handle_mac_any_trans(ledger, &mac_any_trans_tkn, &addr);
@@ -118,7 +119,7 @@ int mt_ledger_handle(mt_ledger* ledger, cell_t* cell, mt_ctx ctx) {
 
 	case NTYPE_CHN_END_ESCROW:;
 	    chn_end_escrow chn_end_escrow_tkn;
-	    if(unpack_chn_end_escrow(str, &chn_end_escrow_tkn, &pk) != MT_SUCCESS)
+	    if(unpack_chn_end_escrow(cells, &chn_end_escrow_tkn, &pk) != MT_SUCCESS)
 		return MT_ERROR;
 	    pk_to_addr(&pk, &addr);
 	    result = handle_chn_end_escrow(ledger, &chn_end_escrow_tkn, &addr);
@@ -126,7 +127,7 @@ int mt_ledger_handle(mt_ledger* ledger, cell_t* cell, mt_ctx ctx) {
 
 	case NTYPE_CHN_INT_ESCROW:;
 	    chn_int_escrow chn_int_escrow_tkn;
-	    if(unpack_chn_int_escrow(str, &chn_int_escrow_tkn, &pk) != MT_SUCCESS)
+	    if(unpack_chn_int_escrow(cells, &chn_int_escrow_tkn, &pk) != MT_SUCCESS)
 		return MT_ERROR;
 	    pk_to_addr(&pk, &addr);
 	    result = handle_chn_int_escrow(ledger, &chn_int_escrow_tkn, &addr);
@@ -134,7 +135,7 @@ int mt_ledger_handle(mt_ledger* ledger, cell_t* cell, mt_ctx ctx) {
 
 	case NTYPE_CHN_INT_REQCLOSE:;
 	    chn_int_reqclose chn_int_reqclose_tkn;
-	    if(unpack_chn_int_reqclose(str, &chn_int_reqclose_tkn, &pk) != MT_SUCCESS)
+	    if(unpack_chn_int_reqclose(cells, &chn_int_reqclose_tkn, &pk) != MT_SUCCESS)
 		return MT_ERROR;
 	    pk_to_addr(&pk, &addr);
 	    result = handle_chn_int_reqclose(ledger, &chn_int_reqclose_tkn, &addr);
@@ -142,7 +143,7 @@ int mt_ledger_handle(mt_ledger* ledger, cell_t* cell, mt_ctx ctx) {
 
 	case NTYPE_CHN_END_CLOSE:;
 	    chn_end_close chn_end_close_tkn;
-	    if(unpack_chn_end_close(str, &chn_end_close_tkn, &pk) != MT_SUCCESS)
+	    if(unpack_chn_end_close(cells, &chn_end_close_tkn, &pk) != MT_SUCCESS)
 		return MT_ERROR;
 	    pk_to_addr(&pk, &addr);
 	    result = handle_chn_end_close(ledger, &chn_end_close_tkn, &addr);
@@ -150,7 +151,7 @@ int mt_ledger_handle(mt_ledger* ledger, cell_t* cell, mt_ctx ctx) {
 
 	case NTYPE_CHN_INT_CLOSE:;
 	    chn_int_close chn_int_close_tkn;
-	    if(unpack_chn_int_close(str, &chn_int_close_tkn, &pk) != MT_SUCCESS)
+	    if(unpack_chn_int_close(cells, &chn_int_close_tkn, &pk) != MT_SUCCESS)
 		return MT_ERROR;
 	    pk_to_addr(&pk, &addr);
 	    result = handle_chn_int_close(ledger, &chn_int_close_tkn, &addr);
@@ -158,7 +159,7 @@ int mt_ledger_handle(mt_ledger* ledger, cell_t* cell, mt_ctx ctx) {
 
 	case NTYPE_CHN_END_CASHOUT:;
 	    chn_end_cashout chn_end_cashout_tkn;
-	    if(unpack_chn_end_cashout(str, &chn_end_cashout_tkn, &pk) != MT_SUCCESS)
+	    if(unpack_chn_end_cashout(cells, &chn_end_cashout_tkn, &pk) != MT_SUCCESS)
 		return MT_ERROR;
 	    pk_to_addr(&pk, &addr);
 	    result = handle_chn_end_cashout(ledger, &chn_end_cashout_tkn, &addr);
@@ -166,7 +167,7 @@ int mt_ledger_handle(mt_ledger* ledger, cell_t* cell, mt_ctx ctx) {
 
 	case NTYPE_CHN_INT_CASHOUT:;
 	    chn_int_cashout chn_int_cashout_tkn;
-	    if(unpack_chn_int_cashout(str, &chn_int_cashout_tkn, &pk) != MT_SUCCESS)
+	    if(unpack_chn_int_cashout(cells, &chn_int_cashout_tkn, &pk) != MT_SUCCESS)
 		return MT_ERROR;
 	    pk_to_addr(&pk, &addr);
 	    result = handle_chn_int_cashout(ledger, &chn_int_cashout_tkn, &addr);
@@ -174,7 +175,7 @@ int mt_ledger_handle(mt_ledger* ledger, cell_t* cell, mt_ctx ctx) {
 
 	case NTYPE_MAC_LED_QUERY:;
 	    mac_led_query mac_led_query_tkn;
-	    if(unpack_mac_led_query(str, &mac_led_query_tkn, &pk) != MT_SUCCESS)
+	    if(unpack_mac_led_query(cells, &mac_led_query_tkn, &pk) != MT_SUCCESS)
 		return MT_ERROR;
 	    pk_to_addr(&pk, &addr);
 	    result = handle_mac_led_query(ledger, &mac_led_query_tkn, ctx);
@@ -182,16 +183,16 @@ int mt_ledger_handle(mt_ledger* ledger, cell_t* cell, mt_ctx ctx) {
 
 	case NTYPE_CHN_LED_QUERY:;
 	    chn_led_query chn_led_query_tkn;
-	    if(unpack_chn_led_query(str, &chn_led_query_tkn, &pk) != MT_SUCCESS)
+	    if(unpack_chn_led_query(cells, &chn_led_query_tkn, &pk) != MT_SUCCESS)
 		return MT_ERROR;
 	    pk_to_addr(&pk, &addr);
-	    result = handle_mac_led_query(ledger, &mac_led_query_tkn, ctx);
+	    result = handle_chn_led_query(ledger, &chn_led_query_tkn, ctx);
 	    break;
 
 	default:
 	    result = MT_ERROR;
-	    }
-	    return result;*/ return 0;
+    }
+    return result;
 }
 
 //---------------------------- Transaction Handler Functions ----------------------------//
@@ -482,7 +483,7 @@ int handle_mac_led_query(mt_ledger* ledger, mac_led_query* token, mt_ctx* ctx){
     if(num_cells < 0)
 	return MT_ERROR;
 
-    if(ledger->send(ctx, cells, num_cells) != MT_SUCCESS)
+    if(ledger->send(cells, num_cells, ctx) != MT_SUCCESS)
 	return MT_ERROR;
 
     return MT_SUCCESS;
@@ -501,7 +502,7 @@ int handle_chn_led_query(mt_ledger* ledger, chn_led_query* token, mt_ctx* ctx){
     if(num_cells < 0)
 	return MT_ERROR;
 
-    if(ledger->send(ctx, cells, num_cells) != MT_SUCCESS)
+    if(ledger->send(cells, num_cells, ctx) != MT_SUCCESS)
 		return MT_ERROR;
 
     return MT_SUCCESS;

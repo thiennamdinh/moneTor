@@ -87,7 +87,7 @@ typedef struct{
 } mt_ctx;
 
 typedef int (*mt_pay_cb)(circuit_t*);
-typedef int (*mt_send_cb)(mt_ctx*, cell_t[], int);
+typedef int (*mt_send_cb)(cell_t*, int, mt_ctx*);
 
 //---------------------------- Controller States ----------------------------//
 
@@ -150,13 +150,13 @@ typedef enum {
     LTYPE_NAN_END_STATE,       // intermediary nanopayment state
     LTYPE_NAN_END_SECRET,      // end user nanopayment secrets
 
-    LTYPE_CHN_END_CHNTOK,     // end user micropayment channel token
-    LTYPE_CHN_INT_CHNTOK,     // intermediary micropayment channel token
-    LTYPE_NAN_ANY_CHNTOK,     // nanopayment channel token
+    LTYPE_CHN_END_CHNTOK,      // end user micropayment channel token
+    LTYPE_CHN_INT_CHNTOK,      // intermediary micropayment channel token
+    LTYPE_NAN_ANY_CHNTOK,      // nanopayment channel token
     LTYPE_CHN_END_REFUND,      // end user nanopayment refund token
 
-    LTYPE_CHN_END_DATA,
-    LTYPE_CHN_INT_DATA,
+    LTYPE_CHN_END_DATA,        // info to maintain channel for end user
+    LTYPE_CHN_INT_DATA,        // info to maintain channel for intermediary
 
 } ltype;
 
@@ -166,48 +166,48 @@ typedef enum {
 typedef enum {
 
     // channel establish protocol messages
-    NTYPE_CHN_END_ESTAB1,
-    NTYPE_CHN_INT_ESTAB2,
-    NTYPE_CHN_END_ESTAB3,
-    NTYPE_CHN_INT_ESTAB4,
+    NTYPE_CHN_END_ESTAB1,      // to intermediary
+    NTYPE_CHN_INT_ESTAB2,      // to end user
+    NTYPE_CHN_END_ESTAB3,      // to intermediary
+    NTYPE_CHN_INT_ESTAB4,      // to end user
 
     // micropayment pay protocol messages
-    NTYPE_MIC_CLI_PAY1,
-    NTYPE_MIC_REL_PAY2,
-    NTYPE_MIC_CLI_PAY3,
-    NTYPE_MIC_INT_PAY4,
-    NTYPE_MIC_CLI_PAY5,
-    NTYPE_MIC_REV_PAY6,
-    NTYPE_MIC_INT_PAY7,
-    NTYPE_MIC_INT_PAY8,
+    NTYPE_MIC_CLI_PAY1,	       // to relay
+    NTYPE_MIC_REL_PAY2,	       // to client
+    NTYPE_MIC_CLI_PAY3,	       // to intermediary
+    NTYPE_MIC_INT_PAY4,	       // to client
+    NTYPE_MIC_CLI_PAY5,	       // to relay
+    NTYPE_MIC_REV_PAY6,	       // to intermediary
+    NTYPE_MIC_INT_PAY7,	       // to client
+    NTYPE_MIC_INT_PAY8,	       // to relay
 
     // nanopayment setup protocol messages
-    NTYPE_NAN_CLI_SETUP1,
-    NTYPE_NAN_INT_SETUP2,
-    NTYPE_NAN_CLI_SETUP3,
-    NTYPE_NAN_INT_SETUP4,
-    NTYPE_NAN_CLI_SETUP5,
-    NTYPE_NAN_INT_SETUP6,
+    NTYPE_NAN_CLI_SETUP1,      // to intermediary
+    NTYPE_NAN_INT_SETUP2,      // to client
+    NTYPE_NAN_CLI_SETUP3,      // to intermediary
+    NTYPE_NAN_INT_SETUP4,      // to client
+    NTYPE_NAN_CLI_SETUP5,      // to intermediary
+    NTYPE_NAN_INT_SETUP6,      // to client
 
     // nanopayment establish protocol messages
-    NTYPE_NAN_CLI_ESTAB1,
-    NTYPE_NAN_REL_ESTAB2,
-    NTYPE_NAN_INT_ESTAB3,
-    NTYPE_NAN_REL_ESTAB4,
-    NTYPE_NAN_INT_ESTAB5,
+    NTYPE_NAN_CLI_ESTAB1,      // to relay
+    NTYPE_NAN_REL_ESTAB2,      // to intermediary
+    NTYPE_NAN_INT_ESTAB3,      // to relay
+    NTYPE_NAN_REL_ESTAB4,      // to intermediary
+    NTYPE_NAN_INT_ESTAB5,      // to relay
 
     // nanopayment pay protocol messages
-    NTYPE_NAN_CLI_PAY1,
+    NTYPE_NAN_CLI_PAY1,	       // to relay
 
     // nanopayment close protocol messages
-    NTYPE_NAN_END_CLOSE1,
-    NTYPE_NAN_INT_CLOSE2,
-    NTYPE_NAN_END_CLOSE3,
-    NTYPE_NAN_INT_CLOSE4,
-    NTYPE_NAN_END_CLOSE5,
-    NTYPE_NAN_INT_CLOSE6,
-    NTYPE_NAN_END_CLOSE7,
-    NTYPE_NAN_INT_CLOSE8,
+    NTYPE_NAN_END_CLOSE1,      // to intermediary
+    NTYPE_NAN_INT_CLOSE2,      // to end user
+    NTYPE_NAN_END_CLOSE3,      // to intermediary
+    NTYPE_NAN_INT_CLOSE4,      // to end user
+    NTYPE_NAN_END_CLOSE5,      // to intermediary
+    NTYPE_NAN_INT_CLOSE6,      // to end user
+    NTYPE_NAN_END_CLOSE7,      // to intermediary
+    NTYPE_NAN_INT_CLOSE8,      // to end user
 
     // tokens for posting to the ledger
     NTYPE_MAC_AUT_MINT,        // message by tor authority to mint coins
@@ -433,32 +433,32 @@ typedef struct {
     byte addr[SIZE_ADDR];
 } chn_led_query;
 
-typedef struct { // to intermediary
+typedef struct {
     byte zkp[SIZE_ZKP];
 } chn_end_estab1;
 
-typedef struct { // to end user
+typedef struct {
     code verified;
 } chn_int_estab2;
 
-typedef struct { // to intermediary
+typedef struct {
     byte wcom[SIZE_COM];
 } chn_end_estab3;
 
-typedef struct { // to end user
+typedef struct {
     byte sig[SIZE_SIG];
 } chn_int_estab4;
 
-typedef struct { // to relay
+typedef struct {
     int value;
 } mic_cli_pay1;
 
-typedef struct { // to client
+typedef struct {
     byte wcom[SIZE_COM];
     byte zkp[SIZE_ZKP];
 } mic_rel_pay2;
 
-typedef struct { // to intermediary
+typedef struct {
     byte cli_valcom[SIZE_COM];
     byte rel_valcom[SIZE_COM];
     byte cli_wcom[SIZE_COM];
@@ -467,30 +467,30 @@ typedef struct { // to intermediary
     byte rel_zkp[SIZE_ZKP];
 } mic_cli_pay3;
 
-typedef struct { // to client
+typedef struct {
     chn_end_refund cli_refund;
     chn_end_refund rel_refund;
 } mic_int_pay4;
 
-typedef struct { // to relay
+typedef struct {
     chn_end_revoke cli_revoke;
     chn_end_refund rel_refund;
 } mic_cli_pay5;
 
-typedef struct { // to intermediary
+typedef struct {
     chn_end_revoke cli_revoke;
     chn_end_revoke rel_revoke;
 } mic_rev_pay6;
 
-typedef struct { // to client
+typedef struct {
     byte wsig[SIZE_SIG];
 } mic_int_pay7;
 
-typedef struct { // to relay
+typedef struct {
     byte wsig[SIZE_SIG];
 } mic_int_pay8;
 
-typedef struct { // to intermediary
+typedef struct {
     byte wpk[SIZE_PK];
     byte nwpk[SIZE_PK];
     byte wcom[SIZE_COM];
@@ -498,31 +498,31 @@ typedef struct { // to intermediary
     nan_any_chntok chntok;
 } nan_cli_setup1;
 
-typedef struct { // to client
+typedef struct {
     code verified;
 } nan_int_setup2;
 
-typedef struct { // to intermediary
+typedef struct {
     byte nwcom[SIZE_COM];
 } nan_cli_setup3;
 
-typedef struct { // to client
+typedef struct {
     byte sig[SIZE_SIG];
 } nan_int_setup4;
 
-typedef struct { // to intermediary
+typedef struct {
     chn_end_revoke revoke;
 } nan_cli_setup5;
 
-typedef struct { // to client
+typedef struct {
     code established;
 } nan_int_setup6;
 
-typedef struct { // to relay
+typedef struct {
     nan_any_chntok chntok;
 } nan_cli_estab1;
 
-typedef struct { // to intermediary
+typedef struct {
     byte rel_wpk[SIZE_PK];
     byte rel_nwpk[SIZE_PK];
     byte nwcom[SIZE_COM];
@@ -530,23 +530,23 @@ typedef struct { // to intermediary
     nan_any_chntok chntok;
 } nan_rel_estab2;
 
-typedef struct { // to relay
+typedef struct {
     code verified;
 } nan_int_estab3;
 
-typedef struct { // to intermediary
+typedef struct {
     byte nwcom[SIZE_COM];
 } nan_rel_estab4;
 
-typedef struct { // to relay
+typedef struct {
     byte sig[SIZE_SIG];
 } nan_int_estab5;
 
-typedef struct { // to relay
+typedef struct {
     byte preimage[SIZE_HASH];
 } nan_cli_pay1;
 
-typedef struct { // to intermediary
+typedef struct {
     byte wpk[SIZE_PK];
     byte wcom[SIZE_COM];
     byte zkp[SIZE_ZKP];
@@ -556,32 +556,32 @@ typedef struct { // to intermediary
     byte preimage[SIZE_HASH];
 } nan_end_close1;
 
-typedef struct { // to end user
+typedef struct {
     code verified;
 } nan_int_close2;
 
-typedef struct { // to intermediary
+typedef struct {
     byte refund_com[SIZE_COM];
 } nan_end_close3;
 
-typedef struct { // to end user
+typedef struct {
     byte sig[SIZE_SIG];
 } nan_int_close4;
 
-typedef struct { // to intermediary
+typedef struct {
     byte nwpk[SIZE_PK];
     chn_end_revoke revoke;
 } nan_end_close5;
 
-typedef struct { // to end user
+typedef struct {
     code verified;
 } nan_int_close6;
 
-typedef struct { // to intermediary
+typedef struct {
     byte wcom[SIZE_COM];
 } nan_end_close7;
 
-typedef struct { // to end user
+typedef struct {
     byte sig[SIZE_SIG];
 } nan_int_close8;
 

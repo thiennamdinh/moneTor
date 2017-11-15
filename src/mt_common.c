@@ -10,7 +10,58 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "mt_utils.h"
+#include "mt_common.h"
+
+static const int offset_chn_end_estab1;
+    static const int offset_chn_int_estab2;
+    static const int offset_chn_end_estab3;
+    static const int offset_chn_int_estab4;
+    static const int offset_mic_cli_pay1;
+    static const int offset_mic_rel_pay2;
+    static const int offset_mic_cli_pay3;
+    static const int offset_mic_int_pay4;
+    static const int offset_mic_cli_pay5;
+    static const int offset_mic_rev_pay6;
+    static const int offset_mic_int_pay7;
+    static const int offset_mic_int_pay8;
+    static const int offset_nan_cli_setup1;
+    static const int offset_nan_int_setup2;
+    static const int offset_nan_cli_setup3;
+    static const int offset_nan_int_setup4;
+    static const int offset_nan_cli_setup5;
+    static const int offset_nan_int_setup6;
+    static const int offset_nan_cli_estab1;
+    static const int offset_nan_rel_estab2;
+    static const int offset_nan_int_estab3;
+    static const int offset_nan_rel_estab4;
+    static const int offset_nan_int_estab5;
+    static const int offset_nan_cli_pay1;
+    static const int offset_nan_end_close1;
+    static const int offset_nan_int_close2;
+    static const int offset_nan_end_close3;
+    static const int offset_nan_int_close4;
+    static const int offset_nan_end_close5;
+    static const int offset_nan_int_close6;
+    static const int offset_nan_end_close7;
+    static const int offset_nan_int_close8;
+    static const int offset_mac_aut_mint;
+    static const int offset_mac_any_trans;
+    static const int offset_chn_end_escrow;
+    static const int offset_chn_int_escrow;
+    static const int offset_chn_int_reqclose;
+    static const int offset_chn_end_close;
+    static const int offset_chn_int_close;
+    static const int offset_chn_end_cashout;
+    static const int offset_chn_int_cashout;
+    static const int offset_mac_led_data;
+    static const int offset_chn_led_data;
+    static const int offset_mac_led_query;
+    static const int offset_chn_led_query;
+
+
+uint8_t payment_command(ntype type, int number){
+
+}
 
 /**
  * Converts a public key into an address for use on the ledger. The address is

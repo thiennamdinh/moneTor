@@ -9,37 +9,7 @@
 #ifndef mt_crypto_h
 #define mt_crypto_h
 
-typedef unsigned char byte;
-
-#define MT_SUCCESS 0
-#define MT_ERROR -1
-
-//-------------------- Cryptographic String Sizes (bytes) -------------------//
-
-#define SIZE_HASH 32
-#define SIZE_PK 273
-#define SIZE_SK 893
-#define SIZE_SIG 128
-#define SIZE_COM 128
-
-#define SIZE_BL 128
-#define SIZE_UBLR 128
-#define SIZE_UBLD 128
-
-#define SIZE_PP 128
-#define SIZE_ZKP 128
-
-//------------------ Cryptographic Simulate Delays (microsec) ---------------//
-
-#define DELAY_COM_COMMIT 0
-#define DELAY_COM_DECOMMIT 0
-#define DELAY_BSIG_BLIND 0
-#define DELAY_BSIG_UNBLIND 0
-#define DELAY_BSIG_VERIFY 0
-#define DELAY_ZKP_PROVE 1000000
-#define DELAY_ZKP_VERIFY 0
-
-//----------------------- Cryptographic Op Library --------------------------//
+#include "mt.h"
 
 // common
 int paycrypt_setup(byte (*pp_out)[SIZE_PP]);

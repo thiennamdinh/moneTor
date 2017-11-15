@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include "../mt.h"
 #include "../mt_crypto.h"
 #include "../mt_tokens.h"
 #include "../mt_utils.h"

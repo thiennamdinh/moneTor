@@ -1,0 +1,14 @@
+Things to look into:
+
+- how to get even triggered or:
+  - program start
+  - circuit creation (possibly nth payment cell sent)
+  - incoming control cell (see florentin message)
+  - counter for # data cells for payment
+  - circuit tear down event
+  - user command
+- reading cells in/out
+- do we ever need more than one cell?
+  - i.e. trim down size of pk/sk and verify size of zk proof
+- identify/store intermediaries
+- how to process/store info about who I can send to
