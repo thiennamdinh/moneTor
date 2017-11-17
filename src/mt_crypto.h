@@ -12,28 +12,28 @@
 #include "mt.h"
 
 // common
-int paycrypt_setup(byte (*pp_out)[SIZE_PP]);
-int paycrypt_keygen(byte (*pp)[SIZE_PP], byte (*pk_out)[SIZE_PK], byte (*sk_out)[SIZE_SK]);
-int paycrypt_rand_bytes(int size, byte* rand_out);
-int paycrypt_hash(byte* msg, int msg_size, byte (*hash_out)[SIZE_HASH]);
+int mt_crypt_setup(byte (*pp_out)[MT_SZ_PP]);
+int mt_crypt_keygen(byte (*pp)[MT_SZ_PP], byte (*pk_out)[MT_SZ_PK], byte (*sk_out)[MT_SZ_SK]);
+int mt_crypt_rand_bytes(int size, byte* rand_out);
+int mt_crypt_hash(byte* msg, int msg_size, byte (*hash_out)[MT_SZ_HASH]);
 
 // signature scheme
-int sig_sign(byte* msg, int msg_size, byte (*sk)[SIZE_SK], byte (*sig_out)[SIZE_SIG]);
-int sig_verify(byte* msg, int msg_size, byte (*pk)[SIZE_PK], byte (*sig)[SIZE_SIG]);
+int mt_sig_sign(byte* msg, int msg_size, byte (*sk)[MT_SZ_SK], byte (*sig_out)[MT_SZ_SIG]);
+int mt_sig_verify(byte* msg, int msg_size, byte (*pk)[MT_SZ_PK], byte (*sig)[MT_SZ_SIG]);
 
 // commitment scheme
-int com_commit(byte* msg, int msg_size, byte (*rand)[SIZE_HASH], byte (*com_out)[SIZE_COM]);
-int com_decommit(byte* msg, int msg_size, byte (*rand)[SIZE_HASH], byte (*com)[SIZE_COM]);
+int mt_com_commit(byte* msg, int msg_size, byte (*rand)[MT_SZ_HASH], byte (*com_out)[MT_SZ_COM]);
+int mt_com_decommit(byte* msg, int msg_size, byte (*rand)[MT_SZ_HASH], byte (*com)[MT_SZ_COM]);
 
 // blind signature scheme
-int bsig_blind(byte* msg, int msg_size, byte (*pk)[SIZE_PK], byte (*blinded_out)[SIZE_BL],
-		byte(*unblinder_out)[SIZE_UBLR]);
-int bsig_unblind(byte (*pk)[SIZE_PK], byte (*blinded_sig)[SIZE_SIG], byte (*unblinder)[SIZE_UBLR],
-		  byte (*unblinded_sig_out)[SIZE_SIG]);
-int bsig_verify(byte* msg, int msg_size, byte (*pk)[SIZE_PK], byte (*unblinded_sig)[SIZE_SIG]);
+int mt_bsig_blind(byte* msg, int msg_size, byte (*pk)[MT_SZ_PK], byte (*blinded_out)[MT_SZ_BL],
+		byte(*unblinder_out)[MT_SZ_UBLR]);
+int mt_bsig_unblind(byte (*pk)[MT_SZ_PK], byte (*blinded_sig)[MT_SZ_SIG], byte (*unblinder)[MT_SZ_UBLR],
+		  byte (*unblinded_sig_out)[MT_SZ_SIG]);
+int mt_bsig_verify(byte* msg, int msg_size, byte (*pk)[MT_SZ_PK], byte (*unblinded_sig)[MT_SZ_SIG]);
 
 // zero-knowledge proof of wallet validity
-int zkp_prove(byte (*pp)[SIZE_PP], byte* inputs, int input_size, byte (*zkp_out)[SIZE_ZKP]);
-int zkp_verify(byte (*pp)[SIZE_PP], byte (*proof)[SIZE_ZKP]);
+int mt_zkp_prove(byte (*pp)[MT_SZ_PP], byte* inputs, int input_size, byte (*zkp_out)[MT_SZ_ZKP]);
+int mt_zkp_verify(byte (*pp)[MT_SZ_PP], byte (*proof)[MT_SZ_ZKP]);
 
 #endif

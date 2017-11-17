@@ -42,6 +42,18 @@
 
 #define PEM_LINE_SIZE 64
 
+//------------------ Cryptographic Simulate Delays (microsec) ---------------//
+
+#define MT_DELAY_COM_COMMIT 0
+#define MT_DELAY_COM_DECOMMIT 0
+#define MT_DELAY_BSIG_BLIND 0
+#define MT_DELAY_BSIG_UNBLIND 0
+#define MT_DELAY_BSIG_VERIFY 0
+#define MT_DELAY_ZKP_PROVE 1000000
+#define MT_DELAY_ZKP_VERIFY 0
+
+//--------------------------------------------------------------------------//
+
 // global parameters for key generation
 int num_bits = 1024;
 char* exp_str = "65537";
@@ -62,13 +74,6 @@ void micro_sleep(int microsecs){
     delay.tv_sec = microsecs / 1000000;
     delay.tv_nsec = 0;
     nanosleep(&delay, NULL);
-}
-
-/**
- * Called at system setup to obtain public parameters
- */
-int paycrypt_setup(byte (*pp_out)[SIZE_PP]){
-    return paycrypt_rand_bytes(SIZE_PP, *pp_out);
 }
 
 /**
@@ -131,11 +136,18 @@ void encode_key(char* header, char* footer, byte* in, int in_size, char** out){
 }
 
 /**
+ * Called at system setup to obtain public parameters
+ */
+int mt_crypt_setup(byte (*pp_out)[MT_SZ_PP]){
+    return mt_crypt_rand_bytes(MT_SZ_PP, *pp_out);
+}
+
+/**
  * Generate a public and private keypair outputted as RSA PEM c-strings. For
  * simulation purposes, keys are simply RSA keys. In the final implementation,
  * it may be necessary for the keys to carry extra information for ZKP scheme
  */
-int paycrypt_keygen(byte (*pp)[SIZE_PP], byte (*pk_out)[SIZE_PK], byte  (*sk_out)[SIZE_SK]){
+int mt_crypt_keygen(byte (*pp)[MT_SZ_PP], byte (*pk_out)[MT_SZ_PK], byte  (*sk_out)[MT_SZ_SK]){
 
     // generate the rsa struct
     BIGNUM *exponent = BN_new();
@@ -155,9 +167,9 @@ int paycrypt_keygen(byte (*pp)[SIZE_PP], byte (*pk_out)[SIZE_PK], byte  (*sk_out
     (pk_encoded)[pk_encoded_size] = '\0';
 
     // decode PEM public key into a smaller byte string
-    byte pk_decoded[SIZE_PK];
+    byte pk_decoded[MT_SZ_PK];
     decode_key(pk_encoded, pk_decoded);
-    memcpy(*pk_out, pk_decoded, SIZE_PK);
+    memcpy(*pk_out, pk_decoded, MT_SZ_PK);
 
     // write private key
     BIO* bio_sk = BIO_new(BIO_s_mem());
@@ -170,9 +182,9 @@ int paycrypt_keygen(byte (*pp)[SIZE_PP], byte (*pk_out)[SIZE_PK], byte  (*sk_out
     (sk_encoded)[sk_encoded_size] = '\0';
 
     // decode PEM public key into a smaller byte string
-    byte sk_decoded[SIZE_SK];
+    byte sk_decoded[MT_SZ_SK];
     decode_key(sk_encoded, sk_decoded);
-    memcpy(*sk_out, sk_decoded, SIZE_SK);
+    memcpy(*sk_out, sk_decoded, MT_SZ_SK);
 
     RSA_free(rsa);
     BIO_free(bio_pk);
@@ -184,7 +196,7 @@ int paycrypt_keygen(byte (*pp)[SIZE_PP], byte (*pk_out)[SIZE_PK], byte  (*sk_out
 /**
  * Write the specified number of random bytes to the provided buffer
  */
-int paycrypt_rand_bytes(int size, byte* rand_out){
+int mt_crypt_rand_bytes(int size, byte* rand_out){
     if(RAND_bytes(rand_out, size) != 1){
 	if(RAND_pseudo_bytes(rand_out, size) != 1){
 	    return MT_ERROR;
@@ -196,7 +208,7 @@ int paycrypt_rand_bytes(int size, byte* rand_out){
 /**
  * Hash the provided message and write to the buffer
  */
-int paycrypt_hash(byte* msg, int msg_size, byte (*hash_out)[SIZE_HASH]){
+int mt_crypt_hash(byte* msg, int msg_size, byte (*hash_out)[MT_SZ_HASH]){
     SHA256_CTX context;
 
     if(SHA256_Init(&context) != 1)
@@ -214,10 +226,10 @@ int paycrypt_hash(byte* msg, int msg_size, byte (*hash_out)[SIZE_HASH]){
 /**
  * Accept a message of arbitrary length, compute the digest, and output a signature
  */
-int sig_sign(byte* msg, int msg_size, byte (*sk_in)[SIZE_SK], byte (*sig_out)[SIZE_SIG]){
+int mt_sig_sign(byte* msg, int msg_size, byte (*sk_in)[MT_SZ_SK], byte (*sig_out)[MT_SZ_SIG]){
 
     char* sk;
-    encode_key(sk_header, sk_footer, *sk_in, SIZE_SK, &sk);
+    encode_key(sk_header, sk_footer, *sk_in, MT_SZ_SK, &sk);
 
     BIO* bio = BIO_new_mem_buf(sk, strlen(sk));
     RSA* rsa = PEM_read_bio_RSAPrivateKey(bio, NULL, NULL, NULL);
@@ -225,15 +237,15 @@ int sig_sign(byte* msg, int msg_size, byte (*sk_in)[SIZE_SK], byte (*sig_out)[SI
     if(bio == NULL || rsa == NULL)
 	return MT_ERROR;
 
-    byte digest[SIZE_HASH];
-    if(paycrypt_hash(msg, msg_size, &digest) != 0)
+    byte digest[MT_SZ_HASH];
+    if(mt_crypt_hash(msg, msg_size, &digest) != 0)
 	return MT_ERROR;
 
     uint sig_len;
-    if(RSA_sign(NID_sha256, digest, SIZE_HASH, *sig_out, &sig_len, rsa) != 1)
+    if(RSA_sign(NID_sha256, digest, MT_SZ_HASH, *sig_out, &sig_len, rsa) != 1)
 	return MT_ERROR;
 
-    if(sig_len != SIZE_SIG)
+    if(sig_len != MT_SZ_SIG)
 	return MT_ERROR;
 
     free(sk);
@@ -246,10 +258,10 @@ int sig_sign(byte* msg, int msg_size, byte (*sk_in)[SIZE_SK], byte (*sig_out)[SI
  * Accept a message of arbitrary length, compute the digest, and verify the
  * provided signature
  */
-int sig_verify(byte* msg, int msg_size, byte (*pk_in)[SIZE_PK], byte   (*sig)[SIZE_SIG]){
+int mt_sig_verify(byte* msg, int msg_size, byte (*pk_in)[MT_SZ_PK], byte   (*sig)[MT_SZ_SIG]){
 
     char* pk;
-    encode_key(pk_header, pk_footer, *pk_in, SIZE_PK, &pk);
+    encode_key(pk_header, pk_footer, *pk_in, MT_SZ_PK, &pk);
 
     BIO* bio = BIO_new_mem_buf(pk, strlen(pk));
     RSA* rsa = PEM_read_bio_RSA_PUBKEY(bio, NULL, NULL, NULL);
@@ -257,12 +269,12 @@ int sig_verify(byte* msg, int msg_size, byte (*pk_in)[SIZE_PK], byte   (*sig)[SI
     if(bio == NULL || rsa == NULL)
 	return MT_ERROR;
 
-    byte digest[SIZE_HASH];
-    if(paycrypt_hash(msg, msg_size, &digest) != MT_SUCCESS)
+    byte digest[MT_SZ_HASH];
+    if(mt_crypt_hash(msg, msg_size, &digest) != MT_SUCCESS)
 	return MT_ERROR;
 
     // signature did not verify
-    if(RSA_verify(NID_sha256, digest, SIZE_HASH, *sig, SIZE_SIG, rsa) != 1)
+    if(RSA_verify(NID_sha256, digest, MT_SZ_HASH, *sig, MT_SZ_SIG, rsa) != 1)
 	return MT_ERROR;
 
     free(pk);
@@ -276,35 +288,35 @@ int sig_verify(byte* msg, int msg_size, byte (*pk_in)[SIZE_PK], byte   (*sig)[SI
  * commitment. In this simulated environment, the commitment is simply a hash of
  * the message concatenated with the random bytes
  */
-int com_commit(byte* msgs, int msg_size, byte (*rand)[SIZE_HASH], byte (*com_out)[SIZE_COM]){
-    byte* concated = malloc(msg_size + SIZE_HASH);
+int mt_com_commit(byte* msgs, int msg_size, byte (*rand)[MT_SZ_HASH], byte (*com_out)[MT_SZ_COM]){
+    byte* concated = malloc(msg_size + MT_SZ_HASH);
     memcpy(concated, msgs, msg_size);
-    memcpy(concated + msg_size, *rand, SIZE_HASH);
+    memcpy(concated + msg_size, *rand, MT_SZ_HASH);
 
-    byte digest[SIZE_HASH];
-    if(paycrypt_hash(concated, msg_size + SIZE_HASH, &digest) != MT_SUCCESS)
+    byte digest[MT_SZ_HASH];
+    if(mt_crypt_hash(concated, msg_size + MT_SZ_HASH, &digest) != MT_SUCCESS)
 	return MT_ERROR;
 
     // commitment in the final scheme may be larger than hash; pad the difference
-    memcpy(*com_out, digest, SIZE_HASH);
-    if(paycrypt_rand_bytes(SIZE_COM - SIZE_HASH, (*com_out) + SIZE_HASH) !=  MT_SUCCESS)
+    memcpy(*com_out, digest, MT_SZ_HASH);
+    if(mt_crypt_rand_bytes(MT_SZ_COM - MT_SZ_HASH, (*com_out) + MT_SZ_HASH) !=  MT_SUCCESS)
 	return MT_ERROR;
 
-    micro_sleep(DELAY_COM_COMMIT);
+    micro_sleep(MT_DELAY_COM_COMMIT);
     return MT_SUCCESS;
 }
 
 /**
  * Verify the commitment provided for a message of arbitrary length
  */
-int com_decommit(byte* msg, int msg_size, byte (*rand)[SIZE_HASH], byte  (*com)[SIZE_COM]){
-    byte com_ver[SIZE_COM];
-    if(com_commit(msg, msg_size, rand, &com_ver) != MT_SUCCESS)
+int mt_com_decommit(byte* msg, int msg_size, byte (*rand)[MT_SZ_HASH], byte  (*com)[MT_SZ_COM]){
+    byte com_ver[MT_SZ_COM];
+    if(mt_com_commit(msg, msg_size, rand, &com_ver) != MT_SUCCESS)
 	return MT_ERROR;
-    if(memcmp(com, com_ver, SIZE_HASH) != 0)
+    if(memcmp(com, com_ver, MT_SZ_HASH) != 0)
 	return MT_ERROR;
 
-    micro_sleep(DELAY_COM_DECOMMIT);
+    micro_sleep(MT_DELAY_COM_DECOMMIT);
     return MT_SUCCESS;
 }
 
@@ -314,20 +326,20 @@ int com_decommit(byte* msg, int msg_size, byte (*rand)[SIZE_HASH], byte  (*com)[
  * with the globally visible bsig_fake_blinder string. The unblinder does
  * nothing and is simply filled with random bytes
  */
-int bsig_blind(byte *msg, int msg_size, byte (*pk)[SIZE_PK], byte (*blinded_out)[SIZE_BL],
-		byte(*unblinder_out)[SIZE_UBLR]){
+int mt_bsig_blind(byte *msg, int msg_size, byte (*pk)[MT_SZ_PK], byte (*blinded_out)[MT_SZ_BL],
+		byte(*unblinder_out)[MT_SZ_UBLR]){
 
-    byte digest[SIZE_HASH];
-    if(paycrypt_hash(msg, msg_size, &digest) != MT_SUCCESS)
+    byte digest[MT_SZ_HASH];
+    if(mt_crypt_hash(msg, msg_size, &digest) != MT_SUCCESS)
 	return MT_ERROR;
 
-    for(int i = 0; i < SIZE_BL; i++)
-	(*blinded_out)[i] = bsig_fake_blinder[i % SIZE_HASH] ^ digest[i % SIZE_HASH];
+    for(int i = 0; i < MT_SZ_BL; i++)
+	(*blinded_out)[i] = bsig_fake_blinder[i % MT_SZ_HASH] ^ digest[i % MT_SZ_HASH];
 
-    if(paycrypt_rand_bytes(SIZE_UBLR, *unblinder_out) != MT_SUCCESS)
+    if(mt_crypt_rand_bytes(MT_SZ_UBLR, *unblinder_out) != MT_SUCCESS)
 	return MT_ERROR;
 
-    micro_sleep(DELAY_BSIG_BLIND);
+    micro_sleep(MT_DELAY_BSIG_BLIND);
     return MT_SUCCESS;
 }
 
@@ -336,10 +348,10 @@ int bsig_blind(byte *msg, int msg_size, byte (*pk)[SIZE_PK], byte (*blinded_out)
  * later. Since we do not having a real blinding scheme, this simply copies over
  * the "blinded" signature to the "unblinded" buffer.
  */
-int bsig_unblind(byte (*pk)[SIZE_PK], byte (*blinded_sig)[SIZE_SIG], byte (*unblinder)[SIZE_UBLR],
-		  byte (*unblinded_sig_out)[SIZE_SIG]){
-    memcpy(*unblinded_sig_out, *blinded_sig, SIZE_SIG);
-    micro_sleep(DELAY_BSIG_UNBLIND);
+int mt_bsig_unblind(byte (*pk)[MT_SZ_PK], byte (*blinded_sig)[MT_SZ_SIG], byte (*unblinder)[MT_SZ_UBLR],
+		  byte (*unblinded_sig_out)[MT_SZ_SIG]){
+    memcpy(*unblinded_sig_out, *blinded_sig, MT_SZ_SIG);
+    micro_sleep(MT_DELAY_BSIG_UNBLIND);
     return MT_SUCCESS;
 }
 
@@ -348,21 +360,21 @@ int bsig_unblind(byte (*pk)[SIZE_PK], byte (*blinded_sig)[SIZE_SIG], byte (*unbl
  * simulated version since the message simply needs to be put through the fake
  * blinding process to verify with the signature.
  */
-int bsig_verify(byte* msg, int msg_size, byte (*pk)[SIZE_PK], byte (*unblinded_sig)[SIZE_SIG]){
+int mt_bsig_verify(byte* msg, int msg_size, byte (*pk)[MT_SZ_PK], byte (*unblinded_sig)[MT_SZ_SIG]){
 
-    byte* blinded = malloc(SIZE_BL);
+    byte* blinded = malloc(MT_SZ_BL);
 
-    byte digest[SIZE_HASH];
-    if(paycrypt_hash(msg, msg_size, &digest) != MT_SUCCESS)
+    byte digest[MT_SZ_HASH];
+    if(mt_crypt_hash(msg, msg_size, &digest) != MT_SUCCESS)
 	return MT_ERROR;
 
-    for(int i = 0; i < SIZE_BL; i++)
-	blinded[i] = bsig_fake_blinder[i % SIZE_HASH] ^ digest[i % SIZE_HASH];
+    for(int i = 0; i < MT_SZ_BL; i++)
+	blinded[i] = bsig_fake_blinder[i % MT_SZ_HASH] ^ digest[i % MT_SZ_HASH];
 
-    if(sig_verify(blinded, SIZE_BL, pk, unblinded_sig) != MT_SUCCESS)
+    if(mt_sig_verify(blinded, MT_SZ_BL, pk, unblinded_sig) != MT_SUCCESS)
 	return MT_ERROR;
 
-    micro_sleep(DELAY_BSIG_VERIFY);
+    micro_sleep(MT_DELAY_BSIG_VERIFY);
     return MT_SUCCESS;
 }
 
@@ -372,20 +384,20 @@ int bsig_verify(byte* msg, int msg_size, byte (*pk)[SIZE_PK], byte (*unblinded_s
  * scheme. Only the bare minimum computations are done so that proofs are not
  * accidently rejected or confused with other proofs in the simulation.
  */
-int zkp_prove(byte (*pp)[SIZE_PP], byte* inputs, int input_size, byte (*zkp_out)[SIZE_ZKP]){
+int mt_zkp_prove(byte (*pp)[MT_SZ_PP], byte* inputs, int input_size, byte (*zkp_out)[MT_SZ_ZKP]){
     // override output with pp xor'd with some constant string
 
-    byte digest[SIZE_HASH];
-    if(paycrypt_hash(inputs, input_size, &digest) != MT_SUCCESS)
+    byte digest[MT_SZ_HASH];
+    if(mt_crypt_hash(inputs, input_size, &digest) != MT_SUCCESS)
 	return MT_ERROR;
 
-    memcpy(*zkp_out, *pp, SIZE_HASH / 2);
-    memcpy((*zkp_out) + SIZE_HASH / 2, digest, SIZE_HASH / 2);
+    memcpy(*zkp_out, *pp, MT_SZ_HASH / 2);
+    memcpy((*zkp_out) + MT_SZ_HASH / 2, digest, MT_SZ_HASH / 2);
 
-    if(paycrypt_rand_bytes(SIZE_ZKP - SIZE_HASH, (*zkp_out) + SIZE_HASH) !=  MT_SUCCESS)
+    if(mt_crypt_rand_bytes(MT_SZ_ZKP - MT_SZ_HASH, (*zkp_out) + MT_SZ_HASH) !=  MT_SUCCESS)
 	return MT_ERROR;
 
-    micro_sleep(DELAY_ZKP_PROVE);
+    micro_sleep(MT_DELAY_ZKP_PROVE);
     return MT_SUCCESS;
 }
 
@@ -394,11 +406,11 @@ int zkp_prove(byte (*pp)[SIZE_PP], byte* inputs, int input_size, byte (*zkp_out)
  * version, we do a simple sanity check to make sure that the proof was at least
  * likely to be generated on purpose in some other part of the simulation.
  */
-int zkp_verify(byte (*pp)[SIZE_PP], byte (*proof)[SIZE_ZKP]){
+int mt_zkp_verify(byte (*pp)[MT_SZ_PP], byte (*proof)[MT_SZ_ZKP]){
     // override output with pp xor'd with some constant string
-    if(memcmp(proof, pp, SIZE_HASH / 2) != 0)
+    if(memcmp(proof, pp, MT_SZ_HASH / 2) != 0)
 	return MT_ERROR;
 
-    micro_sleep(DELAY_ZKP_VERIFY);
+    micro_sleep(MT_DELAY_ZKP_VERIFY);
     return MT_SUCCESS;
 }

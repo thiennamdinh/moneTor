@@ -5,19 +5,10 @@
 #include "mt_crypto.h"
 #include "mt_tokens.h"
 
-int payment_command(ntype type, int number);
+int mt_pk2addr(byte (*pk)[MT_SZ_PK], byte (*addr_out)[MT_SZ_ADDR]);
+int mt_addr2hex(byte (*addr)[MT_SZ_ADDR], char (*hex_out)[MT_SZ_ADDR * 2 + 3]);
 
-int create_signed_msg(byte* msg, int size, byte (*pk)[SIZE_PK], byte (*sk)[SIZE_SK], byte** str_out);
-
-int pk_to_addr(byte (*pk)[SIZE_PK], byte (*addr_out)[SIZE_ADDR]);
-int addr_to_hex(byte (*addr)[SIZE_ADDR], char (*hex_out)[SIZE_ADDR * 2 + 3]);
-
-int hash_create_chain(int size, byte (*head)[SIZE_HASH], byte (*hc_out)[][SIZE_HASH]);
-int hash_verify_chain(byte (*tail)[SIZE_HASH], byte (*preimage)[SIZE_HASH], int k);
-
-int commit_wallet(byte (*pp)[SIZE_PP], byte (*pk_payee)[SIZE_PK], mic_end_wallet wallet, int pay_val,
-		   byte (*com_out)[SIZE_COM]);
-
-int chn_refund_verify(chn_end_close token);
+int mt_hc_create(int size, byte (*head)[MT_SZ_HASH], byte (*hc_out)[][MT_SZ_HASH]);
+int mt_hc_verify(byte (*tail)[MT_SZ_HASH], byte (*preimage)[MT_SZ_HASH], int k);
 
 #endif
