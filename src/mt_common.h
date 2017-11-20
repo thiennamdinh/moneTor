@@ -2,6 +2,7 @@
 #define mt_common_h
 
 #include "mt.h"
+#include "or.h"
 #include "mt_crypto.h"
 #include "mt_tokens.h"
 
