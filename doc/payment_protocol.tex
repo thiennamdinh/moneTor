@@ -104,14 +104,6 @@ $nrc_C$ --- ``Client Channel Closure Message'' --- Final message that is
 posted to the ledger by the relay to claim all funds of the
 micropayment channel including any completed nanopayments.
 
-
-\flo{How does the transaction happens on the ledger?}  \thi{Basically,
-  the client/relay would send the refund token to the ledger and that
-  transaction would be posted. There would be some delay period in
-  which the intermediary might want to refute the claim by posting a
-  revocation token and it should be obvious to the ledger/network that
-  one of them is right. These steps should probably be formalized in
-  nRefund, nRefute, and nResolve algorithms}
 \section{Algorithms}\label{algorithms}
 
 Conventions:
@@ -143,13 +135,6 @@ Conventions:
     \State{\hskip\algorithmicindent{} $B + \epsilon \geq 0$}
     \State{\Return{$(wsk', wpk', wCom', \pi)\}$}}
     \EndFunction{}
-
-    \flo{(7) is redundant with (5)?}  \thi{Not quite; line (5) is where
-      the commitment is actually created. Line (7) is part of a
-      zero-knowledge proof $(\pi)$ that shows that the commitment was
-      properly constructed since the other party ($I$ in this case)
-      doesn't know wpk', B, or r'}
-
     \Function{MakeHashChain}{$hc^0, n$}
     \State{$HC \gets \{n : hc^0\}$}
     \For{$i = \{n-1, \ldots, 0\}$}
@@ -180,8 +165,6 @@ Conventions:
     \Procedure{Client}{$pp, pk_I, w_C, \delta_C, n$}
       \State{parse $w_C$ as $(B_C, wpk_C, wsk_C, r_C, \sigma^w_C)$}
       \If{$B_{C} + (\delta_C * n) < 0$}
-        \flo{is $\delta_C$ supposed to be negative as you said above?}
-        \thi{Yep, just fixed it. Thanks!}
         \State{Abort$()$ \Comment{consider opening a new micropayment channel}}
       \EndIf{}
       \State{$(nwpk_C, nwsk_C, nwCom_C, n\pi_C) \gets$ CommitWallet$(pp, pk_I, w_C, \delta_C * n)$}
@@ -285,8 +268,6 @@ Conventions:
 
       \If{$k >= n$}
         \State{Abort$()$ \Comment{out of nanopayments to send, setup a new channel}}
-        \flo{nClose here?}
-        \thi{Maybe... I'm not sure whether it makes more sense to specify it locally here or push it off to the ``higher level'' control loop of whoever is calling this algorithm. We'd also have to send a signal to the relay to close his channel first and then go through setup/establish steps again. Also, to save cpu cycles, this would be where we look ``rolling into the next nanopayment channel'' efficiency shortcuts that Dan was talking about}
       \EndIf{}
 
       \State{$nS_C \gets (k+1, HC[k+1])$}
@@ -473,13 +454,13 @@ Tor is mostly single-threaded and pulls work from a queue of events constructed 
 
 The Tor control protocol\footnote{https://gitweb.torproject.org/torspec.git/tree/control-spec.txt} is used by other programs (such as a browser) to communicate with the Tor process. Enabling/disabling payments should work through an extension of this protocol.
 
-A lot of implementation documentation/details/logic are provided in the torguts repository: https://gitweb.torproject.org/user/nickm/torguts.git/. 
+A lot of implementation documentation/details/logic are provided in the torguts repository: https://gitweb.torproject.org/user/nickm/torguts.git/.
 
 Most of our implementation is going to use/extend *\_edge.c files from src/or/ since every payment logic happens at "edges" of Tor circuits. A circuit edge t is defined w.r.t to the cell being forwarded through the circuit. E.g. a 2-time onion encrypted cell is going to be recognized by the middle relay, hence the edge of the circuit for that particular cell is the middle relay. This is also called "leaky-pipe design" in the original Tor paper.
 
 \subsection{Payment specifications}
 	\label{sec:payment_spec}
-	
+
  Overall idea: Algorithms above are going to be written is standalone functions in some new file in "src/or/". When some cells related to a payment arrive on circuit, circuit\_receive\_relay\_cell() from src/or/relay.c is going call the entry point of payment management (e.g. circuit\_manage\_payment()) and manage itself circuit states, payment states, etc.
 
 In normal use of circuit, when the payment is enabled, each client-relay handle a payment flow control in a similar way that bandwidth flow control is currently designed in Tor (using windows). The idea is that the client uses the nanopayment channel with the relay for maintaining this window above 0. If the window reaches 0, the relay stop prioritize the traffic from this circuit.
@@ -487,11 +468,11 @@ In normal use of circuit, when the payment is enabled, each client-relay handle 
 The client must handle some pre-build nano-payment channels with Intermediaries that he chose is such a way that when attaching a stream to a circuit, only the establish phase must be done. This design bears some similarities with the way Tor pre-built circuit and should speed up the time to the first nanopayment issued.
  \subsubsection{Cell specification}
  \label{sec:cell_spec}
- 
- This part specifies the extension of cells used for payment. We are going to use link-level cell(s) to pay the Guard and relay level cell(s) to discuss with the intermediary (channel operations) and to pay the middle and the exit relays (nanopayment channel operations). 
+
+ This part specifies the extension of cells used for payment. We are going to use link-level cell(s) to pay the Guard and relay level cell(s) to discuss with the intermediary (channel operations) and to pay the middle and the exit relays (nanopayment channel operations).
 
  \#TODO: estimate the payload size for each data of sent over the network by above algorithms.
- 
+
  \begin{center}
  \begin{tabular}{l r}
         CircID        &                        [CIRCID\_LEN octets] \\
@@ -529,7 +510,7 @@ new relay-level cells:
 \begin{center}
 	\begin{tabular}{l c c r}
 		16 -- & RELAY\_MP & () & See Section~\ref{sec:micro_payment} \\
-		17 -- & RELAY\_NP  & () & See Section~\ref{sec:nano_payment}\\	
+		17 -- & RELAY\_NP  & () & See Section~\ref{sec:nano_payment}\\
 	\end{tabular}
 \end{center}
 
@@ -560,24 +541,24 @@ Differentiating Nano payment cells:
 \end{center}
       \#Todo: missing some MicroPayment control cells
  \subsubsection{Circuit specification}
- 
+
  	\paragraph*{Intermediary circuit}
-	
+
 	We have some design choice to consider regarding Intermediary circuit: we can reasonably assume that Intermediaries are going to hold a tor socket for each of the relay in the consensus even if this does not scale (socket are 16 bits sized). The easiest way to handle Intermediary circuits would be to imitate how onion services handle Introduction circuits since we mostly have the same constraint: We always need to have at least one circuit open towards a particular relay (Introduction Point in the case of onion services and Intermediary in the case of a payment channel).\\
 	\#TODO: agree on the kind of structure that hold payment channels and link them to Intermediary circuit and "general" circuits.
- 	
+
  	\paragraph*{Ledger circuit}
- 	
+
  	IP of the ledger hardcoded in torrc. We extend on the fly an internal 3-hop circuit towards the ledger. This circuit is closed after the refund took place.
- 	
+
  	\paragraph*{Payment-flow control}
- 	
+
  	The Tor clients should hold a payment window of the same size of the flow-control window for each of the relay in the circuit. These windows should be synchronized in classical use of Tor circuits (end-to-end data) but we do not enforce it for compatibility with further other designs (such as link padding). However we should have some rate-limited control of the de-synchronization (e.g. the middle node sending garbage to get payments). Typically such thing that would not be implemented but specified as part of the design.
- 	
+
  \subsubsection{Intermediary specification}
  	\#Note: explains how a particular relay chooses intermediaries
- 	
+
  \subsubsection{•}
 \subsection{Payment scheduler specification}
-	\#Note: 
+	\#Note:
 \end{document}
