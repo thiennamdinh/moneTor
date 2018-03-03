@@ -31,7 +31,7 @@ relayed = [0] * (numNonPrem + numPremium);
 for i in range(iterations):
     circuit = scores.index(min(scores))
     modifier = priority if circuit >= numNonPrem else 1.0
-    scores[circuit] += cellsPerRound * constant**(-i * timePerRound) * modifier
+    scores[circuit] += cellsPerRound * constant**(-i * timePerRound) / modifier
     relayed[circuit] += cellsPerRound
 
 sumNonPrem = 0
