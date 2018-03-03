@@ -45,4 +45,4 @@ y = numpy.array(delay)
 x = x[:,numpy.newaxis]
 a, _, _, _ = numpy.linalg.lstsq(x, y)
 
-print "We can perform about " + str(a[0]) + " 1024 byte AES_encrypt operations per microsecond"
+print "It takes about " + str(a[0]) + " to perform one 1024 byte AES_encrypt operation"
