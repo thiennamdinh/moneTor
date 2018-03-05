@@ -57,9 +57,9 @@ if __name__ == "__main__":
     median = median[len(median)/2]
     fig = plt.figure()
     x = range(30, 250)
-    plt.plot(x, [bw_to_cells_per_second(maxlastquartile, args.dsize)*(i/1000.0) for i in x])
-    plt.plot(x, [bw_to_cells_per_second(median, args.dsize)*(i/1000.0) for i in x])
-    plt.plot(x, [bw_to_cells_per_second(minfstquartile, args.dsize)*(i/1000.0) for i in x])
+    plt.plot(x, [bw_to_cells_per_second(maxlastquartile, args.dsize)*(i/1000.0) for i in x], linewidth=2)
+    plt.plot(x, [bw_to_cells_per_second(median, args.dsize)*(i/1000.0) for i in x], linewidth=2)
+    plt.plot(x, [bw_to_cells_per_second(minfstquartile, args.dsize)*(i/1000.0) for i in x], linewidth=2)
     plt.xlabel('Payment latency [ms]')
     plt.ylabel('Lower bound for cells payment rate [cells/payments]')
     plt.legend(['Min bandwidth observed', 'Median bandwidth observed', 'Max bandwidth observed'], loc="best")
