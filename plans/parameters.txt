@@ -1,0 +1,41 @@
+********************************************************************************
+
+Tracks various classes of parameters to be used in moneTor shadow
+experiments. A <!> idenifier means that we still need to decide on a value
+
+*********************************** Constant ***********************************
+
+authority tax                            10% irrelevant)
+ledger fee                               10 (irrelevant)
+
+nanopayment value                      ! do some internet research
+nanopayment channel length             ! awaiting mt_stats -> median mt circuit
+client channel value                     do some internet research
+relay channel value                      0
+intermediary channel value (client)      0
+intermediary channel value (relay)       client value * (# clients / # relays)
+
+zkp delay prove - type 1 (ms)            8
+zkp delay verify - type 1 (ms)           15
+zkp delay prove - type 2 (ms)            100
+zkp delay verify - type 2 (ms)           82
+zkp delay prove - type 3 (ms)            100
+zkp delay verify - type 3 (ms)           82
+
+bursty/bulky ratio                     ! awaiting mt_stats -- time stdev
+tgen time profiles                     ! awaiting mt_stats -- total counts
+payment start delay                    ! awaiting mt_stats + analysis
+
+*********************************** Variable ***********************************
+
+premium percentage                       {0%, ..., 100%}
+
+priority scheduling weight             ! {1.0, ..., ??} -- arbirary guess
+
+shadow num cores                         {1, 2}
+
+client concurrent circuits               arbirary guess (maybe 5 or 10?)
+
+client / relay ratio                   ! experiment to obtain decent congestion
+
+cells per payment                      ! {333, ..., ??}
