@@ -299,7 +299,7 @@ Conventions:
       \State{parse $nS_E$ as $(k, hc^k)$}
       \State{$\epsilon_E \gets \delta_C * k$ if (EndUser = Client) else $ \delta_R * k$}
       \State{$(wpk'_E, wsk'_E, wCom'_E, \pi'_E) \gets $CommitWallet$(pp, pk_I, wpk_B, \sigma^w_E, B_E, \epsilon_E$)}
-      \State{Intermediary.Send$(wpk_E, wCom'_E, \pi_E, nT, \epsilon_E, k, hc^k)$}
+      \State{Intermediary.Send$(wpk_E, wCom'_E, \pi'_E, nT, \epsilon_E, k, hc^k)$}
     \EndProcedure{}
 
     \Procedure{Intermediary}{$pp, S_I, nS_I$}
