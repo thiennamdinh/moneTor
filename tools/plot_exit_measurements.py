@@ -81,7 +81,10 @@ if __name__ == "__main__":
         legends_fig2.extend(ax2.plot(x, y, linewidth=2))
 
         ydata = [x for x in ystddevs if x > 0.0]
-        x, y = getcdf(ydata, shownpercentile=1)
+        if (ydata[-1] > 2000):
+            x, y = getcdf(ydata, shownpercentile=0.95)
+        else:
+            x, y = getcdf(ydata, shownpercentile=1)
         legends_fig3.extend(ax3.plot(x, y, linewidth=2))
 
     ax1.set_xlabel('Seconds since the DNS resolve succeeded')
@@ -89,15 +92,15 @@ if __name__ == "__main__":
     labels = []
     for filename in filenames:
         labels.append(filename.split('_')[2])
-    fig1.legend(legends_fig1, labels, loc='best')
+    fig1.legend(legends_fig1, labels, loc='upper right')
     fig1.savefig('exitmeasurement.png')
     ax2.set_xlabel('Total cell counts')
     ax2.set_ylabel('CDF')
-    fig2.legend(legends_fig2, labels, loc='best')
+    fig2.legend(legends_fig2, labels, loc='lower right')
     fig2.savefig('totcellcountscdf.png')
     ax3.set_xlabel('Standard deviations in our buckets')
     ax3.set_ylabel('CDF')
-    fig3.legend(legends_fig3, labels, loc='best')
+    fig3.legend(legends_fig3, labels, loc='lower right')
     fig3.savefig('stddevs.png')
 
 
