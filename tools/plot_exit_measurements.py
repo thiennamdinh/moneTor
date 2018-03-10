@@ -21,7 +21,6 @@ plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
 
 parser = argparse.ArgumentParser(description="Plot exit measurements")
 parser.add_argument("--dir", help="Directory containing port_group_xxx files")
-parser.add_argument("--time_profile", action='store_true', help="Produce the time profile graph for each of the port group we have")
 
 MT_BUCKET_SIZE = 20
 
@@ -57,42 +56,51 @@ if __name__ == "__main__":
     ax1 = fig1.add_subplot(1, 1, 1)
     fig2 = plt.figure()
     ax2 = fig2.add_subplot(1, 1, 1)
+    fig3 = plt.figure()
+    ax3 = fig3.add_subplot(1, 1, 1)
 
-    if args.time_profile:
-        legends_fig1, legends_fig2 = [], []
-        for filename in filenames:
-            with open(args.dir+'/'+filename, 'rb') as csvfile:
-                reader = csv.reader(csvfile, skipinitialspace=True, delimiter=',')
-                ytimeprofile = [int(x) for x in next(reader)]
-                ytotcounts = [float(x) for x in next(reader)]
-                ystddevs = [float(x) for x in next(reader)]
-            #Todo: improves color, linestyle and y scale (logarithmic?)
-            if len(ytimeprofile) > 120:
-                ydata = [ytimeprofile[i]/(len(ytotcounts)*MT_BUCKET_SIZE) for i in range(120)]
-            else:
-                ydata = [ytimeprofile[i]/(len(ytotcounts)*MT_BUCKET_SIZE) for i in range(len(ytimeprofile))]
+    legends_fig1, legends_fig2, legends_fig3 = [], [], []
+    for filename in filenames:
+        with open(args.dir+'/'+filename, 'rb') as csvfile:
+            reader = csv.reader(csvfile, skipinitialspace=True, delimiter=',')
+            ytimeprofile = [int(x) for x in next(reader)]
+            ytotcounts = [float(x) for x in next(reader)]
+            ystddevs = [float(x) for x in next(reader)]
+        #Todo: improves color, linestyle and y scale (logarithmic?)
+        if len(ytimeprofile) > 120:
+            ydata = [ytimeprofile[i]/(len(ytotcounts)*MT_BUCKET_SIZE) for i in range(120)]
+        else:
+            ydata = [ytimeprofile[i]/(len(ytotcounts)*MT_BUCKET_SIZE) for i in range(len(ytimeprofile))]
 
-            legends_fig1.extend(ax1.plot([i*5 for i in range(1, len(ydata)+1)], ydata, linewidth=2))
-            if (ytotcounts[-1] > 10000):
-                x, y = getcdf(ytotcounts, shownpercentile=0.95)
-            else:
-                x, y = getcdf(ytotcounts, shownpercentile=1)
+        legends_fig1.extend(ax1.plot([i*5 for i in range(1, len(ydata)+1)], ydata, linewidth=2))
+        if (ytotcounts[-1] > 10000):
+            x, y = getcdf(ytotcounts, shownpercentile=0.95)
+        else:
+            x, y = getcdf(ytotcounts, shownpercentile=1)
 
-            legends_fig2.extend(ax2.plot(x, y, linewidth=2))
-        ax1.set_xlabel('Seconds since the DNS resolve succeeded')
-        ax1.set_ylabel('Mean number of cells relayed every 5 seconds')
-        labels = []
-        for filename in filenames:
-            labels.append(filename.split('_')[2])
-        fig1.legend(legends_fig1, labels, loc='best')
-        fig1.savefig('exitmeasurement.png')
-        ax2.set_xlabel('Total cell counts')
-        ax2.set_ylabel('CDF')
-        fig2.legend(legends_fig2, labels, loc='best')
-        fig2.savefig('totcellcountscdf.png')
+        legends_fig2.extend(ax2.plot(x, y, linewidth=2))
+
+        ydata = [x for x in ystddevs if x > 0.0]
+        x, y = getcdf(ydata, shownpercentile=1)
+        legends_fig3.extend(ax3.plot(x, y, linewidth=2))
+
+    ax1.set_xlabel('Seconds since the DNS resolve succeeded')
+    ax1.set_ylabel('Mean number of cells relayed every 5 seconds')
+    labels = []
+    for filename in filenames:
+        labels.append(filename.split('_')[2])
+    fig1.legend(legends_fig1, labels, loc='best')
+    fig1.savefig('exitmeasurement.png')
+    ax2.set_xlabel('Total cell counts')
+    ax2.set_ylabel('CDF')
+    fig2.legend(legends_fig2, labels, loc='best')
+    fig2.savefig('totcellcountscdf.png')
+    ax3.set_xlabel('Standard deviations in our buckets')
+    ax3.set_ylabel('CDF')
+    fig3.legend(legends_fig3, labels, loc='best')
+    fig3.savefig('stddevs.png')
 
 
-
-    ## Todo; figureout what to do with total cells counts and time std
+## Todo; figureout what to do with total cells counts and time std
 
 
