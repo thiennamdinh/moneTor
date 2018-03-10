@@ -72,35 +72,39 @@ if __name__ == "__main__":
         else:
             ydata = [ytimeprofile[i]/(len(ytotcounts)*MT_BUCKET_SIZE) for i in range(len(ytimeprofile))]
 
-        legends_fig1.extend(ax1.plot([i*5 for i in range(1, len(ydata)+1)], ydata, linewidth=2))
+        ax1.plot([i*5 for i in range(1, len(ydata)+1)], ydata, linewidth=2,\
+            label="{0}".format(filename.split('_')[2]))
         if (ytotcounts[-1] > 10000):
             x, y = getcdf(ytotcounts, shownpercentile=0.95)
         else:
             x, y = getcdf(ytotcounts, shownpercentile=1)
 
-        legends_fig2.extend(ax2.plot(x, y, linewidth=2))
+        ax2.plot(x, y, linewidth=2,label="{0}".format(filename.split('_')[2]))
 
         ydata = [x for x in ystddevs if x > 0.0]
         if (ydata[-1] > 2000):
             x, y = getcdf(ydata, shownpercentile=0.95)
         else:
             x, y = getcdf(ydata, shownpercentile=1)
-        legends_fig3.extend(ax3.plot(x, y, linewidth=2))
+        ax3.plot(x, y, linewidth=2, label="{0}".format(filename.split('_')[2]))
 
     ax1.set_xlabel('Seconds since the DNS resolve succeeded')
     ax1.set_ylabel('Mean number of cells relayed every 5 seconds')
     labels = []
     for filename in filenames:
         labels.append(filename.split('_')[2])
-    fig1.legend(legends_fig1, labels, loc='upper right')
+    # fig1.legend(legends_fig1, labels, loc='upper right')
+    ax1.legend(loc='best')
     fig1.savefig('exitmeasurement.png')
     ax2.set_xlabel('Total cell counts')
     ax2.set_ylabel('CDF')
-    fig2.legend(legends_fig2, labels, loc='lower right')
+    # fig2.legend(legends_fig2, labels, loc='lower right')
+    ax2.legend(loc='best')
     fig2.savefig('totcellcountscdf.png')
     ax3.set_xlabel('Standard deviations in our buckets')
     ax3.set_ylabel('CDF')
-    fig3.legend(legends_fig3, labels, loc='lower right')
+    # fig3.legend(legends_fig3, labels, loc='lower right')
+    ax3.legend(loc='best')
     fig3.savefig('stddevs.png')
 
 
