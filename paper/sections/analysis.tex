@@ -2,10 +2,14 @@
 \subsection{Data Collection}
 \label{subsec:datacollection}
 
-We deployed a data collection system to look for more realistic information about lifetime and bandwidth consumption through time of Tor circuits. Our objective is to have a deeper understanding of typical Tor usage, and if such usage can benefit from our channel-based payment system. For example, those measurements could capture some notion about the type and magnitude of potential premium traffic. We define the type of traffic based on the port used to connect to the request service. Besides the classical ports 80 and 443 for web traffic, we aggregate data based on some other families, such as the WHOIS protocol~\cite{rfc3912} and RWHOIS~\cite{rfc2167} with port 43 and 4321. The complete list of families is constructed from the reduced exit policies~\cite{reducedexitpolicies} we run on our relays. It allows us to reason based on application specific traffic.
+We deployed a data collection system to look for more realistic information about lifetime and bandwidth consumption through time of Tor circuits. Our objective is to have a deeper understanding of typical Tor usage, and if such usage can benefit from our channel-based payment system. For example, those measurements could capture some notion about the type and magnitude of potential premium traffic. We define the type of traffic based on the port used to connect to the request service. Besides the classical ports 80 and 443 for web traffic, we aggregate data based on some other families, such as the WHOIS protocol~\cite{rfc3912} and RWHOIS~\cite{rfc2167} with port 43 and 4321. The complete list of families is constructed from the reduced exit policies~\cite{reducedexitpolicies} which we run on our relays. This measurement methodology allows us to reason based on application specific traffic.
 %We interested to know about the distribution lifetime of Tor circuits for each port we allow. We are also interested to picture how many cells those circuits handled through their lifetime with some level of granularity.
 
 \subsubsection{Efforts to preserve users privacy}
+
+We contacted the Tor research safety board, which is a group of researchers who study Tor, and who want to minimize privacy risks while fostering a better understanding of the Tor network and its users~\cite{torsafety}. We refactored our data collection process based on the feedback we received, and we applied one of their suggestion.
+
+We collect the data from multiple exit relays and aggregate everything on a central server. The data picked on each relay is itself an aggregation which we perform inside the relay's memory. The data collection is probabilistic, only 30\% of the circuits created to our exits are considered. The aggregation is done inside bins of configurable size, for every different traffic family we consider. Once we have collected enough data of a family, we dump the information on the disk, we clear the data and resume a new session. The information dumped contain an aggregation of 1600 circuits over an undefined time frame: we just wait to have enough circuits to dump on the disk, which depends of the users activity. Consequently, we are not writing any information related to a particular flow on the disk.
 
 \subsubsection{Observations}
 
@@ -13,17 +17,17 @@ We deployed a data collection system to look for more realistic information abou
 	\centering
 	\begin{subfigure}[t]{0.32\textwidth}
 		\centering
-		\includegraphics[scale=0.28]{images/exitmeasurement.png}
+		\includegraphics[scale=0.3]{images/exitmeasurement.png}
 		\label{fig:stats_a}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth}
 		\centering
-		\includegraphics[scale=0.28]{images/totcellcountscdf.png}
+		\includegraphics[scale=0.3]{images/totcellcountscdf.png}
 		\label{fig:stats_b}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth}
 		\centering
-		\includegraphics[scale=0.28]{images/stddevs.png}
+		\includegraphics[scale=0.3]{images/stddevs.png}
 		\label{fig:stats_c}
 	\end{subfigure}
 	\label{fig:measurements}
