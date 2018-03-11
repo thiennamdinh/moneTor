@@ -1,4 +1,6 @@
 \subsection{Methodology}
+
+\subsubsection{Performance Metrics}
 \subsection{Data Collection}
 \label{subsec:datacollection}
 
@@ -9,7 +11,13 @@ We deployed a data collection system to look for more realistic information abou
 
 We contacted the Tor research safety board, which is a group of researchers who study Tor, and who want to minimize privacy risks while fostering a better understanding of the Tor network and its users~\cite{torsafety}. We refactored our data collection process based on the feedback we received, and we applied one of their suggestion.
 
-We collect the data from multiple exit relays and aggregate everything on a central server. The data picked on each relay is itself an aggregation which we perform inside the relay's memory. The data collection is probabilistic, only 30\% of the circuits created to our exits are considered. The aggregation is done inside bins of configurable size, for every different traffic family we consider. Once we have collected enough data of a family, we dump the information on the disk, we clear the data and resume a new session. The information dumped contain an aggregation of 1600 circuits over an undefined time frame: we just wait to have enough circuits to dump on the disk, which depends of the users activity. Consequently, we are not writing any information related to a particular flow on the disk.
+We collect the data from multiple exit relays and aggregate everything on a central server. The data picked on each relay is itself an aggregation which we perform inside the relay's memory. The data collection is probabilistic, only 30\% of the circuits created to our exits are considered. The aggregation is done inside bins of configurable size, for every different traffic family we consider. Once we have collected enough data of a family, we dump the information on the disk, we clear the data and resume a new session. The information dumped contains an aggregation of 1600 circuits over an undefined time frame: we just wait to have enough circuits to dump an aggregated result on the disk, which depends of the users activity. The data collected is:
+\begin{itemize}
+	\item \textbf{Time Profile}: The number of cells in each time interval (configured to be 5 seconds) since the success of the DNS request. This information sums inbound and outbound cells, and is aggregated over circuits by addition.
+	\item \textbf{Total Counts}: The total amount of cells processed by a circuit. This information is aggregated by taking the mean of fixed-size nearest neighbor bins, such that the precision of the recorded value depends of the number of bins.
+	\item \textbf{Time Stdevs}: The standard deviation accross the time profiles of individual circuits. This information is aggregated in a similar method than the Total Counts. The main objective of this statistic is to get an idea of the bulky vs bursty likelihood through the Time Profile, for each traffic family.
+\end{itemize}
+Consequently, we are not writing any information related to a particular user flow on the disk. The code used for the data collection is available online, and can be audited~\cite{code-mt_stats}.
 
 \subsubsection{Observations}
 
@@ -19,11 +27,13 @@ We collect the data from multiple exit relays and aggregate everything on a cent
 		\centering
 		\includegraphics[scale=0.3]{images/exitmeasurement.png}
 		\label{fig:stats_a}
+		\caption{Mean observed bandwidth per traffic family}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth}
 		\centering
 		\includegraphics[scale=0.3]{images/totcellcountscdf.png}
 		\label{fig:stats_b}
+		\caption{•}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth}
 		\centering
@@ -33,4 +43,3 @@ We collect the data from multiple exit relays and aggregate everything on a cent
 	\label{fig:measurements}
 	\caption{Tor measurements}
 \end{figure*}
-\subsection{Ethical Considerations}
