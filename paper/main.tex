@@ -1,6 +1,13 @@
 \documentclass[sigconf, anonymous]{acmart}
 
-\fancyhf{} % Remove fancy page headers 
+%---------- td: not sure if we can use this
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algorithmicx}
+\usepackage[noend]{algpseudocode}
+%-------------------------------------------
+
+\fancyhf{} % Remove fancy page headers
 \fancyhead[C]{Anonymous submission \#9999 to ACM CCS 2018} % TODO: replace 9999 with your paper number
 \fancyfoot[C]{\thepage}
 
@@ -45,6 +52,11 @@ Your abstract should go here. You will also need to upload a plain-text abstract
 
 \section{Related Work}
 \label{sec:related_work}
+\input{sections/related-work.tex}
+
+\section{Tor Incentives}
+\label{sec:tor_incentives}
+\input{sections/tor-incentives.tex}
 
 \section{MoneTor design}
 \label{sec:design}

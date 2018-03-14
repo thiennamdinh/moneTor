@@ -1,3 +1,193 @@
-\subsection{Payment System Design}
 
-\subsection{Implementation Design}
+\subsection{Security Model}
+
+The privacy threat model is derived from the local active adversary
+model ubiquitously found in Tor research [Tor paper]. Informally, we claim the following
+anonymity guarantees:
+
+\begin{enumerate}
+\item No additional party needed to operate the MoneTor system (i.e. ledgers
+  and intermediaries) will know any more about a given user than is already
+  known by an existing relay.
+\item In typical usage, users do not leak any more information other than the
+  single bit needed to differentiate premium and nonpremium users.
+\end{enumerate}
+
+Our threat model for payment security is similar to those found in prior works
+in blockchain micropayment channels [lightning network]. In such models, the
+user is protected from malicious intermediaries by the ability to prove
+misbehavior to a global ledger. The security guarantees on the ledger will be
+subject to the guarantees made by the cryptocurrency interface
+[plasma][sidechains]. This is in direct contrast to prior to Chaumian e-cash
+proposals that employ an \emph{honest but curious} model for the central
+bank. In MoneTor, we prioritize payment security and ensure that nobody,
+including the ledger, ever has direct control of user funds.
+
+\subsection{Payment Protocols}
+
+In this section we specify formal protocols that comprise the payment
+scheme. All protocols are either two or three party interactions between a
+subset of the following roles: $C$ (client), $R$ (relay), $E$ (end user: either
+a client or relay) $I$ (intermediary), and $L$ (ledger). At this level, we assume that
+one client is paying one relay through a single channel and that all network
+connections have been perfectly anonymized.
+
+The full MoneTor payment scheme is a superset of Bolt three-party bidirectional
+micropayment channels and, as such, we adopt its nomenclature where possible but
+adapt it to our notions of ledgers, clients, relays, etc. The following is brief
+outline of the prerequisite micropayment channel procedures defined in Bolt. We
+refer the reader to the original paper for more detailed specifications [bolt paper].
+
+\begin{itemize}
+\item $KeyGen$: Any party generates a cryptographic keypair
+\item $Init_E$: $E$ initializes her half of a micropayment channel by escrowing
+  initial funds on $L$
+\item $Init_I$: $I$ initializes his half of a micropayment channel by
+  escrowing intial funds on $L$
+\item $Establish$: $E$ and $I$ interact to establish a new, functional
+  micropayment channel
+\item $Pay$: $E_1$ interacts with $I$ and $E_2$ to send a single micropayment to $E_2$
+\item $Refund$: $E$ closes a micropayment channel on $L$ and makes a claim on
+  the escrowed balance.
+\item $Refute$: $I$ closes a micropayment channel on $L$ and makes a claim on
+  the escrowed balance.
+\item $Resolve$: $L$ determines the final balance of funds awared to
+  each party.
+\end{itemize}
+
+MoneTor makes use of the existing anonoymous micropayment structure to construct
+a new layer for \emph{locally transparent nanopayments}. In this scheme,
+\emph{nanopayment channels} are established in place of single micropayment
+operations. Nanopayment channels allow the client to send a $n$ number of
+undirectional nanopayments to the relay. Each payment represents a fixed value
+$\delta$, established at the start of the nanopayment channel. Payments are
+\emph{locally transparent} in the sense that each nanopayment in the same
+channel is trivially linked to eachother. However, each nanopayment channel is
+anonymous with respect to other nanopayment channels and micropayment
+operations.
+
+Assuming that $C$ and $R$ have both completed $Establish$ with $I$, we introduce
+the following set of protocols to operate a nanopayment channel.
+
+\begin{itemize}
+\item $Nano$-$Setup$: $C$ and $I$ interact to prepare a nanopayment channel on top
+  of their existing micropayment channel.
+\item $Nano$-$Establish$: $C$ sends her nanopayment channel information to $R$,
+  who establishes it with $I$ on top of their existing micropayment channel.
+\item $Nano$-$Pay$: $C$ sends a single nanopayment channel to $R$. This is
+  repeatable for up to $n$ operations.
+\item $Nano$-$Close_R$: $R$ closes his nanopayment channel with $I$.
+\item $Nano$-$Close_C$: $C$ closes his nanopayment channel with $I$. Note that
+  this must happen after $Nano$-$Close_R$.
+\end{itemize}
+
+We also specify the following modified channel conflict resolution procedures to
+ensure secure closure properties for the nanopayment scheme.
+
+\begin{itemize}
+\item $Nano$-$Refund$: $E$ closes channel on $L$.
+\item $Nano$-$Refute$: $I$ closes channelon $L$.
+\item $Nano$-$Resolve$: $L$ makes final determination on both micropayment and
+  outstanding nanopayment balances.
+\end{itemize}
+
+The core of our nanopayment scheme is inspired by the classic \emph{Payword}
+two-party micropayment scheme in which payments are encoded by successively
+revealed preimages in a precomputed hash chain [payword and micromint]. Hash
+chains are perhaps the most efficient known method for representing
+payments. Whereas a single Bolt micropayments require expensive zero-knowledge
+proofs and at least seven protocol steps hash payments can be computed on the
+order of of millions per second and each payment can be relayed with a single
+256 bit message.
+
+The challenge in this construction is to securely integrate the hash chain
+concept into the existing three-party anonymous micropayment channel setup such
+that all parties maintain cryptographic ownership of their funds. At the same
+time, we must ensure that no deanonymizing information is leaked outside of the
+nanopayment channel context.
+
+\subsection{Nanopayment Protocols}
+
+In this section, we provide a summarized intuition for the basic steps in the
+payment protocol. For a more formal algorithmic definition, we refer the reader
+to [algorithms] and [Appendix].
+
+\subsubsection{Nano-Setup}
+
+At the start of this protocol, $C$ has access to a micropayment wallet $w$ that
+enables her to operate her micropayment channel with $I$ as well as a refund
+token $rt$ that entitles her to claim her current funds on $L$ should $I$ misbehave
+or go offline.
+
+To construct a nanopayment channel, $C$ first generates an array of values $hc$
+of length $n$ where $hc_i = H(hc_{i+1})$ and $hc_n$ is a random number. The root
+of the hash chain $hc_0$ is used to create a globally unique nanopayment
+token $nT$ that encodes the public parameters of the nanopayment channel
+including the length $n$ and the per-payment value $\delta$.
+
+$C$ sends $I$ a commitment to a fresh nanopayment channel parametrized by $nT$ along
+with a zero-knowledge proof of the following statements:
+
+\begin{enumerate}
+\item The new nanopayment channel wallet $nw$ is well-formed from $w$
+\item $C$ has ownership of a micropayment channel containing at least $n *
+  \delta$ funds.
+\end{enumerate}
+
+$I$ verifies these messages and blindly supplies $C$ with a new refund token $nrt$
+that entitles $C$ to cash out the full balance of the micropayment channel along
+with any nanopayments to $L$. $C$, now protected against misbehavior by $I$,
+agrees to send a revocation token $\sigma_w$, which revokes her right to use $w$
+or $rt$. $I$, now protected against double spending by $C$, can now safely
+inform $C$ that the nanopayment channel has been setup.
+
+\subsubsection{Nano-Establish}
+
+At this point, $C$ sends $R$ the same $nT$ token used to setup the channel with
+$I$. $R$ uses this token to initiate her end of the nanopayment channel with $I$
+with essentially the same procedure that $C$ used in $Nano$-$Setup$. The
+nanopayment channel is fully established and ready to be used.
+
+A key observation is that both ends of the channel ($C$-$I$ and $R$-$I$)
+are rooted at the same hash chain root $hc_0$. As a result, the scheme ensures
+a correct-by-construction notion of \emph{atomicity} whereby both legs of the
+protocol are complete at the same time.
+
+\subsubsection{Nano-Pay}
+
+To make the next payment $i$, $C$ simply sends the next hash preimage $hc_i$ to
+$R$. Knowledge of this preimage $hc_i$ is sufficient for $R$ to prove posession
+of a nanopayment. At any given time, $R$ can broadcast the tuple ($nrt$, $hc_i$)
+to $L$ to prove ownership of a certain value of funds. Notice that this action
+simultaneously reveals $hc_i$ to $I$, who can then claim an equivalent value of
+funds from $C$.
+
+\subsubsection{Nano-Close}
+
+After some number of payments $k < n$ has transpired, $C$ and $R$ will both wish
+to close their nanopayment channels through $I$. In this process, the $R$-$I$ leg
+must be closed before the $C$-$I$ leg. This is due to the unidirectional nature
+of nanopayment channels. Since payments are flowing form $C$ to $R$, $I$ must
+first determine its debt to $R$ in order to know how much it can claim from $C$.
+
+$R$ first sends to $I$ a commitment to a new micropayment wallet $w'$ and a
+zero-knowledge proof of the following statements:
+
+\begin{enumerate}
+\item $w'$ is well-formed from $w$
+\item The balance of $w'$ is equal to the sum of the previous wallet $w$ and
+  $\delta * k$
+\end{enumerate}
+
+Once verified, $I$ issues a refund token $rt'$ on the new funds. $R$ agrees to
+invalidate the nanopayment channel by issuing a revocation token $\sigma_{nw}$
+to $I$. $I$ and $R$ proceed to create a blind signature on $w'$ thus validating
+the wallet for fuure use.
+
+Once $I$ has closed his nanopayment channel leg with $R$, $I$ and $C$ are free
+to complete the exact same close protocol. All parties are now reverted to the
+original state prior to $Nano$-$Setup$ with a securely updated balance.
+
+\subsection{Network Protocols}
+
+\subsection{Implementation}
