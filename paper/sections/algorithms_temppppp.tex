@@ -1,0 +1,111 @@
+\begin{algorithm}
+  \caption{Nanopayment Channel Setup --- Protocol between a relay and
+    intermediary to create a new nanopayment channel from an existing
+    micropayment wallet. This can be run prior to circuit setup.}
+  \begin{algorithmic}[1]
+    \Procedure{Cli}{$pp, pk_I, w_C, \delta_C, n$}
+      \State{parse $w_C$ as $(B_C, wpk_C, wsk_C, r_C, \sigma^w_C)$}
+      \If{$B_{C} + (\delta_C * n) < 0$}
+        \State{Abort$()$
+      \EndIf{}
+      \State{$\epsilon_C \gets \delta_C * n$}
+      \State{$(nwpk_C, nwsk_C, nwCom_C, n\pi_C) \gets $ CW$(pp, pk_I, w_C, \epsilon_C)$}
+      \State{$\delta_R \gets -(\delta_C  + tax)$}
+      \State{$HC \gets $MakeHashChain$($Random$(), n)$}
+      \State{$nT \gets (\delta_C, \delta_R, n, HC[0])$}
+      \State{Int.Send$(wpk_C, nwpk_C, nwCom_C, n\pi_C, nT)$}
+    \EndProcedure{}
+
+    \Procedure{Int}{$pp, S_I, nS_I$}
+      \State{$(wpk_C, nwpk_C, nwCom_C, n\pi_C, nT) \gets $Cli.Receive$()$}
+      \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
+      \If{$wpk_C \in S_I \vee \neg $Verify$(n\pi_C)$}
+        \State{Abort$()$
+      \EndIf{}
+      \If{$-\delta_C \ne price \vee \delta_R + \delta_C + tax \ne 0$}
+        \State{Abort$()$
+      \EndIf{}
+      \State{$S_I \gets S_I \cup \{wpk_C : \bot, nwpk_C: \bot\}$}
+      \State{$nS_I \gets nS_I \cup \{nT : \bot\}$}
+      \State{Cli.Send$(verified)$}
+    \EndProcedure{}
+
+    \Procedure{Cli}{}
+      \State{$ver \gets $Int.Receive$()$}
+      \State{$nrt_C \gets $Int.Blindsig$(ver, refund || nT || nwpk_C || B + (\delta_C * n))$}
+      \State{$nS_C \gets (0, HC[0])$}
+      \State{$ncsk_C \gets (nwpk_C, nwsk_C, HC)$}
+      \State{$\sigma^{rev(w)}_C \gets $Sign$(wsk_C, revoke||wpk_C)$}
+      \State{Int.Send$(\sigma^{recv(w)}_C$)}
+    \EndProcedure{}
+
+    \Procedure{Int}{}
+      \State{$\sigma^{recv(w)}_C \gets $Cli.Receive$()$}
+      \If{$\neg $Verify$(wpk, revoke||wpk_C, \sigma^{recv(w)}_C) = 1$}
+        \State{Abort$()$
+      \EndIf{}
+      \State{$S_I[wpk_C] \gets \sigma^{recv(w)}_C$}
+      \State{$nS_I[nT] \gets ready$}
+      \State{Cli.Send$(established)$}
+    \EndProcedure{}
+
+  \end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}
+  \caption{Nanopayment Channel Close --- Protocol between an end user
+    (client or relay) and an intermediary to close out the nanopayment
+    channel and receive a micropayment wallet. This should be done any
+    time after the circuit closure and the relay must close first}
+  \begin{algorithmic}[1]
+    \State{$\forall E \in \{Client, Relay\}$}
+    \Procedure{End}{$pp, pk_I, w_E, nT, ncsk_E, nS_E$}
+      \State{parse $w_E$ as $(B_E, wpk_E, wsk_E, r, \sigma^w_E)$}
+      \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
+      \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E, \_)$}
+      \State{parse $nS_E$ as $(k, hc^k)$}
+      \State{$\epsilon_E \gets \delta_C * k$ if (End = Client) else $ \delta_R * k$}
+      \State{$(wpk'_E, wsk'_E, wCom'_E, \pi'_E) \gets $CW$(pp, pk_I, wpk_B, \sigma^w_E, B_E, \epsilon_E$)}
+      \State{Int.Send$(wpk_E, wCom'_E, \pi'_E, nT, \epsilon_E, k, hc^k)$}
+    \EndProcedure{}
+
+    \Procedure{Int}{$pp, S_I, nS_I$}
+      \State{$(wpk_E, wCom'_E, \pi_E, nT, \epsilon_E, k, hc^k) \gets $End.Receive$()$}
+      \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
+      \If{$\epsilon_E < 0 \wedge closed \not\in nS_I[nT]$}
+        \State{Abort$()$
+      \EndIf{}
+      \If{Verify$(\pi_E) \vee nS_I[nT] \ne established$}
+        \State{Abort$()$
+      \EndIf{}
+      \If{$k > n \vee \neg $VerifyHashChain$(hc^0, k, hc^k)$}
+        \State{Abort$()$
+      \EndIf{}
+      \State{$nS_I[nT] \gets closed||hc^k$}
+      \State{End.Send$(verified)$}
+    \EndProcedure{}
+
+    \Procedure{End}{}
+      \State{$ver \gets $Int.Receive$()$}
+      \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E, \bot)$}
+      \State{$rt'_E \gets $Int.Blindsig$(ver, refund || wpk'_E || B_E + (\delta_E * k))$}
+      \State{$\sigma^{rev(nrt)}_E \gets $Sign$(nwsk_E, revoke||nwpk_E)$}
+      \State{Int.Send$(nwpk_E, \sigma^{rev(nrt)})$}
+    \EndProcedure{}
+
+    \Procedure{Int}{}
+      \State{$(nwpk_E, \sigma^{rev(nrt)}_E) \gets $End.Receive$()$}
+      \If{$nwpk_E n\in S_I \vee \neg $Verify$(nwpk_E, \sigma^{rev(nrt)})$}
+        \State{Abort$()$
+      \EndIf{}
+      \State{$S_I[nwpk_E] \gets \sigma^{rev(nrt)}$}
+      \State{End.Send$(verified)$}
+    \EndProcedure{}
+
+    \Procedure{End}{}
+      \State{$ver \gets $Int.Receive$()$}
+      \State{$w'_E \gets $Int.Blindsig$(ver, wpk_E'||B_E + \epsilon_E)$}
+    \EndProcedure{}
+
+  \end{algorithmic}
+\end{algorithm}
