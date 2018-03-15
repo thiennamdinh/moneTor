@@ -1,3 +1,7 @@
+Where we previously assumed the existence of an ideal payment procedure, we now
+describe our construction for the MoneTor payment scheme. We first summarize the
+algorithmic design of our payment protocols and proceed to describe integration
+details with the Tor networking layer and codebase.
 
 \subsection{Security Model}
 
@@ -129,7 +133,7 @@ $C$ sends $I$ a commitment to a fresh nanopayment channel parametrized by $nT$ a
 with a zero-knowledge proof of the following statements:
 
 \begin{enumerate}
-\item The new nanopayment channel wallet $nw$ is well-formed from $w$
+\item The nanopayment wallet $nw$ is well-formed from $w$
 \item $C$ has ownership of a micropayment channel containing at least $n *
   \delta$ funds.
 \end{enumerate}
