@@ -6,7 +6,7 @@ details with the Tor networking layer and codebase.
 \subsection{Security Model}
 
 The privacy threat model is derived from the local active adversary
-model ubiquitously found in Tor research [Tor paper]. Informally, we claim the following
+model ubiquitously found in Tor research~\cite{dingledine2004tor}. Informally, we claim the following
 anonymity guarantees:
 
 \begin{enumerate}
@@ -18,11 +18,10 @@ anonymity guarantees:
 \end{enumerate}
 
 Our threat model for payment security is similar to those found in prior works
-in blockchain micropayment channels [lightning network]. In such models, the
+in blockchain micropayment channels~\cite{poon2016bitcoin}. In such models, the
 user is protected from malicious intermediaries by the ability to prove
 misbehavior to a global ledger. The security guarantees on the ledger will be
-subject to the guarantees made by the cryptocurrency interface
-[plasma][sidechains]. This is in direct contrast to prior to Chaumian e-cash
+subject to the guarantees made by the cryptocurrency interface~\cite{back2014enabling}\cite{poon2017plasma}. This is in direct contrast to prior to Chaumian e-cash
 proposals that employ an \emph{honest but curious} model for the central
 bank. In MoneTor, we prioritize payment security and ensure that nobody,
 including the ledger, ever has direct control of user funds.
@@ -40,7 +39,8 @@ The full MoneTor payment scheme is a superset of Bolt three-party bidirectional
 micropayment channels and, as such, we adopt its nomenclature where possible but
 adapt it to our notions of ledgers, clients, relays, etc. The following is brief
 outline of the prerequisite micropayment channel procedures defined in Bolt. We
-refer the reader to the original paper for more detailed specifications [bolt paper].
+refer the reader to the original paper for more detailed
+specifications~\cite{green2017bolt}.
 
 \begin{itemize}
 \item $KeyGen$: Any party generates a cryptographic keypair
@@ -97,7 +97,7 @@ ensure secure closure properties for the nanopayment scheme.
 
 The core of our nanopayment scheme is inspired by the classic \emph{Payword}
 two-party micropayment scheme in which payments are encoded by successively
-revealed preimages in a precomputed hash chain [payword and micromint]. Hash
+revealed preimages in a precomputed hash chain~\cite{rivest1996payword}. Hash
 chains are perhaps the most efficient known method for representing
 payments. Whereas a single Bolt micropayments require expensive zero-knowledge
 proofs and at least seven protocol steps hash payments can be computed on the
