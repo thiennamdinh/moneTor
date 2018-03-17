@@ -12,7 +12,7 @@ anonymity guarantees:
 \begin{enumerate}
 \item No additional party needed to operate the MoneTor system (i.e. ledgers
   and intermediaries) will know any more about a given user than is already
-  known by an existing relay.
+  known by an existing relay. \flo{We can be more precise, saying by an existing *middle* relay? Exit or guard relays know already more about users than an inter or ledger}
 \item In typical usage, users do not leak any more information other than the
   single bit needed to differentiate premium and nonpremium users.
 \end{enumerate}
@@ -34,7 +34,7 @@ scheme. All protocols are either two or three party interactions between a
 subset of the following roles: $C$ (client), $R$ (relay), $E$ (end user: either
 a client or relay) $I$ (intermediary), and $L$ (ledger). At this level, we assume that
 one client is paying one relay through a single channel and that all network
-connections have been perfectly anonymized.
+connections have been perfectly anonymized. \flo{Careful with adjectives: perfect anonymity does not exist in real-world (i.e., there is always some leakage)}
 
 The full MoneTor payment scheme is a superset of Bolt three-party bidirectional
 micropayment channels and, as such, we adopt its nomenclature where possible but
@@ -63,7 +63,8 @@ specifications~\cite{green2017bolt}.
 MoneTor makes use of the existing anonoymous micropayment structure to construct
 a new layer for \emph{locally transparent nanopayments}. In this scheme,
 \emph{nanopayment channels} are established in place of single micropayment
-operations. Nanopayment channels allow the client to send a $n$ number of
+operations. \flo{We probably need to introduce to the reader here why we thought a nanopayment channel was needed. Indeed, the Bolt paper claims that their micropayment can be used to do Tor bandwidth prioritization, while we strongly disagree with.}
+Nanopayment channels allow the client to send a $n$ number of
 undirectional nanopayments to the relay. Each payment represents a fixed value
 $\delta$, established at the start of the nanopayment channel. Payments are
 \emph{locally transparent} in the sense that each nanopayment in the same
