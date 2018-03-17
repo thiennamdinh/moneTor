@@ -6,8 +6,9 @@ and instead outline the high-level design strategy.
 
 MoneTor proposes to implement a native currency to the Tor ecosystem. Unlike in
 many previous Tor proposals thats feature ``bulkier'' notions of incentives and
-priviledges, our currency should satisfy the standard properties of scarcity,
-fungibility, divisibility, durabililty, and transferability. Furthermore, we
+priviledges, our currency should satisfy the standard properties of \textit{scarcity},
+\textit{fungibility}, \textit{divisibility}, \textit{durabililty}, and \textit{transferability}. \flo{We need proper definitions of these properties. In background section or here?}
+Furthermore, we
 follow the Bitcoin paradigm in which all users maintain full and exclusive
 control of their monetary wealth through use of public key cryptography.
 
@@ -16,7 +17,7 @@ growing number of independent cryptocurrencies. This approach has two drawbacks:
 
 \begin{enumerate}
 \item Decentralized blockchains are inefficient
-\item Small market-cap cryptocurrencies are volatile
+\item Small market-cap cryptocurrencies are volatile \flo{I would argue that volatility is not primary linked to the market-cap, but more about the fraction of the market-cap really used within some economy of goods and services. Hence, big market-cap are also highly volatile if any real economy does not sustain the market. This is somewhat what happens now with bitcoin's volatility: the fraction of the market not used in some real economy of goods and services is too high.}
 \end{enumerate}
 
 The efficiency of decentralized blockchains stems from the necessity to reach
@@ -28,7 +29,8 @@ responsible for maintaining publically audited global currency data.
 
 To mitigate the volatility problem, we suggest a two-way value peg to fix
 MoneTor tokens to a high-market cap cryptocurrency such as Bitcoin or
-Ethereum. Two-way pegs were originally proposed gitfor Bitcoin as ``pegged
+Ethereum. \flo{As I said above, I don't think it helps to mitigate volatility}
+Two-way pegs were originally proposed for Bitcoin as ``pegged
 sidechains'' and further developed for more flexible use cases as ``plasma child
 chains'' in Ethereum~\cite{back2014enabling, poon2017plasma}. In the
 Ethereum design, it would likely be feasible to integrate smart contracts such
@@ -54,7 +56,7 @@ determination. While it would be tempting to enlist any number of market-based
 mechanisms to set premium bandwidth prices, any price differentiation between
 clients or relays effectively leaks information. We therefore propose that a
 global price is set by the Tor authorities and published in the consensus
-document.
+document. \flo{Maybe mention that this price can be decided by the overall network, and can be dynamical? The only constraint is that every Tor users use the *same* price at time *t*}
 
 A more convoluted problem is the issue of wealth distribution. Given that Tor is
 fundamentally a nonprofit ecosystem, it is not quite clear that an optimal
@@ -62,4 +64,4 @@ profit-seeking network will closely aligned with the core mission of the Tor
 Project. To address this problem, we introduce a taxation element into the
 design. From every payment, a percentage of funds is anonymously diverted to an
 account controlled by the network authority. The intent is that these funds can
-be algorithmically redistributed to relays in desirable locations or roles.
+be algorithmically redistributed to relays in desirable locations or roles to sustain the network diversity, with a notion of diversity decided by the Tor project.
