@@ -21,9 +21,11 @@ Consequently, we are not writing any information related to a particular user fl
 
 \subsubsection{Observations}
 
-Our measurements successfully captured several important informations needed to design our experimentation phase. For example, one important question would be: how should we choose the fraction of premium users in our experimentations? From Figure, we observe that $\approx 82\%$ of circuits carrying only web traffic exchanged less than 1000 cells for both directions (i.e., toward the web server and toward the user). This metric does not say that $82\%$ of Tor webusers use less than 1000 cells for a web connection, since it is theoretically possible that only one user is responsible for consuming less than 1000 cells across our measurements. However, it gives a good idea of the fraction of circuits that may benefit from a payment channel in the Tor network, since around $50\%$ of them do not carry data and less than $17\%$ of them carry at least one web page. These numbers do not also mean that $\approx 82\%$ of circuits carry unethical network usage.
+Our measurements successfully captured several important informations needed to design our experimentation phase. For example, one important question would be: how should we choose the fraction of premium users in our experimentations? From Figure~\ref{fig:stats_b}, we observe that $\approx 82\%$ of circuits carrying only web traffic exchanged less than 1000 cells for both directions (i.e., toward the web server and toward the user). This metric does not say that $82\%$ of Tor webusers use less than 1000 cells for a web connection, since it is theoretically possible that only one user is responsible for consuming less than 1000 cells across our measurements. However, it gives a good idea of the fraction of circuits that may benefit from a payment channel in the Tor network, since around $50\%$ of them do not carry data and less than $17\%$ of them carry at least one web page. These numbers do not mean that $\approx 82\%$ of circuits carry unethical network usage.
 
-In another area of research, it may be interesting to point out that since $\approx 50\%$ of users do not carry data after their DNS request, some adversary doing end-to-end correlation may prefer to use active attacks over passive correlation to capture more identities.
+It also appears from Figure~\ref{fig:stats_a} that most of the traffic usually happens within the first few tens of seconds, and that all type of traffic we collected seems to follow the same rule. From that result, we believe that the reliability of payment is critical within the first few seconds, especially from a relay side viewpoint.
+
+%In another area of research, it may be interesting to point out that since $\approx 50\%$ of users do not carry data after their DNS request, some adversary doing end-to-end correlation may prefer to use active attacks over passive correlation to capture more identities.
 
 
 \begin{figure*}
@@ -49,3 +51,5 @@ In another area of research, it may be interesting to point out that since $\app
 	\label{fig:measurements}
 	\caption{Tor measurements}
 \end{figure*}
+
+\subsection{Experimentations}
