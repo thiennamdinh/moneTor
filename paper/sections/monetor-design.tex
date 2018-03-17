@@ -21,10 +21,11 @@ Our threat model for payment security is similar to those found in prior works
 in blockchain micropayment channels~\cite{poon2016bitcoin}. In such models, the
 user is protected from malicious intermediaries by the ability to prove
 misbehavior to a global ledger. The security guarantees on the ledger will be
-subject to the guarantees made by the cryptocurrency interface~\cite{back2014enabling}\cite{poon2017plasma}. This is in direct contrast to prior to Chaumian e-cash
-proposals that employ an \emph{honest but curious} model for the central
-bank. In MoneTor, we prioritize payment security and ensure that nobody,
-including the ledger, ever has direct control of user funds.
+subject to the guarantees made by the cryptocurrency
+interface~\cite{back2014enabling, poon2017plasma}. This is in direct contrast to
+prior to Chaumian e-cash proposals that employ an \emph{honest but curious}
+model for the central bank. In MoneTor, we prioritize payment security and
+ensure that nobody, including the ledger, ever has direct control of user funds.
 
 \subsection{Payment Protocols}
 
@@ -116,21 +117,17 @@ In this section, we provide a summarized intuition for the basic steps in the
 payment protocol. For a more formal algorithmic definition, we refer the reader
 to [algorithms] and [Appendix].
 
-\subsubsection{Nano-Setup}
-
-At the start of this protocol, $C$ has access to a micropayment wallet $w$ that
-enables her to operate her micropayment channel with $I$ as well as a refund
-token $rt$ that entitles her to claim her current funds on $L$ should $I$ misbehave
-or go offline.
-
-To construct a nanopayment channel, $C$ first generates an array of values $hc$
-of length $n$ where $hc_i = H(hc_{i+1})$ and $hc_n$ is a random number. The root
-of the hash chain $hc_0$ is used to create a globally unique nanopayment
-token $nT$ that encodes the public parameters of the nanopayment channel
-including the length $n$ and the per-payment value $\delta$.
-
-$C$ sends $I$ a commitment to a fresh nanopayment channel parametrized by $nT$ along
-with a zero-knowledge proof of the following statements:
+\textbf{Nano-Setup} At the start of this protocol, $C$ has access to a
+micropayment wallet $w$ that enables her to operate her micropayment channel
+with $I$ as well as a refund token $rt$ that entitles her to claim her current
+funds on $L$ should $I$ misbehave or go offline. To construct a nanopayment
+channel, $C$ first generates an array of values $hc$ of length $n$ where
+$hc_i = H(hc_{i+1})$ and $hc_n$ is a random number. The root of the hash chain
+$hc_0$ is used to create a globally unique nanopayment token $nT$ that encodes
+the public parameters of the nanopayment channel including the length $n$ and
+the per-payment value $\delta$. $C$ sends $I$ a commitment to a fresh
+nanopayment channel parametrized by $nT$ along with a zero-knowledge proof of
+the following statements:
 
 \begin{enumerate}
 \item The nanopayment wallet $nw$ is well-formed from $w$
@@ -145,30 +142,23 @@ agrees to send a revocation token $\sigma_w$, which revokes her right to use $w$
 or $rt$. $I$, now protected against double spending by $C$, can now safely
 inform $C$ that the nanopayment channel has been setup.
 
-\subsubsection{Nano-Establish}
-
-At this point, $C$ sends $R$ the same $nT$ token used to setup the channel with
-$I$. $R$ uses this token to initiate her end of the nanopayment channel with $I$
-with essentially the same procedure that $C$ used in $Nano$-$Setup$. The
-nanopayment channel is fully established and ready to be used.
-
-A key observation is that both ends of the channel ($C$-$I$ and $R$-$I$)
-are rooted at the same hash chain root $hc_0$. As a result, the scheme ensures
-a correct-by-construction notion of \emph{atomicity} whereby both legs of the
+\textbf{Nano-Establish} At this point, $C$ sends $R$ the same $nT$ token used to
+setup the channel with $I$. $R$ uses this token to initiate her end of the
+nanopayment channel with $I$ with essentially the same procedure that $C$ used
+in $Nano$-$Setup$. The nanopayment channel is fully established and ready to be
+used. A key observation is that both ends of the channel ($C$-$I$ and $R$-$I$)
+are rooted at the same hash chain root $hc_0$. As a result, the scheme ensures a
+correct-by-construction notion of \emph{atomicity} whereby both legs of the
 protocol are complete at the same time.
 
-\subsubsection{Nano-Pay}
-
-To make the next payment $i$, $C$ simply sends the next hash preimage $hc_i$ to
+\textbf{Nano-Pay} To make the next payment $i$, $C$ simply sends the next hash preimage $hc_i$ to
 $R$. Knowledge of this preimage $hc_i$ is sufficient for $R$ to prove posession
 of a nanopayment. At any given time, $R$ can broadcast the tuple ($nrt$, $hc_i$)
 to $L$ to prove ownership of a certain value of funds. Notice that this action
 simultaneously reveals $hc_i$ to $I$, who can then claim an equivalent value of
 funds from $C$.
 
-\subsubsection{Nano-Close}
-
-After some number of payments $k < n$ has transpired, $C$ and $R$ will both wish
+\textbf{Nano-Close} After some number of payments $k < n$ has transpired, $C$ and $R$ will both wish
 to close their nanopayment channels through $I$. In this process, the $R$-$I$ leg
 must be closed before the $C$-$I$ leg. This is due to the unidirectional nature
 of nanopayment channels. Since payments are flowing form $C$ to $R$, $I$ must

@@ -1,20 +1,55 @@
-Main intro
+Anonymous traffic routing through Tor remains one of the most popular and
+well-studied low-latency networks for censorship evasion and privacy protection
+~\cite{dingledine2004tor}. In this setup, clients protect their TCP/IP metadata
+by routing their traffic through an onion encryption protocol with three
+randomly selected volunteer relay nodes. This path is refered to as a
+circuit. The network currently consists of approx. 6,000 relays contributing
+over 200 Gbit/s of bandwidth globally~\cite{portal2018tormetrics}. While Tor has
+proven to be a highly effective option for privacy-seeking users, it suffers
+from two orthogonal issues that are relevant to this work. The first is the
+large family of collusion attacks. These threats are relevant in scenarios where
+an attacker controls multiple node and is probabilistically controls more than
+one hop along a single client's circuit.
+path~\cite{wright2004predecessor}~\cite{murdoch2005low}. The second problem is
+overall performance. Although the multi-hop overlay protocol itself implies an
+inherit overhead on efficiency, Tor suffers from further traffic congestion
+leading to less-than-optimal network
+performance~\cite{portal2018tormetrics}[need better evidence/citations here?].
 
-\begin{itemize}
-\item what is Tor
-\item problems: congestion and anonymity
-\item solution to incentivize relays
-\item previous works + shortcomings
-\item cryptocurrencies
-\item leverage cryptocurrencies to address incentives
-\end{itemize}
+One approach to mitigated these problems is to address them separately from a
+networking standpoint. Indeed, a significant portion of recent research in Tor
+proposesses modifications to the core protocol itself[stuff]. A second approach
+is to observe that the anonymity and performance of the network are both
+proportional to the number of nodes. Under this perspective, the problem becomes
+a largely economic question: how can we incentivize more relay participation?
+There is a long line of research that explores various strategies for relay
+incentivization dating back about a decade. Unfortunately, relay incentivization
+faces several unique obstacles and no single proposal has thusfar proven to be
+overwhelmingly convincing.
 
-Contributions
+\textbf{Present Landscape} We argue that the lack of a breakthrough in this
+niche research area is not a matter of insufficient ingenuity but rather one of
+timing. Since the latest incentive schemes have been published, there has been
+an explosion of academic research within the domain of cryptocurrencies. As of
+this writing, Nakamoto's original Bitcoin whitepaper has garnered some 3000
+citations~\cite{nakamoto2008bitcoin}. This body of work introduces a multitude
+of new concepts that would appear indespensible to our area of research. Our
+aim then is to leverage the full range of payment protocols that have emerged in
+recent years into a practical next-generation incentivization strategy for Tor.
 
-\begin{itemize}
-\item assume perfect payment scheme and propose economic strategy
-\item design new nanopayment layer protocols
-\item demonstrate integration into Tor design and codebase
-\item gather statistics from real relays to support claims
-\item simulations to predict priority bandwidth consequences + overhead
-\end{itemize}
+\textbf{Contributions} MoneTor is a novel full-stack scheme for monetary relay
+incencentivization. We make the following contributions in this paper:
+
+\begin{enumerate}
+\item Outline a high-level economic strategy
+\item Introduce new highly-efficient nanopayment protocols
+\item Specify an integration strategy into the existing Tor networking layer
+\item Collect client usage data to argue for efficacy
+\item Design a proof-of-concept partial prototype
+\item Conduct network-scale simulations on our design
+\end{enumerate}
+
+The MoneTor design either leverages peer-reviewed designs or introduces fully
+specified designs for all of its components. In effect, we argue that the
+theoretical MoneTor framework is one that can be convincingly developed within
+Tor today.
