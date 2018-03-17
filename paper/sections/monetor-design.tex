@@ -68,7 +68,7 @@ Nanopayment channels allow the client to send a $n$ number of
 undirectional nanopayments to the relay. Each payment represents a fixed value
 $\delta$, established at the start of the nanopayment channel. Payments are
 \emph{locally transparent} in the sense that each nanopayment in the same
-channel is trivially linked to eachother. However, each nanopayment channel is
+channel is trivially linked to each other. However, each nanopayment channel is
 anonymous with respect to other nanopayment channels and micropayment
 operations.
 
@@ -103,8 +103,8 @@ revealed preimages in a precomputed hash chain~\cite{rivest1996payword}. Hash
 chains are perhaps the most efficient known method for representing
 payments. Whereas a single Bolt micropayments require expensive zero-knowledge
 proofs and at least seven protocol steps hash payments can be computed on the
-order of of millions per second and each payment can be relayed with a single
-256 bit message.
+order of millions per second and each payment can be relayed with a single
+256 bit message (one cell in Tor's case).
 
 The challenge in this construction is to securely integrate the hash chain
 concept into the existing three-party anonymous micropayment channel setup such
@@ -177,11 +177,13 @@ zero-knowledge proof of the following statements:
 Once verified, $I$ issues a refund token $rt'$ on the new funds. $R$ agrees to
 invalidate the nanopayment channel by issuing a revocation token $\sigma_{nw}$
 to $I$. $I$ and $R$ proceed to create a blind signature on $w'$ thus validating
-the wallet for fuure use.
+the wallet for future use.
 
 Once $I$ has closed his nanopayment channel leg with $R$, $I$ and $C$ are free
 to complete the exact same close protocol. All parties are now reverted to the
 original state prior to $Nano$-$Setup$ with a securely updated balance.
+
+\flo{We definitely need to prove that nanopayment channels are unlinkable.}
 
 \subsection{Network Protocols}
 
