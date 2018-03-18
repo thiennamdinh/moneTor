@@ -11,8 +11,8 @@ anonymity guarantees:
 
 \begin{enumerate}
 \item No additional party needed to operate the MoneTor system (i.e. ledgers
-  and intermediaries) will know any more about a given user than is already
-  known by an existing relay. \flo{We can be more precise, saying by an existing *middle* relay? Exit or guard relays know already more about users than an inter or ledger}
+  and intermediaries) will know any more about a given user than would be known
+  by an additional middle relay.
 \item In typical usage, users do not leak any more information other than the
   single bit needed to differentiate premium and nonpremium users.
 \end{enumerate}
@@ -32,9 +32,9 @@ ensure that nobody, including the ledger, ever has direct control of user funds.
 In this section we specify formal protocols that comprise the payment
 scheme. All protocols are either two or three party interactions between a
 subset of the following roles: $C$ (client), $R$ (relay), $E$ (end user: either
-a client or relay) $I$ (intermediary), and $L$ (ledger). At this level, we assume that
-one client is paying one relay through a single channel and that all network
-connections have been perfectly anonymized. \flo{Careful with adjectives: perfect anonymity does not exist in real-world (i.e., there is always some leakage)}
+a client or relay) $I$ (intermediary), and $L$ (ledger). At this level, we
+assume that one client is paying one relay through a single channel and that
+network-layer anonymity will be sufficiently handled at the Tor protocol level.
 
 The full MoneTor payment scheme is a superset of Bolt three-party bidirectional
 micropayment channels and, as such, we adopt its nomenclature where possible but
@@ -60,20 +60,27 @@ specifications~\cite{green2017bolt}.
   each party.
 \end{itemize}
 
-MoneTor makes use of the existing anonoymous micropayment structure to construct
-a new layer for \emph{locally transparent nanopayments}. In this scheme,
-\emph{nanopayment channels} are established in place of single micropayment
-operations. \flo{We probably need to introduce to the reader here why we thought a nanopayment channel was needed. Indeed, the Bolt paper claims that their micropayment can be used to do Tor bandwidth prioritization, while we strongly disagree with.}
-Nanopayment channels allow the client to send a $n$ number of
+While anonymous micropayment channels present a tremendous advance for many
+applications, the relatively heavy cryptography ($37-100 ms$) and communication
+(7 message legs) are a prohibitive expense for Tor relay payment. In addition to
+concerns regarding global network overhead, it is also desirable to keep the
+barrior threshold low for small perspective relay operators. We therefore
+introduce a new payment layer that enables the first practically efficient
+payments for Tor routing.
+
+MoneTor makes use of the existing anonoymous micropayment structure to
+facilitate \emph{locally transparent nanopayments}. In this scheme,
+\emph{nanopayment channels} are established in place of a single micropayment
+operation. Nanopayment channels allow the client to send a $n$ number of
 undirectional nanopayments to the relay. Each payment represents a fixed value
-$\delta$, established at the start of the nanopayment channel. Payments are
-\emph{locally transparent} in the sense that each nanopayment in the same
-channel is trivially linked to each other. However, each nanopayment channel is
-anonymous with respect to other nanopayment channels and micropayment
+$\delta$, established at the start of the nanopayment channel. The payments
+themselves are \emph{locally transparent} in the sense that each nanopayment in
+the same channel is trivially linked to each other. However, each nanopayment
+channel is anonymous with respect to other nanopayment channels and micropayment
 operations.
 
-Assuming that $C$ and $R$ have both completed $Establish$ with $I$, we introduce
-the following set of protocols to operate a nanopayment channel.
+Assuming that $C$ and $R$ have both completed $Establish$ with $I$, we define
+the following set of protocols needed to operate a nanopayment channel.
 
 \begin{itemize}
 \item $Nano$-$Setup$: $C$ and $I$ interact to prepare a nanopayment channel on top
@@ -100,20 +107,22 @@ ensure secure closure properties for the nanopayment scheme.
 The core of our nanopayment scheme is inspired by the classic \emph{Payword}
 two-party micropayment scheme in which payments are encoded by successively
 revealed preimages in a precomputed hash chain~\cite{rivest1996payword}. Hash
-chains are perhaps the most efficient known method for representing
-payments. Whereas a single Bolt micropayments require expensive zero-knowledge
-proofs and at least seven protocol steps hash payments can be computed on the
-order of millions per second and each payment can be relayed with a single
-256 bit message (one cell in Tor's case).
+chains are perhaps the most efficient known method for representing payments. In
+contrast to the expensive zero-knowledge proofs and signatures involved in
+anonymous micropayments, a single payment can be computed in the order of
+millions per second and conferred with a 256 bit message, or one single Tor
+cell.
 
 The challenge in this construction is to securely integrate the hash chain
 concept into the existing three-party anonymous micropayment channel setup such
 that all parties maintain cryptographic ownership of their funds. At the same
 time, we must ensure that no deanonymizing information is leaked outside of the
-nanopayment channel context.
+nanopayment channel context. The scheme we present incurrs an overhead penalty
+of approximately one micropayment operation at the beginning and end of each
+nanopayment channel lifecyle.
 
 \subsection{Nanopayment Protocols}
-
+tio
 In this section, we provide a summarized intuition for the basic steps in the
 payment protocol. For a more formal algorithmic definition, we refer the reader
 to [algorithms] and [Appendix].
@@ -182,8 +191,6 @@ the wallet for future use.
 Once $I$ has closed his nanopayment channel leg with $R$, $I$ and $C$ are free
 to complete the exact same close protocol. All parties are now reverted to the
 original state prior to $Nano$-$Setup$ with a securely updated balance.
-
-\flo{We definitely need to prove that nanopayment channels are unlinkable.}
 
 \subsection{Network Protocols}
 
