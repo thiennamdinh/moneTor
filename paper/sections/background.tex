@@ -1,5 +1,14 @@
 \subsection{Tor}
 
+\subsubsection{Tor Architecture}
+The Tor network is composed of multiple different components, and each of them run the same code base. Volunteers can run relays and enable specific roles or tasks such as \textit{network consensus directories}, \textit{HSDirs} and \textit{Exit policies}. \textit{Directory authorities} and \textit{Bandwidth authorities} are the most important components of the network, and only trustworthy core contributors run them. There are currently 9 directory authorities responsible to periodically agree over a state of the network, called \textit{consensus document}. This consensus document holds the identification information related to all available relays inside the network, as well as the result from the votes of the authorities (e.g., a set of \textit{flags} associated to each relay). The bandwidth authorities constantly measure every relay of the network and provide to the directory authorities a measurement value for each of them, which has a critical role in the path selection algorithm. This paper extends this architecture by adding two new roles needed for our monetary relay incentivization: Intermediary and Ledger.
+\subsubsection{Traffic Analysis}
+Tor's threat model assumes a local adversary who can observe some fraction of the network, operate onion routers or compromise some of them. Tor also assumes a local adversary who can manipulate user's streams: insert, modify, delete or delay data to create observable perturbations. Typically, by observing both ends of an anonymous stream, an attacker can infer who is talking to who using statistical correlation. The adversary's precision can also be improved by traffic flow perturbations. This attack is called \textit{end-to-end correlation}. Tor does not try to implement countermeasures to this attack but strives to minimize its impact. Recently, Rochet and Pereira~\cite{popets-dropping} showed that a silent near to perfect and instantaneous active traffic confirmation attacks exists in Tor, leveraging an essential property of distributed system: forward compatibility. Those results show the need to strive to reduce their impact, and one possible direction is to bring more diversity to the Tor network. The innermost goal of this paper is to give a tool to the Tor project to shape the Tor network diversity through money incentivization.
+
+\subsubsection{Evaluating Tor's performance}
+
+\subsubsection{Tor's scheduling}
+
 \begin{itemize}
 \item onion routing
 \item deanonymization collusion attacks
@@ -16,3 +25,5 @@
 \item anonymous payment channels
 \item side chains/plasma
 \end{itemize}
+
+\flo{I think we just need a comprehensive view of payment channels, and what problems they solve? I am going to talk a bit about Tor's scalability issue in Tor's background, and that's exactly for what payment channels are awesome :)}
