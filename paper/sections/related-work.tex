@@ -1,6 +1,7 @@
 There have been a number of standalone incentivization schemes proposed over the
 the past decade. We classify these into three types of strategies:
-non-transferable benefits, transferable benefits, and monetary payments.
+non-transferable benefits, transferable benefits, and monetary payments. The
+list presented her is comprehensive to the best of our knowledge.
 
 \subsection{Non-Transferable Benefits}
 
@@ -8,11 +9,25 @@ These proposals aim to recruit relays by offering some personal-use priviledged
 status. These priviledges, however, are crucially non-transferable and
 unexchangable for general financial profit.
 
-\textbf{Gold Star} ~\cite{dingledine2010building}
+\textbf{Gold Star} As one of the earliest incentive proposals, Gold Star introduces the notion of
+premium bandwidth. Premium, or ``gold star'' status, is awarded exclusively to
+the fastest 7/8ths of relays. Like moneTor many of the successive proposals,
+Gold Star leaks traffic information from traffic differentiation. However, in
+the leakage is exacerabated by the fact the pool of possible premium nodes is
+effecitvely fixed~\cite{dingledine2010building}.
 
-\textbf{BRAIDS} ~\cite{jansen2010recruiting}
-
-\textbf{LIRA} ~\cite{jansen2013lira}
+\textbf{BRAIDS/LIRA} The BRAIDS scheme shifts ports the notion of premium
+bandwidth from a single node to tickets. Small numbers of temporary premium
+tickets are freely distributed by a central ``bank'' to any client upon request
+or by relays that have accumulated spent tickets from clients. Crucially, the
+relay-specific tickets are designed to eliminate the double spending threat by
+original ticket obtainers~\cite{jansen2010recruiting}. LIRA is an idealogical
+successor to BRAIDs that seeks to reduce the scalability limits imposed by the
+centralized infrastructure. In LIRA, clients probabilistically ``win'' premium
+tickets without any interaction with the bank. While LIRA solves many pragmatic
+shortcoming of BRAIDS, neither of these designs were constructe to handle strong
+threats of client cheating nor do they confer economically robust incentives for
+relays~\cite{jansen2013lira}
 
 \subsection{Transferable Benefits}
 
@@ -23,11 +38,33 @@ benefits categorizes those schemes which do not directly confer weath to relays
 operators but nevertheless offers a product that might hold value in a secondary
 resale market.
 
-\textbf{TEARS} ~\cite{jansen2014onions}
+\textbf{TEARS} TEARS introduces a two-layer approach whereby \emph{shallots}
+token are awarded by a central bank to relays who contribute to the
+network. These shallots, which may be securely exchange, can then be redeemed
+for BRAIDS-style \emph{priority pass} tokens. While fully exchangable shallots
+represent an economic improvement to non-transferable priviledges, these tokens
+are conceptually discrete and indivisible assets that are not as easily
+exchanged as true currency. Furthermore, its reliance on a centralized bank and
+bandwidth measurement authority place implicit limits on its scalability and
+security ~\cite{jansen2010recruiting}.
 
-\textbf{TorPath to TorCoin} ~\cite{ghosh2014torpath}
+\textbf{TorPath to TorCoin} Perhaps the most radical redesign suggestion,
+TorCoin proposes to revamp the Tor architecture into one which can serve as the
+basis for a proof-of-bandwidth based cryptocurrency. The TorPath component
+specifies verifiable pseudorandom shuffling as a method for user circuit
+selection. This modified protocol would in theory provide a weakly secure means
+for relays to mint new TorCoin tokens based on their bandwidth contribution. In
+addition to several unresolved security issues enumerated by the authors
+themselves, it is not entirely clear whether the earned TorCoins themselves
+would be able to hold real-world value ~\cite{ghosh2014torpath}.
 
-\textbf{Proof-of-work as anonymous micropayment} ~\cite{biryukov2015proof}
+\textbf{Proof-of-work as anonymous micropayment} In this simple design,
+users provide partial proof-of-work tokens that can then be redeemed by relays
+for profit in real cryptocurrency mining pools. The drawback of this scheme is
+simple an issue of unrealistic magnitude; the paper itself estimates that a user
+who mines with consumer CPU hardware for 24 hours will be able to make only a
+few cents worth of payments while incuring a much higher cost in
+electricity~\cite{biryukov2015proof}.
 
 \subsection{Monetary Payments}
 
@@ -35,10 +72,28 @@ Proposals in the final class offer the most direct incentivization by outlining
 strategies to pay relays with real, externally valuable money. In theory, this
 is the most economically robust approach and the one that MoneTor adopts.
 
-\textbf{PAR} ~\cite{androulaki2008payment}
+\textbf{PAR} PAR is the earliest incentive scheme and first approach that
+implies a true notion of currency. A pre-Bitcoin design, PAR utilizes a hybrid
+payment scheme that implements inefficient but anonymous Chaumian e-cash
+protocols and efficient but transparent probabilistic micropayments. PAR
+introduces the \emph{honest but curious} bank paradigm in which the bank cannot
+deanonymize client but is in control of the reserve financial assets. As with
+BRAIDS, PAR suffers from unscalable centralized design~\cite{androulaki2008payment}.
 
-\textbf{XPay} ~\cite{chen2009xpay}
+\textbf{ORPay, PlusPay, CoinPay} These three protocols, part of the Chaumian
+e-cash tradition of payments schemes, are a series of incremental improvements
+released across two papers~\cite{chen2009xpay}~\cite{carbunar2012tipping}. In
+each of the protocols, the micropayment building block is derived from Payword
+hash chains, as is ours. While these schemes offer practical advantages to many
+aspects of PAR, it suffers from the same \emph{honest but curious} security
+assumptions while its scalability remains capped by the need for all clients to
+interact with the central bank for each payment chain.
 
-\textbf{Tipping pennies} ~\cite{carbunar2012tipping}
-
-\textbf{Orchid} ~\cite{salamon2018orchid}
+\textbf{Orchid} Orchid is an alternative project to Tor altogether which we
+include for thoroughness and some broad idealogical similarities
+~\cite{salamon2018orchid}. Orchid is an Ethereum-based project which proposes to
+construct a brand new decentralized and market-based anonymous routing
+network. However, as its stated intent has a stronger focus on censorship
+resistance than strong anonymity, it unlikely to have the same security
+guarantees as Tor. Indeed, the payment protocol enlisted for Orchid payments
+makes no claims on anonymity itself~\cite{pass2015micropayments}.
