@@ -20,7 +20,7 @@ growing number of independent cryptocurrencies. This approach has two drawbacks:
 
 \begin{enumerate}
 \item Decentralized blockchains are inefficient
-\item Small market-cap cryptocurrencies are volatile
+\item Standalone altcoin introduces undue economic complexity
 \end{enumerate}
 
 The efficiency of decentralized blockchains stems from the necessity to reach
@@ -30,14 +30,14 @@ infrastructure that currently features nine directory authorities. We propose to
 make use of this model by introducing a set of ledger authorities who are
 responsible for maintaining publically audited global currency data.
 
-To mitigate the volatility problem, we suggest a two-way value peg to fix
-MoneTor tokens to a high-market cap cryptocurrency such as Bitcoin or
-Ethereum. Two-way pegs were originally proposed for Bitcoin as ``pegged
-sidechains'' and further developed for more flexible use cases as ``plasma child
-chains'' in Ethereum~\cite{back2014enabling, poon2017plasma}. In the Ethereum
-design, it would likely be feasible to integrate smart contracts such that the
-Ethereum blockchain can be used as an authority ledger of last resort in the
-event that the native Tor ledger goes offline.
+To avoid the economic and financial nuisances of the second problem, we suggest
+a two-way value peg to fix MoneTor tokens to a high-market cap cryptocurrency
+such as Bitcoin or Ethereum. Two-way pegs were originally proposed for Bitcoin
+as ``pegged sidechains'' and further developed for more flexible use cases as
+``plasma child chains'' in Ethereum~\cite{back2014enabling, poon2017plasma}. In
+the Ethereum design, it would likely be feasible to integrate smart contracts
+such that the Ethereum blockchain can be used as an authority ledger of last
+resort in the event that the native Tor ledger goes offline.
 
 Finally, we would like to provide user privacy as much as possible before and
 after relay payments are made. To do this, we suggested a transactional payment

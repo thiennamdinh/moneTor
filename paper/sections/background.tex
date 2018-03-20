@@ -1,18 +1,61 @@
 \subsection{Tor}
 
 \subsubsection{Tor Architecture}
-The Tor network is composed of multiple different components, and each of them run the same code base. Volunteers can run relays and enable specific roles or tasks such as \textit{network consensus directories}, \textit{HSDirs} and \textit{Exit policies}. \textit{Directory authorities} and \textit{Bandwidth authorities} are the most important components of the network, and only trustworthy core contributors run them. There are currently 9 directory authorities responsible to periodically agree over a state of the network, called \textit{consensus document}. This consensus document holds the identification information related to all available relays inside the network, as well as the result from the votes of the authorities (e.g., a set of \textit{flags} associated to each relay). The bandwidth authorities constantly measure every relay of the network and provide to the directory authorities a measurement value for each of them, which has a critical role in the path selection algorithm. This paper extends this architecture by adding two new roles needed for our monetary relay incentivization: Intermediary and Ledger.
+The Tor network is composed of multiple different components, and each of which
+run the same code base. Volunteers can run relays and enable specific roles or
+tasks such as \textit{network consensus directories}, \textit{HSDirs} and
+\textit{Exit policies}. \textit{Directory authorities} and \textit{Bandwidth
+  authorities} are the most important components of the network, and are only
+operated by trustworthy core contributors. There are currently 9 directory
+authorities which periodically reach agreement over the state of the network,
+called the \textit{consensus document}. This consensus document holds the
+identification information related to all available relays inside the network,
+as well as the result of the authority vote (e.g., a set of \textit{flags}
+associated to each relay). The bandwidth authorities constantly measure every
+relay and provide to the directory authorities a measurement value for each of
+them, which plays a critical role in the path selection algorithm. This paper
+extends this architecture by adding two new roles needed for our monetary relay
+incentivization: Intermediary and Ledger.
 \subsubsection{Traffic Analysis}
-Tor's threat model assumes a local adversary who can observe some fraction of the network, operate onion routers or compromise some of them. Tor also assumes a local adversary who can manipulate user's streams: insert, modify, delete or delay data to create observable perturbations. Typically, by observing both ends of an anonymous stream, an attacker can infer who is talking to who using statistical correlation. The adversary's precision can also be improved by traffic flow perturbations. This attack is called \textit{end-to-end correlation}. Tor does not try to implement countermeasures to this attack but strives to minimize its impact. Recently, Rochet and Pereira~\cite{popets-dropping} showed that a silent near to perfect and instantaneous active traffic confirmation attacks exists in Tor, leveraging an essential property of distributed system: forward compatibility. Those results show the need to strive to reduce their impact, and one possible direction is to bring more diversity to the Tor network, which would make traffic analysis against a large fraction of Tor users more costly. The innermost goal of this paper is to give a tool to the Tor project to shape the Tor network diversity through money incentivization.
+Tor's threat model assumes a local adversary who can observe some fraction of
+the network and can operate or compromise a number of onion routers. Tor also
+assumes a local adversary who can manipulate user's streams. The adversary can,
+insert, modify, delete or delay data to create observable
+perturbations. Typically, by observing both ends of an anonymous stream, an
+attacker can infer the participating parties using statistical correlation. The
+adversary's precision can also be improved by traffic flow perturbations. This
+attack is called \textit{end-to-end correlation}. Tor does not try to implement
+countermeasures to this attack but strives to minimize its impact. Recently,
+Rochet and Pereira~\cite{popets-dropping} showed that a silent near to perfect
+and instantaneous active traffic confirmation attack exists in Tor, leveraging
+an essential property of distributed system: forward compatibility. Those
+results show the need to strive to reduce their impact. The approach presented
+here is to induce more diversity to the Tor network, which would make traffic
+analysis against a large fraction of Tor users more costly. The central goal of
+this paper is to give a tool to the Tor project to shape the Tor network
+diversity through monetary incentivization.
 
 \subsubsection{Evaluating Tor's performance}
-Shadow~\cite{shadow-ndss12} is a discrete event networking simulator allowing to run real applications on the top of a virtual network, originally developed to run more accurate and large scale Tor experimentations in a private and controlled environment. Shadow's greater strength is to allow to run native networking application code, as far as an appropriate plug-in is written to interface the simulator and the application. Also, Shadow faithfully mimic the real Tor network conditions including bandwidth and latency, resulting in a tool likely more accurate than small private network experiments within universities or even experiments over platforms such as PlanetLab~\cite{Chun:2003:POT:956993.956995}.
+Shadow~\cite{shadow-ndss12} is a discrete event networking simulator that allows
+real, unmodified applications to run within a virtual network. It was originally
+developed to conduct more accurate and large scale Tor experimentations in a
+private and controlled environment. Shadow's primary advantage is the ability to
+run native networking application code that interfaces with the simulator via an
+external application-specific plugin. \td{first three sentences seem somewhat
+  redundant, maybe shorten to two?}  Within the simulation environment itself,
+Shadow faithfully mimics the real Tor network conditions including bandwidth and
+latency. As a result, experiments conducted with this tool tends to be more
+accurate than ones conducted over alternatives such as private universities
+networks or PlanetLab~\cite{Chun:2003:POT:956993.956995}.
 
-In this paper, we use Shadow to evaluate our payment layer extension of the Tor protocol in order to measure its networking impact and its feasibility.
+In this paper, we use Shadow to evaluate our payment layer extension of the Tor
+protocol in order to measure its networking impact and its feasibility.
 \subsubsection{Tor's scheduling}
 
 
 \subsection{Cryptocurrencies}
+
+
 
 \begin{itemize}
 \item bitcoin/ethereum~\cite{nakamoto2008bitcoin}~\cite{wood2014ethereum}
