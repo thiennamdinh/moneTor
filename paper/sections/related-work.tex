@@ -1,13 +1,12 @@
 There have been a number of standalone incentivization schemes proposed over the
 the past decade. We classify these into three types of strategies:
-non-transferable benefits, transferable benefits, and monetary payments. The
-list presented her is comprehensive to the best of our knowledge.
-
+non-transferable benefits, transferable benefits, and monetary
+payments.
 \subsection{Non-Transferable Benefits}
 
 These proposals aim to recruit relays by offering some personal-use priviledged
 status. These priviledges, however, are crucially non-transferable and
-unexchangable for general financial profit. \flo{Giving a second read through, I think we miss here to explain why a non-transferable and nonexchangeable system might be wanted: see Roger's blogpost https://blog.torproject.org/two-incentive-designs-tor.}
+unexchangable for general financial profit.
 
 \textbf{Gold Star} As one of the earliest incentive proposals, Gold Star introduces the notion of
 premium bandwidth. Premium, or ``gold star'' status, is awarded exclusively to
@@ -25,18 +24,16 @@ original ticket obtainers~\cite{jansen2010recruiting}. LIRA is an idealogical
 successor to BRAIDs that seeks to reduce the scalability limits imposed by the
 centralized infrastructure. In LIRA, clients probabilistically ``win'' premium
 tickets without any interaction with the bank. While LIRA solves many pragmatic
-shortcoming of BRAIDS, neither of these designs were construct to handle strong
-threats of client cheating nor do they confer economically robust incentives for
-relays~\cite{jansen2013lira} \flo{economically robust incentives was not the goal of these families of designs: maybe we should not argue that this is a problem. We mostly have a different philosophy with MoneTor, and we can't say that ours is better (unless we solve technical problems that they don't)}
+shortcoming of BRAIDS, neither of these designs were constructed to handle
+strong threats of client cheating~\cite{jansen2013lira}
 
 \subsection{Transferable Benefits}
 
-The intrinsic drawback in the non-transferable approach is the limited economic
-appeal. In the general case, incentives that translate into financial value will
-have broader demand than those that do not. The next class of transferable
-benefits categorizes those schemes which do not directly confer weath to relays
-operators but nevertheless offers a product that might hold value in a secondary
-resale market.
+The next class of transferable benefits categorizes those schemes which do not
+directly confer weath to relays operators but nevertheless offers a product that
+might hold value in a secondary resale market. In the general case, these
+indirect financial incentives aim to attract a broader demand than in the
+non-transferable case.
 
 \textbf{TEARS} TEARS introduces a two-layer approach whereby \emph{shallots}
 token are awarded by a central bank to relays who contribute to the
@@ -69,8 +66,9 @@ electricity~\cite{biryukov2015proof}.
 \subsection{Monetary Payments}
 
 Proposals in the final class offer the most direct incentivization by outlining
-strategies to pay relays with real, externally valuable money. In theory, this
-is the most economically robust approach and the one that MoneTor adopts.
+strategies to pay relays with real, externally valuable money. Generally, this
+tends to be the most economically sound approach and the one that MoneTor
+adopts.
 
 \textbf{PAR} PAR is the earliest incentive scheme and first approach that
 implies a true notion of currency. A pre-Bitcoin design, PAR utilizes a hybrid
@@ -97,3 +95,13 @@ network. However, as its stated intent has a stronger focus on cenorship
 resistance than strong anonymity, it unlikely to have the same security
 guarantees as Tor. Indeed, the payment protocol enlisted for Orchid payments
 makes no claims on anonymity itself~\cite{pass2015micropayments}.
+
+\subsection{Remarks}
+
+Generally speaking, incentives provided by monetary payments are more
+economically robust than transferable benefits, which are in turn are more
+robust than non-transferable benefits. We note that this is not a statement of
+superiority so much as an observation on diverging motivation. Indeed, a number
+of sociological and legal implications considerations must be weighed before
+introducing financial profitability into the Tor ecosystem. We consider these to
+be out of scope for the purposes of our research.
