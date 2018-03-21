@@ -4,8 +4,8 @@ and instead outline the high-level design strategy.
 
 \subsection{Currency Design}
 
-MoneTor proposes to implement a native currency to the Tor ecosystem. Unlike in
-many previous Tor proposals thats feature ``bulkier'' notions of incentives and
+We propose to implement a native currency to the Tor ecosystem. Unlike in many
+previous Tor proposals thats feature ``bulkier'' notions of incentives and
 priviledges, our currency should satisfy the standard properties of
 \textit{scarcity}, \textit{fungibility}, \textit{divisibility},
 \textit{durabililty}, and \textit{transferability}. \flo{We need proper
@@ -31,7 +31,7 @@ make use of this model by introducing a set of ledger authorities who are
 responsible for maintaining publically audited global currency data.
 
 To avoid the economic and financial nuisances of the second problem, we suggest
-a two-way value peg to fix MoneTor tokens to a high-market cap cryptocurrency
+a two-way value peg to fix moneTor tokens to a high-market cap cryptocurrency
 such as Bitcoin or Ethereum. Two-way pegs were originally proposed for Bitcoin
 as ``pegged sidechains'' and further developed for more flexible use cases as
 ``plasma child chains'' in Ethereum~\cite{back2014enabling, poon2017plasma}. In
@@ -45,10 +45,10 @@ layer constructed from existing zk-SNARK or ring signature based anonymous
 payment schemes~\cite{sasson2014zerocash, van2013cryptonote}.
 
 \subsection{Incentive Model}
-MoneTor follows the same philosophy as prior incentivization proposals by
-offering a choice of paid \emph{premium} bandwidth to Tor users. Under this
-scheme, financially willing users send direct payments to each relay along their
-circuits to purchase priority status in the traffic scheduling
+The moneTor framework follows the same philosophy as prior incentivization
+proposals by offering a choice of paid \emph{premium} bandwidth to Tor
+users. Under this scheme, financially willing users send direct payments to each
+relay along their circuits to purchase priority status in the traffic scheduling
 algorithm. While there is no way to enforce relays to honor this priority
 scheduling, the setup is secure in a game-theoretic model by virtue of the
 multi-payment tit-for-tat relationship between the client and the relay.

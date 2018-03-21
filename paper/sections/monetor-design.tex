@@ -1,5 +1,5 @@
 Where we previously assumed the existence of an ideal payment procedure, we now
-describe our construction for the MoneTor payment scheme. We first summarize the
+describe our construction for the moneTor payment scheme. We first summarize the
 algorithmic design of our payment protocols and proceed to describe integration
 details with the Tor networking layer and codebase.
 
@@ -10,7 +10,7 @@ model ubiquitously found in Tor research~\cite{dingledine2004tor}. Informally, w
 anonymity guarantees:
 
 \begin{enumerate}
-\item No additional party needed to operate the MoneTor system (i.e. ledgers
+\item No additional party needed to operate the moneTor system (i.e. ledgers
   and intermediaries) will know any more about a given user than would be known
   by an additional middle relay.
 \item In typical usage, users do not leak any more information other than the
@@ -24,7 +24,7 @@ misbehavior to a global ledger. The security guarantees on the ledger will be
 subject to the guarantees made by the cryptocurrency
 interface~\cite{back2014enabling, poon2017plasma}. This is in direct contrast to
 prior to Chaumian e-cash proposals that employ an \emph{honest but curious}
-model for the central bank. In MoneTor, we prioritize payment security and
+model for the central bank. In moneTor, we prioritize payment security and
 ensure that nobody, including the ledger, ever has direct control of user funds.
 
 \subsection{Payment Protocols}
@@ -36,7 +36,7 @@ a client or relay) $I$ (intermediary), and $L$ (ledger). At this level, we
 assume that one client is paying one relay through a single channel and that
 network-layer anonymity will be sufficiently handled at the Tor protocol level.
 
-The full MoneTor payment scheme is a superset of Bolt three-party bidirectional
+The full moneTor payment scheme is a superset of Bolt three-party bidirectional
 micropayment channels and, as such, we adopt its nomenclature where possible but
 adapt it to our notions of ledgers, clients, relays, etc. The following is brief
 outline of the prerequisite micropayment channel procedures defined in Bolt. We
@@ -68,8 +68,8 @@ barrior threshold low for small perspective relay operators. We therefore
 introduce a new payment layer that enables the first practically efficient
 payments for Tor routing.
 
-MoneTor makes use of the existing anonoymous micropayment structure to
-facilitate \emph{locally transparent nanopayments}. In this scheme,
+The moneTor construction makes use of the existing anonoymous micropayment
+structure to facilitate \emph{locally transparent nanopayments}. In this scheme,
 \emph{nanopayment channels} are established in place of a single micropayment
 operation. Nanopayment channels allow the client to send a $n$ number of
 undirectional nanopayments to the relay. Each payment represents a fixed value
