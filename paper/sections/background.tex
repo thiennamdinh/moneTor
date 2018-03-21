@@ -57,14 +57,74 @@ protocol in order to measure its networking impact and its feasibility.
 
 \subsection{Cryptocurrencies}
 
+The modern generation of decentralized digital currencies traces its roots to
+Nakamoto's Bitcoin protocol~\cite{nakamoto2008bitcoin}. This family of
+cryptocurrencies are characterized by use of a public distributed ledger, often
+a blockchain, and a notion identity and ownership based in public key
+cryptography. A wide range of base-layer payment protocols have emerged, most
+notably for us the fully programmable smart contract platform
+Ethereum~\cite{wood2014ethereum} and anonymity-focused schemes such as
+Zerocash~\cite{sasson2014zerocash} and Cryptonote~\cite{van2013cryptonote}. In
+this second class of anonymous currencies, the general security model requires
+that user is able to upload verfiable and irreversible proof of payment to the
+ledger without leaking sender identity, recipient identity, or payment
+value. Cryptonote achieves a weaker probablistic guarantee of this privacy using
+a combination of lightweight ring signatures and stealth addresses. Zerocash
+achieves anonymity by leveraging more flexible but expensive non-interactive
+zero-knowledge proofs.
 
+As more niches have emerged for types of cryptocurrencies, one active area of
+research is ledger interoperability. Back et al. published the first primitive
+proposal for sidechains, which specifies how bitcoins can be migrated from the
+main blockchain onto a secondary chain~\cite{back2014enabling}.  More recently,
+Poon and Buterin explained how Ethereum can support multiple levels of
+arbirarily configured \emph{child chains} that inherit many notions of security
+from the main Ethereum he.
 
-\begin{itemize}
-\item bitcoin/ethereum~\cite{nakamoto2008bitcoin}~\cite{wood2014ethereum}
-\item anonymous cryptocurrencies: zcash + monero
-\item payment channels
-\item anonymous payment channels
-\item side chains/plasma
-\end{itemize}
+The core cryptocurrency component featured in moneTor are multi-party
+bidirectional micropayment channels. Base layer cryptocurrency protocols suffer
+from severe scalability limits as they typical are capped on the order of tens
+of transactions per second~\cite{team2017blockchain}. As base layer scaling
+solutions inevitably face fundamental limitations, the most actively pursued
+path thusfar if off-chain payment channel networks~\cite{poon2016bitcoin}. In
+this setup, a single ledger transaction is used to escrow funds by two parties
+$A$ and $B$. $A$ and $B$ can then proceed to make bidirectional micropayments to
+each other \emph{without ledger interaction} through the exchange of signed IOU
+tokens. By themselves, channels are useful for reducing ledger transactions
+between parties with reoccurring interactions. More importantly, however,
+micropayment channels can be extended such that $A$ pays $B$ through some
+\emph{intermediary} party $I$ to which they both have active micropayment
+channels. Pragmatically, $A$ and $B$ might occupy the roles of a customer and
+merchant who are registered with a well-known financial service $I$, enabling
+remarkable scaling. Informally multi-party channels are secure if the following
+properties can be guaranteed:
 
-\flo{I think we just need a comprehensive view of payment channels, and what problems they solve? I am going to talk a bit about Tor's scalability issue in Tor's background, and that's exactly for what payment channels are awesome :)}
+\begin{enumerate}
+\item At every step of the protocol, all parties possess proof of execution of
+  the last finalized payment state
+\item Given two proofs of payment states, the network can unambigiously identify
+  the more recent state.
+\item When $A$ agrees to pay $B$ through $I$, the payment is atomic. That is,
+  there is never a situation in which $I$ pays $B$ but is unable to extract the
+  agreed-upon payment from $A$.
+\end{enumerate}
+
+If all of these properties can be cryptographically ensured, then it becomes a
+matter of network policy to ensure game-theoretic security of payments. The
+Bitcoin Lightning Network and other similar protocols utilize simple hash
+commitments and transaction delays to construct a secure scheme.
+
+Finally, the micropayment channel concept has been extended to support anonymity
+design goals. Z-Channel specifies an implementation designed specifically for
+Zerocash which only supports two-party channels~\cite{zhang2017z}. Green and
+Miers designed Bolt, which does support multi-party bidirectional
+channels~\cite{green2017bolt}. In this setup, the anonymity set is defined with
+respect to the users connected to the intermediary. In other words, given a set
+of end users $E_{all} = \{E_1, E_2, ... E_n\}$ who all have active channels with
+$I$, $E_a$ should be able to send secure payment to $E_b$ where $I$ cannot
+identify $E_a$ or $E_b$ from $E_{all}$ nor can $I$ determine the payment
+value. Of course, $I$ should still be able to verify (using zero-knowledge
+proofs) that the payment is valid and that its internal channel states have been
+updated accordingly. Several nuances arise concerning end user privacy in the
+micropayment channel setup phase and in the event that $I$ maliciously aborts,
+but we do not consider it necessary to discuss caveats here.
