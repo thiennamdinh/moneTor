@@ -191,8 +191,24 @@ Once $I$ has closed his nanopayment channel leg with $R$, $I$ and $C$ are free
 to complete the exact same close protocol. All parties are now reverted to the
 original state prior to $Nano$-$Setup$ with a securely updated balance.
 
-\subsection{Network Protocols}
+\subsection{Network Protocol and Implementation}
+%talk about leaky-pipe topology
 %needs an overview of the protocol extension and some nicelydone image
 %some theoretical discussion about how to properly anonymize R->I, C->I, R/C->L connections using Tor circuits.
 %memory cost/cpu cost discussion
-\subsection{Implementation}
+
+\subsubsection{Extending the Tor protocol}
+We extend the Tor routing protocol described in Tor's specifications~\cite{torspec} and we exploit Tor's leaky-pipe circuit topology to exchange payment information with each hop of the circuit (i.e., the Tor protocol allows a client to direct traffic partway down the circuit). We introduce two new control cell types: one link-level cell and one relay-level cell. The link-level cell is used to exchange information related to the payment protocol between the Tor client and its guard relay. This cell is not onion-encrypted (but the TLS layer still protect it) and is not used for any other purpose. The relay-level cell is used to exchange payment information with the middle relay and the exit relay: 2 onion-encryptions makes the cell exiting the circuit at the middle relay. 3 onion-encryptions makes the cell exiting the circuit at the usual exit relay for data streams. This subtype of relay cell is indistinguishable from a normal relay cell and carries a header related to the payment system, followed by a payload of payment data. Figure~\ref{fig:relay_command_mt_structure} shows the internal structure of the cell.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.38]{images/payment_cell_header.png}
+	\label{fig:relay_command_mt_structure}
+	\caption{Relay level payment cell structure}
+\end{figure}
+
+All the bytes starting from StreamID (included) are onion-encrypted. RelCMD is set to RELAY\_COMMAND\_DATA, PCMD is the payment command which is different for each step of the payment protocol. If some message overflow the payload available length (495 bytes), we queue multiple cells of the same PCMD and buffer them on the receiver side to unpack the whole message.
+
+\subsubsection{Payment Anonymity}
+
+\subsubsection{Scalability Design of the moneTor Scheme}
