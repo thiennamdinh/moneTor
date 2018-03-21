@@ -16,6 +16,7 @@ relay and provide to the directory authorities a measurement value for each of
 them, which plays a critical role in the path selection algorithm. This paper
 extends this architecture by adding two new roles needed for our monetary relay
 incentivization: Intermediary and Ledger.
+
 \subsubsection{Traffic Analysis}
 Tor's threat model assumes a local adversary who can observe some fraction of
 the network and can operate or compromise a number of onion routers. Tor also
@@ -38,17 +39,15 @@ diversity through monetary incentivization.
 \subsubsection{Circuit handling on Tor clients}
 
 \subsubsection{Evaluating Tor's performance}
-Shadow~\cite{shadow-ndss12} is a discrete event networking simulator that allows
-real, unmodified applications to run within a virtual network. It was originally
-developed to conduct more accurate and large scale Tor experimentations in a
-private and controlled environment. Shadow's primary advantage is the ability to
-run native networking application code that interfaces with the simulator via an
-external application-specific plugin. \td{first three sentences seem somewhat
-  redundant, maybe shorten to two?}  Within the simulation environment itself,
-Shadow faithfully mimics the real Tor network conditions including bandwidth and
-latency. As a result, experiments conducted with this tool tends to be more
-accurate than ones conducted over alternatives such as private universities
-networks or PlanetLab~\cite{Chun:2003:POT:956993.956995}.
+Shadow~\cite{jansen2011shadow} is a discrete event networking simulator that allows
+real, unmodified applications to run within a virtual network. Its primary
+advantage is the ability to run native networking application code that
+interfaces with the simulator via an external application-specific
+plugin. Within the simulation environment itself, Shadow faithfully mimics the
+real Tor network conditions including bandwidth and latency. As a result,
+experiments conducted with this tool tends to be more accurate than ones
+conducted over alternatives such as private universities networks or
+PlanetLab~\cite{Chun:2003:POT:956993.956995}.
 
 In this paper, we use Shadow to evaluate our payment layer extension of the Tor
 protocol in order to measure its networking impact and its feasibility.
