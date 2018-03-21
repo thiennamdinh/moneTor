@@ -4,6 +4,7 @@
 \usepackage{algorithm}
 \usepackage{algorithmicx}
 \usepackage[noend]{algpseudocode}
+\algrenewcommand{\algorithmiccomment}[1]{{\color{gray}$\triangleright$ #1}}
 
 \fancyhf{} % Remove fancy page headers
 \fancyhead[C]{Anonymous submission \#9999 to ACM CCS 2018} % TODO: replace 9999 with your paper number
@@ -80,5 +81,11 @@ Your abstract should go here. You will also need to upload a plain-text abstract
 \label{sec:conclusion}
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{sections/references}
+
+\appendix
+
+\section{Algorithms}
+\label{sec:algorithms}
+\input{sections/algorithms.tex}
 
 \end{document}
