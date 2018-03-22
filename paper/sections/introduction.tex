@@ -7,51 +7,59 @@ circuit. The network currently consists of approx. 6,000 relays contributing
 over 200 Gbit/s of bandwidth globally~\cite{portal2018tormetrics}. While Tor has
 proven to be a highly effective option for privacy-seeking users, it suffers
 from two orthogonal issues that are relevant to this work. The first is the
-large family of collusion attacks. These threats are relevant in scenarios where
-an attacker controls multiple node and is probabilistically controls more than
-one hop along a single client's circuit.
-path~\cite{wright2004predecessor}~\cite{murdoch2005low}. The second problem is
-overall performance. Although the multi-hop overlay protocol itself implies an
-inherit overhead on efficiency, Tor suffers from further traffic congestion
-leading to less-than-optimal network
+broad family of collusion attacks. These threats are relevant in scenarios where
+an attacker, who controls multiple nodes, is probabilistically placed at more
+than one hop along a single client's, opening a much easier path to client
+deanonymization~\cite{wright2004predecessor}~\cite{murdoch2005low}. The second
+problem is overall performance. Although the multi-hop overlay protocol itself
+implies an inherit overhead in network resources, Tor suffers from considerable
+traffic congestion that leads to less-than-optimal network
 performance~\cite{portal2018tormetrics}[need better evidence/citations here?].
 
 One approach to mitigated these problems is to address them separately from a
 networking standpoint. Indeed, a significant portion of recent research in Tor
-proposesses modifications to the core protocol itself, such as replacing the TCP+TLS part of the stack~\cite{} or designing a better kernel congestion-aware scheduler~\cite{}. A second approach
-is to observe that the anonymity and performance of the network are both
-proportional to the number of nodes and users. Under this perspective, the problem becomes
-a largely economic question: how can we incentivize more relay participation?
-There is a long line of research that explores various strategies for relay
-incentivization dating back about a decade. Unfortunately, relay incentivization
-faces several unique obstacles and no single proposal has thusfar proven to be
-overwhelmingly convincing.
+proposesses modifications to the core protocol itself, such as replacing the
+TCP+TLS part of the stack~\cite{} or designing a better kernel congestion-aware
+scheduler~\cite{jansen2014never}. A second approach is to observe that the
+anonymity and performance of the network are both proportional to the number of
+nodes and users. From this perspective, the problem becomes a largely economic
+question: how can we incentivize more relay participation?  There is a long line
+of research that explores various strategies for incentivization spanning over
+the past decade. Unfortunately, Tor incentives faces several unique
+obstacles and no single proposal has thusfar proven to be overwhelmingly
+convincing.
 
 \textbf{Present Landscape} We argue that the lack of a breakthrough in this
-niche research area is not a matter of insufficient ingenuity but rather one of
+niche area is not a matter of insufficient ingenuity but rather one of
 timing. Since the latest incentive schemes have been published, there has been
 an explosion of academic research within the domain of cryptocurrencies. As of
-this writing, Nakamoto's original Bitcoin whitepaper has garnered some 3000
+this writing, Nakamoto's Bitcoin whitepaper has garnered some 3000
 citations~\cite{nakamoto2008bitcoin}. This body of work introduces a multitude
-of new concepts that would appear indespensible to our area of research. Our
-aim then is to leverage the full range of payment protocols that have emerged in
-recent years into a practical next-generation incentivization strategy for Tor.
+of new concepts that will prove indespensible to our area of research. Our aim
+is to leverage the full range of payment protocols that have emerged in recent
+years into a practical next-generation incentivization strategy for Tor.
 
 \textbf{Contributions} The moneTor scheme is a novel full-stack framework for
-relay incentivization. We make the following contributions in this paper:
+Tor incentives. We make the following contributions in this paper:
 
 \begin{enumerate}
-\item Design an incentive scheme to favor the network diversity and offer enough market control to the Tor project to decide which notion of diversity they want to promote
+\item Design an incentivization scheme to favor the network diversity, offering
+  enough market control such that the Tor project can decide which notion of
+  diversity to promote
 \item Introduce new highly-efficient nanopayment protocols, which may be of some
   independent interest for other continuous payment applications
-\item Specify an integration strategy into the existing Tor architecture and networking layer
+\item Specify an integration strategy into the existing Tor architecture and
+  networking layer
 \item Collect privacy-preserving client usage data to justify design parameters
   and argue for efficacy
-\item Implement a proof-of-concept partial prototype extending the Tor protocol in the core Tor's daemon, featuring more than 15k lines of code
-\item Conduct network-scale simulations on our design with Shadow~\cite{jansen2011shadow}, and criticize the performance impact of a secure and anonymous payment system embedded in a low-latency anonymity system
+\item Implement a proof-of-concept partial prototype extending the Tor protocol
+  in the core Tor's daemon, featuring more than 15k lines of code
+\item Conduct network-scale simulations with Shadow~\cite{jansen2011shadow},
+  analyzing the performance impact of our secure and anonymous payment system
+  embedded in a low-latency anonymity system
 \end{enumerate}
 
-The moneTor design either leverages peer-reviewed designs or introduces fully
-specified designs for all of its components. In effect, we argue that the
-theoretical moneTor framework is one that can be convincingly developed within
-Tor today, from a technical standpoint.
+The moneTor design leverages a combination of peer-reviewed designs and new,
+fully specified designs for all of its components. In effect, we argue that the
+theoretical moneTor framework is one which, from a technical standpoint can be
+convincingly developed within Tor today.

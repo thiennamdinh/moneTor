@@ -1,20 +1,24 @@
+The technical prelimaries in constructing our system are broadly divided into
+applied onion routing research in the Tor network and recent developments
+in cryptocurrency payment protocols.
+
 \subsection{Tor}
 
 \subsubsection{Tor Architecture}
-The Tor network is composed of multiple different components, and each of which
-run the same code base. Volunteers can run relays and enable specific roles or
-tasks such as \textit{network consensus directories}, \textit{HSDirs} and
-\textit{Exit policies}. \textit{Directory authorities} and \textit{Bandwidth
-  authorities} are the most important components of the network, and are only
-operated by trustworthy core contributors. There are currently 9 directory
-authorities which periodically reach agreement over the state of the network,
-called the \textit{consensus document}. This consensus document holds the
-identification information related to all available relays inside the network,
-as well as the result of the authority vote (e.g., a set of \textit{flags}
-associated to each relay). The bandwidth authorities constantly measure every
-relay and provide to the directory authorities a measurement value for each of
-them, which plays a critical role in the path selection algorithm. This paper
-extends this architecture by adding two new roles needed for our monetary relay
+The Tor network is composed of multiple different components, each of which run
+the same code base. Volunteers can run relays and enable specific roles or tasks
+such as \textit{network consensus directories}, \textit{HSDirs} and \textit{Exit
+  policies}. \textit{Directory authorities} and \textit{Bandwidth authorities}
+are the most important components of the network, and are only operated by
+trustworthy core contributors. There are currently nine directory authorities
+which periodically reach agreement over the state of the network, called the
+\textit{consensus document}. This consensus document holds the identification
+information related to all available relays inside the network, as well as the
+result of the authority vote (e.g., a set of \textit{flags} associated to each
+relay). The bandwidth authorities constantly measure every relay and provide to
+the directory authorities a measurement value for each of them, which plays a
+critical role in the path selection algorithm. This paper extends the
+architecture by adding two new roles needed for our monetary relay
 incentivization: Intermediary and Ledger.
 
 \subsubsection{Traffic Analysis}
@@ -27,7 +31,7 @@ attacker can infer the participating parties using statistical correlation. The
 adversary's precision can also be improved by traffic flow perturbations. This
 attack is called \textit{end-to-end correlation}. Tor does not try to implement
 countermeasures to this attack but strives to minimize its impact. Recently,
-Rochet and Pereira~\cite{popets-dropping} showed that a silent near to perfect
+Rochet and Pereira~\cite{rochet2018dropping} showed that a silent near to perfect
 and instantaneous active traffic confirmation attack exists in Tor, leveraging
 an essential property of distributed system: forward compatibility. Those
 results show the need to strive to reduce their impact. The approach presented
@@ -37,6 +41,9 @@ this paper is to give a tool to the Tor project to shape the Tor network
 diversity through monetary incentivization.
 
 \subsubsection{Circuit handling on Tor clients}
+
+\td{TODO: This section will provide a more detailed explanation of how circuits are
+created and how that affects moneTor's high initial latency and overhead design}
 
 \subsubsection{Evaluating Tor's performance}
 Shadow~\cite{jansen2011shadow} is a discrete event networking simulator that allows
@@ -51,52 +58,56 @@ PlanetLab~\cite{Chun:2003:POT:956993.956995}.
 
 In this paper, we use Shadow to evaluate our payment layer extension of the Tor
 protocol in order to measure its networking impact and its feasibility.
+
 \subsubsection{Tor's scheduling}
 
+\td{TODO: talk about Tor's cell scheduling process; this is important later when we modify
+it to provide priority bandwidht for premium clients}
 
 \subsection{Cryptocurrencies}
 
 The modern generation of decentralized digital currencies traces its roots to
-Nakamoto's Bitcoin protocol~\cite{nakamoto2008bitcoin}. This family of
-cryptocurrencies are characterized by use of a public distributed ledger, often
-a blockchain, and a notion identity and ownership based in public key
-cryptography. A wide range of base-layer payment protocols have emerged, most
-notably for us the fully programmable smart contract platform
+Nakamoto's Bitcoin protocol~\cite{nakamoto2008bitcoin}. This family of payment
+protocols is characterized by use of a public distributed ledger, often a
+blockchain, and a notion of identities and ownership based in public key
+cryptography. A wide range of base-layer protocols have emerged; most
+relevant for our purposes are the fully programmable smart contract platform
 Ethereum~\cite{wood2014ethereum} and anonymity-focused schemes such as
 Zerocash~\cite{sasson2014zerocash} and Cryptonote~\cite{van2013cryptonote}. In
 this second class of anonymous currencies, the general security model requires
 that user is able to upload verfiable and irreversible proof of payment to the
 ledger without leaking sender identity, recipient identity, or payment
-value. Cryptonote achieves a weaker probablistic guarantee of this privacy using
+value. Cryptonote achieves a weaker probablistic guarantee of privacy using
 a combination of lightweight ring signatures and stealth addresses. Zerocash
 achieves anonymity by leveraging more flexible but expensive non-interactive
 zero-knowledge proofs.
 
-As more niches have emerged for types of cryptocurrencies, one active area of
-research is ledger interoperability. Back et al. published the first primitive
-proposal for sidechains, which specifies how bitcoins can be migrated from the
-main blockchain onto a secondary chain~\cite{back2014enabling}.  More recently,
-Poon and Buterin explained how Ethereum can support multiple levels of
-arbirarily configured \emph{child chains} that inherit many notions of security
-from the main Ethereum he.
+As more niches have emerged for varying types of cryptocurrencies, one active
+area of research is ledger interoperability. Back et al. published the first
+primitive proposal for sidechains, which specifies how bitcoins can be migrated
+from the main blockchain onto a secondary chain~\cite{back2014enabling}.  More
+recently, Poon and Buterin explained how Ethereum can support multiple levels of
+arbirarily configured \emph{child chains} that inherit many security properties
+from the main Ethereum blockchain.
 
-The core cryptocurrency component featured in moneTor are multi-party
-bidirectional micropayment channels. Base layer cryptocurrency protocols suffer
-from severe scalability limits as they typical are capped on the order of tens
-of transactions per second~\cite{team2017blockchain}. As base layer scaling
+The core cryptocurrency component featured in moneTor is the multi-party
+bidirectional micropayment channel. Base layer cryptocurrency protocols suffer
+from severe scalability limits as they are typically capped on the order of tens
+of transactions per second~\cite{team2018blockchain}. As base layer scaling
 solutions inevitably face fundamental limitations, the most actively pursued
-path thusfar if off-chain payment channel networks~\cite{poon2016bitcoin}. In
-this setup, a single ledger transaction is used to escrow funds by two parties
-$A$ and $B$. $A$ and $B$ can then proceed to make bidirectional micropayments to
-each other \emph{without ledger interaction} through the exchange of signed IOU
-tokens. By themselves, channels are useful for reducing ledger transactions
-between parties with reoccurring interactions. More importantly, however,
-micropayment channels can be extended such that $A$ pays $B$ through some
+path thusfar is toward off-chain payment channel
+networks~\cite{poon2016bitcoin}. In this setup, a single ledger transaction is
+used to escrow funds by two parties $A$ and $B$. These parties may then proceed
+to make bidirectional micropayments to each other \emph{without ledger
+  interaction} through the exchange of signed IOU tokens. By themselves,
+channels are useful for reducing ledger transactions between parties with
+reoccurring interactions. More importantly, however, micropayment channels can
+be extended such that $A$ has the ability to pay $B$ through some
 \emph{intermediary} party $I$ to which they both have active micropayment
 channels. Pragmatically, $A$ and $B$ might occupy the roles of a customer and
-merchant who are registered with a well-known financial service $I$, enabling
-remarkable scaling. Informally multi-party channels are secure if the following
-properties can be guaranteed:
+merchant who are registered with a well-known financial service provider $I$,
+enabling remarkable scaling potential. Informally multi-party channels are
+secure if the following properties can be guaranteed:
 
 \begin{enumerate}
 \item At every step of the protocol, all parties possess proof of execution of
@@ -112,19 +123,22 @@ If all of these properties can be cryptographically ensured, then it becomes a
 matter of network policy to ensure game-theoretic stability whereby which all
 parties are incentivized behave honestly. The Bitcoin Lightning Network and
 other similar protocols utilize simple hash commitments and transaction delays
-to construct a secure scheme.
+to achieve security.
 
 Finally, the micropayment channel concept has been extended to support anonymity
 design goals. Z-Channel specifies an implementation designed specifically for
 Zerocash which only supports two-party channels~\cite{zhang2017z}. Green and
-Miers designed Bolt, which does support multi-party bidirectional
-channels~\cite{green2017bolt}. In this setup, the anonymity set is defined with
-respect to the users connected to the intermediary. In other words, given a set
-of end users $E_{all} = \{E_1, E_2, ... E_n\}$ who all have active channels with
-$I$, $E_a$ should be able to send secure payment to $E_b$ where $I$ cannot
-identify $E_a$ or $E_b$ from $E_{all}$ nor can $I$ determine the payment
-value. Of course, $I$ should still be able to verify (using zero-knowledge
-proofs) that the payment is valid and that its internal channel states have been
-updated accordingly. Several nuances arise concerning end user privacy in the
-micropayment channel setup phase and in the event that $I$ maliciously aborts,
-but we do not consider it necessary to discuss caveats here.
+Miers designed Bolt, which accomodates multi-party channel construction as
+well~\cite{green2017bolt}. In such a setup, the anonymity set is defined with
+respect to the set of users connected to the intermediary. In other words, given
+a set of end users $E_{all} = \{E_1, E_2, ... E_n\}$ who each have an active
+channel with $I$, $E_a$ should be able to send a secure payment to $E_b$ even
+though $I$ cannot identify $E_a$ or $E_b$ from $E_{all}$ nor can $I$ infer the
+payment value. Of course, $I$ must still be able to verify that the payment is
+valid and that its internal channel states have been updated
+accordingly.~\footnote{This is achieved using a combination of zero-knowledge
+  proofs and blind signatures, in the case of~\cite{green2017bolt}} Several
+nuances arise concerning end user privacy in certain situations, such as during
+the micropayment setup escrow phase and and in the event that $I$ maliciously
+aborts. We do not consider it necessary to discuss these caveats here as they
+are not critical to our later treatment of anonymous payment channels.

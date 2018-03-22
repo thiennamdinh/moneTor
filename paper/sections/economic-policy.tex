@@ -1,71 +1,72 @@
 We first summarize the economic layer of the incentivization scheme. At this
 level, we assume the existence of an ideally secure and efficient payment layer
-and instead outline the high-level design strategy.
+and proceed to outline the high-level design strategy.
 
 \subsection{Currency Design}
 
-We propose to implement a native currency to the Tor ecosystem. Unlike in many
-previous Tor proposals thats feature ``bulkier'' notions of incentives and
-priviledges, our currency should satisfy the standard properties of
-\textit{scarcity}, \textit{fungibility}, \textit{divisibility},
-\textit{durabililty}, and \textit{transferability}. \flo{We need proper
-  definitions of these properties. In background section or here?}\td{These
-  properties are pretty standard as far as I know so better to find a good
-  reference... did some initial search but nothing came up yet} Furthermore, we
-follow the Bitcoin paradigm in which all users maintain full and exclusive
-control of their monetary wealth through use of public key cryptography.
+The moneTor framework describes native currency for the Tor ecosystem. To
+qualify as a true monetary payment design, our currency should satisfy the
+standard properties of \textit{scarcity}, \textit{fungibility},
+\textit{divisibility}, \textit{durabililty}, and
+\textit{transferability}~\cite[p. 3]{crump2011phenomenon} Furthermore, we follow
+the Bitcoin paradigm in which all users maintain full and exclusive control of
+their monetary wealth through use of public key cryptography.
 
 A natural initial choice might be to introduce a new token modeled after the
 growing number of independent cryptocurrencies. This approach has two drawbacks:
 
 \begin{enumerate}
 \item Decentralized blockchains are inefficient
-\item Standalone altcoin introduces undue economic complexity
+\item New currencies introduce undue economic complexity
 \end{enumerate}
 
 The efficiency of decentralized blockchains stems from the necessity to reach
-consensus among an unbounded number of nodes through expensive proof-of-work
-mining or proof-of-stake. Fortunately, the Tor network uses a more centralized
-infrastructure that currently features nine directory authorities. We propose to
-make use of this model by introducing a set of ledger authorities who are
+agreement among an unbounded number of nodes through expensive consensus
+mechanisms. Fortunately, the Tor network uses a more centralized infrastructure
+that currently features nine partially trusted directory authorities. We propose
+to take advantage of this setup by introducing a set of ledger authorities who are
 responsible for maintaining publically audited global currency data.
 
-To avoid the economic and financial nuisances of the second problem, we suggest
-a two-way value peg to fix moneTor tokens to a high-market cap cryptocurrency
-such as Bitcoin or Ethereum. Two-way pegs were originally proposed for Bitcoin
-as ``pegged sidechains'' and further developed for more flexible use cases as
-``plasma child chains'' in Ethereum~\cite{back2014enabling, poon2017plasma}. In
-the Ethereum design, it would likely be feasible to integrate smart contracts
-such that the Ethereum blockchain can be used as an authority ledger of last
-resort in the event that the native Tor ledger goes offline.
+To avoid the economic and financial nuances associated with a new currency, we
+suggest a two-way value peg to fix moneTor tokens to a high-market cap
+cryptocurrency such as Bitcoin or Ethereum. While a designed rooted on Bitcoin
+sidechains~\cite{back2014enabling} is acceptable, we recommend engineering the
+system under the Ethereum Plasma model~\cite{poon2017plasma}. Aside from the
+efficiency improvements, it would likely be feasible in the Plasma design to
+integrate smart contracts such that the Ethereum blockchain becomes the
+authority ledger of last resort in the event that the native Tor ledger goes
+offline. Effectively, this means we guarantee that users will never completely
+lose honestly obtained money so long as the Ethereum blockchain is accessible.
 
 Finally, we would like to provide user privacy as much as possible before and
-after relay payments are made. To do this, we suggested a transactional payment
-layer constructed from existing zk-SNARK or ring signature based anonymous
-payment schemes~\cite{sasson2014zerocash, van2013cryptonote}.
+after relay payments are made. To do this, we suggested either
+Zerocash~\cite{sasson2014zerocash} or Cryptonote~\cite{van2013cryptonote} as
+base layer payment protocols for channel escrow and other large transactions.
 
 \subsection{Incentive Model}
 The moneTor framework follows the same philosophy as prior incentivization
 proposals by offering a choice of paid \emph{premium} bandwidth to Tor
 users. Under this scheme, financially willing users send direct payments to each
 relay along their circuits to purchase priority status in the traffic scheduling
-algorithm. While there is no way to enforce relays to honor this priority
-scheduling, the setup is secure in a game-theoretic model by virtue of the
-multi-payment tit-for-tat relationship between the client and the relay.
+algorithm. While there is no way to enforce priority scheduling in a
+decentralized network, the setup is secure in a game-theoretic model by virtue
+of a multi-round tit-for-tat relationship between the client and the relay.
 
 In our setup, a key economic question to address is the issue of price
 determination. While it would be tempting to enlist any number of market-based
 mechanisms to set premium bandwidth prices, any price differentiation between
-clients or relays effectively leaks information. We therefore impose the
-constraint that all users should pay a single uniform price for
-premium bandwidth at any time $t$. This price may be obtained by any number of
+clients or relays inevitably leaks information. We therefore impose the
+constraint that all users should pay a single uniform price for premium
+bandwidth at any time $t$. This price may be obtained through any number of
 transparent mechanisms ranging from a centralized market determination by the
 Tor Project to a more dynamical consensus vote reached by the network.
 
-A more convoluted problem is the issue of wealth distribution. Given that Tor is
-fundamentally a nonprofit ecosystem, it is not quite clear that an optimal
-profit-seeking network will closely aligned with the core mission of the Tor
-Project. To address this problem, we introduce a taxation element into the
-design. From every payment, a percentage of funds is anonymously diverted to an
-account controlled by the network authority. The intent is that these funds can
-be algorithmically redistributed to relays in desirable locations or roles to sustain the network diversity, with a notion of diversity decided by the Tor project.
+\textbf{Death and Taxes} A more convoluted problem is the issue of wealth
+distribution. Given that Tor is a fundamentally nonprofit ecosystem, it is not
+quite clear that an optimal profit-seeking network will closely aligned with the
+core mission of the Tor Project. To address this problem, we introduce a
+taxation element into the design. From every payment, a percentage of funds is
+anonymously diverted to an account controlled by the network authority. The
+intent is that these funds can be algorithmically redistributed to relays in
+desirable locations or roles, sustaining desirable notitons of network diversity
+as defined and executed by the Tor project.

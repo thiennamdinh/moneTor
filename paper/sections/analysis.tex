@@ -1,5 +1,5 @@
-We validated our design decisions using a two-pronged approach that consists of
-both real-world data collection from live Tor users as well as simulations on
+To validate our design descisions, we used a two-pronged approach that consists
+of both real-world data collection from live Tor users along with simulations on
 our software implementation.
 
 \subsection{Data Collection}
@@ -117,63 +117,63 @@ network's resource by pre-building unnecessary nanopayment channels.
 \subsection{Simulation Methodology}
 
 A substantial contribution of the research is embedded within our native
-implementation of the moneTor scheme. The modifications, applied to Tor
-0.3.2-alpha, cover approximately fifteen thousand added lines of code across
-Tor's main C codebase. We emphasize that the implementation is not a fully
-functional prototype and is optimized solely for our experiments. Our
-implementation serves the following purposes:
+implementation of the moneTor framework. The modifications, applied to Tor
+version 0.3.2-alpha, cover approximately fifteen thousand added lines of code
+across Tor's core C codebase. We emphasize that the implementation is not a
+fully functional prototype and is optimized solely for our experiments. Indeed,
+the implementation is designed exclusively to serve the following purposes:
 
 \begin{enumerate}
 \item A proof-of-concept implementation covering nuances not explicitly
   covered in the protocol designs. In effect, we would like to show that there
   are no unexpected and prohibitive practical conflicts with the existing Tor
   design.
-\item A platform to study on the feasibility and networking effects of premium
-  circuit priorization.
-\item A platform to obtain rough factor-of-two approximations for all bandwidth,
-  computation, and memory requirements of the system, both globally and at
-  individual nodes.
+\item A platform to study the feasibility of premium circuit
+  priorization from a networking perspective.
+\item A platform to obtain a rough factor-of-two approximation for all
+  bandwidth, computation, and memory requirements of the system, both globally
+  and at individual nodes.
 \end{enumerate}
 
-The results of first design purpose are clearly qualitative. Although we will
-discuss lessons learned in~\ref{discussion?}, we briefly note that we did not
-discover any unsurpassable logical flaws in our design. To analyze the networking
-effects and resource consumption goals, we studied our implementations through a
-series of experiments.
+The first design purpose is clearly qualitative. Although we will discuss
+lessons learned in~\ref{discussion?}, we briefly note that we did not discover
+any unsurmountable logical flaws in the design. Meanwhile, in order to analyze
+the networking dynamics and resource consumption, we studied our implementations
+through a series of experiments.
 
 \subsection{Experiments}
 
 The experiments were conducted using the Tor shadow simulator
 tool~\cite{jansen2011shadow} described in Section~\ref{sec:background}. We
 approach the problem at multiple scales. Given the deterministic and virtual
-nature of the simulator, the choice of hardware does not affect the resutls.
+nature of the simulator, the choice of hardware does not affect our results.
 
 \subsubsection{Medium-scale Parameter Tuning}
 
 The moneTor scheme is parametized by several core variables that strongly affect
-network performance. The ones that we consider here are:
+network performance. In particular, we are interested in how the following
+variables can affect the benefit of priority bandwidth clients.
 
 \begin{itemize}
-\item \emph{Priority Modifier}- priority benefit can be tuned with a configurable
+\item \emph{Priority Modifier}: priority benefit can be tuned with a configurable
   program option.
-\item \emph{Congestion}- priority benefit is likely more prominent when there is
+\item \emph{Congestion}: priority benefit is likely more prominent when there is
   competition for limited bandwidth.
-\item \emph{Percentage Premium Users}- priority benefit may be less prominent
+\item \emph{Percentage Premium Users}: priority benefit may be less prominent
   when there are more prioritized users.
 \end{itemize}
 
 To measure the effect of these independent variables, we run a large number of
-medium-scale simulations. Each variable is varied individually while keep the
-other two constant at an arbitrary acceptable value. The dependent variable used
-to capture the network performance is the global median download time for all
-premium clients and all non-premium clients,
-respectively~\ref{figures}.
+medium-scale simulations. Each parameter is varied individually while keep the
+other two constant at an arbitrary acceptable value. For each simulation, we
+take as the dependent variable the global median download time for all premium
+clients and all non-premium clients, respectively~\ref{figures}.
 
 \td{Note: we haven't actually done this yet. Figures are forthcoming'}
 
 The sum outcome of these experiments allow us comment on the sensitivity of our
-scheme to each parameter and recommend optimal configurations for larger-scale
-analysis and deployment.
+scheme to each parameter and to recommend optimal configurations for
+larger-scale analysis and deployment.
 
 \subsubsection{Large-Scale Performance Analysis}
 
@@ -189,7 +189,8 @@ detail. Our large-scale experiment features the following setup \td{describe
   network effects where we look at throughput (to infer overhead differences
   between moneTor and vanilla), time to first byte for
   premium/nonpremium/vanilla clients, and time to finish download for
-  premium/nonpremium/vanilla clients}
+  premium/nonpremium/vanilla clients in order to get a more detailed look into
+  the benefits of premium traffic}
 
 \begin{figure*} \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
