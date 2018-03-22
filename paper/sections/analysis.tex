@@ -1,6 +1,7 @@
-\subsection{Methodology}
+We validated our design decisions using a two-pronged approach that consists of
+both real-world data collection from live Tor users as well as simulations on
+our software implementation.
 
-\subsubsection{Performance Metrics}
 \subsection{Data Collection}
 \label{subsec:datacollection}
 
@@ -62,7 +63,7 @@ online, and can be audited~\cite{code-mt-stats}.
 \subsubsection{Observations}
 
 Our measurements successfully captured several important informations needed to
-design MoneTor and our experimentation phase. For example, one important question would be:
+design moneTor and our experimentation phase. For example, one important question would be:
 how should we choose the fraction of premium users in our experimentations? From
 Figure~\ref{fig:stats_b}, we observe that $\approx 82\%$ of circuits carrying
 only web traffic exchanged less than 1000 cells for both directions (i.e.,
@@ -79,13 +80,19 @@ It also appears from Figure~\ref{fig:stats_a} that most of the traffic usually
 happens within the first few tens of seconds, and that all type of traffic we
 collected seems to follow the same rule. From that result, we believe that the
 reliability of payment is critical within the first few seconds, especially from
-a relay side viewpoint. This result means that our payment channels must be established and ready before the user starts to use his circuit. Tor already follows the same strategy with streams: a circuit must be ready before a stream is created, such that it can be attached to a ready circuit and sends its data directly through the anonymous tunnel. Similarly, MoneTor allows secure and anonymous payment channels to be pre-built and attached to a particular circuit. However, Tor would need some clever strategy not to exhaust the network's resource by pre-building unnecessary nanopayment channels.
+a relay side viewpoint. This result means that our payment channels must be
+established and ready before the user starts to use his circuit. Tor already
+follows the same strategy with streams: a circuit must be ready before a stream
+is created, such that it can be attached to a ready circuit and sends its data
+directly through the anonymous tunnel. Similarly, moneTor allows secure and
+anonymous payment channels to be pre-built and attached to a particular
+circuit. However, Tor would need some clever strategy not to exhaust the
+network's resource by pre-building unnecessary nanopayment channels.
 
 %% In another area of research, it may be interesting to point out that since %
 %$\approx 50\%$ of users do not carry data after their DNS request, some %
 %adversary doing end-to-end correlation may prefer to use active attacks over %
 %passive correlation to capture more identities.
-
 
 \begin{figure*} \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
@@ -107,4 +114,120 @@ a relay side viewpoint. This result means that our payment channels must be esta
 	\caption{Tor measurements}
 \end{figure*}
 
-\subsection{Experimentations}
+\subsection{Simulation Methodology}
+
+A substantial contribution of the research is embedded within our native
+implementation of the moneTor scheme. The modifications, applied to Tor
+0.3.2-alpha, cover approximately fifteen thousand added lines of code across
+Tor's main C codebase. We emphasize that the implementation is not a fully
+functional prototype and is optimized solely for our experiments. Our
+implementation serves the following purposes:
+
+\begin{enumerate}
+\item A proof-of-concept implementation covering nuances not explicitly
+  covered in the protocol designs. In effect, we would like to show that there
+  are no unexpected and prohibitive practical conflicts with the existing Tor
+  design.
+\item A platform to study on the feasibility and networking effects of premium
+  circuit priorization.
+\item A platform to obtain rough factor-of-two approximations for all bandwidth,
+  computation, and memory requirements of the system, both globally and at
+  individual nodes.
+\end{enumerate}
+
+The results of first design purpose are clearly qualitative. Although we will
+discuss lessons learned in~\ref{discussion?}, we briefly note that we did not
+discover any unsurpassable logical flaws in our design. To analyze the networking
+effects and resource consumption goals, we studied our implementations through a
+series of experiments.
+
+\subsection{Experiments}
+
+The experiments were conducted using the Tor shadow simulator
+tool~\cite{jansen2011shadow} described in Section~\ref{sec:background}. We
+approach the problem at multiple scales. Given the deterministic and virtual
+nature of the simulator, the choice of hardware does not affect the resutls.
+
+\subsubsection{Medium-scale Parameter Tuning}
+
+The moneTor scheme is parametized by several core variables that strongly affect
+network performance. The ones that we consider here are:
+
+\begin{itemize}
+\item \emph{Priority Modifier}- priority benefit can be tuned with a configurable
+  program option.
+\item \emph{Congestion}- priority benefit is likely more prominent when there is
+  competition for limited bandwidth.
+\item \emph{Percentage Premium Users}- priority benefit may be less prominent
+  when there are more prioritized users.
+\end{itemize}
+
+To measure the effect of these independent variables, we run a large number of
+medium-scale simulations. Each variable is varied individually while keep the
+other two constant at an arbitrary acceptable value. The dependent variable used
+to capture the network performance is the global median download time for all
+premium clients and all non-premium clients,
+respectively~\ref{figures}.
+
+\td{Note: we haven't actually done this yet. Figures are forthcoming'}
+
+The sum outcome of these experiments allow us comment on the sensitivity of our
+scheme to each parameter and recommend optimal configurations for larger-scale
+analysis and deployment.
+
+\subsubsection{Large-Scale Performance Analysis}
+
+Given the preceeding results, we choose a single \td{or several?} large-scale
+experimental configuration with which to analyze the performance in more
+detail. Our large-scale experiment features the following setup \td{describe
+  setup}
+
+\td{Experimental results forthcoming. We expect to have graphs that are simular
+  to the very small scale placeholders shown in Figure 3 and Figure 4. Figure 3
+  shows payment statistics where we basically observe latencies for various
+  payment steps split between guard, middle, and exit relays. Figure 4 shows
+  network effects where we look at throughput (to infer overhead differences
+  between moneTor and vanilla), time to first byte for
+  premium/nonpremium/vanilla clients, and time to finish download for
+  premium/nonpremium/vanilla clients}
+
+\begin{figure*} \centering
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[scale=0.2]{images/numpayments_temp.png}
+		\label{fig:payments_a}
+		\caption{Number of Payments}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[scale=0.2]{images/ttestablish_temp.png}
+		\label{fig:payments_b}
+		\caption{Time to Establish}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[scale=0.2]{images/ttclose_temp.png}
+		\label{fig:payments_c}
+		\caption{Time to Close}
+	\end{subfigure}
+	\label{fig:payments}
+	\caption{Payment Simulations (Temporary Placeholder)}
+\end{figure*}
+
+
+\begin{figure*} \centering
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[scale=0.2]{images/throughput_temp.png}
+		\label{fig:payments_a}
+		\caption{Network Throughput}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[scale=0.2]{images/ttfirstbyte_temp.png}
+		\label{fig:payments_b}
+		\caption{Time to First Byte}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[scale=0.2]{images/ttdownload_temp.png}
+		\label{fig:payments_c}
+		\caption{Time to Complete Download}
+	\end{subfigure}
+	\label{fig:payments}
+	\caption{Network Simulations (Temporary Placeholder)}
+\end{figure*}
