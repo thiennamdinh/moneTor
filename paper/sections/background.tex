@@ -59,10 +59,9 @@ PlanetLab~\cite{Chun:2003:POT:956993.956995}.
 In this paper, we use Shadow to evaluate our payment layer extension of the Tor
 protocol in order to measure its networking impact and its feasibility.
 
-\subsubsection{Tor's scheduling}
+\subsubsection{Tor's Scheduling}
 
-\td{TODO: talk about Tor's cell scheduling process; this is important later when we modify
-it to provide priority bandwidht for premium clients}
+Tor handles multiple queues of cells, for each circuit, and manages to write cells in the outbound connection while favoring bursty over bulky traffic. The main idea is to prioritize circuit handling interactive data streams, like chats or web browsing. Tor uses an heuristic called EWMA~\cite{ccs10-scheduling} (i.e., computes the exponentially weighted moving average for the number of cells sent on each circuit) to decide which circuit to prioritize. Recently, the efficiency of EWMA has been improved with the Kist~\cite{jansen14-kist} scheduler used to reduce the congestion on the kernel outbound queue and push back this delicate problem on the Tor layer. Thanks to Kist, EWMA should better fulfill Tor's intended interactive streams prioritization.
 
 \subsection{Cryptocurrencies}
 
