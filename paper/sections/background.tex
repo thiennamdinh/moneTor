@@ -41,9 +41,13 @@ this paper is to give a tool to the Tor project to shape the Tor network
 diversity through monetary incentivization.
 
 \subsubsection{Circuit handling on Tor clients}
+%
+%\td{TODO: This section will provide a more detailed explanation of how circuits are
+%created and how that affects moneTor's high initial latency and overhead design}
 
-\td{TODO: This section will provide a more detailed explanation of how circuits are
-created and how that affects moneTor's high initial latency and overhead design}
+When an application uses a Tor client, it creates a stream. Tor protects the privacy of the user by routing its streams inside Tor circuits. Therefore, as soon as a stream is created, it must directly be routed through an available Tor circuit to speed up the time to fist byte (i.e., the time to get the first byte of the response to a request we sent through Tor). In order to allow such scenario, Tor circuits are built pre-emptively once the clients obtain directory information (i.e., a consensus and router descriptors), and Tor tries to predict the needed circuits depending on the client usage. Indeed, every second the Tor client estimates how many clean circuits (not yet used) it predicts to use in the forthcoming moment, and decides to build new ones if it believes not to have enough.
+
+For our moneTor design, we are going to follow the same strategy when building our payment channels: we pre-emptively build them to speed-up the time to first payment.
 
 \subsubsection{Evaluating Tor's performance}
 Shadow~\cite{jansen2011shadow} is a discrete event networking simulator that allows
@@ -59,10 +63,9 @@ PlanetLab~\cite{Chun:2003:POT:956993.956995}.
 In this paper, we use Shadow to evaluate our payment layer extension of the Tor
 protocol in order to measure its networking impact and its feasibility.
 
-\subsubsection{Tor's scheduling}
+\subsubsection{Tor's Scheduling}
 
-\td{TODO: talk about Tor's cell scheduling process; this is important later when we modify
-it to provide priority bandwidht for premium clients}
+Tor handles multiple queues of cells, for each circuit, and manages to write cells in the outbound connection while favoring bursty over bulky traffic. The main idea is to prioritize circuit handling interactive data streams, like chats or web browsing. Tor uses an heuristic called EWMA~\cite{ccs10-scheduling} (i.e., computes the exponentially weighted moving average for the number of cells sent on each circuit) to decide which circuit to prioritize. Recently, the efficiency of EWMA has been improved with the Kist~\cite{jansen14-kist} scheduler used to reduce the congestion on the kernel outbound queue and push back this delicate problem on the Tor layer. Thanks to Kist, EWMA should better fulfill Tor's intended interactive streams prioritization.
 
 \subsection{Cryptocurrencies}
 
@@ -128,8 +131,8 @@ to achieve security.
 Finally, the micropayment channel concept has been extended to support anonymity
 design goals. Z-Channel specifies an implementation designed specifically for
 Zerocash which only supports two-party channels~\cite{zhang2017z}. Green and
-Miers designed Bolt, which accomodates multi-party channel construction as
-well~\cite{green2017bolt}. In such a setup, the anonymity set is defined with
+Miers designed Bolt~\cite{green2017bolt}, which accomodates multi-party channel construction as
+well. In such a setup, the anonymity set is defined with
 respect to the set of users connected to the intermediary. In other words, given
 a set of end users $E_{all} = \{E_1, E_2, ... E_n\}$ who each have an active
 channel with $I$, $E_a$ should be able to send a secure payment to $E_b$ even
