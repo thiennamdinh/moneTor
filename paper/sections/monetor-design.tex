@@ -245,14 +245,15 @@ All the bytes starting from StreamID (included) are onion-encrypted. RelCMD is s
 
 \subsubsection{Payment Anonymity}
 \flo{Probably moving this in Section 5.2 would be nice.}
-\td{TODO: describes the communiction circuits needed to make anonymous payments
-  without stupidly revealing identity via network addresses}
-  % fund \delta is uniquely the same for all client
 
 Observing the cash-out transactions on the ledger does not reveal any information regarding the source of the payment. Moreover, any communication in our tripartite nanopayment protocol are protected by Tor circuits. Hence, relationship between Client to Intermediary, Client to Ledger, Relay to Intermediary and Relay to Ledger are themselves anonymized by Tor circuits. If some party abort, which induce a dispute on the Ledger, the relationship between the client and his relays is protect by the various Tor circuits built to resolve the dispute with the ledger.
 An intermediary however, is able to observe any nanopayment channel establishment and closure linked to a particular micro payment channel. Because each nanopayment channel matches a particular Tor circuit, it can match the opening/closure timing of nano channels to track the activity of an anonymous user through time. User's activity may leak some information about the user itself or the user's behaviour (e.g., the timezone). Considering such side-channels is out-of-scope of this paper, however our moneTor design would make inefficient such attack if users open micro-channels with multiple intermediaries and hide their behaviour with a random use of the set of micro-channels they have opened. This would however increase the amount of escrowed fund needed.
 
 \subsubsection{Scalability Design of the moneTor Scheme}
 \label{subsub:scalability}
-\td{TODO: describe scalability of intermediary system and any networking
-  bottlenecks that might arise such as port limits, etc.}
+%\td{TODO: describe scalability of intermediary system and any networking
+%  bottlenecks that might arise such as port limits, etc.}
+
+In our design, we are concerned by memory consumption, kernel socket consumption and CPU consumption. Our choice for a tripartite protocol allows to shift the memory consumption of opened and idle micro channels to the Intermediary nodes of the network. Those relays have the sole purpose to keep the micro channels open and to resolve dispute if any. In our implementation, Intermediary relays cannot be part of a circuit carrying user streams. We devote their full CPU capability to handle channel establishments. This design allows only a few strong intermediary relays to handle all of the premium channel establishments.
+
+Each interaction between party are realised within Tor circuits, which allows multiplexing of circuits over the same TCP connection. It results that the intermediary and the ledger must have a number of available sockets (in the worst-case scenario) higher to the number of relays in the network. This is the current assumption for each relay, therefore our design benefits from the same advantage and inconvenient of the current Tor network regarding scalability of socket consumption.
