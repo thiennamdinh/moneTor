@@ -80,7 +80,7 @@ fixed value $\delta$, established at the start of the channel. The payments
 themselves are \emph{locally transparent} in the sense that each nanopayment in
 the same channel is trivially linked to each other. However, the nanopayment
 channels themselves are anonymous with respect to other nanopayment channels and
-micropayment operations.
+micropayment operations. From the Tor client standpoint, each of its nanopayment channels are attached to one Tor circuit, and closed when the circuit closes.
 
 Generic parties $C$ and $R$ can construct a nanopayment channel once both have
 completed $Establish$ with a commone intermediary $I$. We define the following
@@ -222,7 +222,7 @@ capital that active channels consume.
 We only apply our tripartite protocol to pay for middle relay's bandwidth and to pay for exit relay's bandwidth, but we do differently for the guard relay. A fundamental feature of the Tor network is the fact the entry point of user's circuits is persistent
 across the timescale of months~\cite{wpes12-cogs}. We exploit this setup to allow for extremely
 efficient direct payment channels between the client and guard, considerably
-reducing the network round-trip-time costs of the protocol, with the guard playing the intermediary role for itself. We can do this because each guard are connected to a subset of all Tor users, hence the memory consumption created by opened micro-channels scales only with this subset of users. More insights regarding scalability of moneTor are given is upcoming Section~\ref{subsub:scalability}.
+reducing the network round-trip-time costs of the protocol, with the guard playing the intermediary role for itself. We can do this because each guard are connected to a subset of all Tor users, hence the memory consumption created by opened micro-channels scales only with the premium users from this subset of users. More insights regarding scalability of moneTor are given is upcoming Section~\ref{subsub:scalability}.
 
 Another important feature which offers our design is the possibility to pre-emptively build channels, like Tor already pre-emptively build circuits to speed up the network responsiveness. Our implementation predicts the need of payment circuits based on the usage and pre-builds the needed channels, meaning that the many rounds of the payment channels establishment is realised before the user actually needs to use his payment circuit. Then, once the users forward a stream into Tor, the payment circuit can smoothly handle payments to each of the hops with no more cost than computing a hash function, and forwarding one cell per payment. Depending on the payment rate chosen by the Tor network, this can be considered negligible.
 \subsection{Network Protocol and Implementation}
@@ -244,11 +244,13 @@ We extend the Tor routing protocol described in Tor's specifications~\cite{torsp
 All the bytes starting from StreamID (included) are onion-encrypted. RelCMD is set to RELAY\_COMMAND\_MT, PCMD is the payment command which is different for each step of the payment protocol. If some message overflow the payload available length (495 bytes), we queue multiple cells of the same PCMD and buffer them on the receiver side to unpack the whole message.
 
 \subsubsection{Payment Anonymity}
-
+\flo{Probably moving this in Section 5.2 would be nice.}
 \td{TODO: describes the communiction circuits needed to make anonymous payments
   without stupidly revealing identity via network addresses}
   % fund \delta is uniquely the same for all client
 
+Observing the cash-out transactions on the ledger does not reveal any information regarding the source of the payment. Moreover, any communication in our tripartite nanopayment protocol are protected by Tor circuits. Hence, relationship between Client to Intermediary, Client to Ledger, Relay to Intermediary and Relay to Ledger are themselves anonymized by Tor circuits.
+An intermediary however, is able to observe any nanopayment channel establishment and closure linked to a particular micro payment channel. Because each nanopayment channel matches a particular Tor circuit, it can match the opening/closure timing of nano channels to track the activity of an anonymous user through time. User's activity may leak some information about the user itself or the user's behaviour (e.g., the timezone). Considering such side-channels is out-of-scope of this paper, however our moneTor design would make inefficient such attack if users open micro-channels with multiple intermediaries and hide their behaviour with a random use of the set of micro-channels they have opened. This would however increase the amount of escrowed fund needed.
 
 \subsubsection{Scalability Design of the moneTor Scheme}
 \label{subsub:scalability}
