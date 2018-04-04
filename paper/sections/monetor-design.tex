@@ -224,7 +224,7 @@ across the timescale of months~\cite{wpes12-cogs}. We exploit this setup to allo
 efficient direct payment channels between the client and guard, considerably
 reducing the network round-trip-time costs of the protocol, with the guard playing the intermediary role for itself. We can do this because each guard are connected to a subset of all Tor users, hence the memory consumption created by opened micro-channels scales only with this subset of users. More insights regarding scalability of moneTor are given is upcoming Section~\ref{subsub:scalability}.
 
-
+Another important feature which offers our design is the possibility to pre-emptively build channels, like Tor already pre-emptively build circuits to speed up the network responsiveness. Our implementation predicts the need of payment circuits based on the usage and pre-builds the needed channels, meaning that the many rounds of the payment channels establishment is realised before the user actually needs to use its payment circuit. Then, once the users forward a stream into Tor, the payment circuit can smoothly handle payments to each of the hops with no more cost than computing a hash function, and forwarding one cell per payment. Depending on the payment rate chosen by the Tor network, this can be considered negligible.
 \subsection{Network Protocol and Implementation}
 %talk about leaky-pipe topology
 %needs an overview of the protocol extension and some nicelydone image
