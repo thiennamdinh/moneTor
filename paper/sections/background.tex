@@ -93,11 +93,13 @@ Separate windows are maintained for both the inbound and outbound
 directions. Tor attempt to keep the windows close to full at all times as long
 as there is traffic to process. When a relay has flushed some number of cells,
 it considers whether it has free space in its output buffes. If so, it sends a
-special RELAY_COMMAND_SENDME cell to initialize the next batch of cells. In
+special RELAY\_COMMAND\_SENDME cell to initialize the next batch of cells. In
 networking design of moneTor, we will exploit this flow control functionality to
 generate priortized traffic.
 
 \subsection{Cryptocurrencies}
+
+\subsubsection{Currency}
 
 The modern generation of decentralized digital currencies traces its roots to
 Nakamoto's Bitcoin protocol~\cite{nakamoto2008bitcoin}. This family of payment
@@ -122,6 +124,8 @@ from the main blockchain onto a secondary chain~\cite{back2014enabling}.  More
 recently, Poon and Buterin explained how Ethereum can support multiple levels of
 arbirarily configured \emph{child chains} that inherit many security properties
 from the main Ethereum blockchain.
+
+\subsubsection{Payment Channels}
 
 The core cryptocurrency component featured in moneTor is the multi-party
 bidirectional micropayment channel. Base layer cryptocurrency protocols suffer
@@ -157,6 +161,8 @@ matter of network policy to ensure game-theoretic stability whereby which all
 parties are incentivized behave honestly. The Bitcoin Lightning Network and
 other similar protocols utilize simple hash commitments and transaction delays
 to achieve security.
+
+\subsubsection{Anonymous Payment Channels}
 
 Finally, the micropayment channel concept has been extended to support anonymity
 design goals. Z-Channel specifies an implementation designed specifically for
