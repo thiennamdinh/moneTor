@@ -216,7 +216,7 @@ concurrently active circuits,\footnote{For instance, the popular Tor Browser
   application dedicates a separate circuit for each SOCKS request (i.e., the effect is to observe a different circuit to each website, with multiplexed cross-origin contents into the same circuit)}
 each of which requires three streams of payment to the guard, middle, and exit relays. An interesting area of future work involves optimizing payment channels
 to balance both the computational resources as well as escrowed financial
-capital that active channels consume. 
+capital that active channels consume.
 \flo{Do we have one different escrow for each nanopayment done in parallel? If not, how do the nanopayment channels done in parallel protect against being linkable, and how do they ensure there is no double spending nanopayment channels going on? Does the micro channel's  balance is updated at each nano setup?}
 
 We only apply our tripartite protocol to pay for middle relay's bandwidth and to pay for exit relay's bandwidth, but we do differently for the guard relay. A fundamental feature of the Tor network is the fact the entry point of user's circuits is persistent
@@ -256,4 +256,53 @@ An intermediary however, is able to observe any nanopayment channel establishmen
 
 In our design, we are concerned by memory consumption, kernel socket consumption and CPU consumption. Our choice for a tripartite protocol allows to shift the memory consumption of opened and idle micro channels to the Intermediary nodes of the network. Those relays have the sole purpose to keep the micro channels open and to resolve dispute if any. In our implementation, Intermediary relays cannot be part of a circuit carrying user streams. We devote their full CPU capability to handle channel establishments. This design allows only a few strong intermediary relays to handle all of the premium channel establishments.
 
-Each interaction between party are realised within Tor circuits, which allows multiplexing of circuits over the same TCP connection. It results that the intermediary and the ledger must have a number of available sockets (in the worst-case scenario) higher to the number of relays in the network. This is the current assumption for each relay, therefore our design benefits from the same advantage and inconvenient of the current Tor network regarding scalability of socket consumption.
+Each interaction between party are realised within Tor circuits, which allows
+multiplexing of circuits over the same TCP connection. It results that the
+intermediary and the ledger must have a number of available sockets (in the
+worst-case scenario) higher to the number of relays in the network. This is the
+current assumption for each relay, therefore our design benefits from the same
+advantage and inconvenient of the current Tor network regarding scalability of
+socket consumption.
+
+\subsection{Prioritized Traffic}
+\label{subsub:prioritized}
+
+The final component of our network-oriented design addresses the need to deliver
+prioritized bandwidth given an explicit signalling of premium or nonpremium
+traffic. As our work does not aim improve the global performance of the Tor
+network, any benefits conferred to the set of premium users must be at the
+expense of the remaining clients. Our objective therefore is to provide a
+tunable range of prioritization while incurring as little cost as possible to
+average global performance.
+
+Traffic scheduling is perhaps the most intuitive mechanism with which to
+implement priortization. From a theoretical standpoint, scheduling provides
+potentially straightforward policies which are responsive to varying load and
+congestion. In our investigation, however, we found that practical modification
+of the Tor scheduling infrastructure is nontrivial. A more detailed discussion
+of our findings is documented in [Appendix].
+
+Fortunately, Tor's overlay flow control mechannism provides an alternative route
+to implement our desired functionality. Recall that nodes regulate the traffic
+flux in either direction using a set of flow control windows. Roughly speaking,
+these windows determine space allotted to each circuit on a relay's buffer,
+which in turn is positively correlated with effective bandwidth. We specify the
+following formula to readjust the size of payment windows.
+\begin{equation}
+  window' = window(1+ \alpha(premium / premium\% - 1))
+\end{equation}
+Here, a circuit is marked as prioritized by the bit $premium \in \{0, 1\}$. The
+priority benefit $\alpha \in [0, 1)$ defines the total amount of flow capacity
+transfered from the set of nonpremium to premium clients. The fraction of
+premium to nonpremium clients, denoted by $premium\%s \in [0,100]$, is used to
+keep constant the total flow capacity. Our policy may be interpreted in one of
+two ways. First, each node could track the $premium\%$ locally and dynamically
+adjust their own windows. This introduces a considerable amount of added
+complexity with unclear consequences on network performance. A more basic
+approach calls for the Tor authorities to track the global value for $premium\%$
+and periodically broadcast static flow control windows to be used by the entire
+network. We adopt the latter approach in this iteration of
+moneTor.~\footnote{Our research in traffic priortization is meant to demonstrate
+  at least some crude capacity for premium advantage in our models and to
+  suggest potential aveneues for further study. A more definitive design for
+  production-ready policies is left for future networking-oriented research.}
