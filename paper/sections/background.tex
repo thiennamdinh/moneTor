@@ -65,7 +65,37 @@ protocol in order to measure its networking impact and its feasibility.
 
 \subsubsection{Tor's Scheduling}
 
-Tor handles multiple queues of cells, for each circuit, and manages to write cells in the outbound connection while favoring bursty over bulky traffic. The main idea is to prioritize circuit handling interactive data streams, like chats or web browsing. Tor uses an heuristic called EWMA~\cite{ccs10-scheduling} (i.e., computes the exponentially weighted moving average for the number of cells sent on each circuit) to decide which circuit to prioritize. Recently, the efficiency of EWMA has been improved with the Kist~\cite{jansen14-kist} scheduler used to reduce the congestion on the kernel outbound queue and push back this delicate problem on the Tor layer. Thanks to Kist, EWMA should better fulfill Tor's intended interactive streams prioritization.
+Tor handles multiple queues of cells, for each circuit, and manages to write
+cells in the outbound connection while favoring bursty over bulky traffic. The
+main idea is to prioritize circuit handling interactive data streams, like chats
+or web browsing. Tor uses an heuristic called EWMA~\cite{ccs10-scheduling}
+(i.e., computes the exponentially weighted moving average for the number of
+cells sent on each circuit) to decide which circuit to prioritize. Recently, the
+efficiency of EWMA has been improved with the Kist~\cite{jansen14-kist}
+scheduler used to reduce the congestion on the kernel outbound queue and push
+back this delicate problem on the Tor layer. Thanks to Kist, EWMA should better
+fulfill Tor's intended interactive streams prioritization. \td{should we still
+  talk about this if scheduling is not used?}
+
+\subsubsection{Flow Control}
+
+To maintain a managable flow of cells between nodes, Tor implements an overlay
+flow-control mechanism. The design caps the rate of cell transmission at two
+different levles.
+
+\begin{itemize}
+\item Circuit-level: transmission window between two tor nodes (default: 1000 cells)
+\item Stream-level: end-to-end transmission window between a client and the
+  edge connection at the exit node (default: 500 cells)
+\end{itemize}
+
+Separate windows are maintained for both the inbound and outbound
+directions. Tor attempt to keep the windows close to full at all times as long
+as there is traffic to process. When a relay has flushed some number of cells,
+it considers whether it has free space in its output buffes. If so, it sends a
+special RELAY_COMMAND_SENDME cell to initialize the next batch of cells. In
+networking design of moneTor, we will exploit this flow control functionality to
+generate priortized traffic.
 
 \subsection{Cryptocurrencies}
 
