@@ -37,6 +37,7 @@ subset of the following roles: $C$ (client), $R$ (relay), $E$ (end user: either
 a client or relay), $I$ (intermediary), and $L$ (ledger). At this level, we
 assume that one client is paying one relay through a single channel and that
 network-layer anonymity will be appropriately handled at the Tor protocol level.
+
 \subsubsection{Comparison to Bolt}
 
 The full moneTor payment scheme is a superset of Bolt~\cite{green2017bolt} three-party bidirectional
@@ -196,6 +197,23 @@ Once $I$ has closed his nanopayment channel leg with $R$, $I$ and $C$ are free
 to complete the exact same close protocol. All parties are now reverted to the
 original state they occupied prior to $Nano$-$Setup$ save for a securely updated
 balance.
+
+\textbf{Secure Micropayment Channel Closure} Our unmodified construction exposes
+a subtle passive attack by $I$ allowing him to link nanopayment channels through
+knowledge of the final number of payments made on each channel in conjunction
+with the globally fixed nanopayment cost.~\footnote{This attack is best
+  illustrated with a trivial example. Suppose that $I$ facilitates a number of
+  nanopayment channels with the following number of payments, each of which is
+  known to represet one unit of money: $[58, 839, 356, 881, 23, 89, 561]$ Now
+  that $C$ closes her micropayment channel and terminates with exactly 404 units
+  of money. Once the micropayment channel is closed, $I$ must necessary gain
+  knowledge of the final balance of funds and can easily link the first and
+  third nanopayment channels as belonging to the same $C$}. To mitigate this
+vulnerability, we stipulate that $C$ must make a least one micropayment, which
+has a monetary value hidden from $I$, before closing a micropayment
+channel. This micropayment should contain a random value no greater than maxmium
+value of nanopayment channels as stated in the Tor consensus and may be made to
+another account owned by $C$.
 
 \subsection{Payment Implementation - 10000 feets overview}
 
