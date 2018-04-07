@@ -89,10 +89,20 @@
 \label{sec:analysis}
 \input{sections/analysis.tex}
 
-\section{Limitations}
-\label{sec:limitations}
-\section{Future work}
-\label{sec:future_work}
+\section{Limitations and Future Work}
+\label{sec:limitations_futurework}
+%Prioritization
+%Channel managmnt
+%Side-channel attacks
+%more resource evaluation
+\subsection{Prioritization}
+
+We explored prioritization with a small modification of the EWMA scheduler, and by playing with the control-flow windows. We discovered that this problem was unexpectedly difficult. We discovered from our experimentations that the EWMA scheduler may currently performing less than optimally due to the exit bandwidth scarcity (in aggregate), and that using it to prioritize premium users may not always work as expected. We believe that prioritization techniques worth further research dedicated to understand better their overall performance impact.
+
+\subsection{Channels Management}
+
+\subsection{Side-channel attacks}
+We assumed that our protocol construction would not give more information to an observer than the single bit needed to differentiate a premium user. However in practice, the protocol may leak information through side-channels, such as the time needed to exchange cells in order to open/close channels. An intermediary, or an exit relay may guess bits about the client's location evaluating the round-trip-times of the multi-rounds protocol. Those sort of side-channels attacks are however easily mitigated once they are discovered. Future work may explore such kind of problem and try to obtain more information than the single bit of differentiation.
 
 \section{Code and Data Reproducibility}
 \label{sec:code}
