@@ -102,7 +102,7 @@ We explored prioritization with a small modification of the EWMA scheduler, and 
 \subsection{Channels Management}
 
 \subsection{Side-channel attacks}
-We assumed that our protocol construction would not give more information to an observer than the single bit needed to differentiate a premium user. However in practice, the protocol may leak information through side-channels, such as the time needed to exchange cells in order to open/close channels. An intermediary, or an exit relay may guess bits about the client's location evaluating the round-trip-times of the multi-rounds protocol. Those sort of side-channels attacks are however easily mitigated once they are discovered. Future work may explore such kind of problem and try to obtain more information than the single bit of differentiation.
+We assumed that our protocol construction would not give more information to an observer than the single bit needed to differentiate a premium user. However in practice, the protocol may leak information through side-channels, such as the time needed to exchange cells in order to open/close channels. An intermediary, or an exit relay may guess bits about the client's location evaluating the round-trip-times of the multi-rounds protocol. Those sort of side-channels attacks are however easily mitigated once they are discovered. Future work may explore such kind of problem, try to obtain more information than the single bit of differentiation and design countermeasures.
 
 \section{Code and Data Reproducibility}
 \label{sec:code}
