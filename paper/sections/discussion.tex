@@ -1,0 +1,105 @@
+While we cover as much ground as possible, it has been evident from the intial
+stages that a production-ready construction of any monetary incentive scheme for
+Tor would be a monumental collaborative effort. In this final chapter, we
+discuss the promise and limitations of our results and speculate on the many
+interesting research avenues going forward.
+
+\subsection{Evaluation}
+
+Recall from Chapter~\ref{chap:Intro} that we are broadly concerned with three
+constraints: anonymity, economic security, and efficiency. As described in
+Chapter~\ref{chap:payment} and Chapter~\ref{chap:network}, moneTor was
+deliberately constructed to account for anonymity and economic security. We did
+not uncover any notable design flaws relating to these constraints during our
+extensive implementation phase.
+
+The results from Chapter~\ref{chap:simulation} indicate that moneTor performs
+overwhelmingly well in all efficiency measurements. This true for both global
+throughput and effective user latency where moneTor appears to achieve
+near-optimal performance in both measures. Unfortunately, we cannot produce
+meaningful comparisons with related works dealing in monetary Tor payments, as
+in all other case the researchers choose to analyze their respective algorithms
+in isolation rather than as part of a simulated Tor network. Meanwhile,
+performance comparisons with non-transferable benefit schemes and transferable
+benefits are not necessarily meaningful either, as they employ vastly different
+tokens models and should be evaluated in context. We nevertheless note that our
+decision to coordinate payments through third-party intermediaries implies that
+moneTor is conceptually more scalable than most previous proposals. A
+back-of-the-envelope calculation shows that moneTor can theoretically
+accommodate on the order of 10 million paying clients, if
+necessary.\footnote{This simple analysis conservatively assumes that the moneTor
+  ledger can handle 200 channel initiations per second (one order of magnitude
+  greater than inefficient decentralized cryptocurrencies), users are willing to
+  escrow one month's worth of payments, and users need no more than 10 concurrent
+  channels at any given time}. We are careful to acknowledge that scales
+of this this magnitude may pose any number of unseen complications which we fail
+to anticipate at the theoretical level.
+
+Finally, the paper describing LIRA is, to the best of our knowledge, the most
+recent related work that explores similar concepts of traffic prioritization in
+Tor. While it is difficult to make definitive claims comparing different
+networking simulations, we observe that our flow-control method achieves similar
+levels of traffic differentiation for the median user at lower traffic
+load~\cite{jansen2013lira}.
+
+\subsection{Limitations}
+
+The moneTor framework faces a number of technical and economic
+limitations. Firstly, the mere presence of paid traffic leaks at least a single
+bit of information to relays and intermediaries regarding the browsing habit of
+the user. In practice, we expect that this information might be positively
+correlated with certain user applications such as bittorrent or video
+streaming. Secondly, while we ensure payment privacy within the Tor ecosystem,
+we can make no such guarantees at the token exchange interface. Users who
+practice inadequate operational security risk leaking information about the net
+value of payments they make in Tor with their real-world identities. This
+problem may be of greater concern for users residing in political regimes that
+are politically opposed to Tor.
+
+A separate financial limitation arises from our our tripartite payment channel
+architecture and the need for intermediaries to escrow large amounts of
+funds. This opportunity cost of the frozen capital in terms of forgone
+investments will be passed on as financial overhead to paying users in the form
+of intermediary fees.
+
+\subsection{Future Work}
+
+\textbf{Prioritized Traffic} Although we were able to successfully demonstrate
+clear prioritized premium traffic using flow control windows, there is
+considerable room to analyze prioritization under more realistic settings. Among
+the possibilities, we maintain that scheduling provides the most conceptually
+elegant way to achieve our goals. In the absence of effective scheduling,
+extension and further analysis of our flow-control technique provides an
+alternative path forward. This future work might study methods for ensuring a
+more robust response to local variations in the fraction of premium users as
+well total network load.
+
+\textbf{Side-channel Attacks} We assumed that our protocol construction would
+not give more information to an observer than the single bit needed to
+differentiate a premium user. However in practice, the protocol may leak
+information through side-channels, such as the time needed to exchange cells in
+order to open/close channels. An intermediary, or an exit relay may reason about
+the client's location by evaluating the round-trip-times of the multi-rounds
+protocol. Although often easily mitigated once discovered, these side channels
+pose an interesting problem to our expanded attack surface.
+
+\textbf{Channel Management} Given the dynamic activity of payment channels that
+we have shown, further research might explore more sophisticated policies to
+manage moneTor payment channels. Such policies would make decisions concerning
+micropayment channel initial value, nanopayment channels size, and the selection
+of available channels to apply to each new circuit. An ideal policy would be
+responsive to network load and predicted user behavior. In addition to the
+classical optimization objectives of computation, memory, and bandwidth, this
+research effectively considers a brand new vector as it attempts to streamline
+the flow of money through the network.
+
+\textbf{Extended Applications} Existing privacy-centric currencies are limited
+in that they are only effective when used in conjunction with an anonymizing
+network such as Tor~\cite{sasson2014zerocash}. Our currency scheme more
+explicitly integrates the two layers and, if deployed, we suspect that moneTor
+might become something of a default currency-of-choice for many auxillary
+applications. The built-in efficiency and scalability in particular makes
+moneTor an attractive option for such applications as metered video viewing,
+metered video gaming, and pay-per-page websites. The study and implementation of
+these applications in an anonymous setting provides an interesting opportunity
+for multidisciplinary research.

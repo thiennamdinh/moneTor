@@ -25,21 +25,20 @@
 
 \begin{abstract}
 
-  Although it is the most widely-used secure traffic anonymization network in
-  the world, Tor nevertheless suffers from shortcomings in network diversity and
-  performance. One strategy to mitigate both problems entails the engineering of
-  incentives in order to encourage more nodes to act as network relays. In this
-  paper, we present moneTor: the first relay incentivization scheme which
-  provides sufficiently secure, efficient, and economically robust payments. Our
-  approach is constructed from very recent developments in the cryptocurrency
-  domain and is designed to be directly implemented into the existing Tor
-  architecture. Using a combination of live network data collection and analysis
-  of our simulated design, we show that moneTor is demonstratively feasible,
-  offering upwards of [X] improved premium bandwidth for paying clients at only
-  a [X] cost in network overhead.
-
-  \td{The following (including this abstract) is some combination of incomplete
-    and temporary pre-draft reading material. Comments are marked in blue (like this)}
+  Tor, the most widely used and well-studied traffic anonymization network in
+  the world, suffers from orthogonal shortcomings in network diversity and
+  performance. We propose to mitigate both problems simultaneously through the
+  introduction of a premium bandwidth market between clients and relays. To this
+  end, we present moneTor: a relay incentivization scheme featuring anonymous,
+  efficient, and economically robust nanopayments. Our approach leverages the
+  latest advances in in cryptocurrency research toward a design that is directly
+  integrated into the existing Tor architecture. This work describes a
+  full-stack strategy that covers economic policy, novel payment algorithms, and
+  networking implementation. Through live empirical data collection and analysis
+  of our emulated prototype, we argue that moneTor is the first technically
+  feasible incentive scheme for Tor, offering upwards of 100\%-200\%
+  improvements in differentiated bandwidth for paying users at near-optimal
+  throughput and latency overhead.
 
 \end{abstract}
 
@@ -91,24 +90,15 @@
 
 \section{Limitations and Future Work}
 \label{sec:limitations_futurework}
-%Prioritization
-%Channel managmnt
-%Side-channel attacks
-%more resource evaluation
-\subsection{Prioritization}
-
-We explored prioritization with a small modification of the EWMA scheduler, and by playing with the control-flow windows. We discovered that this problem was unexpectedly difficult. We discovered from our experimentations that the EWMA scheduler may currently performing less than optimally due to the exit bandwidth scarcity (in aggregate), and that using it to prioritize premium users may not always work as expected. We believe that prioritization techniques worth further research dedicated to understand better their overall performance impact.
-
-\subsection{Channels Management}
-
-\subsection{Side-channel attacks}
-We assumed that our protocol construction would not give more information to an observer than the single bit needed to differentiate a premium user. However in practice, the protocol may leak information through side-channels, such as the time needed to exchange cells in order to open/close channels. An intermediary, or an exit relay may guess bits about the client's location evaluating the round-trip-times of the multi-rounds protocol. Those sort of side-channels attacks are however easily mitigated once they are discovered. Future work may explore such kind of problem, try to obtain more information than the single bit of differentiation and design countermeasures.
+\input{sections/discussion.tex}
 
 \section{Code and Data Reproducibility}
 \label{sec:code}
 
 \section{Conclusion}
 \label{sec:conclusion}
+\input{sections/conclusion.tex}
+
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{sections/references}
 

@@ -1,90 +1,88 @@
 There have been a number of standalone incentivization schemes proposed over the
 the past decade. We classify these into three types of strategies:
 non-transferable benefits, transferable benefits, and monetary
-payments. \footnote{Generally speaking, incentives provided by monetary payments
+payments.\footnote{Generally speaking, incentives provided by monetary payments
   are more economically robust than transferable benefits, which in turn are
   more robust than non-transferable benefits. Although we examine related works
   through the prism of economic appeal, this is not a statement of superiority
   so much as an observation on diverging motivation. Indeed, a number of
-  sociological and legal implications considerations must be weighed before
+  sociological and legal implications must be weighed before
   introducing financial profitability into the Tor ecosystem. We consider these
   to be out of scope for the purposes of our research.}
 
 \subsection{Non-Transferable Benefits}
 
-These proposals aim to recruit relays by offering some priviledged status for
-personal use only. The priviledges, crucially, are non-transferable in the sense
-that they cannot be exchanged for general financial profit.
+These proposals aim to recruit relays by offering some privileged status
+intended for personal use which cannot be securely sold for financial profit.
 
 \textbf{Gold Star} As one of the earliest incentive proposals, Gold Star
 introduces the notion of premium bandwidth. Premium, or \emph{gold star} status,
-is awarded exclusively to the fastest 7/8ths of relays. Like all of the
-proposals listed, Gold Star leaks user information through priority traffic
-differentiation. However, the leakage in this scheme is exacerabated by the fact
-that the pool of possible premium nodes is effecitvely
-fixed~\cite{dingledine2010building}.
+is awarded exclusively to the fastest 7/8 relays. While highly attractive
+for its conceptual simplicity, Gold Star leaks a considerable amount of user
+information as the set of relays in the Tor network is much smaller than the set
+of users~\cite{dingledine2010building}.
 
 \textbf{BRAIDS/LIRA} The BRAIDS scheme introduces \emph{tickets} to represent
-premium status. Small numbers of temporary premium tickets are freely
-distributed by a central \emph{bank} to any client upon request or to relays
-that have accumulated spent tickets from clients. Crucially, tickets can only be
-spent at a single relay defined at the time of their minting to elegantly
-prevent double spending~\cite{jansen2010recruiting}. LIRA is an idealogical successor
-to BRAIDs that seeks to reduce scalability limits imposed by the centralized
-infrastructure. In LIRA, clients probabilistically ``win'' premium tickets
-without any interaction with the bank. While LIRA solves many pragmatic
-shortcoming of BRAIDS, neither of these designs were constructed to handle
-strong threats of client cheating~\cite{jansen2013lira}
+premium status. Small numbers of ephemeral tickets are freely distributed by a
+central \emph{bank} to any client upon request or to relays that have
+accumulated spent tickets from clients. Crucially, tickets can only be spent at
+a single relay defined at the time of their minting to circumvent the double
+spending problem~\cite{jansen2010recruiting}. LIRA is an ideological successor
+to BRAIDs which reduces scalability problems imposed by the centralized
+infrastructure. Clients in LIRA probabilistically ``win'' premium tickets
+without any interaction with the bank. While LIRA improves the efficiency of
+BRAIDS, neither of these designs were constructed to prevent strong threats of
+client cheating~\cite{jansen2013lira}
 
 \subsection{Transferable Benefits}
 
-The next class of transferable benefits descibes those schemes which do not
-directly confer weath to relays operators but nevertheless offers a product that
-might hold value in a secondary resale market. In the general case, these
-indirect financial incentives aim to attract a broader demand than in the
+The next class of transferable benefits describes schemes which offers
+privileges or products intended to hold value in a secondary resale market. These
+indirect financial incentives presume to attract a broader demand than in the
 non-transferable case.
 
 \textbf{TEARS} TEARS introduces a two-layer approach whereby \emph{shallots}
-token are awarded by a central bank to relays who contribute to the
-network. These shallots, which may be securely exchange, can then be redeemed
-for BRAIDS-style \emph{priority pass} tokens. While fully exchangable shallots
-represent an economic improvement to non-transferable priviledges, these tokens
-are conceptually discrete and indivisible assets that are not as easily
-exchanged as true currency. Furthermore, its reliance on a centralized bank and
-bandwidth measurement authority place implicit limits on its scalability and
+token are awarded by a central bank to participating relays. These shallots,
+which are securely exchanged tokens, can then be redeemed for BRAIDS-style
+\emph{priority passes}. While fully exchangeable shallots represent an economic
+improvement over non-transferable privileges, these tokens are conceptually
+discrete and indivisible assets that are not as easily exchanged as true
+currency. Furthermore, its reliance on a centralized bank and bandwidth
+measurement authority place implicit limits on its scalability and
 security~\cite{jansen2010recruiting}.
 
 \textbf{TorPath to TorCoin} Perhaps the most radical redesign suggestion,
 TorCoin proposes to revamp the Tor architecture into one which can serve as the
 basis for a new cryptocurrency mined with proof-of-bandwidth. The networking
-component specifies verifiable pseudorandom shuffling as a new method for user
+component specifies verifiable pseudorandom shuffling as the new method for user
 circuit selection. This modified protocol would in theory provide a weakly
 secure means for relays to mint new TorCoin tokens based on their bandwidth
 contribution. In addition to several unresolved security issues enumerated by
-the authors themselves, it is not entirely clear whether the earned TorCoins
-would be able to hold real-world value~\cite{ghosh2014torpath}.
+the authors, it is not clear whether the earned TorCoins would be able to hold
+real-world value~\cite{ghosh2014torpath}.
 
-\textbf{Proof-of-work as anonymous micropayment} In this simple design, users
+\textbf{Proof-of-work as anonymous micropayment} Users in this simple design
 provide partial proof-of-work tokens that can then be redeemed by relays for
 profit in real cryptocurrency mining pools. The drawback of this scheme is
-simply an issue of unrealistic magnitude; the paper itself estimates that a user
-who continuously mines with typical consumer CPU hardware will be able to make
-only a few cents worth of payments every 24 hours while incuring a much higher
-cost in electricity~\cite{biryukov2015proof}.
+simply an issue of unrealistic magnitude; the paper estimates that a user who
+continuously mines with typical consumer CPU hardware will be able to make only
+a few cents worth of payments every 24 hours while incurring a much higher cost
+in electricity~\cite{biryukov2015proof}.
 
 \subsection{Monetary Payments}
+\label{sub:monetary}
 
-Proposals in this final class offer the most direct incentivization by outlining
-strategies to pay relays with real, externally valuable money. Generally, this
-tends to be the most economically sound approach and the one that moneTor
-adopts.
+This final class of incentivization offers rewards relays with externally
+valuable money. Generally, this tends to be the most economically
+sound approach and the one that moneTor adopts.
 
-\textbf{PAR} A pre-Bitcoin design, PAR utilizes a hybrid payment scheme that
-implements inefficient but anonymous Chaumian e-cash protocols and efficient but
-transparent probabilistic micropayments. PAR introduces the \emph{honest but
-  curious} bank paradigm in which the bank cannot deanonymize client but is in
-control of the reserve financial assets. As with BRAIDS, PAR suffers from an
-unscalable centralized design~\cite{androulaki2008payment}.
+\textbf{PAR} A pre-Bitcoin design, PAR allow clients to send direct payments to
+relays in a hybrid payment scheme which makes use of inefficient but anonymous
+Chaumian e-cash protocols and efficient but transparent probabilistic
+micropayments. PAR introduces the \emph{honest but curious} bank paradigm in
+which the bank cannot deanonymize clients but is in control of their deposited
+financial assets. As with BRAIDS, PAR suffers from an unscalable centralized
+design~\cite{androulaki2008payment}.
 
 \textbf{ORPay, PlusPay, CoinPay} These three protocols, part of the Chaumian
 e-cash tradition of payments schemes, are a series of incremental improvements
@@ -96,10 +94,10 @@ assumptions and their scalability remains capped by the need for all clients to
 interact with the central bank for each payment chain.
 
 \textbf{Orchid} Orchid is an alternative project to Tor altogether which we
-include for thoroughness and some broad idealogical similarities
-~\cite{salamon2018orchid}. Orchid is an Ethereum-based project which proposes to
+include for thoroughness and some broad ideological similarities
+~\cite{salamon2018orchid}. It is an Ethereum-based project proposing to
 construct a brand new decentralized and market-based anonymous routing
-network. However, as its stated intent has a stronger focus on cenorship
-resistance than strong anonymity, it does not have comparable privacy gurantees
-with Tor. Indeed, the payment protocol enlisted for Orchid payments makes no
-claims on anonymity itself~\cite{pass2015micropayments}.
+network. However, its stated intent focuses on censorship resistance rather
+than strong anonymity and therefore lacks comparable privacy guarantees with
+Tor. Indeed, the external payment protocol adopted by Orchid makes no claims on
+anonymity whatsoever~\cite{pass2015micropayments}.
