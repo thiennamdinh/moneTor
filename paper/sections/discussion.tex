@@ -1,46 +1,46 @@
-While we cover as much ground as possible, it has been evident from the intial
-stages that a production-ready construction of any monetary incentive scheme for
-Tor would be a monumental collaborative effort. In this final chapter, we
-discuss the promise and limitations of our results and speculate on the many
-interesting research avenues going forward.
+%While we cover as much ground as possible, it has been evident from the initial
+%stages that a production-ready construction of any monetary incentive scheme for
+%Tor would be a monumental collaborative effort. In this final chapter, we
+%discuss the promise and limitations of our results and speculate on the many
+%interesting research avenues going forward.
 
-\subsection{Evaluation}
-\label{subsec:evaluation}
-Recall from Chapter~\ref{chap:Intro} that we are broadly concerned with three
-constraints: anonymity, economic security, and efficiency. As described in
-Chapter~\ref{chap:payment} and Chapter~\ref{chap:network}, moneTor was
-deliberately constructed to account for anonymity and economic security. We did
-not uncover any notable design flaws relating to these constraints during our
-extensive implementation phase.
-
-The results from Chapter~\ref{chap:simulation} indicate that moneTor performs
-overwhelmingly well in all efficiency measurements. This true for both global
-throughput and effective user latency where moneTor appears to achieve
-near-optimal performance in both measures. Unfortunately, we cannot produce
-meaningful comparisons with related works dealing in monetary Tor payments, as
-in all other case the researchers choose to analyze their respective algorithms
-in isolation rather than as part of a simulated Tor network. Meanwhile,
-performance comparisons with non-transferable benefit schemes and transferable
-benefits are not necessarily meaningful either, as they employ vastly different
-tokens models and should be evaluated in context. We nevertheless note that our
-decision to coordinate payments through third-party intermediaries implies that
-moneTor is conceptually more scalable than most previous proposals. A
-back-of-the-envelope calculation shows that moneTor can theoretically
-accommodate on the order of 10 million paying clients, if
-necessary.\footnote{This simple analysis conservatively assumes that the moneTor
-  ledger can handle 200 channel initiations per second (one order of magnitude
-  greater than inefficient decentralized cryptocurrencies), users are willing to
-  escrow one month's worth of payments, and users need no more than 10 concurrent
-  channels at any given time}. We are careful to acknowledge that scales
-of this this magnitude may pose any number of unseen complications which we fail
-to anticipate at the theoretical level.
-
-Finally, the paper describing LIRA is, to the best of our knowledge, the most
-recent related work that explores similar concepts of traffic prioritization in
-Tor. While it is difficult to make definitive claims comparing different
-networking simulations, we observe that our flow-control method achieves similar
-levels of traffic differentiation for the median user at lower traffic
-load~\cite{jansen2013lira}.
+%\subsection{Evaluation}
+%\label{subsec:evaluation}
+%Recall from Chapter~\ref{chap:Intro} that we are broadly concerned with three
+%constraints: anonymity, economic security, and efficiency. As described in
+%Chapter~\ref{chap:payment} and Chapter~\ref{chap:network}, moneTor was
+%deliberately constructed to account for anonymity and economic security. We did
+%not uncover any notable design flaws relating to these constraints during our
+%extensive implementation phase.
+%
+%The results from Chapter~\ref{chap:simulation} indicate that moneTor performs
+%overwhelmingly well in all efficiency measurements. This true for both global
+%throughput and effective user latency where moneTor appears to achieve
+%near-optimal performance in both measures. Unfortunately, we cannot produce
+%meaningful comparisons with related works dealing in monetary Tor payments, as
+%in all other case the researchers choose to analyze their respective algorithms
+%in isolation rather than as part of a simulated Tor network. Meanwhile,
+%performance comparisons with non-transferable benefit schemes and transferable
+%benefits are not necessarily meaningful either, as they employ vastly different
+%tokens models and should be evaluated in context. We nevertheless note that our
+%decision to coordinate payments through third-party intermediaries implies that
+%moneTor is conceptually more scalable than most previous proposals. A
+%back-of-the-envelope calculation shows that moneTor can theoretically
+%accommodate on the order of 10 million paying clients, if
+%necessary.\footnote{This simple analysis conservatively assumes that the moneTor
+%  ledger can handle 200 channel initiations per second (one order of magnitude
+%  greater than inefficient decentralized cryptocurrencies), users are willing to
+%  escrow one month's worth of payments, and users need no more than 10 concurrent
+%  channels at any given time}. We are careful to acknowledge that scales
+%of this this magnitude may pose any number of unseen complications which we fail
+%to anticipate at the theoretical level.
+%
+%Finally, the paper describing LIRA is, to the best of our knowledge, the most
+%recent related work that explores similar concepts of traffic prioritization in
+%Tor. While it is difficult to make definitive claims comparing different
+%networking simulations, we observe that our flow-control method achieves similar
+%levels of traffic differentiation for the median user at lower traffic
+%load~\cite{jansen2013lira}.
 
 \subsection{Limitations}
 \label{subsec:limitations}
@@ -50,7 +50,8 @@ limitations. Firstly, the mere presence of paid traffic leaks at least a single
 bit of information to relays and intermediaries regarding the browsing habit of
 the user. In practice, we expect that this information might be positively
 correlated with certain user applications such as bittorrent or video
-streaming. Secondly, while we ensure payment privacy within the Tor ecosystem,
+streaming. Secondly, our nanopayment protocol leaks the number of $\delta$ payments made to the intermediary, and to the ledger. While both cannot determine from which user and relay relationship those payments come from, we expect also that this information might be positively correlated with some user applications.
+Finally, while we ensure payment privacy within the Tor ecosystem,
 we can make no such guarantees at the token exchange interface. Users who
 practice inadequate operational security risk leaking information about the net
 value of payments they make in Tor with their real-world identities. This

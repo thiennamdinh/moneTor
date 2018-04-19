@@ -88,9 +88,9 @@ message
     \State{$r' \gets $Random$()$}
     \State{$wCom' \gets $Commit$(wpk', B + \epsilon, r')$}
     \State{$\pi \gets PK\{(wpk', B, r', \sigma^w)$: \par}
-    \State{\hskip\algorithmicindent{} $wCom' = $Commit$(wpk', B + \epsilon, r')\ \wedge$}
-    \State{\hskip\algorithmicindent{} Verify$(pk_{payee}, (wpk, B), \sigma^w)\ \wedge$}
-    \State{\hskip\algorithmicindent{} $B + \epsilon \geq 0$}
+    \State{\hskip\algorithmicindent{} $wCom' = $~Commit$(wpk', B + \epsilon, r')\ \wedge$}
+    \State{\hskip\algorithmicindent{} Verify$(pk_{payee}, (wpk, B), \sigma^w) = 1\ \wedge$}
+    \State{\hskip\algorithmicindent{} $B + \epsilon \geq 0\}$}
     \State{\Return{$(wsk', wpk', wCom', \pi)\}$}}
     \EndFunction{}
 
