@@ -1,10 +1,24 @@
+\subsection{background: scheduling}
+
+Tor handles multiple queues of cells, for each circuit, and manages to write
+cells in the outbound connection while favoring bursty over bulky traffic. The
+main idea is to prioritize circuit handling interactive data streams, like chats
+or web browsing. Tor uses an heuristic called EWMA~\cite{ccs10-scheduling}
+(i.e., computes the exponentially weighted moving average for the number of
+cells sent on each circuit) to decide which circuit to prioritize. Recently, the
+efficiency of EWMA has been improved with the Kist~\cite{jansen14-kist}
+scheduler used to reduce the congestion on the kernel outbound queue and push
+back this delicate problem on the Tor layer. Thanks to Kist, EWMA should better
+fulfil Tor's intended interactive streams prioritization. %
+
 In an ideal network, we might expect that traffic movement is an exclusive
 function of the raw bandwidth capacity in each edge connection and the
-scheduling algorithm implemented at each node. The Tor network most notably
-employs a scheduling policy which attempts to favor interactive web clients over
+scheduling algorithm implemented at each node.
+The Tor network most notably
+employs EWMA to favor interactive web clients over
 continuous bulk clients using an exponentially weighted moving average score for
-each circuit as proposed by Tang and Goldberg~\cite{tang2010improved}. In
-moneTor, we originally proposed to modify their scheme with a simple linear
+each circuit as proposed by Tang and Goldberg~\cite{tang2010improved}. 
+In moneTor, we originally proposed to modify their scheme with a simple linear
 scaling factor that would favor paid circuits.
 \begin{equation}
   A_{t + \Delta t} = A_t \times 0.5^{\Delta t/H}
@@ -78,9 +92,9 @@ same information within a smaller time interval.
 
 
 The results are quite striking. In the aforementioned figures, notice that the
-queue is only populated for a period of 10 $\mu s$ before it is completely
+queue is only populated for a period of 10 $ms$ before it is completely
 flushed, implying the queue spends the vast majority of its time empty. This 10
-$\mu s$ window is a product of Tor's internal event handling framework and is
+$ms$ window is a product of Tor's internal event handling framework and is
 consistent with data from Jansen et al.~\cite{jansen2017tor} We found in an
 analysis of the line-by-line observations of the queue activity that while cells
 are flushed in the correct order, they appear in the queue at roughly equal
