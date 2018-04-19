@@ -126,8 +126,14 @@ A substantial contribution of the research is embedded within our implementation
 of the moneTor framework. The modifications, applied to Tor release version
 0.3.2.10, cover approximately fifteen thousand added lines of code across Tor's
 core C software. We emphasize that the implementation is not a fully functional
-prototype and is optimized solely for our experiments. Indeed, the prototype was
-designed exclusively to serve the following purposes:
+prototype and is optimized solely for our experiments. Most notably, we
+simulated crytographic operations in the nanopayment creation and close
+procedures using cpu delays. These delays were tuned to conservatively reflect
+real measurments in background work~\cite{green2017bolt}.\footnote{Extracted
+  values are conservative in the sense that our zero-knowledge proofs require
+  proving only a subset of the statements required in each corresponding Bolt
+  zero-knowledge proof.}  In spirit, the partial prototype serves the following
+purposes in our study.
 
 \begin{enumerate}
 \item A proof-of-concept implementation covering nuances not explicitly
@@ -144,13 +150,13 @@ designed exclusively to serve the following purposes:
 The first design purpose is clearly qualitative and we briefly note that we did
 not discover any insurmountable logical flaws in the design. To analyze the
 networking dynamics and resource consumption, we studied our implementations
-through the following experiments.
+through the following proceeding experiments.
 
 \subsection{Methodology}
 \label{subsec:methodology}
 
 Experiments were conducted using the Tor shadow simulator
-tool~\cite{jansen2011shadow}. 
+tool~\cite{jansen2011shadow}.
 %Shadow is a discrete event networking simulator
 %that allows real, unmodified applications to run within a virtual network. Its
 %primary advantage is the ability to emulate native application code. Originally
