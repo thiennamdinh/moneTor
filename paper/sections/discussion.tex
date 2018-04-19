@@ -50,7 +50,7 @@ limitations. Firstly, the mere presence of paid traffic leaks at least a single
 bit of information to relays and intermediaries regarding the browsing habit of
 the user. In practice, we expect that this information might be positively
 correlated with certain user applications such as bittorrent or video
-streaming. Secondly, our nanopayment protocol leaks the number of $\delta$ payments made to the intermediary, and to the ledger. While both cannot determine from which user and relay relationship those payments come from, we expect also that this information might be positively correlated with some user applications.
+streaming. Secondly, our nanopayment protocol leaks the number of $k*\delta$ out of $n$ payments made to the intermediary, and to the ledger. While both cannot determine from which user and relay relationship those payments come from, we expect also that this information might be positively correlated with some user applications.
 Finally, while we ensure payment privacy within the Tor ecosystem,
 we can make no such guarantees at the token exchange interface. Users who
 practice inadequate operational security risk leaking information about the net
