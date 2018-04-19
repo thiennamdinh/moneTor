@@ -1,5 +1,5 @@
 This work draws on technical preliminaries from two distinct fields: applied
-Tor research and cryptographic payment protocols.
+Tor research and payment channels.
 
 \subsection{Tor}
 
@@ -76,33 +76,33 @@ that the number of cells in transition do not exceed the limit. In the network
 design of moneTor, we will exploit these flow control windows to differentiate
 preferred traffic.
 
-\subsection{Cryptocurrencies}
+\subsection{Payment Channels}
 
-\textbf{Secure Payments} The modern generation of decentralized digital
-currencies traces its roots to Nakamoto's Bitcoin
-protocol~\cite{nakamoto2008bitcoin}. This family of payment protocols is
-characterized by use of a public distributed ledger, often a blockchain, and a
-notion of identities and ownership based in public key cryptography. A wide
-range of base-layer payment protocols have emerged; most relevant for our
-purposes is the fully programmable smart contract platform
-Ethereum~\cite{wood2014ethereum} and anonymity-focused schemes such as
-Zerocash~\cite{sasson2014zerocash} and Cryptonote~\cite{van2013cryptonote}. In
-this second class of anonymous currencies, the general security model requires
-that the payment sender is able to upload verifiable and irreversible proof of
-payment to the ledger without leaking sender identity, recipient identity, or
-payment value. Cryptonote achieves a probabilistic guarantee of privacy using a
-combination of lightweight ring signatures and stealth addresses but may be
-vulnerable in typical use~\cite{miller2017empirical}. Zerocash achieves stronger
-theoretical anonymity by leveraging more expensive non-interactive
-zero-knowledge proofs which require a trusted setup phase.
-
-Researchers have explored interoperability between ledgers . Back et al.\
-published the first primitive proposal for \emph{sidechains}, which
-conceptualizes a secondary blockchain ledger that can send and receive assets
-from the primary Bitcoin blockchain~\cite{back2014enabling}. More recently, Poon
-and Buterin explain how Ethereum can support multiple levels of arbitrarily
-configured \emph{child chains} that inherit many security properties from the
-original blochain.
+%\textbf{Secure Payments} The modern generation of decentralized digital
+%currencies traces its roots to Nakamoto's Bitcoin
+%protocol~\cite{nakamoto2008bitcoin}. This family of payment protocols is
+%characterized by use of a public distributed ledger, often a blockchain, and a
+%notion of identities and ownership based in public key cryptography. A wide
+%range of base-layer payment protocols have emerged; most relevant for our
+%purposes is the fully programmable smart contract platform
+%Ethereum~\cite{wood2014ethereum} and anonymity-focused schemes such as
+%Zerocash~\cite{sasson2014zerocash} and Cryptonote~\cite{van2013cryptonote}. In
+%this second class of anonymous currencies, the general security model requires
+%that the payment sender is able to upload verifiable and irreversible proof of
+%payment to the ledger without leaking sender identity, recipient identity, or
+%payment value. Cryptonote achieves a probabilistic guarantee of privacy using a
+%combination of lightweight ring signatures and stealth addresses but may be
+%vulnerable in typical use~\cite{miller2017empirical}. Zerocash achieves stronger
+%theoretical anonymity by leveraging more expensive non-interactive
+%zero-knowledge proofs which require a trusted setup phase.
+%
+%Researchers have explored interoperability between ledgers . Back et al.\
+%published the first primitive proposal for \emph{sidechains}, which
+%conceptualizes a secondary blockchain ledger that can send and receive assets
+%from the primary Bitcoin blockchain~\cite{back2014enabling}. More recently, Poon
+%and Buterin explain how Ethereum can support multiple levels of arbitrarily
+%configured \emph{child chains} that inherit many security properties from the
+%original blochain.
 
 \textbf{Payment Channels} The core cryptocurrency component featured in moneTor
 is the tripartite bidirectional micropayment channel. Base layer cryptocurrency

@@ -147,15 +147,16 @@ networking dynamics and resource consumption, we studied our implementations
 through the following experiments.
 
 \subsection{Methodology}
+\label{subsec:methodology}
 
 Experiments were conducted using the Tor shadow simulator
-tool~\cite{jansen2011shadow}. Shadow is a discrete event networking simulator
-that allows real, unmodified applications to run within a virtual network. Its
-primary advantage is the ability to emulate native application code. Originally
-built for Tor, Shadow faithfully mimics the real Tor network conditions
-including bandwidth and latency while allowing greater scale and network
-accuracy than alternative test beds.
-
+tool~\cite{jansen2011shadow}. 
+%Shadow is a discrete event networking simulator
+%that allows real, unmodified applications to run within a virtual network. Its
+%primary advantage is the ability to emulate native application code. Originally
+%built for Tor, Shadow faithfully mimics the real Tor network conditions
+%including bandwidth and latency while allowing greater scale and network
+%accuracy than alternative test beds.
 We approach the problem at multiple scales ranging between small (50 relays, 200
 clients), medium (100 relays, 400 clients), and large (200 relays, 800
 clients). Experiments ran for 1.5 hours of virtual time allowing for 30 minutes
@@ -176,7 +177,7 @@ area of research and we are content to adopt the simplest model that will
 highlight the relatively crude networking needs of our payment scheme.
 
 \subsection{Experiments}
-
+\label{subsec:experiments}
 Our experiments are separated into three groups each capturing a separate
 characteristic of the scheme.
 
@@ -234,7 +235,7 @@ raw values shown in Table~\ref{tab:overhead}, which indicates that less than
   \label{tab:overhead}
 \end{table}
 
-\subsubsection{User Latency}
+\subsubsection{Payment Latency}
 
 Given results from \autoref{chap:empirical}, we surmise that payment
 latency is a crucial factor in servicing our front-loaded clients. To this end,
