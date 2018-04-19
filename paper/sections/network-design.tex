@@ -1,0 +1,72 @@
+
+\subsection{Extending the Tor protocol}
+We extend the Tor routing protocol described in Tor's specifications~\cite{torspec} and we exploit Tor's leaky-pipe circuit topology to exchange payment information with each hop of the circuit (i.e., the Tor protocol allows a client to direct traffic partway down the circuit). We introduce two new control cell types: one link-level cell and one relay-level cell. The link-level cell is used to exchange information related to the payment protocol between the Tor client and its guard relay. This cell is not onion-encrypted (but the TLS layer still protect it) and is not used for any other purpose. The relay-level cell is used to exchange payment information with the middle relay and the exit relay: 2 onion-encryptions makes the cell exiting the circuit at the middle relay. 3 onion-encryptions makes the cell exiting the circuit at the usual exit relay for data streams. This subtype of relay cell is indistinguishable from a normal relay cell and carries a header related to the payment system, followed by a payload of payment data. Figure~\ref{fig:relay_command_mt_structure} shows the internal structure of the cell.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.38]{images/payment_cell_header.png}
+	\label{fig:relay_command_mt_structure}
+	\caption{Relay level payment cell structure}
+\end{figure}
+
+All the bytes starting from StreamID (included) are onion-encrypted. RelCMD is set to RELAY\_COMMAND\_MT, PCMD is the payment command which is different for each step of the payment protocol. If some message overflow the payload available length (495 bytes), we queue multiple cells of the same PCMD and buffer them on the receiver side to unpack the whole message.
+
+\subsection{Payment Anonymity}
+\flo{Probably moving this in Section 5.2 would be nice.}
+
+Observing the cash-out transactions on the ledger does not reveal any information regarding the source of the payment. Moreover, any communication in our tripartite nanopayment protocol are protected by Tor circuits. Hence, relationship between Client to Intermediary, Client to Ledger, Relay to Intermediary and Relay to Ledger are themselves anonymized by Tor circuits. If some party abort, which induce a dispute on the Ledger, the relationship between the client and his relays is protect by the various Tor circuits built to resolve the dispute with the ledger.
+An intermediary however, is able to observe any nanopayment channel establishment and closure linked to a particular micro payment channel. Because each nanopayment channel matches a particular Tor circuit, it can match the opening/closure timing of nano channels to track the activity of an anonymous user through time. User's activity may leak some information about the user itself or the user's behaviour (e.g., the timezone). Considering such side-channels is out-of-scope of this paper, however our moneTor design would make inefficient such attack if users open micro-channels with multiple intermediaries and hide their behaviour with a random use of the set of micro-channels they have opened. This would however increase the amount of escrowed fund needed.
+
+\subsection{Scalability Design of the moneTor Scheme}
+\label{subsub:scalability}
+%\td{TODO: describe scalability of intermediary system and any networking
+%  bottlenecks that might arise such as port limits, etc.}
+
+In our design, we are concerned by memory consumption, kernel socket consumption and CPU consumption. Our choice for a tripartite protocol allows to shift the memory consumption of opened and idle micro channels to the Intermediary nodes of the network. Those relays have the sole purpose to keep the micro channels open and to resolve dispute if any. In our implementation, Intermediary relays cannot be part of a circuit carrying user streams. We devote their full CPU capability to handle channel establishments. This design allows only a few strong intermediary relays to handle all of the premium channel establishments.
+
+Each interaction between party are realised within Tor circuits, which allows
+multiplexing of circuits over the same TCP connection. It results that the
+intermediary and the ledger must have a number of available sockets (in the
+worst-case scenario) higher to the number of relays in the network. This is the
+current assumption for each relay, therefore our design benefits from the same
+advantage and inconvenient of the current Tor network regarding scalability of
+socket consumption.
+
+\subsection{Prioritized Traffic}
+\label{subsub:prioritized}
+
+The final component of our network-oriented design addresses the need to deliver
+prioritized bandwidth given an explicit signaling of premium or nonpremium
+traffic. Our objective is to provide a tunable range of prioritization while
+incurring as little cost as possible to average global performance. Traffic
+scheduling is perhaps the most intuitive mechanism with which to implement
+priortization. However, we found in our investigation that practical
+modification of the Tor scheduling infrastructure is nontrivial. A more detailed
+discussion of our findings can be found in Appendix~\ref{chap:scheduling}.
+
+Fortunately, Tor's overlay flow control mechannism provides an alternative route
+to implement our desired functionality. Recall that nodes regulate the traffic
+flux in either direction using a set of flow control windows. Roughly speaking,
+these windows determine space allotted to each circuit on a relay's scheduling
+queue, which in turn is positively correlated with effective bandwidth. We
+implement our prioritization scheme by readjusting the windows according to the
+following formula.
+\begin{equation}
+  window' = window(1+ \alpha(premium / premium\% - 1))
+  \label{eq:flow}
+\end{equation}
+Here, a circuit is marked as prioritized by the bit $premium \in \{0, 1\}$. The
+tunable priority benefit $\alpha \in [0, 1)$ defines the total amount of flow
+capacity we wish to transfer to premium clients. Accounting for
+$premium\%s \in [0,100]$, the fraction of premium to nonpremium clients, we can
+keep the total flow capacity constant. Our policy may be implemented in one of
+two ways. First, each node could track the $premium\%$ locally and dynamically
+adjust their own windows. This introduces a considerable amount of added
+complexity with unclear consequences on network performance. A more basic
+approach calls for the Tor authorities to track the global value for $premium\%$
+and periodically broadcast static flow control windows to be used by the entire
+network. We adopt the latter approach in this iteration of moneTor.\footnote{Our
+  research in traffic prioritization is meant to demonstrate at least some crude
+  capacity for premium advantage in our models and to suggest potential avenues
+  for further study. A more definitive design for production-ready policies is
+  left for future networking-oriented research.}
