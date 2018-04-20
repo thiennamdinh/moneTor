@@ -11,11 +11,6 @@ We extend the Tor routing protocol described in Tor's specifications~\cite{torsp
 
 All the bytes starting from StreamID (included) are onion-encrypted. RelCMD is set to RELAY\_COMMAND\_MT, PCMD is the payment command which is different for each step of the payment protocol. If some message overflow the payload available length (495 bytes), we queue multiple cells of the same PCMD and buffer them on the receiver side to unpack the whole message.
 
-\subsection{Payment Anonymity}
-\flo{Probably moving this in Section 5.2 would be nice.}
-
-Observing the cash-out transactions on the ledger does not reveal any information regarding the source of the payment. Moreover, any communication in our tripartite nanopayment protocol are protected by Tor circuits. Hence, relationship between Client to Intermediary, Client to Ledger, Relay to Intermediary and Relay to Ledger are themselves anonymized by Tor circuits. If some party abort, which induce a dispute on the Ledger, the relationship between the client and his relays is protect by the various Tor circuits built to resolve the dispute with the ledger.
-An intermediary however, is able to observe any nanopayment channel establishment and closure linked to a particular micro payment channel. Because each nanopayment channel matches a particular Tor circuit, it can match the opening/closure timing of nano channels to track the activity of an anonymous user through time. User's activity may leak some information about the user itself or the user's behaviour (e.g., the timezone). Considering such side-channels is out-of-scope of this paper, however our moneTor design would make inefficient such attack if users open micro-channels with multiple intermediaries and hide their behaviour with a random use of the set of micro-channels they have opened. This would however increase the amount of escrowed fund needed.
 
 \subsection{Scalability Design of the moneTor Scheme}
 \label{subsub:scalability}
