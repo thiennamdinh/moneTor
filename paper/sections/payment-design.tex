@@ -102,7 +102,7 @@ set of protocols needed to manage nanopayments.
   repeatable for up to $n$ operations.
 \item \textbf{Nano-Close-R} $R$ closes his nanopayment channel with $I$.
 \item \textbf{Nano-Close-C} $C$ closes her nanopayment channel with $I$. Note that
-  this must happen after $Nano$-$Close$-$R$.
+  this must happen after \emph{Nano-Close-R}.
 \end{itemize}
 
 We also specify the following modified channel conflict resolution procedures to
@@ -166,7 +166,7 @@ inform $C$ that the nanopayment channel has been set up successfully.
 \textbf{Nano-Establish} At this point, $C$ sends $R$ the same $nT$ token used to
 setup the channel with $I$. $R$ uses the token to initiate her end of the
 nanopayment channel with $I$ by executing essentially the same procedure that
-$C$ used in $Nano$-$Setup$. The nanopayment channel is now fully established and
+$C$ used in \emph{Nano-Setup}. The nanopayment channel is now fully established and
 ready to be used. A key observation is that both ends of the channel ($C$-$I$
 and $R$-$I$) are rooted at the same hash chain root $hc_0$.
 
@@ -201,25 +201,34 @@ the wallet for future use.
 
 Once $I$ has closed his nanopayment channel leg with $R$, $I$ and $C$ are free
 to complete the exact same close protocol. All parties are now reverted to the
-original state they occupied prior to $Nano$-$Setup$ save for a securely updated
+original state they occupied prior to \emph{Nano-Setup} save for a securely updated
 balance.
 
-\textbf{Secure Micropayment Channel Closure} Our unmodified construction exposes
-a subtle passive attack by $I$. By examining the final number of payments made
-on each channel in conjunction with the globally fixed nanopayment cost, $I$ may
-potentially link all of $C$'s nanopayment channels.\footnote{This attack is best
-  illustrated with a trivial example. Suppose that $I$ facilitates a number of
-  nanopayment channels with the following number of payments, each of which is
-  known to represent one unit of money: $[58, 839, 356, 881, 23, 89, 561]$ Now
-  that $C$ closes her micropayment channel and terminates with exactly 404 units
-  of money. Once the micropayment channel is closed, $I$ must necessary gain
-  knowledge of the final balance of funds and can easily link the first and
-  third nanopayment channels as belonging to the same $C$}. To mitigate this
-vulnerability, we stipulate that $C$ must make a least one micropayment, which
-has a monetary value hidden from $I$, before closing a micropayment
-channel. This micropayment should contain a random value no greater than maxmium
-value of nanopayment channels as stated in the Tor consensus and may be made to
-another account owned by $C$.
+\textbf{Nano-Refund, Nano-Refute, Nano-Close} Honest parties will not typically
+close active nanopayment channels on the ledger, opting instead to run Bolt
+micropayment closure procedures when they wish to cash out. However, in the
+event of malicious behavior or premature abortion, \emph{Nano-Refund} and
+\emph{Nano-Refute} outlines procedures for $E$ and $I$ to withdraw funds on the
+ledger at any given step with the latest payment information. After a set amount
+of time allowing for the counterparty to reciprocate, the ledger runs
+\emph{Nano-Close} to make a final publically verifiable determination on the
+final balance.
+
+Our unmodified construction exposes a subtle passive attack by $I$. By examining
+the final number of payments made on each channel in conjunction with the
+globally fixed nanopayment cost, $I$ may potentially link all of $C$'s
+nanopayment channels.\footnote{This attack is best illustrated with a trivial
+  example. Suppose that $I$ facilitates a number of nanopayment channels with
+  the following number of payments, each of which is known to represent one unit
+  of money: $[58, 839, 356, 881, 23, 89, 561]$ Now that $C$ closes her
+  micropayment channel and terminates with exactly 404 units of money. Once the
+  micropayment channel is closed, $I$ must necessary gain knowledge of the final
+  balance of funds and can easily link the first and third nanopayment channels
+  as belonging to the same $C$}. To mitigate this vulnerability, we stipulate
+that $C$ must make a least one micropayment, which has a monetary value hidden
+from $I$, before closing a micropayment channel. This micropayment should
+contain a random value no greater than maxmium value of nanopayment channels as
+stated in the Tor consensus and may be made to another account owned by $C$.
 
 \subsection{Implementation}
 
