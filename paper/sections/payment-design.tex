@@ -192,7 +192,7 @@ final balance.
 \subsection{Payment Security and Anonymity}
 Our security model must account for both privacy and payment security. The
 privacy threat model is derived from the local active adversary paradigm
-ubiquitously found in Tor research~\cite{dingledine2004tor}. 
+ubiquitously found in Tor research~\cite{dingledine2004tor}.
 
 Our threat model for payment security is similar to those found in prior works
 in blockchain micropayment channels~\cite{poon2016bitcoin}. In such models, the
@@ -233,30 +233,16 @@ stated in the Tor consensus and may be made to another account owned by $C$.
 
 %An intermediary however, is able to observe any nanopayment channel establishment and closure linked to a particular micro payment channel. Because each nanopayment channel matches a particular Tor circuit, it can match the opening/closure timing of nano channels to track the activity of an anonymous user through time. User's activity may leak some information about the user itself or the user's behaviour (e.g., the timezone). Considering such side-channels is out-of-scope of this paper, however our moneTor design would make inefficient such attack if users open micro-channels with multiple intermediaries and hide their behaviour with a random use of the set of micro-channels they have opened. This would however increase the amount of escrowed fund needed.
 
-\subsection{Implementation}
+\subsection{Tor Integration}
 
-We implement the abstract payment protocols as a series of well-isolated
-\emph{payment modules}, one for each of $C$, $R$, $I$, and $L$. The payment
-module interacts with the rest of the Tor codebase through a network-layer
-\emph{controller} which defines ephemeral descriptors used by the module to
-communicate with other payment modules across the network. The controller
-exposes $send$ and $recv$ functionality to the payment module, which in turn
-accepts $establish$, $pay$, $close$, and $cashout$ requests. We anticipate that
-this API is general enough to isolate many future changes which may occur in
-either component.
-
-The concrete implementation also warrants some additional remarks. Up to this
-point, we have described payments that happen between a single client and a
-single relay. In reality, it is typical for each client to manage a handful of
-concurrently active circuits,\footnote{For instance, the popular Tor Browser
-  user application dedicates a separate circuit for each tab.}
-each of which requires three streams of payments to the guard, middle, and exit
-relays. An interesting area of future work involves optimizing payment channels
-to balance both the computational resources as well as escrowed financial
-capital that active channels consume. As a separate remark, we only define
-protocols for the most general case in which we require maximal payment
-anonymity. However, a fundamental feature of the Tor network is the fact the
-transparent relationship between a client and its guard relay is persistent
-across the timescale of months. We exploit this setup to allow for extremely
-efficient direct payment channels between the client and guard, considerably
-reducing the network overhead costs.
+Up to this point, we have described payments that occur between a single client
+and a single relay. In practice, it is typical for each client to maintain a
+handful of concurrently active circuits,\footnote{For instance, the popular Tor
+  Browser user application dedicates a separate circuit for each tab.}  each of
+which requires three streams of payments to the guard, middle, and exit
+relays. These channels must be actively managed to optimize computational
+overhead as well as money flow. Furthermore, connections between the client and
+the guard relay are transparent and persistent across the timescale of several
+months. We optimize toward this setup by enabling transparent and direct payment
+channels between the client and guard, considerably reducing the network
+overhead costs.
