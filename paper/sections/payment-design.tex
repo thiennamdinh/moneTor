@@ -2,7 +2,36 @@ Where we previously assumed the existence of an ideal payment procedure, we now
 describe the technical construction for the moneTor payment scheme. The protocol
 setup and algorithmic overview of the payment layer is covered in this chapter.
 
-\subsection{Payment Protocols}
+\subsection{Base Layer}
+
+The moneTor framework first requires a base layer payment protocol for users to
+anonymously and securely manage their funds. We follow the Bitcoin paradigm in
+which all users maintain full and exclusive control of their monetary wealth
+through use of public key cryptography~\cite{nakamoto2008bitcoin}. Unlike
+Bitcoin, it is unnecessary for moneTor to rely on an inefficient decentralized
+consensus mechanism. Since Tor already relies on a centralized set of
+authorities, we simply introduce a new ledger authority role to maintain the
+global payment state on a public tamper-evident
+database~\cite{crosby2009efficient}.
+
+Structuring the ledger to understand blockchain-like semantics allows us to make
+use of recent developments in blockchain interoperability, allowing moneTor
+tokens to be pegged at a 1:1 ratio to a more popular cryptocurrency such as
+Bitcoin or Ethereum~\cite{back2014enabling, poon2017plasma}. The Plasma model in
+particular has many desirable properties. Under this setup, the moneTor ledger
+would act as a ``child chain'' that is coupled to the main Ethereum
+blockchain. This allows the external public blockchain to become the authority
+ledger of last resort in the event that the moneTor ledger goes
+offline. Effectively, honest users will always be able to make some claim to
+their so long as the Ethereum network is operational.
+
+Finally, moneTor requires an anonymous base-layer payment protocol to allow
+users to make private low-frequency transactions. Potential candiates include
+Cryptonote, which makes use of stealth addresses and ring
+signatures~\cite{van2013cryptonote}, or Zerocash, which employs more expensive
+but more theoretically secure zero-knowledge proofs~\cite{sasson2014zerocash}.
+
+\subsection{Relay Payment Protocols}
 
 In this section we specify formal protocols that comprise the payment
 scheme. All protocols are either two or three party interactions between a
@@ -54,16 +83,14 @@ themselves are \emph{locally transparent} in the sense that each nanopayment in
 the same channel is trivially linked to each other. However, the nanopayment
 channels themselves are unlinkable to other nanopayment channels and
 micropayment operations.
-
 \begin{figure}[h] \centering
-  \includegraphics[scale=0.6]{images/party_diagram.png}
+  \includegraphics[trim={0.5cm, 0.5cm, 0.5cm, 0.5cm}, clip, scale=0.6]{images/party_diagram.png}
   \caption[Payment Roles]{Payment Roles --- Dashed lines represent periodic
     transactions, thin double lines indicate micropayment channels, and thick
     double lines indicate a nanopayment channel. The gray area around the
     intermediary represents a notion of payment anonymity for the end users.}
   \label{fig:parties}
 \end{figure}
-
 Generic parties $C$ and $R$ can construct a nanopayment channel once both have
 completed $Establish$ with a common intermediary $I$. We define the following
 set of protocols needed to manage nanopayments.
