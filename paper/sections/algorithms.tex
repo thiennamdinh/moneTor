@@ -252,7 +252,7 @@ message
       \If{$\epsilon_E < 0 \wedge closed \not\in nS_I[nT]$}
         \State{Abort$()$ \Comment{client attempting to close before relay}}
       \EndIf{}
-      \If{Verify$(\pi_E) \vee nS_I[nT] \ne established$}
+      \If{$\neg$Verify$(\pi_E) \vee nS_I[nT] \ne established$}
         \State{Abort$()$ \Comment{invalid wallet or channel}}
       \EndIf{}
       \If{$k > n \vee \neg $VerifyHC$(hc^0, k, hc^k)$}
