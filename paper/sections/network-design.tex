@@ -17,7 +17,8 @@ All the bytes starting from StreamID (included) are onion-encrypted. RelCMD is s
 %\td{TODO: describe scalability of intermediary system and any networking
 %  bottlenecks that might arise such as port limits, etc.}
 
-In our design, we are concerned by memory consumption, kernel socket consumption and CPU consumption. Our choice for a tripartite protocol allows to shift the memory consumption of opened and idle micro channels to the Intermediary nodes of the network. Those relays have the sole purpose to keep the micro channels open and to resolve dispute if any. In our implementation, Intermediary relays cannot be part of a circuit carrying user streams. We devote their full CPU capability to handle channel establishments. This design allows only a few strong intermediary relays to handle all of the premium channel establishments.
+In our design, we are concerned by memory consumption, kernel socket consumption and CPU consumption. Our choice for a tripartite protocol allows to shift the memory consumption of opened and idle micro channels to the Intermediary nodes of the network. Moreover, rather than having each Tor client opening a micropayment channel with each relay, which would cost a $O(n*m)$ channel management complexity within the Tor network, the intermediary setup reduces it to a $O(n+m)$ channel management complexity.
+ Those Intermediaries have the sole purpose to keep the micro channels open and to resolve dispute if any. In our implementation, Intermediary relays cannot be part of a circuit carrying user streams. We devote their full CPU capability to handle channel establishments. This design allows only a few strong intermediary relays to handle all of the premium channel establishments.
 
 Each interaction between party are realised within Tor circuits, which allows
 multiplexing of circuits over the same TCP connection. It results that the
