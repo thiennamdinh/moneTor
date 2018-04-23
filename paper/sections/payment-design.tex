@@ -23,7 +23,7 @@ would act as a ``child chain'' that is coupled to the main Ethereum
 blockchain. This allows the external public blockchain to become the authority
 ledger of last resort in the event that the moneTor ledger goes
 offline. Effectively, honest users will always be able to make some claim to
-their so long as the Ethereum network is operational.
+their funds so long as the Ethereum network is operational.
 
 Finally, moneTor requires an anonymous base-layer payment protocol to allow
 users to make private low-frequency transactions. Potential candiates include
@@ -254,9 +254,8 @@ nanopayment channels.\footnote{This attack is best illustrated with a trivial
   balance of funds and can easily link the first and third nanopayment channels
   as belonging to the same $C$}. To mitigate this vulnerability, we stipulate
 that $C$ must make a least one micropayment, which has a monetary value hidden
-from $I$, before closing a micropayment channel. This micropayment should
-contain a random value no greater than maximum value osf nanopayment channels as
-stated in the Tor consensus and may be made to another account owned by $C$.
+from $I$, before closing a micropayment channel. We expect that this micropayment should
+contain a random value not greater than the channel escrow maximum value as stated in the Tor consensus and may be made to another account owned by $C$.
 
 %An intermediary however, is able to observe any nanopayment channel establishment and closure linked to a particular micro payment channel. Because each nanopayment channel matches a particular Tor circuit, it can match the opening/closure timing of nano channels to track the activity of an anonymous user through time. User's activity may leak some information about the user itself or the user's behaviour (e.g., the timezone). Considering such side-channels is out-of-scope of this paper, however our moneTor design would make inefficient such attack if users open micro-channels with multiple intermediaries and hide their behaviour with a random use of the set of micro-channels they have opened. This would however increase the amount of escrowed fund needed.
 
