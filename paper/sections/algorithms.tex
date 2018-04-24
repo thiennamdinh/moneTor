@@ -132,8 +132,8 @@ message
 
     \Procedure{Client}{}
       \State{$ver \gets $Intermediary.Receive$()$}
-      \State{$\epsilon^k_C = B_C + (\delta_C * k)$}
-      \State{$nrt_C \gets $Intermediary.Blindsig$(ver, refund || nT || nwpk_C || \epsilon^k_E)$}
+      \State{$B^n_C = B_C + (\delta_C * n)$}
+      \State{$nrt_C \gets $Intermediary.Blindsig$(ver, refund || nT || nwpk_C || B^n_C)$}
       \State{$nS_C \gets (0, HC[0])$}
       \State{$ncsk_C \gets (nwpk_C, nwsk_C, HC)$}
       \State{$\sigma^{rev(w)}_C \gets $Sign$(wsk_C, revoke||wpk_C)$}
@@ -192,8 +192,8 @@ message
 
     \Procedure{Relay}{}
       \State{$ver \gets $Intermediary.Receive$()$}
-      \State{$\epsilon^k_R = B_R + (\delta_R * k)$}
-      \State{$nrt_R \gets $Intermediary.Blindsig$(ver, refund || nT || nwpk_R || \epsilon^k_R)$}
+      \State{$B^n_R = B_R + (\delta_R * n)$}
+      \State{$nrt_R \gets $Intermediary.Blindsig$(ver, refund || nT || nwpk_R || B^n_R)$}
       \State{$ncsk_R \gets (nwpk_R, nwsk_R, \bot)$} \Comment{match client format}
       \State{$nS_R \gets (0, hc^0)$}
     \EndProcedure{}
@@ -266,8 +266,8 @@ message
     \Procedure{EndUser}{}
       \State{$ver \gets $Intermediary.Receive$()$}
       \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E, \bot)$}
-      \State{$\epsilon^k_E = B_E + (\delta_E * k)$}
-      \State{$rt'_E \gets $Intermediary.Blindsig$(ver, refund || wpk'_E || \epsilon^k_E)$}
+      \State{$B^k_E = B_E + (\delta_E * k)$}
+      \State{$rt'_E \gets $Intermediary.Blindsig$(ver, refund || wpk'_E || B^k_E)$}
       \State{$\sigma^{rev(nrt)}_E \gets $Sign$(nwsk_E, revoke||nwpk_E)$}
       \State{Intermediary.Send$(nwpk_E, \sigma^{rev(nrt)})$}
     \EndProcedure{}
