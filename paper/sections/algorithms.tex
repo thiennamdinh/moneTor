@@ -118,21 +118,20 @@ message
     \Procedure{Intermediary}{$pp, S_I, nS_I$}
       \State{$(wpk_C, nwpk_C, nwCom_C, n\pi_C, nT) \gets $Client.Receive$()$}
       \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
-      \If{$wpk_C \in S_I \vee \neg $Verify$(n\pi_C)$}
-        \State{Abort$()$ \Comment{invalid wallet}}
+      \If{$wpk_C \in S_I \vee nwpk_c \in S_I \vee \neg $Verify$(n\pi_C)$}
+        \State{Abort$()$ \Comment{invalid wallets}}
       \EndIf{}
       \If{$-\delta_C \ne price \vee \delta_R + \delta_C + tax \ne 0$}
         \State{Abort$()$ \Comment{incorrect payment prices}}
       \EndIf{}
       \State{$S_I \gets S_I \cup \{wpk_C : \bot, nwpk_C: \bot\}$}
       \State{$nS_I \gets nS_I \cup \{nT : \bot\}$}
-      \State{Client.Send$(verified)$}
+      \State{$nrt_C \gets $Sign$(refund || nT || nwCom_C)$}
+      \State{Client.Send$(nrt_C)$}
     \EndProcedure{}
 
     \Procedure{Client}{}
-      \State{$ver \gets $Intermediary.Receive$()$}
-      \State{$B^n_C = B_C + (\delta_C * n)$}
-      \State{$nrt_C \gets $Intermediary.Blindsig$(ver, refund || nT || nwpk_C || B^n_C)$}
+      \State{$nrt_C \gets $Intermediary.Receive$()$}
       \State{$nS_C \gets (0, HC[0])$}
       \State{$ncsk_C \gets (nwpk_C, nwsk_C, HC)$}
       \State{$\sigma^{rev(w)}_C \gets $Sign$(wsk_C, revoke||wpk_C)$}
@@ -178,8 +177,8 @@ message
     \Procedure{Intermediary}{$pp, S_I, nS_I$}
       \State{$(wpk_R, nwpk_R, nwCom_R, n\pi_R, nT) \gets $Relay.Receive$()$}
       \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
-      \If{$wpk_R \in S_I \vee \neg $Verify$(n\pi_R)$}
-        \State{Abort (invalid wallet)}
+      \If{$wpk_R \in S_I \vee nwpk_R \in S_I \vee \neg $Verify$(n\pi_R)$}
+        \State{Abort$()$ \Comment{invalid wallets}}
       \EndIf{}
       \If{$nS_I[nT] \ne ready$}
         \State{Abort (unregistered nanopayment channel)}
@@ -187,12 +186,11 @@ message
       \State{$S_I \gets S_I \cup \{nwpk_R, \bot\}$}
       \State{$nS_I[nT] \gets established$}
       \State{Relay.Send$(verified)$}
+      \State{$nrt_R \gets $Sign$(ver, refund || nT || nwCom_R)$}
     \EndProcedure{}
 
     \Procedure{Relay}{}
-      \State{$ver \gets $Intermediary.Receive$()$}
-      \State{$B^n_R = B_R + (\delta_R * n)$}
-      \State{$nrt_R \gets $Intermediary.Blindsig$(ver, refund || nT || nwpk_R || B^n_R)$}
+      \State{$nrt_R \gets $Intermediary.Receive$()$}
       \State{$ncsk_R \gets (nwpk_R, nwsk_R, \bot)$} \Comment{match client format}
       \State{$nS_R \gets (0, hc^0)$}
     \EndProcedure{}
@@ -259,21 +257,20 @@ message
         \State{Abort$()$ \Comment{invalid payment hash chain}}
       \EndIf{}
       \State{$nS_I[nT] \gets closed||hc^k$}
-      \State{EndUser.Send$(verified)$}
+      \State{$rt'_E \gets $Intermediary.Blindsig$(refund || wCom'_E)$}
+      \State{EndUser.Send$(rt'_E)$}
     \EndProcedure{}
 
     \Procedure{EndUser}{}
-      \State{$ver \gets $Intermediary.Receive$()$}
+      \State{$rt'_E \gets $Intermediary.Receive$()$}
       \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E, \bot)$}
-      \State{$B^k_E = B_E + (\delta_E * k)$}
-      \State{$rt'_E \gets $Intermediary.Blindsig$(ver, refund || wpk'_E || B^k_E)$}
       \State{$\sigma^{rev(nrt)}_E \gets $Sign$(nwsk_E, revoke||nwpk_E)$}
       \State{Intermediary.Send$(nwpk_E, \sigma^{rev(nrt)})$}
     \EndProcedure{}
 
     \Procedure{Intermediary}{}
       \State{$(nwpk_E, \sigma^{rev(nrt)}_E) \gets $EndUser.Receive$()$}
-      \If{$nwpk_E n\in S_I \vee \neg $Verify$(nwpk_E, \sigma^{rev(nrt)})$}
+      \If{$nwpk_E \in S_I \vee \neg $Verify$(nwpk_E, \sigma^{rev(nrt)})$}
         \State{Abort$()$ \Comment{unregistered channel or revocation token}}
       \EndIf{}
       \State{$S_I[nwpk_E] \gets \sigma^{rev(nrt)}$}
