@@ -5,7 +5,24 @@
 \usepackage{algorithmicx}
 \usepackage[noend]{algpseudocode}
 \algrenewcommand{\algorithmiccomment}[1]{{\color{gray}$\triangleright$ #1}}
-
+\usepackage[
+n,
+advantage,
+operators,
+sets,
+adversary,
+landau,
+probability,
+notions,
+logic,
+ff,
+mm,
+primitives,
+events,
+complexity,
+asymptotics,
+keys
+]{cryptocode}
 \hyphenation{moneTor}
 \hyphenation{CIRCWINDOWSTART}
 \hyphenation{STREAMWINDOWSTART}
@@ -115,6 +132,10 @@
 \section{Algorithms}
 \label{sec:algorithms}
 \input{sections/algorithms.tex}
+
+\section{Proof}
+\label{sec:proof}
+\input{sections/proof.tex}
 
 \section{Scheduling}
 \label{sec:scheduling}
