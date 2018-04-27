@@ -46,5 +46,28 @@ Let $pp'$ be an auxiliary trapdoor not available to the participants of the real
 
 Let $\adv$ an adversary playing the role of Relay. We consider an experiment involving P customers (a.k.a. Tor client), each interacting with the Relay as follows. First, $\adv$ establishes a micropayment channel with the Intermediary. Next, $\adv$ issues the following queries in any order:\\
 
-\textbf{Nano-Establish from $\cdv_i$.}
-\textbf{Nano-Pay from $\cdv_i$.}
+\textbf{Nano-Establish from $\cdv_i$.} In this query, $nT$ may be $\bot$, then $\adv$ executes only the part of Nano-Establish which interacts with $\cdv_i$:
+$$Nano\-Establish(\{\cdv(pp, nT)\}, \{\adv(state)\})$$
+
+Where $state$ is the adversary state. We denote the custumer's output $nT$, which may be $\bot$.
+
+
+\textbf{Nano-Pay from $\cdv_i$.} In this query, $nT \neq bot$ and $p_k$ may be $\bot$, then $\adv$ executes the Nano-Pay protocol for an amount $\delta$ with $\cdv_i$ as:
+$$Nano\-Pay(\{\cdv(pp, \delta, p_k)\}, \{\adv(state)\})$$
+
+Where $state$ is the adversary's state and $p_k$ is the preimage of the current hash stored in the adversary's state, or $\bot$.
+
+We say that $\adv$ is $legal$ if $\adv$ never asks to spend more than $n*\delta$.
+
+Let $pp'$ be an auxiliary trapdoor not available to the participants of the real protocol. We require the existence of a simulator $\sdv^{X-Y(\cdot)}(pp, pp', \cdot)$ such that for all $T_\mdv$, no allowed adversary $\adv$ can distinguish the following two experiments with non-negligible advantage:\\
+\textbf{Real experiment.} In this experiment, all responses are computed as described in our Algorithms.\\
+\textbf{Ideal experiment.} In this experiment, the micropayment operations and nanopayment operations with the Intermediary are handled using our algorithms. However, for the nanopayment procedures between the Tor client and the adversary relay, $\adv$ does not interact with $\cdv_i$ but instead interacts with $\sdv^{X-Y(\cdot)}(pp,pp',\cdot)$.
+
+\subsubsection{Theorem}
+The nanopayment channel scheme satisfies the property of anonymity under the restriction that the adversary does not abort before Nano-Close finished, and the assumptions that the commitment scheme is secure, the zero-knowledge system is simulation extractable and zero-knowledge, and the hash function used to create the hashchain and verify the preimage during the Nano-Pay is a cryptographic hash function.
+
+\subsubsection{Proof}
+
+We prove that the nanopayment channel scheme satisfy our anonymity properties using a simulator $\sdv^{X-Y(\cdot)}(pp,pp',\cd)$ such that no allowed adversary $\adv$ can distinguish the Real experiment from the Ideal experiment with non-negligible advantage. The way this proof proceeds is requiring honest run of the appropriate algorithms for the micropayment channel. When Nanopayment channel operations are called, the client side or relay side of the protocol is emulated by the simulator for the Ideal experiment.
+
+... todo
