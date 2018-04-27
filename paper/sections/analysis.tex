@@ -1,21 +1,21 @@
 To validate our design decisions, we used a two-pronged approach that consists
-of both real-world data collection from live Tor users along with simulations on
-our software implementation.
+of both real-world data collection from live Tor users and simulations on our
+software implementation.
 
 \subsection{Data Collection}
 \label{subsec:datacollection}
 
 We deployed a data collection system to look for empirical temporal information
-about lifetime and bandwidth consumption Tor circuits. Our objective is to have
-a deeper understanding of typical Tor usage and whether such usage can benefit
-from our channel-based payment system. For example, these measurements might
-capture some notion about the type and magnitude of potential premium
+about lifetime and bandwidth consumption in Tor circuits. Our objective is to
+have a deeper understanding of typical Tor usage and whether such usage can
+benefit from our channel-based payment system. For example, these measurements
+might capture some notion about the type and magnitude of potential premium
 traffic. We classify the traffic type based on the service connection
 port. Besides the classical ports 80 and 443 used for web traffic, we aggregate
-data from some other families including the WHOIS protocol~\cite{rfc3912} and
-RWHOIS~\cite{rfc2167} from ports 43 and 4321, respectively. The complete list of
-families is constructed from the reduced exit
-policies~\cite{reducedexitpolicies} which we run on our relays. This measurement
+data from some other families including the WHOIS
+protocol~\cite{daigle2004whois} and RWHOIS~\cite{williamson1994referral} from
+ports 43 and 4321, respectively. The complete list of families is constructed
+from the reduced exit policies which we run on our relays. This measurement
 methodology allows us to reason based on application specific traffic.
 
 % We interested to know about the distribution lifetime of Tor circuits for each
@@ -25,19 +25,17 @@ methodology allows us to reason based on application specific traffic.
 \subsubsection{Efforts to preserve users privacy}
 
 To ensure ethical experimentation, we first contacted the Tor research safety
-board, a group of Tor researchers who aim minimize privacy risks while fostering
-a better understanding of the Tor network and its users~\cite{torsafety}. The
-feedback we received was subsequently used to refactor our data collection
-process.
+board~\cite{torsafety}. The feedback we received was subsequently used to refactor our data
+collection process.
 
 Data from multiple exit relays was collected, stripped of origin metadata, and
 aggregate on a central server. The data collected from each relay is itself an
 aggregation which we perform inside the relay's memory. The data collection is
-probabilistic, only 30\% of the circuits processed by our relays were considered
-to maintain plausible deniablity on the client's behalf. The aggregation is done
-inside bins of configurable size for every different traffic family we
-consider. Once we collected enough data from a single family, we dump the
-information on the disk, clear the data, and resume a new session. The final
+probabilistic; only 30\% of the circuits processed by our relays were considered
+in order to maintain plausible deniability on the clients' behalf. The
+aggregation is done inside bins of configurable size for every different traffic
+family we consider. Once we collected enough data from a single family, we dump
+the information on the disk, clear the data, and resume a new session. The final
 information dumped contains an aggregation of 1600 circuits over an unspecified
 time frame that is implicitly determined by the rate of user activity. The
 following data was considered:
@@ -49,45 +47,43 @@ following data was considered:
   by addition.
 \item \textbf{Total Counts}: The total amount of cells processed by a
   circuit. This information is aggregated by taking the mean of fixed-size
-  nearest neighbor bins, such that the precision of the recorded value depends
-  on the number of bins.
-\item \textbf{Time Stdevs}: The standard deviation accross the time profiles of
-  individual circuits. This information is aggregated in a similar method as the
-  Total Counts. This statistic shed some information on the temporal
-  deviation of user activity, which can loosely be used to infer interactive vs
-  noninteractive traffic.
-\end{itemize} Crucially, we do not record information linked to any single
-particular user flow on disk. The code used for the data collection is available
-online, and can be audited~\cite{code-mt-stats}.
+  nearest neighbor bins.
+\end{itemize}
+
+Crucially, we do not record information linked to any single particular user
+flow on disk. The code used for the data collection will be made available for
+audit online.
 
 \subsubsection{Observations}
 
-Our measurements successfully captured several important informations needed to
-design moneTor and our experimentation phase. For example, one important question would be:
-how should we choose the fraction of premium users in our experimentations? From
-Figure~\ref{fig:stats_b}, we observe that $\approx 82\%$ of circuits carrying
-only web traffic exchanged less than 1000 cells for both directions (i.e.,
-toward the web server and toward the user). This metric does not say that $82\%$
-of Tor webusers use less than 1000 cells for a web connection, since it is
-theoretically possible that only one user is responsible for consuming less than
-1000 cells across our measurements. However, it gives a good idea of the
-fraction of circuits that may benefit from a payment channel in the Tor network,
-since around $50\%$ of them do not carry data and less than $17\%$ of them carry
-at least one web page. These numbers do not mean that $\approx 82\%$ of circuits
-carry unethical network usage.
+Our measurements successfully captured several important pieces of information
+for the design and justification of moneTor. For example, one important task is
+determine the number of potential users that could benefit from paid
+traffic. From Figure~\ref{fig:stats_b}, we observe that $\approx 82\%$ of
+circuits carrying only web traffic exchanged less than 1000 cells. While we
+cannot deduce any statements about users, we can speak to the fraction of
+circuits that may benefit from a payment channel in the Tor network, since
+around $50\%$ of them do not carry data and less than $17\%$ of them carry at
+least one web page. The remaining $18\%$ would appear to be better candidates
+for moneTor.
 
-It also appears from Figure~\ref{fig:stats_a} that most of the traffic usually
-happens within the first few tens of seconds, and that all type of traffic we
-collected seems to follow the same rule. From that result, we believe that the
-reliability of payment is critical within the first few seconds, especially from
-a relay side viewpoint. This result means that our payment channels must be
-established and ready before the user starts to use his circuit. Tor already
-follows the same strategy with streams: a circuit must be ready before a stream
-is created, such that it can be attached to a ready circuit and sends its data
-directly through the anonymous tunnel. Similarly, moneTor allows secure and
-anonymous payment channels to be pre-built and attached to a particular
-circuit. However, Tor would need some clever strategy not to exhaust the
-network's resource by pre-building unnecessary nanopayment channels.
+It is also evident from Figure~\ref{fig:stats_a} that most of the traffic
+usually happens within the first few tens of seconds, and that all types of
+traffic we collected seems to follow the same rule. From that result, we believe
+that the reliability of payment is critical within the first few seconds,
+especially from a relay viewpoint. Our payment channels should ideally be
+established and ready before the user begins to use the circuit which is made
+possible by our design decision to integrate into Tor's preemptive circuit build
+strategy.
+
+\td{this seems like it should be in the design somewhere}Tor already follows the
+same strategy with streams: a circuit must be ready before a stream is created,
+such that it can be attached to a ready circuit and sends its data directly
+through the anonymous tunnel. Similarly, moneTor allows secure and anonymous
+payment channels to be pre-built and attached to a particular circuit. However,
+Tor would need some clever strategy not to exhaust the network's resource by
+pre-building unnecessary nanopayment channels.
+
 
 %% In another area of research, it may be interesting to point out that since %
 %$\approx 50\%$ of users do not carry data after their DNS request, some %
@@ -104,11 +100,6 @@ network's resource by pre-building unnecessary nanopayment channels.
 \includegraphics[scale=0.3]{images/totcellcountscdf.png}
 		\label{fig:stats_b}
 		\caption{Total Counts}
-	\end{subfigure}
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[scale=0.3]{images/stddevs.png}
-		\label{fig:stats_c}
-		\caption{Time Stdevs}
 	\end{subfigure}
 	\label{fig:measurements}
 	\caption{Tor Measurements}

@@ -23,44 +23,46 @@ incentivization: Intermediary and Ledger.
 \subsubsection{Traffic Analysis}
 Tor's threat model assumes a local adversary who can observe some fraction of
 the network and can operate or compromise a number of onion routers. Tor also
-assumes a local adversary who can manipulate user's streams. The adversary can,
-insert, modify, delete or delay data to create observable
+assumes a local adversary who can manipulate user streams by inserting,
+modifying, deleting or delaying data to create observable
 perturbations. Typically, by observing both ends of an anonymous stream, an
 attacker can infer the participating parties using statistical correlation. The
 adversary's precision can also be improved by traffic flow perturbations. This
-attack is called \textit{end-to-end correlation}. Tor does not try to implement
-countermeasures to this attack but strives to minimize its impact. Recently,
-Rochet and Pereira~\cite{rochet2018dropping} showed that a silent near to perfect
-and instantaneous active traffic confirmation attack exists in Tor, leveraging
-an essential property of distributed system: forward compatibility. Those
-results show the need to strive to reduce their impact. The approach presented
-here is to induce more diversity to the Tor network, which would make traffic
-analysis against a large fraction of Tor users more costly. The central goal of
-this paper is to give a tool to the Tor project to shape the Tor network
-diversity through monetary incentivization.
+attack is called \textit{end-to-end correlation}. Tor does not implement
+explicit countermeasures to this attack but does strive to minimize its
+impact. Concerningly, Rochet and Pereira recently showed that Tor's essential
+forward-compatibility feature can be exploited in a silent near to perfect and
+instantaneous active traffic confirmation attack~\cite{rochet2018dropping}.These
+developments imply a serious need to induce more diversity to the Tor network
+which would make such traffic analysis against a large fraction of Tor users
+more costly. One such solution is presented in this paper.
 
 \subsubsection{Circuit handling on Tor clients}
 %
 %\td{TODO: This section will provide a more detailed explanation of how circuits are
 %created and how that affects moneTor's high initial latency and overhead design}
 
-When an application uses a Tor client, it creates a stream. Tor protects the privacy of the user by routing its streams inside Tor circuits. Therefore, as soon as a stream is created, it must directly be routed through an available Tor circuit to speed up the time to fist byte (i.e., the time to get the first byte of the response to a request we sent through Tor). In order to allow such scenario, Tor circuits are built pre-emptively once the clients obtain directory information (i.e., a consensus and router descriptors), and Tor tries to predict the needed circuits depending on the client usage. Indeed, every second the Tor client estimates how many clean circuits (not yet used) it predicts to use in the forthcoming moment, and decides to build new ones if it believes not to have enough.
-
-For our moneTor design, we are going to follow the same strategy when building our payment channels: we pre-emptively build them to speed-up the time to first payment.
+Application traffic in Tor is handled through streams
+which are multiplexed with other streams within a circuit. In order to reduce
+latency in the user experience, Tor attempts to build circuits preemptively as
+soon as the client obtains the necessary directory information. Once a stream is
+created by a user application, it can be immediately routed through the idle
+circuit, dramatically improving latency. The anticipated number of required
+preemptive circuits is dynamically calculated every second by the Tor client. We
+exploit this same strategy for moneTor's circuit setup routine.
 
 \subsubsection{Evaluating Tor's performance}
-Shadow~\cite{jansen2011shadow} is a discrete event networking simulator that allows
-real, unmodified applications to run within a virtual network. Its primary
-advantage is the ability to run native networking application code that
+Shadow~\cite{jansen2011shadow} is a discrete event networking simulator that
+allows real, unmodified applications to run within a virtual network. Its
+primary advantage is the ability to run native networking application code that
 interfaces with the simulator via an external application-specific
 plugin. Within the simulation environment itself, Shadow faithfully mimics the
 real Tor network conditions including bandwidth and latency. As a result,
 experiments conducted with this tool tends to be more accurate than ones
 conducted over alternatives such as private universities networks or
-PlanetLab~\cite{Chun:2003:POT:956993.956995}.
-
-In this paper, we use Shadow to evaluate our payment layer extension of the Tor
-protocol in order to measure its networking impact and its feasibility.
+PlanetLab~\cite{Chun:2003:POT:956993.956995}. We utilize the shadow framework to
+evaluate the costs and performance of our algorithms over network-level
+simulations.
 
 %\subsubsection{Tor's Scheduling}
 
@@ -104,7 +106,7 @@ preferred traffic.
 %configured \emph{child chains} that inherit many security properties from the
 %original blochain.
 
-\textbf{Payment Channels} The core cryptocurrency component featured in moneTor
+\subsubsection{Payment Channels} The core cryptocurrency component featured in moneTor
 is the tripartite bidirectional micropayment channel. Base layer cryptocurrency
 protocols are typically capped on the order of tens of transactions per
 seconds~\cite{team2018blockchain}. The most actively pursued path toward better
@@ -139,8 +141,8 @@ protocols through simple hash commitment and transaction delay primitives. The
 end result is a game-theoretic notion of security whereby which all parties are
 incentivized to behave honestly.
 
-\textbf{Anonymous Payment Channels} Finally, the micropayment channel concept
-has been extended to support anonymity design goals. Z-Channel specifies an
+\subsubsection{Anonymous Payment Channels} The micropayment channel concept has since
+been extended to support anonymity design goals. Z-Channel specifies an
 implementation designed specifically for Zerocash which only supports two-party
 channels~\cite{zhang2017z}. Green and Miers designed Bolt, which is the only
 known anonymous micropayment scheme to date that supports three-party
