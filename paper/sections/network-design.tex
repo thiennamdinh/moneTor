@@ -1,7 +1,18 @@
 
 \subsection{Extending the Tor protocol}
-We extend the Tor routing protocol described in Tor's specifications~\cite{torspec} and we exploit Tor's leaky-pipe circuit topology to exchange payment information with each hop of the circuit (i.e., the Tor protocol allows a client to direct traffic partway down the circuit). We introduce two new control cell types: one link-level cell and one relay-level cell. The link-level cell is used to exchange information related to the payment protocol between the Tor client and its guard relay. This cell is not onion-encrypted (but the TLS layer still protect it) and is not used for any other purpose. The relay-level cell is used to exchange payment information with the middle relay and the exit relay: 2 onion-encryptions makes the cell exiting the circuit at the middle relay. 3 onion-encryptions makes the cell exiting the circuit at the usual exit relay for data streams. This subtype of relay cell is indistinguishable from a normal relay cell and carries a header related to the payment system, followed by a payload of payment data. Figure~\ref{fig:relay_command_mt_structure} shows the internal structure of the cell.
 
+We extend the Tor routing protocol described in Tor's
+specifications~\cite{dingledine2018tor} and we exploit Tor's leaky-pipe circuit
+topology\footnote{``Leaky pipe'' refers to the ability of the user to direct
+  traffic that ends at an intermediate hop along the circuit} to exchange
+payment information with each hop of the circuit. We introduce two new control
+cell types: one link-level cell and one relay-level cell. The link-level cell is
+used to exchange information related to the payment protocol between the Tor
+client and its guard relay while the relay-level cell is used for the middle
+relay and the exit relay. This subtype of relay cell is comprised of a payment
+header denoting the type of payment cell, followed by a payload of payment
+data. To an outside observer, payment cells are indistinguishable to normal
+relay cells. Figure~\ref{fig:cell} shows the internal structure of the cell.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.38]{images/payment_cell_header.png}
@@ -17,16 +28,26 @@ All the bytes starting from StreamID (included) are onion-encrypted. RelCMD is s
 %\td{TODO: describe scalability of intermediary system and any networking
 %  bottlenecks that might arise such as port limits, etc.}
 
-In our design, we are concerned by memory consumption, kernel socket consumption and CPU consumption. Our choice for a tripartite protocol allows to shift the memory consumption of opened and idle micro channels to the Intermediary nodes of the network. Moreover, rather than having each Tor client opening a micropayment channel with each relay, which would cost a $O(n*m)$ channel management complexity within the Tor network, the intermediary setup reduces it to a $O(n+m)$ channel management complexity.
- Those Intermediaries have the sole purpose to keep the micro channels open and to resolve dispute if any. In our implementation, Intermediary relays cannot be part of a circuit carrying user streams. We devote their full CPU capability to handle channel establishments. This design allows only a few strong intermediary relays to handle all of the premium channel establishments.
+In our design, we are concerned with memory consumption, kernel socket
+consumption and CPU consumption. Our choice for a tripartite protocol
+effectively shifts the memory consumption of opened and idle micro channels to
+the Intermediary nodes of the network. A more basic setup whereby each Tor
+client maintains a micropayment channel with each relay would incur an $O(n*m)$
+cost with respect to channel management complexity. By engineering an additional
+intermediary layer, the complexity of moneTor channel connections is reduced to
+$O(n+m)$. In our implementation, Intermediary relays do not participate in
+routing user streams and are tasked only with providing payment channel
+services. Intermediaries devote the full extent of their computational resources
+toward this task allowing only a few strong nodes to handle all of the premium
+channel establishments required the network.
 
-Each interaction between party are realised within Tor circuits, which allows
-multiplexing of circuits over the same TCP connection. It results that the
-intermediary and the ledger must have a number of available sockets (in the
-worst-case scenario) higher to the number of relays in the network. This is the
-current assumption for each relay, therefore our design benefits from the same
-advantage and inconvenient of the current Tor network regarding scalability of
-socket consumption.
+\td{Should we emphaisize more the need to anonymousely manage circuits between
+  parties? Or is this obvious?}Interactions between parties are realised within Tor circuits to allow
+multiplexing of circuits over the same TCP connection. As a result, the
+intermediary and the ledger must have a number of available sockets higher than
+the number of relays in the network in the worst case. Since this limit is in
+line with Tor's current assumption, our design inherits the same socket
+consumption scalability of the greater Tor network.
 
 \subsection{Prioritized Traffic}
 \label{subsub:prioritized}
