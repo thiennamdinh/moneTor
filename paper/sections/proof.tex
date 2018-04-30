@@ -14,13 +14,15 @@ We prove that if it exists an adversary able to break the anonymity and balance 
 \subsubsection{Payment anonymity with Intermediary:} 
 Let $\adv$ an adversary playing the role of Intermediary. We consider an experiment involving P customers (a.k.a. Tor client) and Q relays, each interacting with the Intermediary as follows. First, $\adv$ is given $pp$, then outputs $T_\mdv$. Next $\adv$ issues the following queries in any order:\\
 
-\textbf{Initialize channel for $\cdv_i$ and $\rdv_j$.} When $\adv$ makes this query on input $B^{cust}$, $B^{inter}$, it obtains the commitment $T^i_\cdv$ generated as $(T^i_\cdv, csk^i_\cdv) \sample Init_\cdv(pp, B^{cust}, B^{inter})$ (resp. $\rdv_j$).\\
+\textbf{Initialize channel for $\cdv_i$ and $\rdv_j$.} When $\adv$ makes this query on input $B^{cust}$, $B^{inter}$, it obtains the commitment $T^i_\cdv$ generated as 
+$$(T^i_\cdv, csk^i_\cdv) \sample Init_\cdv(pp, B^{cust}, B^{inter})$$
+where the customer might also be a relay. In this case, the Intermediary obtains the commitment $T^j_\rdv$ generated as $$(T^j_\rdv, csk^j_\rdv) \sample Init_\rdv(pp, B^{relay}, B^{inter})$$  
 
-\textbf{Establish channel with $\cdv_i$ and $\rdv_j$.} In this query, $\adv$ executes the Establish protocol with $\cdv_i$ (resp. $\rdv_j$) as:
+\textbf{Establish channel with $\cdv_i$ and $\rdv_j$.} In this query, $\adv$ executes the Establish protocol with $\cdv_i$ (resp. $\rdv_j$) as
 $$Establish(\{\cdv(pp, T_\mdv, csk^i_\cdv)\},\{\adv(state)\})$$
 Where $state$ is the adversary's state. We denote the custumer's output as $w_i$, where $w_i$ may be $\bot$.\\
 
-\textbf{Nano-Setup from $\cdv_i$.}. In this query, if $w_i \neq \bot$, then $\adv$ executes the Nano-Setup to escrow $\epsilon$ with $\cdv_i$ as:
+\textbf{Nano-Setup from $\cdv_i$.} In this query, if $w_i \neq \bot$, then $\adv$ executes the Nano-Setup to escrow $\epsilon$ with $\cdv_i$ as:
 $$Nano\-Setup(\{\cdv(pp, \epsilon, w^i_\cdv)\}, \{\adv(state)\})$$
 
 Where $state$ is the adversary's state. We denote the custumer's output as $w^i_\cdv$, the hashchain root $nT$, the custumer's nanopayment secret $ncsk_\cdv$, the curtumer's state $nS_\cdv$ and the refound token $nrt_\cdv$, where any may be $\bot$.\\
@@ -63,10 +65,14 @@ Let $pp'$ be an auxiliary trapdoor not available to the participants of the real
 \textbf{Real experiment.} In this experiment, all responses are computed as described in our Algorithms.\\
 \textbf{Ideal experiment.} In this experiment, the micropayment operations and nanopayment operations with the Intermediary are handled using our algorithms. However, for the nanopayment procedures between the Tor client and the adversary relay, $\adv$ does not interact with $\cdv_i$ but instead interacts with $\sdv^{X-Y(\cdot)}(pp,pp',\cdot)$.
 
+\subsubsection{Payment Security (Balance)}
+
+ 
+
 \subsubsection{Theorem}
 The nanopayment channel scheme satisfies the property of anonymity under the restriction that the adversary does not abort before Nano-Close finished, and the assumptions that the commitment scheme is secure, the zero-knowledge system is simulation extractable and zero-knowledge, and the hash function used to create the hashchain and verify the preimage during the Nano-Pay is a cryptographic hash function.
 
-\subsubsection{Proof}
+\subsubsection{Proof - Anonymity}
 
 We prove that the nanopayment channel scheme satisfy our anonymity properties using a simulator $\sdv^{X-Y(\cdot)}(pp,pp',\cdot)$ such that no allowed adversary $\adv$ can distinguish the Real experiment from the Ideal experiment with non-negligible advantage. The way this proof proceeds is requiring honest run of the appropriate algorithms for the micropayment channel. When Nanopayment channel operations are called, the client side or relay side of the protocol is emulated by the simulator for the Ideal experiment. To prove that they are indistinguishable, we borrow Green and Miers's proof and extend it to our notion of payment anonymity to the intermediary, and to the relay. We start with the Real experiment and we create Games which modify elements of the protocol until we match the Ideal experiment conducted with the simulator $\sdv$.
 
@@ -96,3 +102,5 @@ Now, we have to prove the indistinguishably between the Real experiment and the 
 Since \textbf{Game 2'} is identical in the Ideal experiment, the interaction between Tor clients and relays is anonymous.
 
 By showing that the interaction with the Intermediary and the Interaction with the relay through the nanopayment algorithms is anonymous, we conclude that our nanopayment channel is anonymous.
+
+\subsection{Proof - Fund Security}
