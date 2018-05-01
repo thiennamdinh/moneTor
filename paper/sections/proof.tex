@@ -6,7 +6,7 @@
 Our objective in this work is to provide an efficient, secure and privacy-preserving payment system for Tor network bandwidth. Our nanopayment channel is built on the top of an existing micropayment channel as designed by Green and Miers~\cite{}. Intuitively, the Pay protocol of their bidirectional channel is replaced by our set of Nano-Setup, Nano-Establish, Nano-Pay and Nano-Close protocols, which allows a finer-grained up to $n$ payments for a service at the cost of roughly~\footnote{Nano-Setup and Nano-Establish do not require that the relay and the intermediary cannot link them to the Nano-Close protection, because our nanopayment channel is inherently transparent} two Pay protocols.
 %We require that the Tor client must be responsible for initiating and closing a nanopayment channel. 
 We require that the intermediary does not learn more than the number of nanopayments realised between an unknown Tor client and a unknown relay. Moreover, we require that the nanopayment protocol always produce a correct outcome for each valid execution of the protocol.
-Informally, the anonymity guarantees provided by the nanopayment channel state that any relay (except the Guard relay) of a circuit learns no information except that a valid nanopayment channel establishment, payment or closure has occurred over an open micropayment channel with an intermediary. Intuitively, it means that a particular relay cannot link any nanopayment channel operation for each of the circuit it handles, at the same moment or through time.
+Informally, the anonymity guarantees provided by the nanopayment channel states that any relay (except the Guard relay) of a circuit learns no information except that a valid nanopayment channel establishment, payment or closure has occurred over an open micropayment channel with an intermediary. Intuitively, it means that a particular relay cannot link any nanopayment channel operation for each of the circuit it handles, at the same moment or through time.
 
 We reuse the payment anonymity and balance properties of Green and Miers~\cite{bolt-eprint} for an Anonymous Payment Channel (APC scheme) but we adapt them for our tripartite protocol. We have a privacy property that should hold against the Intermediary, and a privacy property that should hold against a relay.
 We prove that if it exists an adversary able to break the anonymity and balance property, then this adversary is able to distinguish the Real experiment with the Ideal experiment of an APC scheme with non-negligible advantage.
@@ -67,12 +67,15 @@ Let $pp'$ be an auxiliary trapdoor not available to the participants of the real
 
 \subsubsection{Payment Security (Balance)}
 
+Let $\adv$ an adversary playing the role of Relay. We consider an experiment involving $P$ honest Tor clients interacting with the relay. We consider the micropayment channels with the intermediary setup and established, as well as the Intermediary honestly interacting with the Tor client and the relay.
  
 
-\subsubsection{Theorem}
+\subsection{Theorem}
 The nanopayment channel scheme satisfies the property of anonymity under the restriction that the adversary does not abort before Nano-Close finished, and the assumptions that the commitment scheme is secure, the zero-knowledge system is simulation extractable and zero-knowledge, and the hash function used to create the hashchain and verify the preimage during the Nano-Pay is a cryptographic hash function.
 
-\subsubsection{Proof - Anonymity}
+\subsection{Proofs}
+
+\subsubsection{Anonymity}
 
 We prove that the nanopayment channel scheme satisfy our anonymity properties using a simulator $\sdv^{X-Y(\cdot)}(pp,pp',\cdot)$ such that no allowed adversary $\adv$ can distinguish the Real experiment from the Ideal experiment with non-negligible advantage. The way this proof proceeds is requiring honest run of the appropriate algorithms for the micropayment channel. When Nanopayment channel operations are called, the client side or relay side of the protocol is emulated by the simulator for the Ideal experiment. To prove that they are indistinguishable, we borrow Green and Miers's proof and extend it to our notion of payment anonymity to the intermediary, and to the relay. We start with the Real experiment and we create Games which modify elements of the protocol until we match the Ideal experiment conducted with the simulator $\sdv$.
 
