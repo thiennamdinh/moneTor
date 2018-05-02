@@ -132,6 +132,9 @@ message
 
     \Procedure{Client}{}
       \State{$nrt_C \gets $Intermediary.Receive$()$}
+      \If{$\neg $Verify$(pk_I, refund||nT||nwCom_C) = 1$}
+      \State{Abort$()$ \Comment{invalid refund token}}
+      \EndIf{}
       \State{$nS_C \gets (0, HC[0])$}
       \State{$ncsk_C \gets (nwpk_C, nwsk_C, HC)$}
       \State{$\sigma^{rev(w)}_C \gets $Sign$(wsk_C, revoke||wpk_C)$}
