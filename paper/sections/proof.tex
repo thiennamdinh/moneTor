@@ -82,7 +82,7 @@ $$Nano\-Pay(\{\cdv(pp,\delta,p_k)\},\{\adv(state)\}) \rightarrow p_k$$
 
 If $H(p_k)$ matches the hash stored in the adversary state, then $bal_\adv = bal_\adv+\delta$ and $H(p_k)$ is stored in the internal state. If it does not match, we output $\bot$.
 
-\textbf{Nano-Close with Intermediary.} In this query, $\epsilon_\adv \leftarrow k*\delta$ for k Nano-Pay executions. $nT, ncsk_\adv, nS_\adv \neq bot$, then $\adv$ executes the Nano-Close protocol to close its leg of the nanopayment channel and claim funds to the Intermediary. 
+\textbf{Nano-Close with Intermediary.} In this query, $\epsilon_\adv \leftarrow k*\delta$ for k Nano-Pay executions. $nT, ncsk_\adv, nS_\adv \neq \bot$, then $\adv$ executes the Nano-Close protocol to close its leg of the nanopayment channel and claim funds to the Intermediary. 
 
 $$Nano\-close(\{\adv(pp, \epsilon^i_\adv, nT, ncsk_\adv, nS_\adv)\},$$
 $$\{Intermediary(state)\}) \rightarrow w^i_\adv$$
