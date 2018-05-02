@@ -115,7 +115,7 @@ message
       \State{Intermediary.Send$(wpk_C, nwpk_C, nwCom_C, n\pi_C, nT)$}
     \EndProcedure{}
 
-    \Procedure{Intermediary}{$pp, S_I, nS_I$}
+    \Procedure{Intermediary}{$pp, sk_I, S_I, nS_I$}
       \State{$(wpk_C, nwpk_C, nwCom_C, n\pi_C, nT) \gets $Client.Receive$()$}
       \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
       \If{$wpk_C \in S_I \vee nwpk_c \in S_I \vee \neg $Verify$(n\pi_C)$}
@@ -126,13 +126,13 @@ message
       \EndIf{}
       \State{$S_I \gets S_I \cup \{wpk_C : \bot, nwpk_C: \bot\}$}
       \State{$nS_I \gets nS_I \cup \{nT : \bot\}$}
-      \State{$nrt_C \gets $Sign$(refund || nT || nwCom_C)$}
+      \State{$nrt_C \gets $Sign$(sk_I, refund || nT || nwCom_C)$}
       \State{Client.Send$(nrt_C)$}
     \EndProcedure{}
 
     \Procedure{Client}{}
       \State{$nrt_C \gets $Intermediary.Receive$()$}
-      \If{$\neg $Verify$(pk_I, refund||nT||nwCom_C) = 1$}
+      \If{$\neg $Verify$(pk_I, refund||nT||nwCom_C, nrt_C) = 1$}
       \State{Abort$()$ \Comment{invalid refund token}}
       \EndIf{}
       \State{$nS_C \gets (0, HC[0])$}
@@ -177,7 +177,7 @@ message
       \State{Intermediary.Send$(wpk_R, nwpk_R, nwCom_R, n\pi_R, nT)$}
     \EndProcedure{}
 
-    \Procedure{Intermediary}{$pp, S_I, nS_I$}
+    \Procedure{Intermediary}{$pp, sk_I, S_I, nS_I$}
       \State{$(wpk_R, nwpk_R, nwCom_R, n\pi_R, nT) \gets $Relay.Receive$()$}
       \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
       \If{$wpk_R \in S_I \vee nwpk_R \in S_I \vee \neg $Verify$(n\pi_R)$}
@@ -188,12 +188,15 @@ message
       \EndIf{}
       \State{$S_I \gets S_I \cup \{nwpk_R, \bot\}$}
       \State{$nS_I[nT] \gets established$}
-      \State{Relay.Send$(verified)$}
-      \State{$nrt_R \gets $Sign$(ver, refund || nT || nwCom_R)$}
+      \State{$nrt_R \gets $Sign$(sk_I, refund || nT || nwCom_R)$}
+      \State{Relay.Send$(nrt_R)$}
     \EndProcedure{}
 
     \Procedure{Relay}{}
       \State{$nrt_R \gets $Intermediary.Receive$()$}
+      \If{$\neg $Verify$(pk_I, refund||nT||nwCom_R, nrt_R) = 1$}
+      \State{Abort$()$ \Comment{invalid refund token}}
+      \EndIf{}
       \State{$ncsk_R \gets (nwpk_R, nwsk_R, \bot)$} \Comment{match client format}
       \State{$nS_R \gets (0, hc^0)$}
     \EndProcedure{}
@@ -247,7 +250,7 @@ message
       \State{Intermediary.Send$(wpk_E, wCom'_E, \pi'_E, nT, \epsilon_E, k, hc^k)$}
     \EndProcedure{}
 
-    \Procedure{Intermediary}{$pp, S_I, nS_I$}
+    \Procedure{Intermediary}{$pp, sk_I, S_I, nS_I$}
       \State{$(wpk_E, wCom'_E, \pi_E, nT, \epsilon_E, k, hc^k) \gets $EndUser.Receive$()$}
       \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
       \If{$\epsilon_E < 0 \wedge closed \not\in nS_I[nT]$}
@@ -260,12 +263,15 @@ message
         \State{Abort$()$ \Comment{invalid payment hash chain}}
       \EndIf{}
       \State{$nS_I[nT] \gets closed||hc^k$}
-      \State{$rt'_E \gets $Intermediary.Blindsig$(refund || wCom'_E)$}
+      \State{$rt'_E \gets $Sign$(sk_I, refund || wCom'_E)$}
       \State{EndUser.Send$(rt'_E)$}
     \EndProcedure{}
 
     \Procedure{EndUser}{}
       \State{$rt'_E \gets $Intermediary.Receive$()$}
+      \If{$\neg $Verify$(pk_I, refund||wCom'_E, rt'_E) = 1$}
+      \State{Abort$()$ \Comment{invalid refund token}}
+      \EndIf{}
       \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E, \bot)$}
       \State{$\sigma^{rev(nrt)}_E \gets $Sign$(nwsk_E, revoke||nwpk_E)$}
       \State{Intermediary.Send$(nwpk_E, \sigma^{rev(nrt)})$}
