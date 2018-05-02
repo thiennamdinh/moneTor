@@ -32,8 +32,8 @@ $$Nano\-Establish(\{\rdv(pp, w^j_\rdv, nT)\}, \{\adv(state)\})$$
 
 Where $state$ is the adversary state. We denote the relay's output as $w^j_\rdv$, the refound token $nrt_\rdv$, the relay's nanopayment secret $ncsk_\rdv$ and the state of the relay's nanopayment channel $nS_\rdv$. \\
 
-\textbf{Nano-Close from $\cdv_i$ and $\rdv_j$.} In this query, if $w^i_\cdv$, $nT$, $ncsk_\cdv$ and $nS_\cdv$ $\neq \bot$, then $\adv$ executes the Nano-Close to close the nanopayment channel and update the micropayment wallet with $\cdv_i$ (resp. $\rdv_j$).
-$$Nano\-close(\{\cdv(pp, w^i_\cdv, nT, ncsk_\cdv, nS_\cdv)\}, \{\adv(state)\})$$
+\textbf{Nano-Close from $\cdv_i$ and $\rdv_j$.} In this query, if $\epsilon^i_\cdv$, $nT$, $ncsk_\cdv$ and $nS_\cdv$ $\neq \bot$, then $\adv$ executes the Nano-Close to close the nanopayment channel and update the micropayment wallet with $\cdv_i$ (resp. $\rdv_j$).
+$$Nano\-close(\{\cdv(pp, \epsilon^i_\cdv, nT, ncsk_\cdv, nS_\cdv)\}, \{\adv(state)\}) \rightarrow w^i_\cdv$$
 Where $state$ is the adversary's state. We denote the customer's and relay output as $w^i_\cdv$ (resp. $w^j_\rdv$), where it may be $\bot$.\\
 
 \textbf{Finalize with $\cdv_i$ (resp. $\rdv_j$).} When $\adv$ makes this query, it obtains $rc^i_\cdv$, computed as $rc_\cdv \sample Refund(pp, w^i_\cdv)$.
@@ -54,7 +54,7 @@ $$Nano\-Establish(\{\cdv(pp, nT)\}, \{\adv(state)\})$$
 Where $state$ is the adversary state. We denote the custumer's output $nT$, which may be $\bot$.
 
 
-\textbf{Nano-Pay from $\cdv_i$.} In this query, $nT \neq bot$ and $p_k$ may be $\bot$, then $\adv$ executes the Nano-Pay protocol for an amount $\delta$ with $\cdv_i$ as:
+\textbf{Nano-Pay from $\cdv_i$.} In this query, $nT \neq \bot$ and $p_k$ may be $\bot$, then $\adv$ executes the Nano-Pay protocol for an amount $\delta$ with $\cdv_i$ as:
 $$Nano\-Pay(\{\cdv(pp, \delta, p_k)\}, \{\adv(state)\})$$
 
 Where $state$ is the adversary's state and $p_k$ is the preimage of the current hash stored in the adversary's state, or $\bot$.
@@ -67,8 +67,31 @@ Let $pp'$ be an auxiliary trapdoor not available to the participants of the real
 
 \subsubsection{Payment Security (Balance)}
 
-Let $\adv$ an adversary playing the role of Relay. We consider an experiment involving $P$ honest Tor clients interacting with the relay. We consider the micropayment channels with the intermediary setup and established, as well as the Intermediary honestly interacting with the Tor client and the relay.
- 
+Let $\adv$ an adversary playing the role of Relay. We consider an experiment involving $P$ honest Tor clients $\cdv_1,..., \cdv_P$ interacting with the relay. We consider the micropayment channels with the intermediary setup and established, as well as the Intermediary honestly interacting with the Tor client and the relay.
+
+Given the micropayment channel setup and established, both party hold fund $B^{cust}$ and $B^{\adv}$. Let $bal_\adv \leftarrow 0$ the fund the adversary may claim. Now $\adv$ may issue the following queries in any order:\\
+
+\textbf{Nano-Estbablish from $\cdv_i$.} In this query, $nT$ may be $\bot$, then $\adv$ executes only the part of Nano-Establish which interacts with $\cdv_i$:
+$$Nano\-Establish(\{\cdv(pp, nT)\}, \{\adv(state)\})$$
+
+Where $state$ is the adversary state. The adversary obtains $nT$ and establish the nanopayment channel with the Intermediary.
+
+\textbf{Nano-Pay from $\cdv_i$.} The nanopayment channel has been correctly established before. This query can executed up to $n$ times before \textbf{Nano-close} is called. For each of the execution, $nT \neq \bot$ and $p_k$ may be $\bot$.  $\adv$ executes the Nano-Pay protocol for an amount $\delta$ with $\cdv_i$ as:
+
+$$Nano\-Pay(\{\cdv(pp,\delta,p_k)\},\{\adv(state)\}) \rightarrow p_k$$
+
+If $H(p_k)$ matches the hash stored in the adversary state, then $bal_\adv = bal_\adv+\delta$ and $H(p_k)$ is stored in the internal state. If it does not match, we output $\bot$.
+
+\textbf{Nano-Close with Intermediary.} In this query, $\epsilon_\adv \leftarrow k*\delta$ for k Nano-Pay executions. $nT, ncsk_\adv, nS_\adv \neq bot$, then $\adv$ executes the Nano-Close protocol to close its leg of the nanopayment channel and claim funds to the Intermediary. 
+
+$$Nano\-close(\{\adv(pp, \epsilon^i_\adv, nT, ncsk_\adv, nS_\adv)\},$$
+$$\{Intermediary(state)\}) \rightarrow w^i_\adv$$
+
+We denote the adversary output $w^i_\adv$, where it may be $\bot$. The Tor client closes also its leg of the nanopayment channel with the intermediary to transfer $k*\delta$ and update its wallet accordingly.
+
+At any point, if any member wish to, they can call Nano-Refund algorithm to initiate a partial or full refund of their escrowed fund and close the nanopayment channel.
+
+We say that $\adv$ is $legal$ if it never agree to execute the Nano-Pay protocol upon $nT = \bot$, and if $\adv$ never asks Tor client to spend more than $n$ payments. We further restrict $\adv$ to establish one nanopayment channel per micropayment channel established with any Tor client. $\adv$ wins if after executions of queries, $bal_\adv > n*\delta$.
 
 \subsection{Theorem}
 The nanopayment channel scheme satisfies the property of anonymity under the restriction that the adversary does not abort before Nano-Close finished, and the assumptions that the commitment scheme is secure, the zero-knowledge system is simulation extractable and zero-knowledge, and the hash function used to create the hashchain and verify the preimage during the Nano-Pay is a cryptographic hash function.
