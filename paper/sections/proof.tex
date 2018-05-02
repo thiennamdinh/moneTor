@@ -91,10 +91,10 @@ We denote the adversary output $w^i_\adv$, where it may be $\bot$. The Tor clien
 
 At any point, if any member wish to, they can call Nano-Refund algorithm to initiate a partial or full refund of their escrowed fund and close the nanopayment channel.
 
-We say that $\adv$ is $legal$ if it never agree to execute the Nano-Pay protocol upon $nT = \bot$, and if $\adv$ never asks Tor client to spend more than $n$ payments. We further restrict $\adv$ to establish one nanopayment channel per micropayment channel established with any Tor client. $\adv$ wins if after executions of queries, $bal_\adv > n*\delta$.
+We say that $\adv$ is $legal$ if it never agree to execute the Nano-Pay protocol upon $nT = \bot$. We further restrict $\adv$ to establish one nanopayment channel per micropayment channel established with any Tor client. $\adv$ wins if after executions of queries, $bal_\adv > n*\delta$.
 
 \subsection{Theorem}
-The nanopayment channel scheme satisfies the property of anonymity under the restriction that the adversary does not abort before Nano-Close finished, and the assumptions that the commitment scheme is secure, the zero-knowledge system is simulation extractable and zero-knowledge, and the hash function used to create the hashchain and verify the preimage during the Nano-Pay is a cryptographic hash function.
+The nanopayment channel scheme satisfies the property of anonymity and security under the restriction that the adversary does not abort before Nano-Close finished, the assumptions that the commitment scheme is secure, the zero-knowledge system is simulation extractable and zero-knowledge, and the hash function used to create the hashchain and verify the preimage during the Nano-Pay is a cryptographic hash function.
 
 \subsection{Proofs}
 
@@ -129,4 +129,16 @@ Since \textbf{Game 2'} is identical in the Ideal experiment, the interaction bet
 
 By showing that the interaction with the Intermediary and the Interaction with the relay through the nanopayment algorithms is anonymous, we conclude that our nanopayment channel is anonymous.
 
-\subsection{Proof - Fund Security}
+\subsection{Proof - Security (Balance)}
+
+We prove that the Nanopayment channel satisfies the security definition if the micropayment channel is itself secure, if the hash function used is a cryptographic hash function (i.e. it bahaves like a random function, it's easy to compute a hash of any given data, it's computationally hard to find a valid preimage of a given hash value, and it is unlikely to find two different pieces of data that hash to the same value), and if the signature scheme is EU-CMA secure (i.e. Existential Unforgeability under a Chosen Message Attack).
+
+To win, $\adv$ must claim more money than the agreed price between a honest Client and the adversary. The adversary must make this claim running an indistinguishable protocol than the honest one. We proceed by showing that $\adv$ cannot diverge from the protocol without breaking classical security assumptions or aborting.
+
+\textbf{Game 0.} This is the Real experiment.
+
+\textbf{Game 1.} This game is identical to Game 0 except that we replace $hc^0$ in $nT$ by a value chosen by $\adv$ from a hashchain created by $\adv$. From this hashchain, $\adv$ creates $nT'$. If the Intermediary is honest, the nanopayment cannot be established because $nT'$ is unknown to the Intermediary for this micropayment channel. If the Intermediary is dishonest, then it can accept $nT'$ but cannot prove, under the assumption that the signature scheme is EU-CMA secure, that $nT'$ was issued by the client. Hence, \textbf{Adv[Game 1]} $\leq \nu_1$.
+
+\textbf{Game 2.} This game is identical to Game 1 except that $\adv$ tries in the Nano-Pay protocol to find herself a preimage to the stored hashchain, and claim more $\delta$ fund. Assuming the hash function is a cryptographic hash function, then the adversary cannot find a preimage unless the Tor client sends it to issue a payment. Hence, \textbf{Adv[Game 2]} $\leq \nu_2$.
+
+Finally, the Nano-Close protocol borrows the micropayment Pay protocol to update the micropayment wallet according to the number of preimage the adversary received from the Tor client. The Pay protocol has been proved secure by Green and Miers, hence we observe that the adversary cannot win the game with a non-negligible probability.
