@@ -2,16 +2,17 @@
 \subsection{Definitions}
 
 \paragraph*{Anonymity and Security for nanopayment channel}
-
 Our objective in this work is to provide an efficient, secure and privacy-preserving payment system for Tor network bandwidth. Our nanopayment channel is built on the top of an existing micropayment channel as designed by Green and Miers~\cite{green2017bolt}. Intuitively, the Pay protocol of their bidirectional channel is replaced by our set of Nano-Setup, Nano-Establish, Nano-Pay and Nano-Close protocols, which allows a finer-grained up to $n$ payments for a service at the cost of roughly~\footnote{Nano-Setup and Nano-Establish do not require that the relay and the intermediary cannot link them to the Nano-Close protection, because our nanopayment channel is inherently transparent} two Pay protocols.
 %We require that the Tor client must be responsible for initiating and closing a nanopayment channel. 
 We require that the intermediary does not learn more than the number of nanopayments realised between an unknown Tor client and a unknown relay. Moreover, we require that the nanopayment protocol always produce a correct outcome for each valid execution of the protocol.
 Informally, the anonymity guarantees provided by the nanopayment channel states that any relay (except the Guard relay) of a circuit learns no information except that a valid nanopayment channel establishment, payment or closure has occurred over an open micropayment channel with an intermediary. Intuitively, it means that a particular relay cannot link any nanopayment channel operation for each of the circuit it handles, at the same moment or through time.
 
-We reuse the payment anonymity and balance properties of Green and Miers~\cite{bolt-eprint} for an Anonymous Payment Channel (APC scheme) but we adapt them for our tripartite protocol. We have a privacy property that should hold against the Intermediary, and a privacy property that should hold against a relay. We also have a balance property to define monetary security.
-We prove that if it exists an adversary able to break the anonymity property, then this adversary is able to distinguish the Real experiment with the Ideal experiment of an APC scheme with non-negligible advantage. We also prove that the only adversary able to break the balance property is an adversary able to break security assumptions.
+We reuse the payment anonymity and balance properties of Green and Miers~\cite{bolt-eprint} for an Anonymous Payment Channel (APC scheme) but we adapt them for our tripartite protocol. We have a privacy property that hold against the Intermediary, and a privacy property that hold against a relay. We also have a balance property to define monetary security.
+We prove that if there exists an adversary able to break the anonymity property, then this adversary is able to distinguish the Real experiment from the Ideal experiment of an APC scheme with non-negligible advantage. We also prove that the only adversary able to break the balance property is an adversary able to break security assumptions.
 
 \subsubsection{Payment anonymity with Intermediary:} 
+\label{def:anon1}
+
 Let $\adv$ be an adversary playing the role of Intermediary. We consider an experiment involving P customers (a.k.a. Tor client) and Q relays, each interacting with the Intermediary as follows. First, $\adv$ is given $pp$, then outputs $T_\mdv$. Next $\adv$ issues the following queries in any order:\\
 
 \textbf{Initialize channel for $\cdv_i$ and $\rdv_j$.} When $\adv$ makes this query on input $B^{cust}$, $B^{inter}$, it obtains the commitment $T^i_\cdv$ generated as 
@@ -20,12 +21,12 @@ where the customer might also be a relay. In this case, the Intermediary obtains
 
 \textbf{Establish channel with $\cdv_i$ and $\rdv_j$.} In this query, $\adv$ executes the Establish protocol with $\cdv_i$ (resp. $\rdv_j$) as
 $$Establish(\{\cdv(pp, T_\mdv, csk^i_\cdv)\},\{\adv(state)\})$$
-Where $state$ is the adversary's state. We denote the custumer's output as $w_i$, where $w_i$ may be $\bot$.\\
+Where $state$ is the adversary's state. We denote the customer's output as $w_i$, where $w_i$ may be $\bot$.\\
 
 \textbf{Nano-Setup from $\cdv_i$.} In this query, if $w_i \neq \bot$, then $\adv$ executes the Nano-Setup to escrow $\epsilon$ with $\cdv_i$ as:
 $$Nano\-Setup(\{\cdv(pp, \epsilon, w^i_\cdv)\}, \{\adv(state)\})$$
 
-Where $state$ is the adversary's state. We denote the custumer's output as $w^i_\cdv$, the hashchain root $nT$, the custumer's nanopayment secret $ncsk_\cdv$, the curtumer's state $nS_\cdv$ and the refound token $nrt_\cdv$, where any may be $\bot$.\\
+Where $state$ is the adversary's state. We denote the customer's output as $w^i_\cdv$, the hashchain root $nT$, the customer's nanopayment secret $ncsk_\cdv$, the customer's state $nS_\cdv$ and the refound token $nrt_\cdv$, where any may be $\bot$.\\
 
 \textbf{Nano-Establish from $\rdv_j$}. In this query, if $w^j_\rdv$ and $nT$ $\neq \bot$, then $\adv$ executes the Nano-Establish to register the nanopayment channel with the relay $\rdv_j$ as:
 $$Nano\-Establish(\{\rdv(pp, w^j_\rdv, nT)\}, \{\adv(state)\})$$
@@ -45,13 +46,14 @@ Let $pp'$ be an auxiliary trapdoor not available to the participants of the real
 \textbf{Ideal experiment.} In this experiment, the micropayment operations are handled using the procedure above. However, for the nanopayment procedures, $\adv$ does not interact with $\cdv_i$ and $\rdv_j$ but instead interacts with a simulator $\sdv^{X-Y(\cdot)}(pp,pp',\cdot)$.
 
 \subsubsection{Payment anonymity with the relay.}
+\label{def:anon2}
 
 Let $\adv$ an adversary playing the role of Relay. We consider an experiment involving P customers (a.k.a. Tor client), each interacting with the Relay as follows. First, $\adv$ establishes a micropayment channel with the Intermediary. Next, $\adv$ issues the following queries in any order:\\
 
 \textbf{Nano-Establish from $\cdv_i$.} In this query, $nT$ may be $\bot$, then $\adv$ executes only the part of Nano-Establish which interacts with $\cdv_i$:
 $$Nano\-Establish(\{\cdv(pp, nT)\}, \{\adv(state)\})$$
 
-Where $state$ is the adversary state. We denote the custumer's output $nT$, which may be $\bot$.
+Where $state$ is the adversary state. We denote the customer's output $nT$, which may be $\bot$.
 
 
 \textbf{Nano-Pay from $\cdv_i$.} In this query, $nT \neq \bot$ and $p_k$ may be $\bot$, then $\adv$ executes the Nano-Pay protocol for an amount $\delta$ with $\cdv_i$ as:
@@ -66,6 +68,7 @@ Let $pp'$ be an auxiliary trapdoor not available to the participants of the real
 \textbf{Ideal experiment.} In this experiment, the micropayment operations and nanopayment operations with the Intermediary are handled using our algorithms. However, for the nanopayment procedures between the Tor client and the adversary relay, $\adv$ does not interact with $\cdv_i$ but instead interacts with $\sdv^{X-Y(\cdot)}(pp,pp',\cdot)$.
 
 \subsubsection{Payment Security (Balance)}
+\label{def:balance}
 
 Let $\adv$ an adversary playing the role of Relay. We consider an experiment involving $P$ honest Tor clients $\cdv_1,..., \cdv_P$ interacting with the relay. We consider the micropayment channels with the intermediary setup and established, as well as the Intermediary honestly interacting with the Tor client and the relay.
 
@@ -94,7 +97,8 @@ At any point, if any member wish to, they can call Nano-Refund algorithm to init
 We say that $\adv$ is $legal$ if it never agree to execute the Nano-Pay protocol upon $nT = \bot$. We further restrict $\adv$ to establish one nanopayment channel per micropayment channel established with any Tor client. $\adv$ wins if after executions of queries, $bal_\adv > n*\delta$.
 
 \subsection{Theorem}
-The nanopayment channel scheme satisfies the property of anonymity and security under the restriction that the adversary does not abort before Nano-Close finished, the assumptions that the commitment scheme is secure, the zero-knowledge system is simulation extractable and zero-knowledge, and the hash function used to create the hashchain and verify the preimage during the Nano-Pay is a cryptographic hash function.
+The nanopayment channel scheme satisfies the properties of anonymity (\ref{def:anon1}, \ref{def:anon2})
+ and security (\ref{def:balance}) under the restriction that the adversary does not abort before Nano-Close finished, the assumptions that the commitment scheme is secure, the zero-knowledge system is simulation extractable and zero-knowledge, and the hash function used to create the hashchain and verify the preimage during the Nano-Pay is a cryptographic hash function.
 
 \subsection{Proofs}
 
@@ -107,7 +111,7 @@ Let be $\nu_1, \nu_2$ be negligible functions and let \textbf{Adv[Game i]} be $\
 
 \textbf{Game 0.} This is the Real experiment: Nano-Setup, Nano-Establish and Nano-Close between customers (Tor clients) and the Intermediary.
 
-\textbf{Game 1.} This game is identical to \textbf{Game 0} except that we replace NIZK proofs generated by the customer at the Nano-Setup and Nano-Close with simulated proofs. If the proof system is zero-knowledge, then \textbf{Adv[Game 1] $\leq \nu_1 + \nu_2$}. With $\nu_i$ being the information given by the customers and $\nu_2$ the information given by the relay.
+\textbf{Game 1.} This game is identical to \textbf{Game 0} except that we replace NIZK proofs generated by the customer at the Nano-Setup and Nano-Close with simulated proofs. If the proof system is zero-knowledge, then \textbf{Adv[Game 1] $\leq \nu_1 + \nu_2$}. With $\nu_1$ being the information given by the customers and $\nu_2$ the information given by the relay.
 
 \textbf{Game 2.} This game is identical to \textbf{Game 1} except that we replace the commitments $nwCom_C$, $nwCom_R$, $wCom_C'$ and $wCom_R'$ by commitments on random messages. If the commitment scheme is computationally hiding, then \textbf{Adv[Game 2] $-$ Adv[Game 1]} $\leq \nu_1+\nu_2$.
 
@@ -115,7 +119,7 @@ Let be $\nu_1, \nu_2$ be negligible functions and let \textbf{Adv[Game i]} be $\
 
 \textbf{Game 4.} This game is identical to \textbf{Game 3} except that we replace $wpk_C, nwpk_C, wpk_R, nwpk_R$ with random keys using the KeyGen algorithm described for anonymous micropayment channels. Since the distribution is identical to the distribution of original values, \textbf{Adv[Game 4] $-$ Adv[Game 2]} $= 0$
 
-Therefore, since \textbf{Game 4} is is identical to the Ideal experiment, the interaction between customers and Intermediary is anonymous.
+Therefore, since $\adv$ cannot distinguish the real experiment from the Ideal experiment obtained in \textbf{Game 4.} with non-negligible advantage, the interaction between customers and Intermediary is anonymous.
 
 Now, we have to prove the indistinguishably between the Real experiment and the Ideal experiment for the payment anonymity property with the relay.  We proceed with the same logic:\\
 
@@ -127,7 +131,7 @@ Now, we have to prove the indistinguishably between the Real experiment and the 
 
 Since \textbf{Game 2'} is identical in the Ideal experiment, the interaction between Tor clients and relays is anonymous.
 
-By showing that the interaction with the Intermediary and the Interaction with the relay through the nanopayment algorithms is anonymous, we conclude that our nanopayment channel is anonymous.
+By showing that the interaction with the Intermediary and the Interaction with the relay through the nanopayment algorithms are anonymous, we conclude that our nanopayment channel is anonymous.
 
 \subsubsection{Security (Balance)}
 

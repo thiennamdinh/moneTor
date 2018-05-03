@@ -8,7 +8,7 @@ bandwidth globally~\cite{portal2018tormetrics}. While Tor has proven to be a
 highly effective option for privacy-seeking users, it suffers from two
 orthogonal issues that are relevant to this work. The first is the broad family
 of collusion attacks. These threats are relevant in scenarios where an attacker,
-who controls multiple nodes, is probabilistically placed at more than one hop
+who controls multiple nodes or network vantage points, is probabilistically placed at more than one hop
 along a single circuit, opening a much easier path to client
 deanonymization~\cite{wright2004predecessor,murdoch2005low}. The second
 problem is overall performance. Although the overlay protocol itself generates
@@ -29,11 +29,11 @@ spanning over the past decade. Progress in this field faces a multitude of
 challenges. Consider the approach most relevant to our work: monetary
 incentives. Aside from the analytically intractable set of legal and
 sociopolitical obstacles, monetary payments in this environment must overcome a
-trifecta of challenging constraints.
+trifecta of challenging constraints:
 
 \begin{itemize}
 \item \emph{Anonymity}: The paramount mission of Tor is user privacy. This
-  cannot be compromised by a transparent and immutable money trail.
+  cannot be compromised or reduced by transparent money transactions trail.
 \item \emph{Payment Security}: Anonymity also prohibits the formation of large
   credit and trust systems. As such, financial transactions cannot transpire
   without strong guarantees of cryptographic security.
