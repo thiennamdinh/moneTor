@@ -76,15 +76,6 @@ established and ready before the user begins to use the circuit which is made
 possible by our design decision to integrate into Tor's preemptive circuit build
 strategy.
 
-\td{this seems like it should be in the design somewhere}Tor already follows the
-same strategy with streams: a circuit must be ready before a stream is created,
-such that it can be attached to a ready circuit and sends its data directly
-through the anonymous tunnel. Similarly, moneTor allows secure and anonymous
-payment channels to be pre-built and attached to a particular circuit. However,
-Tor would need some clever strategy not to exhaust the network's resource by
-pre-building unnecessary nanopayment channels.
-
-
 %% In another area of research, it may be interesting to point out that since %
 %$\approx 50\%$ of users do not carry data after their DNS request, some %
 %adversary doing end-to-end correlation may prefer to use active attacks over %

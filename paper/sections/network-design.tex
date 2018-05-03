@@ -22,6 +22,12 @@ relay cells. Figure~\ref{fig:cell} shows the internal structure of the cell.
 
 All the bytes starting from StreamID (included) are onion-encrypted. RelCMD is set to RELAY\_COMMAND\_MT, PCMD is the payment command which is different for each step of the payment protocol. If some message overflow the payload available length (495 bytes), we queue multiple cells of the same PCMD and buffer them on the receiver side to unpack the whole message.
 
+\subsection{Channels are pre-built}
+Tor already follows the
+same strategy with streams: a circuit must be ready before a stream is created,
+such that it can be attached to a ready circuit and sends its data directly
+through the anonymous tunnel. Similarly, moneTor allows secure and anonymous
+payment channels to be pre-built over an unused clean circuit, which allows the Tor client to hold some payment circuit in reserve. Our implementation features some initial predict and pre-built strategy, where the Tor client is able to predict to some extend the number of pre-build channels to create using previous usage information. However, the approach is somewhat prototyped, and Tor may need cleverer strategy not to exhaust the network's resource by pre-building unnecessary nanopayment channels.
 
 \subsection{Scalability Design of the moneTor Scheme}
 \label{subsub:scalability}
@@ -41,8 +47,10 @@ services. Intermediaries devote the full extent of their computational resources
 toward this task allowing only a few strong nodes to handle all of the premium
 channel establishments required the network.
 
-\td{Should we emphaisize more the need to anonymousely manage circuits between
-  parties? Or is this obvious?}Interactions between parties are realised within Tor circuits to allow
+%\td{Should we emphaisize more the need to anonymousely manage circuits between
+%  parties? Or is this obvious?}
+%FR: looks obvious to me from the phrase below
+Interactions between parties are realised within Tor circuits to allow
 multiplexing of circuits over the same TCP connection. As a result, the
 intermediary and the ledger must have a number of available sockets higher than
 the number of relays in the network in the worst case. Since this limit is in
