@@ -12,7 +12,7 @@ We reuse the payment anonymity and balance properties of Green and Miers~\cite{b
 We prove that if it exists an adversary able to break the anonymity property, then this adversary is able to distinguish the Real experiment with the Ideal experiment of an APC scheme with non-negligible advantage. We also prove that the only adversary able to break the balance property is an adversary able to break security assumptions.
 
 \subsubsection{Payment anonymity with Intermediary:} 
-Let $\adv$ an adversary playing the role of Intermediary. We consider an experiment involving P customers (a.k.a. Tor client) and Q relays, each interacting with the Intermediary as follows. First, $\adv$ is given $pp$, then outputs $T_\mdv$. Next $\adv$ issues the following queries in any order:\\
+Let $\adv$ be an adversary playing the role of Intermediary. We consider an experiment involving P customers (a.k.a. Tor client) and Q relays, each interacting with the Intermediary as follows. First, $\adv$ is given $pp$, then outputs $T_\mdv$. Next $\adv$ issues the following queries in any order:\\
 
 \textbf{Initialize channel for $\cdv_i$ and $\rdv_j$.} When $\adv$ makes this query on input $B^{cust}$, $B^{inter}$, it obtains the commitment $T^i_\cdv$ generated as 
 $$(T^i_\cdv, csk^i_\cdv) \sample Init_\cdv(pp, B^{cust}, B^{inter})$$
@@ -42,7 +42,7 @@ We say that $\adv$ is $legal$ if $\adv$ never asks to spend from a wallet where 
 
 Let $pp'$ be an auxiliary trapdoor not available to the participants of the real protocol. We require the existence of a simulator $\sdv^{X-Y(\cdot)}(pp, pp', \cdot)$ such that for all $T_\mdv$, no allowed adversary $\adv$ can distinguish the following two experiments with non-negligible advantage:\\
 \textbf{Real experiment.} In this experiment, all responses are computed as described in our Algorithms.\\
-\textbf{Ideal experiment.} In this experiment, the micropayment operations are handled using the procedure above. However, for the nanopayment procedures, $\adv$ does not interact with $\cdv_i$ and $\rdv_j$ but instead interacts with $\sdv^{X-Y(\cdot)}(pp,pp',\cdot)$.
+\textbf{Ideal experiment.} In this experiment, the micropayment operations are handled using the procedure above. However, for the nanopayment procedures, $\adv$ does not interact with $\cdv_i$ and $\rdv_j$ but instead interacts with a simulator $\sdv^{X-Y(\cdot)}(pp,pp',\cdot)$.
 
 \subsubsection{Payment anonymity with the relay.}
 
@@ -131,7 +131,7 @@ By showing that the interaction with the Intermediary and the Interaction with t
 
 \subsubsection{Security (Balance)}
 
-We prove that the Nanopayment channel satisfies the security definition if the micropayment channel is itself secure, if the hash function used is a cryptographic hash function (i.e. it bahaves like a random function, it's easy to compute a hash of any given data, it's computationally hard to find a valid preimage of a given hash value, and it is unlikely to find two different pieces of data that hash to the same value), and if the signature scheme is EU-CMA secure (i.e. Existential Unforgeability under a Chosen Message Attack).
+We prove that the Nanopayment channel satisfies the security definition if the micropayment channel is itself secure, if the hash function used is a cryptographic hash function (i.e. it behaves like a random function, it's easy to compute a hash of any given data, it's computationally hard to find a valid preimage of a given hash value, and it is unlikely to find two different pieces of data that hash to the same value), and if the signature scheme is EU-CMA secure (i.e. Existential Unforgeability under a Chosen Message Attack).
 
 To win, $\adv$ must claim more money than the agreed price between a honest Client and the adversary. The adversary must make this claim running an indistinguishable protocol than the honest one. We proceed by showing that $\adv$ cannot diverge from the protocol without breaking classical security assumptions or aborting.
 
