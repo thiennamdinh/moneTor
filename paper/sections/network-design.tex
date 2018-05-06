@@ -67,10 +67,10 @@ incurring as little cost as possible to average global performance. Traffic
 scheduling is perhaps the most intuitive mechanism with which to implement
 priortization. However, we found in our investigation that practical
 modification of the Tor scheduling infrastructure is nontrivial. A more detailed
-discussion of our findings can be found in Appendix~\ref{chap:scheduling}.
+discussion of our findings can be found in Appendix~\ref{sec:scheduling}.
 
 Fortunately, Tor's overlay flow control mechannism provides an alternative route
-to implement our desired functionality. Recall that nodes regulate the traffic
+to implement our desired functionality. Recall that edge nodes regulate the traffic
 flux in either direction using a set of flow control windows. Roughly speaking,
 these windows determine space allotted to each circuit on a relay's scheduling
 queue, which in turn is positively correlated with effective bandwidth. We
@@ -90,8 +90,9 @@ adjust their own windows. This introduces a considerable amount of added
 complexity with unclear consequences on network performance. A more basic
 approach calls for the Tor authorities to track the global value for $premium\%$
 and periodically broadcast static flow control windows to be used by the entire
-network. We adopt the latter approach in this iteration of moneTor.\footnote{Our
-  research in traffic prioritization is meant to demonstrate at least some crude
-  capacity for premium advantage in our models and to suggest potential avenues
-  for further study. A more definitive design for production-ready policies is
-  left for future networking-oriented research.}
+network. We adopt the latter approach in this iteration of moneTor.\
+%\footnote{Our
+%  research in traffic prioritization is meant to demonstrate at least some crude
+%  capacity for premium advantage in our models and to suggest potential avenues
+%  for further study. A more definitive design for production-ready policies is
+%  left for future networking-oriented research.}

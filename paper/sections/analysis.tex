@@ -51,15 +51,29 @@ following data was considered:
 \end{itemize}
 
 Crucially, we do not record information linked to any single particular user
-flow on disk. The code used for the data collection will be made available for
-audit online.
+flow on disk. 
+%The code used for the data collection will be made available for
+%audit online.
 
 \subsubsection{Observations}
-
+\begin{figure*} \centering
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[scale=0.3]{images/exitmeasurement.png}
+		\caption{Time Profile}
+		\label{fig:statsa}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[scale=0.3]{images/totcellcountscdf.png}
+		\caption{Total Counts}
+		\label{fig:statsb}
+	\end{subfigure}
+	\caption{Tor Measurements}
+	\label{fig:measurements}
+\end{figure*}
 Our measurements successfully captured several important pieces of information
 for the design and justification of moneTor. For example, one important task is
 determine the number of potential users that could benefit from paid
-traffic. From Figure~\ref{fig:stats_b}, we observe that $\approx 82\%$ of
+traffic. From Figure~\ref{fig:statsb}, we observe that $\approx 82\%$ of
 circuits carrying only web traffic exchanged less than 1000 cells. While we
 cannot deduce any statements about users, we can speak to the fraction of
 circuits that may benefit from a payment channel in the Tor network, since
@@ -67,7 +81,7 @@ around $50\%$ of them do not carry data and less than $17\%$ of them carry at
 least one web page. The remaining $18\%$ would appear to be better candidates
 for moneTor.
 
-It is also evident from Figure~\ref{fig:stats_a} that most of the traffic
+It is also evident from Figure~\ref{fig:statsa} that most of the traffic
 usually happens within the first few tens of seconds, and that all types of
 traffic we collected seems to follow the same rule. From that result, we believe
 that the reliability of payment is critical within the first few seconds,
@@ -80,21 +94,6 @@ strategy.
 %$\approx 50\%$ of users do not carry data after their DNS request, some %
 %adversary doing end-to-end correlation may prefer to use active attacks over %
 %passive correlation to capture more identities.
-
-\begin{figure*} \centering
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[scale=0.3]{images/exitmeasurement.png}
-		\label{fig:stats_a}
-		\caption{Time Profile}
-	\end{subfigure}
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[scale=0.3]{images/totcellcountscdf.png}
-		\label{fig:stats_b}
-		\caption{Total Counts}
-	\end{subfigure}
-	\label{fig:measurements}
-	\caption{Tor Measurements}
-\end{figure*}
 
 \section{Simulated Validation}
 
@@ -180,27 +179,26 @@ operations, we are concerned with the number of CPU cores available to most
 relays. This information is not publically available. As a result, we performed
 provide two trials with moneTor: one where we assume all nodes are running on
 multi-core hardware and one in which all nodes are running on single-core
-hardware. The results are summarized in Figure~\ref{fig:overhead_throughput} and
-Figure~\ref{fig:overhead_ttlastbyte}.
+hardware. The results are summarized in Figure~\ref{fig:overhead}.
 
 \begin{figure*} \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_throughput.pdf}
-		\label{fig:stats_a}
 		\caption{Throughput Overhead}
+		\label{fig:overhead_throughput}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
-		\label{fig:stats_b}
 		\caption{Download Time Overhead}
+		\label{fig:overhead_ttlastbyte}
 	\end{subfigure}
 %	\begin{subfigure}[t]{0.32\textwidth} \centering
 %\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
 %		\label{fig:stats_c}
 %		\caption{Time Stdevs}
 %	\end{subfigure}
-	\label{fig:measurements}
 	\caption{moneTor Overhead}
+	\label{fig:overhead}
 \end{figure*}
 
 Our findings indicate that even the worst case scenario our system incurs
@@ -225,7 +223,7 @@ raw values shown in Table~\ref{tab:overhead}, which indicates that less than
 
 \subsubsection{Payment Latency}
 
-Given results from \autoref{chap:empirical}, we surmise that payment
+Given results from our data collection, we surmise that payment
 latency is a crucial factor in servicing our front-loaded clients. To this end,
 we measure the distribution of completion times for various steps in the
 protocol. The results shown here are collected from a large experiment featuring
@@ -244,25 +242,25 @@ before the client can complete hers.
 \begin{figure*} \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_establish.pdf}
-		\label{fig:stats_a}
 		\caption{Time to Establish}
+		\label{fig:payments_establish}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_pay.pdf}
-		\label{fig:stats_b}
 		\caption{Time to First Payment}
+		\label{fig:ttfp}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_close.pdf}
-		\label{fig:stats_c}
 		\caption{Time to Close}
+		\label{fig:payments_close}
 	\end{subfigure}
-	\label{fig:measurements}
 	\caption{Protocol Execution Time}
+	\label{fig:latencymeasurements}
 \end{figure*}
 
 
-Figure~\ref{fig:payments_pay} illustrates time to first payments, our most
+Figure~\ref{fig:ttfp} illustrates time to first payments, our most
 revealing latency metric. The figure superimposes the time to first payment as
 measured from when the client would first like to send a payment (call) and the
 time when she actual does send the payment (send). The first measure includes
