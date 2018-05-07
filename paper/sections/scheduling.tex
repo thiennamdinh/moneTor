@@ -4,10 +4,10 @@
 Tor handles multiple queues of cells, for each circuit, and manages to write
 cells in the outbound connection while favoring bursty over bulky traffic. The
 main idea is to prioritize circuit handling interactive data streams, like chats
-or web browsing. Tor uses an heuristic called EWMA~\cite{ccs10-scheduling}
+or web browsing. Tor uses an heuristic called EWMA~\cite{tang2010improved}
 (i.e., computes the exponentially weighted moving average for the number of
 cells sent on each circuit) to decide which circuit to prioritize. Recently, the
-efficiency of EWMA has been improved with the Kist~\cite{jansen14-kist}
+efficiency of EWMA has been improved with the Kist~\cite{jansen2014never}
 scheduler used to reduce the congestion on the kernel outbound queue and push
 back this delicate problem on the Tor layer. Thanks to Kist, EWMA should better
 fulfil Tor's intended interactive streams prioritization. %
@@ -15,11 +15,9 @@ fulfil Tor's intended interactive streams prioritization. %
 In an ideal network, we might expect that traffic movement is an exclusive
 function of the raw bandwidth capacity in each edge connection and the
 scheduling algorithm implemented at each node.
-The Tor network most notably
+The Tor network
 employs EWMA to favor interactive web clients over
-continuous bulk clients using an exponentially weighted moving average score for
-each circuit as proposed by Tang and Goldberg~\cite{tang2010improved}. 
-In moneTor, we originally proposed to modify their scheme with a simple linear
+continuous bulk clients. In moneTor, we originally proposed to modify EWMA with a simple linear
 scaling factor that would favor paid circuits.
 \begin{equation}
   A_{t + \Delta t} = A_t \times 0.5^{\Delta t/H}
@@ -122,5 +120,5 @@ state of affairs on the live Tor network. The aforementioned experiments were
 performed on a considerably smaller scale with simplistic models for network
 topology and user behavior. What can be said is that networking as a whole is an
 immensely complex and unpredictable domain and that the attainment of a
-simulation environment conducive to effective scheduling is, at the very, least
-nontrivial.
+simulation environment conducive to effective scheduling is, at the very least,
+non-trivial.
