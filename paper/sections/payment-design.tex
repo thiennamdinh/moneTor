@@ -219,7 +219,7 @@ final balance.
 \subsection{Payment Security and Anonymity}
 Our security model must account for both privacy and payment security. The
 privacy threat model is derived from the local active adversary paradigm
-ubiquitously found in Tor research~\cite{dingledine2004tor}. Nanopayment pays are trivially linkable by relays within the circuits, like any cell flowing through a same circuit can be. Each relay handle one nanopayment establish and nanopayment close per circuit, and since the protocol is zero-knowledge, relays cannot link several establishes or closures belonging to the same premium Tor user. We provide formal definitions, a theorem and proofs in the appendix~\ref{sec:proof}.
+ubiquitously found in Tor research~\cite{dingledine2004tor}. Nanopayment pays are locally linkable by relays within the circuits, like any cell flowing through a same circuit can be. Each relay handle one nanopayment establish and nanopayment close per circuit, and since the protocol is zero-knowledge, relays cannot link several establishes or closures belonging to the same premium Tor user. We provide formal definitions, a theorem and proofs in the appendix~\ref{sec:proof}.
 
 Our threat model for payment security is similar to those found in prior works
 in blockchain micropayment channels~\cite{poon2016bitcoin}. In such models, the

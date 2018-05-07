@@ -12,7 +12,7 @@ client and its guard relay while the relay-level cell is used for the middle
 relay and the exit relay. This subtype of relay cell is comprised of a payment
 header denoting the type of payment cell, followed by a payload of payment
 data. To an outside observer, payment cells are indistinguishable to normal
-relay cells. Figure~\ref{fig:cell} shows the internal structure of the cell.
+relay cells. Figure~\ref{fig:relay_command_mt_structure} shows the internal structure of the cell.
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.38]{images/payment_cell_header.png}
@@ -61,7 +61,7 @@ consumption scalability of the greater Tor network.
 \label{subsub:prioritized}
 
 The final component of our network-oriented design addresses the need to deliver
-prioritized bandwidth given an explicit signaling of premium or nonpremium
+prioritized bandwidth given an explicit signalling of premium or nonpremium
 traffic. Our objective is to provide a tunable range of prioritization while
 incurring as little cost as possible to average global performance. Traffic
 scheduling is perhaps the most intuitive mechanism with which to implement
@@ -69,7 +69,7 @@ priortization. However, we found in our investigation that practical
 modification of the Tor scheduling infrastructure is nontrivial. A more detailed
 discussion of our findings can be found in Appendix~\ref{sec:scheduling}.
 
-Fortunately, Tor's overlay flow control mechannism provides an alternative route
+Fortunately, Tor's overlay flow control mechanism provides an alternative route
 to implement our desired functionality. Recall that edge nodes regulate the traffic
 flux in either direction using a set of flow control windows. Roughly speaking,
 these windows determine space allotted to each circuit on a relay's scheduling
