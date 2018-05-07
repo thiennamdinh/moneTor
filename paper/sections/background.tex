@@ -1,6 +1,3 @@
-This work draws on technical preliminaries from two distinct fields: applied
-Tor research and payment channels.
-
 \subsection{Tor}
 
 \subsubsection{Tor Architecture}
@@ -60,7 +57,7 @@ plugin. Within the simulation environment itself, Shadow faithfully mimics the
 real Tor network conditions including bandwidth and latency. As a result,
 experiments conducted with this tool tends to be more accurate than ones
 conducted over alternatives such as private universities networks or
-PlanetLab~\cite{Chun:2003:POT:956993.956995}. We utilize the shadow framework to
+PlanetLab~\cite{chun2003planetlab}. We utilize the shadow framework to
 evaluate the costs and performance of our algorithms over network-level
 simulations.
 
@@ -68,8 +65,8 @@ simulations.
 
 \subsubsection{Flow Control} Tor seeks to maintain an optimal flow of cells in each
 circuit by capping the rate of transmission to fixed-sized windows. The
-CIRCWINDOWSTART value dictates flow between Tor nodes while
-STREAMWINDOWSTART dictates end-to-end flow between a client and the edge
+CIRCWINDOWSTART value dictates flow for the overall circuit while
+STREAMWINDOWSTART dictates each end-to-end flow between a client and the edge
 connection at an exit relay.\footnote{Default values, expressed in number of
   cells, are CIRCWINDOWSTART = 1000 and STREAMWINDOWSTART = 500} The number
 of cells going in each direction are tracked separately. In effect, Tor attempts
