@@ -51,7 +51,7 @@ following data was considered:
 \end{itemize}
 
 Crucially, we do not record information linked to any single particular user
-flow on disk. 
+flow on disk.
 %The code used for the data collection will be made available for
 %audit online.
 
@@ -60,15 +60,15 @@ flow on disk.
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[scale=0.3]{images/exitmeasurement.png}
 		\caption{Time Profile}
-		\label{fig:statsa}
+\label{fig:statsa}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[scale=0.3]{images/totcellcountscdf.png}
 		\caption{Total Counts}
-		\label{fig:statsb}
+\label{fig:statsb}
 	\end{subfigure}
 	\caption{Tor Measurements}
-	\label{fig:measurements}
+\label{fig:measurements}
 \end{figure*}
 Our measurements successfully captured several important pieces of information
 for the design and justification of moneTor. For example, one important task is
@@ -243,20 +243,20 @@ before the client can complete hers.
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_establish.pdf}
 		\caption{Time to Establish}
-		\label{fig:payments_establish}
+\label{fig:payments_establish}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_pay.pdf}
 		\caption{Time to First Payment}
-		\label{fig:ttfp}
+\label{fig:ttfp}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_close.pdf}
 		\caption{Time to Close}
-		\label{fig:payments_close}
+\label{fig:payments_close}
 	\end{subfigure}
 	\caption{Protocol Execution Time}
-	\label{fig:latencymeasurements}
+\label{fig:latencymeasurements}
 \end{figure*}
 
 
@@ -283,7 +283,7 @@ prioritized traffic for premium users. To perform this analysis, we prepared
 sets of three small experiments with varying modifier priorities
 $\alpha \in \{0, 0.25, 0.5\}$, where $\alpha = 0$ represents the baseline
 control. Our first set of experiments assuming 50\% of premium users is shown in
-Figure~\ref{fig:modifier_pr50}. From this illustration, is it evident that
+Figure~\ref{fig:modifier_pr50_web}. From this illustration, is it evident that
 premium users enjoy an advantage in internet speed compared to nonpremium users
 and that this advantage is more pronounced with the higher priority
 modifier. Moreover, the evenly split premium and nonpremium performance
@@ -292,28 +292,28 @@ little loss in overall network performance.
 
 We modified our experiment to study an environment comprised of only 25\%
 premium users who, according to Equation~\ref{eq:flow}, should enjoy even
-greater benefit. Figure~\ref{fig:modifier_pr25} shows that this is indeed the
+greater benefit. Figure~\ref{fig:modifier_pr25_web} shows that this is indeed the
 result. Slower users in the lower 20th percentile of download speeds enjoyed
 $\approx 200\%$ improvements in download speeds relative to nonpremium users ---
 likely enough to induce some amount of monetary exchange.
 
 \begin{figure*} \centering
-  \begin{subfigure}[t]{0.32\textwidth} \centering
+\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr50_web.pdf}
-		\label{fig:stats_a}
 		\caption{Prioritized Web (50\% Premium)}
+\label{fig:modifier_pr50_web}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr25_web.pdf}
-		\label{fig:stats_b}
 		\caption{Prioritized Bulk (50\% Premium)}
+\label{fig:modifier_pr25_web}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr25_bulk.pdf}
-		\label{fig:stats_c}
+\label{fig:modifier_pr25_bulk}
 		\caption{Prioritized Web (25\% Premium)}
 	\end{subfigure}
-	\label{fig:measurements}
+\label{fig:measurements}
 	\caption{Prioritization Benefit}
 \end{figure*}
 

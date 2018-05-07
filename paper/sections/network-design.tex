@@ -14,10 +14,10 @@ header denoting the type of payment cell, followed by a payload of payment
 data. To an outside observer, payment cells are indistinguishable to normal
 relay cells. Figure~\ref{fig:relay_command_mt_structure} shows the internal structure of the cell.
 \begin{figure}[h]
-	\centering
-	\includegraphics[scale=0.38]{images/payment_cell_header.png}
-	\label{fig:relay_command_mt_structure}
-	\caption{Relay level payment cell structure}
+    \centering
+    \includegraphics[scale=0.38]{images/payment_cell_header.png}
+    \caption{Relay level payment cell structure}
+\label{fig:relay_command_mt_structure}
 \end{figure}
 
 All the bytes starting from StreamID (included) are onion-encrypted. RelCMD is set to RELAY\_COMMAND\_MT, PCMD is the payment command which is different for each step of the payment protocol. If some message overflow the payload available length (495 bytes), we queue multiple cells of the same PCMD and buffer them on the receiver side to unpack the whole message.
