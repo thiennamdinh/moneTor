@@ -5,8 +5,8 @@
 \subsection{Data Collection}
 \label{subsec:datacollection}
 
-We deployed a data collection system to look for empirical temporal information
-about lifetime and bandwidth consumption in Tor circuits. Our objective is to
+We deployed during two weeks a data collection system to look for empirical temporal information
+about lifetime and bandwidth consumption in Tor circuits. Our objective was to
 have a deeper understanding of typical Tor usage and whether such usage can
 benefit from our channel-based payment system. For example, these measurements
 might capture some notion about the type and magnitude of potential premium
@@ -28,7 +28,7 @@ To ensure ethical experimentation, we first contacted the Tor research safety
 board~\cite{torsafety}. The feedback we received was subsequently used to refactor our data
 collection process.
 
-Data from multiple exit relays was collected, stripped of origin metadata, and
+Data from multiple old and very stable exit relays was collected, stripped of origin metadata, and
 aggregate on a central server. The data collected from each relay is itself an
 aggregation which we perform inside the relay's memory. The data collection is
 probabilistic; only 30\% of the circuits processed by our relays were considered
@@ -111,7 +111,7 @@ core C software. We emphasize that the implementation is not a fully functional
 prototype and is optimized solely for our experiments. Most notably, we
 simulated crytographic operations in the nanopayment creation and close
 procedures using cpu delays. These delays were tuned to conservatively reflect
-real measurments in background work~\cite{green2017bolt}.\footnote{Extracted
+real measurements in background work~\cite{green2017bolt}.\footnote{Extracted
   values are conservative in the sense that our zero-knowledge proofs require
   proving only a subset of the statements required in each corresponding Bolt
   zero-knowledge proof.}  In spirit, the partial prototype serves the following
@@ -153,8 +153,7 @@ traffic features 16\% \emph{bulk} clients who continuously download 5 MiB files
 and 84\% \emph{web} clients who periodically download 2 MiB
 files,\footnote{While 5 MiB bulk files are a common standard in Tor
   benchmarking~\cite{portal2018tormetrics}, 2 MiB web files reflect the
-  approximate size of modern web pages~\cite{team2018httparchive}} pausing
-between 1 and 60 seconds inbetween. In all cases, the number and behavior of
+  approximate size of modern web pages~\cite{team2018httparchive}}. In all cases, the number and behavior of
 clients were chosen to satisfy (A) realistic congestion rates measured by a
 transfer timeout percentage around 4\%~\cite{portal2018tormetrics} and a historical
 bulk/web global traffic ratio of about 50\%~\cite{chaabane2010digging,
