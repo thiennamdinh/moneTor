@@ -26,7 +26,7 @@ offline. Effectively, honest users will always be able to make some claim to
 their funds so long as the Ethereum network is operational.
 
 Finally, moneTor requires an anonymous base-layer payment protocol to allow
-users to make private low-frequency transactions. Potential candiates include
+users to make private low-frequency transactions. Potential candidates include
 Cryptonote, which makes use of stealth addresses and ring
 signatures~\cite{van2013cryptonote}, or Zerocash, which employs more expensive
 but more theoretically secure zero-knowledge proofs~\cite{sasson2014zerocash}.
@@ -61,7 +61,7 @@ specifications~\cite{green2017bolt}.
   the escrow.
 \item \textbf{Refute}: $I$ closes a channel on $L$ and makes a claim on
   the escrowed.
-\item \textbf{Resolve}: $L$ determines the final balance of funds awared to
+\item \textbf{Resolve}: $L$ determines the final balance of funds awarded to
   each party.
 \end{itemize}
 
@@ -149,7 +149,7 @@ $hc_i = H(hc_{i+1})$ and $hc_n$ is a random number. The root of the hash chain
 $hc_0$ is used to create a globally unique nanopayment token $nT$ that encodes
 the public parameters of the channel including the length $n$ and the
 per-payment value $\delta$. $C$ sends $I$ a commitment to a fresh nanopayment
-channel parameterized by $nT$ along with a zero-knowledge proof of the following
+channel parametrized by $nT$ along with a zero-knowledge proof of the following
 statements:
 
 \begin{enumerate}
