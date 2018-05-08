@@ -57,13 +57,13 @@ flow on disk.
 
 \subsubsection{Observations}
 \begin{figure*} \centering
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[scale=0.3]{images/exitmeasurement.png}
+	\begin{subfigure}[t]{0.49\textwidth} \centering
+\includegraphics[width=0.8\textwidth]{images/exitmeasurement.png}
 		\caption{Time Profile}
 \label{fig:statsa}
 	\end{subfigure}
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[scale=0.3]{images/totcellcountscdf.png}
+	\begin{subfigure}[t]{0.49\textwidth} \centering
+\includegraphics[width=0.8\textwidth]{images/totcellcountscdf.png}
 		\caption{Total Counts}
 \label{fig:statsb}
 	\end{subfigure}
@@ -192,11 +192,11 @@ hardware. The results are summarized in Figure~\ref{fig:overhead}.
 		\caption{Download Time Overhead}
 		\label{fig:overhead_ttlastbyte}
 	\end{subfigure}
-%	\begin{subfigure}[t]{0.32\textwidth} \centering
-%\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
-%		\label{fig:stats_c}
-%		\caption{Time Stdevs}
-%	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
+		\caption{Some type of Shadow.log Graph}
+		\label{fig:stats_c}
+	\end{subfigure}
 	\caption{moneTor Overhead}
 	\label{fig:overhead}
 \end{figure*}
@@ -298,23 +298,28 @@ $\approx 200\%$ improvements in download speeds relative to nonpremium users ---
 likely enough to induce some amount of monetary exchange.
 
 \begin{figure*} \centering
-\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr50_web.pdf}
+\begin{subfigure}[t]{0.49\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=0.8\textwidth]{images/modifier_pr50_web.pdf}
 		\caption{Prioritized Web (50\% Premium)}
 \label{fig:modifier_pr50_web}
 	\end{subfigure}
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr25_web.pdf}
+	\begin{subfigure}[t]{0.49\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=0.8\textwidth]{images/modifier_pr25_web.pdf}
 		\caption{Prioritized Web (25\% Premium)}
 \label{fig:modifier_pr25_web}
 	\end{subfigure}
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr25_bulk.pdf}
+	\begin{subfigure}[t]{0.49\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=0.8\textwidth]{images/modifier_pr25_bulk.pdf}
 \label{fig:modifier_pr25_bulk}
 		\vspace{-0.38cm}
 		\caption{Prioritized Bulk (25\% Premium)}
 	\end{subfigure}
-\label{fig:measurements}
+	\begin{subfigure}[t]{0.49\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=0.8\textwidth]{images/modifier_pr25_bulk.pdf}
+\label{fig:modifier_pr25_bulk}
+		\vspace{-0.38cm}
+		\caption{Prioritized Bulk (25\% Premium)}
+	\end{subfigure}
 	\caption{Prioritization Benefit}
 \end{figure*}
 
@@ -336,10 +341,7 @@ statistically negligible at this scale.
       $\alpha = 0.25,\ pr\% = 50$ & 46.2 & 206 & 404 \\
       $\alpha = 0.25,\ pr\% = 25$ & 46.0 & 231 & 459 \\ \hline
       $\alpha = 0.50,\ pr\% = 50$ & 46.4 & 233 & 356 \\
-      $\alpha = 0.50,\ pr\% = 25$ & 44.9 & 381 & 513 \\ \hline
-      $\alpha = 0.75,\ pr\% = 50$ & 41.55 & 902 & 571 \\
-      $\alpha = 0.75,\ pr\% = 25$ & 36.1 & 1403 & 740 \\
-
+      $\alpha = 0.50,\ pr\% = 25$ & 44.9 & 381 & 513 \\
     \end{tabular}
   \end{center}
   \label{tab:modifier}
