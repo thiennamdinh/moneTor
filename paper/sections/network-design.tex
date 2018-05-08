@@ -70,12 +70,16 @@ modification of the Tor scheduling infrastructure is nontrivial. A more detailed
 discussion of our findings can be found in Appendix~\ref{sec:scheduling}.
 
 Fortunately, Tor's overlay flow control mechanism provides an alternative route
-to implement our desired functionality. Recall that edge nodes regulate the traffic
-flux in either direction using a set of flow control windows. Roughly speaking,
-these windows determine space allotted to each circuit on a relay's scheduling
-queue, which in turn is positively correlated with effective bandwidth. AlSabah \textit{et al.}~\cite{pets2011-defenestrator} already played with control flow windows in attempt to improve performance. Our objective slightly differ: we want to improve the performance of a subset of users (premium users), at the cost of decreasing the performance for unpaid bandwidth.
-We implement our prioritization scheme by readjusting the windows according to the
-following formula.
+to implement our desired functionality. Recall that edge nodes regulate the
+traffic flux in either direction using a set of flow control windows. Roughly
+speaking, these windows determine space allotted to each circuit on a relay's
+scheduling queue, which in turn is positively correlated with effective
+bandwidth. AlSabah \textit{et al.}~\cite{pets2011-defenestrator} have explored
+the affects of changing flow control windows as a way to improve total
+performance. Our objective slightly differs: we want to improve the performance
+of a subset of premium users, at the cost of decreasing the performance for
+unpaid bandwidth.  We implement our prioritization scheme by readjusting the
+windows according to the following formula.
 \begin{equation}
   window' = window(1+ \alpha(premium / premium\% - 1))
   \label{eq:flow}
