@@ -69,7 +69,7 @@ of intermediary fees.
 \subsection{Future Work}
 \label{subsec:future_work}
 
-\textbf{Prioritized Traffic} Although we were able to successfully demonstrate
+\subsubsection{Prioritized Traffic} Although we were able to successfully demonstrate
 clear prioritized premium traffic using flow control windows, there is
 considerable room to analyze prioritization under more realistic settings. Among
 the possibilities, we maintain that scheduling provides the most conceptually
@@ -79,7 +79,7 @@ alternative path forward. This future work might study methods for ensuring a
 more robust response to local variations in the fraction of premium users as
 well total network load.
 
-\textbf{Side-channel Attacks} We assumed that our protocol construction would
+\subsubsection{Side-channel Attacks} We assumed that our protocol construction would
 not give more information to an observer than the single bit needed to
 differentiate a premium user. However in practice, the protocol may leak
 information through side-channels, such as the time needed to exchange cells in
@@ -88,7 +88,7 @@ the client's location by evaluating the round-trip-times of the multi-rounds
 protocol. Although often easily mitigated once discovered, these side channels
 pose an interesting problem to our expanded attack surface.
 
-\textbf{Channel Management} Given the dynamic activity of payment channels that
+\subsubsection{Channel Management} Given the dynamic activity of payment channels that
 we have shown, further research might explore more sophisticated policies to
 manage moneTor payment channels. Such policies would make decisions concerning
 micropayment channel initial value, nanopayment channels size, and the selection
@@ -98,7 +98,7 @@ classical optimization objectives of computation, memory, and bandwidth, this
 research effectively considers a brand new vector as it attempts to streamline
 the flow of money through the network.
 
-%\textbf{Extended Applications} Existing privacy-centric currencies are limited
+%\subsubsection{Extended Applications} Existing privacy-centric currencies are limited
 %in that they are only effective when used in conjunction with an anonymizing
 %network such as Tor~\cite{sasson2014zerocash}. Our currency scheme more
 %explicitly integrates the two layers and, if deployed, we suspect that moneTor
