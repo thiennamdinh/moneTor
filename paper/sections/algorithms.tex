@@ -78,9 +78,9 @@ message
 
 \subsection{Algorithms}
 
-\begin{algorithm}[H]
+\begin{algorithm}
+  \caption[Create Wallet]{\textbf{Create Wallet} Helper function for creating a new wallet}
   \begin{algorithmic}[1]
-    \caption[Create Wallet]{\textbf{Create Wallet} Helper function for creating a new wallet}
     \Function{Wal}{$pp, pk_{payee}, w, \epsilon$}
     \State{parse $w$ as $(B, wpk, wsk, r, \sigma^w)$}
     \State{$(wsk', wpk') \gets $KeyGen$(pp)$}
@@ -97,7 +97,7 @@ message
 \end{algorithm}
 
 
-\begin{algorithm}[H]
+\begin{algorithm}
   \caption[Nano-Setup]{\textbf{Nano-Setup} Protocol
     between a client and intermediary to create a new nanopayment channel from an
     existing micropayment wallet. Run prior to circuit setup.}
@@ -154,7 +154,7 @@ message
   \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]
+\begin{algorithm}
   \caption[Nano-Establish]{\textbf{Nano-Establish}
     Protocol between a client, intermediary, and relay to establish the
     nanopayment channel between the client and relay. Run at the start of
@@ -203,7 +203,7 @@ message
   \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]
+\begin{algorithm}
   \caption[Nano-Pay]{\textbf{Nano-Pay} Protocol
     between the client and relay to forward a single nanopayment. Run
     periodically throughout the lifetime of the circuit.}
@@ -233,7 +233,7 @@ message
   \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]
+\begin{algorithm}
   \caption[Nano-Close]{\textbf{Nano-Close}
     Protocol between an end user (client or relay) and an intermediary to close
     out the nanopayment channel and receive a micropayment wallet. Run any time
@@ -294,7 +294,7 @@ message
   \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]
+\begin{algorithm}
   \caption[Nano-Refund]{\textbf{Nano-Refund} Algorithm by an end user to close a micropayment
     channel and claim ledger funds. This is a modified version of
     Bolt's Refund algorithm to also allows for granular claims on
@@ -315,7 +315,7 @@ message
 \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]
+\begin{algorithm}
   \caption[Nano-Refute]{\textbf{Nano-Refute} Algorithm by an intermediary to respond to an end user's refund claim by posting its own channel closure message to the ledger}
   \begin{algorithmic}[1]
     \State{$\forall E \in \{Client, Relay\}$}
@@ -344,7 +344,7 @@ message
   \end{algorithmic}
 \end{algorithm}
 
-\begin{algorithm}[H]
+\begin{algorithm}
   \caption[Nano-Resolve]{\textbf{Nano-Resolve} Algorithm run by the ledger (and everyone verifying the ledger) to resolve all channel closure messages and allocate the appropriate final balances}
   \begin{algorithmic}[1]
     \State{\Comment{Returns the tuple $(B^{final}_E, B^{final}_I)$}}
@@ -393,3 +393,5 @@ message
     \EndFunction{}
   \end{algorithmic}
 \end{algorithm}
+
+\clearpage
