@@ -150,9 +150,11 @@ $E_{all} = \{E_1, E_2, ... E_n\}$ who each have an active channel with $I$,
 $E_a$ should be able to send a secure payment to $E_b$ even though $I$ cannot
 identify $E_a$ or $E_b$ from $E_{all}$ nor can $I$ infer the payment value. Of
 course, $I$ must still be able to verify that the payment is valid and that its
-internal channel states have been updated accordingly.\footnote{This is achieved
-  using a combination of zero-knowledge proofs and blind signatures, in the case
-  of Bolt} Several nuances arise concerning end user privacy in certain
+internal channel states have been updated accordingly.
+%\footnote{This is achieved
+%  using a combination of zero-knowledge proofs and blind signatures, in the case
+%  of Bolt} 
+Several nuances arise concerning end user privacy in certain
 situations, such as during the micropayment setup escrow phase and in the event
 that $I$ maliciously aborts. We do not consider it necessary to discuss these
 caveats here as they are not critical to our later treatment of anonymous

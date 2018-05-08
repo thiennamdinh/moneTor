@@ -1,5 +1,4 @@
-There have been a number of standalone incentivization schemes proposed over the
-the past decade. We classify these into three types of strategies:
+We classify incentivization schemes into three types of strategies:
 non-transferable benefits, transferable benefits, and monetary
 payments.\footnote{Generally speaking, incentives provided by monetary payments
   are more economically robust than transferable benefits, which in turn are
@@ -51,8 +50,7 @@ currency. Furthermore, its reliance on a centralized bank and bandwidth
 measurement authority place implicit limits on its scalability and
 security~\cite{jansen2010recruiting}.
 
-\textbf{TorPath to TorCoin} Perhaps the most radical redesign suggestion,
-TorCoin proposes to revamp the Tor architecture into one which can serve as the
+\textbf{TorPath to TorCoin} TorCoin proposes to revamp the Tor architecture into one which can serve as the
 basis for a new cryptocurrency mined with proof-of-bandwidth. The networking
 component specifies verifiable pseudorandom shuffling as the new method for user
 circuit selection. This modified protocol would in theory provide a weakly
@@ -68,13 +66,13 @@ simply an issue of unrealistic magnitude; the paper estimates that a user who
 continuously mines with typical consumer CPU hardware will be able to make only
 a few cents worth of payments every 24 hours while incurring a much higher cost
 in electricity~\cite{biryukov2015proof}.
-
 \subsection{Monetary Payments}
 \label{sub:monetary}
 
 This final class of incentivization offers rewards relays with externally
-valuable money. Generally, this tends to be the most economically
-sound approach and the one that moneTor adopts.
+valuable money. 
+%Generally, this tends to be the most economically
+%sound approach and the one that moneTor adopts.
 
 \textbf{PAR} A pre-Bitcoin design, PAR allow clients to send direct payments to
 relays in a hybrid payment scheme which makes use of inefficient but anonymous
@@ -86,7 +84,7 @@ design~\cite{androulaki2008payment}.
 
 \textbf{ORPay, PlusPay, CoinPay} These three protocols, part of the Chaumian
 e-cash tradition of payments schemes, are a series of incremental improvements
-released across two papers~\cite{chen2009xpay}~\cite{carbunar2012tipping}. In
+released across two papers~\cite{chen2009xpay, carbunar2012tipping}. In
 each of the designs, the micropayment building block is derived from Payword
 hash chains, as is ours. While the schemes offer practical advantages to many
 aspects of PAR, they are limited by the same \emph{honest but curious} security
