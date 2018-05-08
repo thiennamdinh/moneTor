@@ -1,22 +1,27 @@
 Anonymous traffic routing through Tor remains one of the most popular
 low-latency methods for censorship evasion and privacy protection
-~\cite{dingledine2004tor}. In this setup, clients protect their TCP/IP metadata
-by routing their traffic through an onion encrypted path with three
-randomly selected volunteer relay nodes, referred to as a circuit. The network
-presently consists of $\approx 6,400$ relays contributing over 230 Gbit/s of
-bandwidth globally~\cite{portal2018tormetrics}. While Tor has proven to be a
+~\cite{dingledine2004tor}. In this setup, clients protect their TCP/IP
+metadata and content by routing their traffic through an onion
+encrypted path with three randomly selected volunteer relay nodes,
+referred to as a circuit. The network presently consists of
+$\approx 6,400$ relays contributing over 230 Gbit/s of bandwidth
+globally~\cite{portal2018tormetrics}. While Tor has proven to be a
 highly effective option for privacy-seeking users, it suffers from two
-orthogonal issues that are relevant to this work. The first is the broad family
-of collusion attacks. These threats are relevant in scenarios where an attacker,
-who controls multiple nodes or network vantage points, is probabilistically placed at more than one hop
-along a single circuit, opening a much easier path to client
-deanonymization~\cite{wright2004predecessor,murdoch2005low}. The second
-problem is overall performance. Although the overlay protocol itself generates
-an inherent overhead in network resources, Tor suffers from additional traffic
-congestion that leads to suboptimal network
-performance~\cite{portal2018tormetrics, alsabah2016performance}.
+orthogonal issues that are relevant to this work. The first is the
+broad family of collusion attacks. These threats are relevant in
+scenarios where an attacker, who controls multiple nodes or network
+vantage points, is probabilistically placed at more than one hop along
+a single circuit, \op{is that enough? or does the adversary rather
+  need to be placed at the entry and exit of a circuit?} opening a
+much easier path to client
+deanonymization~\cite{wright2004predecessor,murdoch2005low}. The
+second problem is overall performance. Although the overlay protocol
+itself generates an inherent overhead in network resources, Tor
+suffers from additional traffic congestion that leads to suboptimal
+network performance~\cite{portal2018tormetrics,
+  alsabah2016performance}.
 
-One approach to mitigated these problems is to address them separately from a
+One approach to mitigate these problems is to address them separately from a
 networking standpoint. Indeed, a significant portion of recent research in Tor
 proposes modifications to the core protocol itself, such as reengineering the
 TCP+TLS part of the stack~\cite{reardon2009improving} or designing a better
@@ -54,7 +59,7 @@ citing publications~\cite{nakamoto2008bitcoin}.
 \footnote{The recency of this
   development is highlighted by the fact that about half of this work is dated
   after 2017}. 
-This body of work introduces a multitude of new concepts that
+This body of work sparked the development of a multitude of new techniques that
 will prove indispensable to our own area of research. Our objective then, is to
 leverage the full extent of these innovations into a practical next-generation
 incentivization strategy for Tor.
@@ -85,4 +90,9 @@ entire technical stack is accounted for and that moneTor can be feasibly
 developed today.
 \paragraph*{Roadmap.} In Section~\ref{sec:background}, we draw on technical preliminaries from two distinct fields: applied Tor research and payment channels. Section~\ref{sec:related_work} presents the related work. In Section~\ref{sec:economic} we describe how we engineer the flow of money in a way that is both economically stable yet still adheres to the core mission of the Tor project. In Section~\ref{sec:payment} we 
 describe the technical construction for the moneTor payment scheme at the payment protocol level. We pursue in Section~\ref{sec:network} with the technical construction of moneTor at the network level. In section~\ref{sec:analysis} we  validate our design decisions with real-world data collection from live Tor users. 
-In Section~\ref{sec:experimentations}, we validate our technical design via experiments performed on a proof-of-concept software implementation within the native Tor codebase. We finally address concerncs for limitations and future work in Section~\ref{sec:limitations_futurework} and conclude in Section~\ref{sec:conclusion}.
+In Section~\ref{sec:experimentations}, we validate our technical design via experiments performed on a proof-of-concept software implementation within the native Tor codebase. We finally address concerns for limitations and future work in Section~\ref{sec:limitations_futurework}, point to our code sources in Section~\ref{sec:code} and conclude in Section~\ref{sec:conclusion}.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
