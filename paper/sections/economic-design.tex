@@ -25,24 +25,32 @@ flow cycle is illustrated in Figure~\ref{fig:economic}.
     for taxation purposes.}
   \label{fig:economic}
 \end{figure}
-We introduce a novel concept within the field in the form of a taxation
-element. Intuitively, the shape of the network that will emerge in a purely
-profit-seeking environment may not perfectly correspond with the central goals
-of the Tor Project. The Tor Project may for instance desire to artificially
-compensate certain types of relays more than others in order to improve the core
-user experience. To this end, we accommodate for a stream of taxed income that is
-anonymously diverted into a shared pool of funds. These funds are selectively
-redistributed to relays via a transparent policy.  In essence, taxation provides
-a tunable control mechanism for The Tor Project to shape the topology of the
-network towards some notion of optimal diversity and performance.
+We introduce a novel concept within the field in the form of a
+taxation element. Intuitively, the shape of the network that will
+emerge in a purely profit-seeking environment may not perfectly
+correspond with the central goals of the Tor Project. The Tor Project
+may for instance desire to compensate certain types of relays more
+than others in order to improve the overall quality of the network. To
+this end, we accommodate for a stream of taxed income that is
+anonymously diverted into a shared pool of funds. These funds are
+selectively redistributed to relays via a transparent policy.  In
+essence, taxation provides a tunable control mechanism for The Tor
+Project to shape the topology of the network towards some notion of
+optimal diversity and performance.
 
-A key economic question to address is the issue of price determination. While it
-would be tempting to enlist any number of market-based mechanisms to set premium
-bandwidth prices, any price differentiation between clients or relays inevitably
-leaks additional information. We therefore impose the constraint that all users
-should pay a single uniform price for premium bandwidth at any time $t$. This
-price may be set through a centralized calculation by the authorities or a more
-dynamical consensus vote reached by the network.
+A key economic question to address is the issue of price
+determination. While it would be tempting to enlist any number of
+market-based mechanisms to set premium bandwidth prices, any price
+differentiation between clients or relays inevitably leaks additional
+information. \op{Maybe a short explanation would be useful here? Not
+  sure that I have the reason in mind. Is it because someone who is
+  both guard and exit could notice: ``oh, this is they guy who pays
+  this unique xyz price for his premium bandwidth'' just by seeing
+  that person one day from a guard position, and another day from the exit
+  position? } We therefore impose the constraint that all users should
+pay a single uniform price for premium bandwidth at any time $t$. This
+price may be set through a centralized calculation by the authorities
+or a more dynamical consensus vote reached by the network.
 
 \subsection{Incentivized Conformity} In a decentralized network, there is no
 practical way to enforce standard behavior at each local node. We must therefore
@@ -63,3 +71,9 @@ from the network is greater than the incremental gains it might attain from
 cheating. These attacks, while manageable, suggest that it would be prudent to
 maintain a simple incentive model until we can better study behavioral deviation
 dynamics in the live network.
+\op{Not sure of what is referred to by this ``simple incentive model''}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
