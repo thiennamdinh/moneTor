@@ -27,7 +27,7 @@ attacker can infer the participating parties using statistical correlation. The
 adversary's precision can also be improved by traffic flow perturbations. This
 attack is called \textit{end-to-end correlation}. Tor does not implement
 explicit countermeasures to this attack but does strive to minimize its
-impact. Concerningly, Rochet and Pereira recently showed that Tor's essential
+impact. Still, Rochet and Pereira recently showed that Tor's essential
 forward-compatibility feature can be exploited in a silent near to perfect and
 instantaneous active traffic confirmation attack~\cite{rochet2018dropping}.These
 developments imply a serious need to induce more diversity to the Tor network
@@ -111,7 +111,7 @@ scalability thus far is work in off-chain payment channel
 networks~\cite{poon2016bitcoin}. In this setup, a single ledger transaction is
 used to escrow funds by two parties $A$ and $B$. These parties may then proceed
 to make bidirectional micropayments to each other \emph{without ledger
-  interaction} through the exchange of signed IOU tokens. By themselves,
+  interaction} through the exchange of signed IOU tokens. \op{What does IOU stand for?} By themselves,
 channels are useful for reducing the number of ledger interactions for parties
 with reoccurring interactions. More consequential for the scalability problem is
 the tripartite channel paradigm in which $A$ pays $B$ through some
@@ -135,7 +135,7 @@ requirements are met.
 
 The guarantees are achieved in the Bitcoin Lightning network and other similar
 protocols through simple hash commitment and transaction delay primitives. The
-end result is a game-theoretic notion of security whereby which all parties are
+end result is a game-theoretic notion of security whereby all parties are
 incentivized to behave honestly.
 
 \subsubsection{Anonymous Payment Channels} The micropayment channel concept has since
@@ -159,3 +159,8 @@ situations, such as during the micropayment setup escrow phase and in the event
 that $I$ maliciously aborts. We do not consider it necessary to discuss these
 caveats here as they are not critical to our later treatment of anonymous
 payment channels.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
