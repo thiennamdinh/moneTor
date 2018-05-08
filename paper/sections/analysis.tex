@@ -204,7 +204,7 @@ hardware. The results are summarized in Figure~\ref{fig:overhead}.
 Our findings indicate that even the worst case scenario our system incurs
 statistically negligible overhead at these scales. This result is explained by
 raw values shown in Table~\ref{tab:overhead}, which indicates that less than
-0.4\% of the network traffic is attributable to moneTor payment messages.
+0.4\% of the network traffic is attributable to moneTor payment messages, with a payment rate of 1 payment (1 cell) every 1000 data cells exchanged in either direction. Note that Tor's control-flow mechanism induces more than 10 times this overhead cost. Nothing prevent us to increase the payment rate to achieve more fairness if needed, as far as the total overhead induced from control cells is kept under an acceptable fraction of the overall data bandwidth.
 
 \begin{table}
   \caption[Overhead Throughput Total]{\textbf{Overhead Throughput Total} Total
