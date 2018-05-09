@@ -42,16 +42,17 @@ work on this front is warranted.
 
 In our design, we are concerned with memory consumption, kernel socket
 consumption and CPU consumption. Our choice for a tripartite protocol
-effectively shifts the memory consumption of opened and idle micro channels to
-the Intermediary nodes of the network. A more basic setup whereby each Tor
-client maintains a micropayment channel with each relay would incur an $O(n*m)$
-cost with respect to channel management complexity. By engineering an additional
-intermediary layer, the complexity of moneTor channel connections is reduced to
-$O(n+m)$. In our implementation, Intermediary relays do not participate in
-routing user streams and are tasked only with providing payment channel
-services. Intermediaries devote the full extent of their computational resources
-toward this task, allowing only a few strong nodes to handle all of channel
-management needs of the network.
+effectively shifts the memory consumption of opened and idle micro
+channels to the Intermediary nodes of the network. A more basic setup
+whereby each Tor client maintains a micropayment channel with each
+relay would incur an $O(n*m)$ \op{what are $n$ and $m$ here?}  cost with
+respect to channel management complexity. By engineering an additional
+intermediary layer, the complexity of moneTor channel connections is
+reduced to $O(n+m)$. In our implementation, Intermediary relays do not
+participate in routing user streams and are tasked only with providing
+payment channel services. Intermediaries devote the full extent of
+their computational resources toward this task, allowing only a few
+strong nodes to handle all of channel management needs of the network.
 
 %\td{Should we emphaisize more the need to anonymousely manage circuits between
 %  parties? Or is this obvious?}
@@ -86,19 +87,28 @@ according to the following formula.
   window' = window(1+ \alpha(premium / premium\% - 1))
   \label{eq:flow}
 \end{equation}
-Here, a circuit is marked as prioritized by the bit $premium \in \{0, 1\}$. The
-tunable priority benefit $\alpha \in [0, 1)$ defines the total amount of flow
-capacity we wish to transfer to premium clients. By accounting for
-$premium\%s \in [0,100]$, the fraction of premium to nonpremium clients, we can
-keep the total flow capacity constant. Our policy may be implemented in one of
-two ways. First, each node could track the $premium\%$ locally and dynamically
-adjust their own windows. This introduces a considerable amount of added
-complexity with unclear consequences on network performance. A more sound
-approach calls for the Tor authorities to track the global value for $premium\%$
-and periodically broadcast static flow control windows to be used by the entire
-network. We adopt the latter approach in this iteration of moneTor.
+Here, a circuit is marked as prioritized by the bit
+$premium \in \{0, 1\}$. The tunable priority benefit
+$\alpha \in [0, 1)$ defines the proportion of the non-premium capacity that we wish
+to transfer to premium clients. By accounting for
+$premium\%s \in [0,100]$, \op{Is this really between 0 and 100 and not
+  between 0 and 1?} the fraction of premium to nonpremium clients, we
+can keep the total flow capacity constant. Our policy may be
+implemented in one of two ways. First, each node could track the
+$premium\%$ locally and dynamically adjust their own windows. This
+introduces a considerable amount of added complexity with unclear
+consequences on network performance. A more sound approach calls for
+the Tor authorities to track the global value for $premium\%$ and
+periodically broadcast static flow control windows to be used by the
+entire network. We adopt the latter approach in this iteration of
+moneTor.
 %\footnote{Our
 %  research in traffic prioritization is meant to demonstrate at least some crude
 %  capacity for premium advantage in our models and to suggest potential avenues
 %  for further study. A more definitive design for production-ready policies is
 %  left for future networking-oriented research.}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
