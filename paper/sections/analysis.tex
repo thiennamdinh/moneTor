@@ -196,7 +196,7 @@ hardware. The results are summarized in Figure~\ref{fig:overhead}.
 \end{figure*}
 
 Our findings indicate that even the worst case scenario our system incurs
-statistically negligible overhead at these scales. Note that a small fraction ($< 1\%$) of the network traffic is attributable to moneTor payment messages, with a payment rate of 1 payment (1 cell) every 1000 data cells exchanged in either direction. In comparison, Tor's control-flow mechanism induces more than 10 times this overhead cost. Nothing prevent us to increase the payment rate to achieve more fairness if needed, as far as the total overhead induced from control cells is kept under an acceptable fraction of the overall data bandwidth.
+statistically negligible overhead at these scales. Note that regarding bandwidth overhead, a small fraction ($< 1\%$) of the network traffic is attributable to moneTor payment messages, with a payment rate of 1 payment (1 cell) every 1000 data cells exchanged in either direction. In comparison, Tor's control-flow mechanism induces more than 10 times this overhead cost. Nothing prevent us to increase the payment rate to achieve more fairness if needed, as far as the total overhead induced from control cells is kept under an acceptable fraction of the overall data bandwidth.
 
 %\begin{table}
 %  \caption[Overhead Throughput Total]{\textbf{Overhead Throughput Total} Total
@@ -274,7 +274,7 @@ premium users enjoy an advantage in internet speed compared to nonpremium users
 and that this advantage is more pronounced with the higher priority
 modifier. Moreover, the evenly split premium and nonpremium performance
 ``averages out'' to approximately mirror the baseline experiment, indicating
-little loss in overall network performance.
+little loss in overall network performance, and confirming our overhead experiment.
 
 We modified our experiment to study an environment comprised of only 25\%
 premium users who, according to Equation~\ref{eq:flow}, should enjoy even
@@ -287,17 +287,17 @@ likely enough to induce some amount of monetary exchange.
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr50_web.pdf}
 		\caption{Web Download Time}
-\label{fig:modifier_pr25_web}
+\label{fig:modifier_pr50_web}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr50_bulk.pdf}
 		\caption{Bulk Download Time}
-\label{fig:modifier_pr25_bulk}
+\label{fig:modifier_pr50_bulk}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr50_all.pdf}
 		\caption{Throughput}
-\label{fig:modifier_pr25_bulk}
+\label{fig:modifier_pr50_all}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr25_web.pdf}
@@ -312,25 +312,25 @@ likely enough to induce some amount of monetary exchange.
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr25_all.pdf}
 		\caption{Throughput}
-\label{fig:modifier_pr25_bulk}
+\label{fig:modifier_pr25_all}
 	\end{subfigure}
 	\caption{Prioritization Benefit}
 \end{figure*}
 
-\begin{table}
-  \caption[Prioritized Throughput]{\textbf{Prioritized Throughput} Tabulate total
-    number of successful file transfers and timeout errors across varying levels
-    of prioritization}
-  \begin{center}
-    \begin{tabular}{ c c c c}
-      & Throughput & Timeouts & Timeout \\
-      & (GiB) & (Web) & (Bulk) \\ \hline
-      $\alpha = 0.00$ & 427 & 115 & 354 \\ \hline
-      $\alpha = 0.25,\ pr\% = 50$ & 429 & 206 & 404 \\
-      $\alpha = 0.25,\ pr\% = 25$ & 433 & 231 & 459 \\ \hline
-      $\alpha = 0.50,\ pr\% = 50$ & 420 & 233 & 356 \\
-      $\alpha = 0.50,\ pr\% = 25$ & 414 & 381 & 513 \\
-    \end{tabular}
-  \end{center}
-  \label{tab:modifier}
-\end{table}
+%\begin{table}
+%  \caption[Prioritized Throughput]{\textbf{Prioritized Throughput} Tabulate total
+%    number of successful file transfers and timeout errors across varying levels
+%    of prioritization}
+%  \begin{center}
+%    \begin{tabular}{ c c c c}
+%      & Throughput & Timeouts & Timeout \\
+%      & (GiB) & (Web) & (Bulk) \\ \hline
+%      $\alpha = 0.00$ & 427 & 115 & 354 \\ \hline
+%      $\alpha = 0.25,\ pr\% = 50$ & 429 & 206 & 404 \\
+%      $\alpha = 0.25,\ pr\% = 25$ & 433 & 231 & 459 \\ \hline
+%      $\alpha = 0.50,\ pr\% = 50$ & 420 & 233 & 356 \\
+%      $\alpha = 0.50,\ pr\% = 25$ & 414 & 381 & 513 \\
+%    \end{tabular}
+%  \end{center}
+%  \label{tab:modifier}
+%\end{table}
