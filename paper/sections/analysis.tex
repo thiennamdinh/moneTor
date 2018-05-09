@@ -1,5 +1,5 @@
 To validate our design decisions, began with analysis of data collected from
-real-world Tor users.
+real-world Tor users. \op{Is it only validation? It seems that some of the paramters are also chosen based on these simulations. Also, the discussion seems to be using some parameters which are only made explicit later. For instance, in 7.1.2, the circuits with less than 1000 cells are described as useless for premium. The reson for that seems to only become clear when reading 8.3.1, which indicates that payments are made after 1000 cells. I wonder if, at the end of this section, and before the experimental analysis, it would make sense to add a frame that sums-up what protocol will be analyzed, including the parameters: what channels and circuits are created when, when is payment happening, when are channels closed, \dots}
 
 \subsection{Data Collection}
 \label{subsec:datacollection}
@@ -86,7 +86,9 @@ that the reliability of payment is critical within the first few seconds,
 especially from a relay viewpoint. Our payment channels should ideally be
 established and ready before the user begins to use the circuit which is made
 possible by our design decision to integrate into Tor's preemptive circuit build
-strategy.
+strategy. \op{``should ideally'': is it really ideally? My understanding is that this point motivated the creation of payment channels at circuit creation time, that is, before any real traffic happens.}
+
+
 
 %% In another area of research, it may be interesting to point out that since %
 %$\approx 50\%$ of users do not carry data after their DNS request, some %
@@ -174,6 +176,7 @@ relays. This information is not publicly available. As a result, we performed
 provide two trials with moneTor: one where we assume all nodes are running on
 multi-core hardware and one in which all nodes are running on single-core
 hardware. The results are summarized in Figure~\ref{fig:overhead}.
+\op{Why do you have 2 sets of curves in (a) and (c)? For the two file sizes? This should probably be added.}
 
 \begin{figure*} \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
@@ -334,3 +337,8 @@ likely enough to induce some amount of monetary exchange.
 %  \end{center}
 %  \label{tab:modifier}
 %\end{table}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:
