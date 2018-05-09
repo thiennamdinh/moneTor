@@ -232,6 +232,24 @@ months. We optimize toward this setup by enabling transparent and direct payment
 channels between the client and guard, considerably reducing the network
 overhead costs.
 
+The zero-knowledge setup also allows an elegant way to anonymously handle the
+tax collection policy described in Section~\ref{sec:economic}. Thus far, we have
+treated the nanopayment value $\delta$ as symmetric for both the client and
+relay leg. In practice, it requires only a trivial modification to specify
+separate values of $\delta_C$ and $\delta_R$ such that the following equality is
+satisfied.
+\begin{equation}
+  \delta_C - \delta_R = tax + fee
+  \label{eq:payment}
+\end{equation}
+Here, $tax$ is the portion of every payment that is redirected to the Tor tax
+authority while $fee$ represents compensation for $I$'s services. $I$ gradually
+accumulates these overhead charges in his balance over the course of running
+many nanopayment channels. When it is time for $I$ to cash out the full
+micropayment channel, $L$ simply divides the funds between the $I$ and the tax
+authority. Note that this does \emph{not} mean that $L$ can arbitrarily control
+money as this process is well-defined in setup of the network protocol.
+
 \subsection{Payment Security and Anonymity}
 Our security model must account for both privacy and payment security. The
 privacy threat model is derived from the local active adversary paradigm
