@@ -11,7 +11,7 @@ Nano-Pay and Nano-Close protocols which allows high-granularity payments of up
 to $n$ iterations at the cost of roughly two Pay protocols.
 %We require that the Tor client must be responsible for initiating and closing a nanopayment channel.
 We require that the intermediary does not learn more than the number of
-nanopayments realised between an unknown Tor client and a unknown
+nanopayments realized between an unknown Tor client and a unknown
 relay.~\footnote{Due to the fact that moneTor nanopayment channels are
   inherently transparently, we do not require that Nano-Setup and Nano-Establish
   protocols are unlinkable to the Nano-Close protocol from the perspective of
@@ -51,12 +51,12 @@ Where $state$ is the adversary's state. We denote the customer's output as $w_i$
 \textbf{Nano-Setup from $\cdv_i$.} In this query, if $w_i \neq \bot$, then $\adv$ executes the Nano-Setup to escrow $\epsilon$ with $\cdv_i$ as:
 $$\operatorname{Nano-Setup}(\{\cdv(pp, \epsilon, w^i_\cdv)\}, \{\adv(state)\})$$
 
-Where $state$ is the adversary's state. We denote the customer's output as $w^i_\cdv$, the hashchain root $hc^0$, the customer's nanopayment secret $ncsk_\cdv$, the customer's state $nS_\cdv$ and the refound token $nrt_\cdv$, where any may be $\bot$.\\
+Where $state$ is the adversary's state. We denote the customer's output as $w^i_\cdv$, the hashchain root $hc^0$, the customer's nanopayment secret $ncsk_\cdv$, the customer's state $nS_\cdv$ and the refund token $nrt_\cdv$, where any may be $\bot$.\\
 
 \textbf{Nano-Establish from $\rdv_j$}. In this query, if $w^j_\rdv$ and $nT$ $\neq \bot$, then $\adv$ executes the Nano-Establish to register the nanopayment channel with the relay $\rdv_j$ as:
 $$\operatorname{Nano-Establish}(\{\rdv(pp, w^j_\rdv, nT)\}, \{\adv(state)\})$$
 
-Where $state$ is the adversary state. We denote the relay's output as $w^j_\rdv$, the refound token $nrt_\rdv$, the relay's nanopayment secret $ncsk_\rdv$ and the state of the relay's nanopayment channel $nS_\rdv$. \\
+Where $state$ is the adversary state. We denote the relay's output as $w^j_\rdv$, the refund token $nrt_\rdv$, the relay's nanopayment secret $ncsk_\rdv$ and the state of the relay's nanopayment channel $nS_\rdv$. \\
 
 \textbf{Nano-Close from $\cdv_i$ and $\rdv_j$.} In this query, if $\epsilon^i_\cdv$, $nT$, $ncsk_\cdv$ and $nS_\cdv$ $\neq \bot$, then $\adv$ executes the Nano-Close to close the nanopayment channel and update the micropayment wallet with $\cdv_i$ (resp. $\rdv_j$).
 $$\operatorname{Nano-Close}(\{\cdv(pp, \epsilon^i_\cdv, nT, ncsk_\cdv, nS_\cdv)\}, \{\adv(state)\}) \rightarrow w^i_\cdv$$
