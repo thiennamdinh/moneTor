@@ -260,7 +260,14 @@ micropayment channel at any given time, we can guarantee that relays and
 intermediaries cannot link two nanopayment channels with the same user. Formal
 definitions, theorems, and proofs are provided in Appendix~\ref{sec:proof}.
 
-Observing the cash-out transactions on the ledger does not reveal any information regarding the source of the payment. Moreover, any communication in our tripartite nanopayment protocol are protected by Tor circuits. Hence, relationship between Client to Intermediary, Client to Ledger, Relay to Intermediary and Relay to Ledger are themselves anonymized by Tor circuits. If some party abort, which induce a dispute on the Ledger, the relationship between the client and his relays is protect by the various Tor circuits built to resolve the dispute with the ledger.
+Observing the cash-out transactions on the ledger does not reveal any
+information regarding the source of the payment. Moreover, any communication in
+our tripartite nanopayment protocol are protected by Tor circuits. Hence,
+relationship between client to intermediary, client to ledger, relay to
+intermediary and relay to ledger are themselves anonymized by Tor circuits. If
+some party aborts, which induce a dispute on the ledger, the relationship
+between the client and his relays is protect by the various Tor circuits built
+to resolve the dispute with the ledger.
 
 Informally, we claim the following anonymity guarantees relative to unmodified Tor:
 

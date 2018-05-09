@@ -8,7 +8,7 @@ channels.
 We adopt the following conventions in our algorithms.
 
 \begin{itemize}
-\item All variable names in this section except those in $Commit Wallet$ are
+\item All variable names in this section except those in $Create Wallet$ are
   globally unique.
 \item Variable subscripts denote a party or role ((I)ntermediary,
   (C)lient, (R)elay, (E)nd user).
@@ -58,7 +58,7 @@ state. Possible states are:
 
 \begin{itemize}
 \item $\bot$ --- failed attempt at setting up a nanopayment channel
-\item $ready$ --- channel has been set up by $C$
+\item $setup$ --- channel has been set up by $C$
 \item $established$ --- channel has been established with $R$
 \item $closed||hc^k$ --- channel has been closed and no further payments
   are allowed
@@ -74,7 +74,6 @@ $nS_R = (k, hc^k)$ --- Relay Nanopayment State --- See $nS_C$
 $nrt_R$ --- Relay Nanopayment Refund --- See $nrt_C$
 
 $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
-message
 
 \subsection{Algorithms}
 
@@ -147,7 +146,7 @@ message
         \State{Abort$()$ \Comment{invalid revocation token}}
       \EndIf{}
       \State{$S_I[wpk_C] \gets \sigma^{recv(w)}_C$}
-      \State{$nS_I[nT] \gets ready$}
+      \State{$nS_I[nT] \gets setup$}
       \State{Client.Send$(established)$}
     \EndProcedure{}
 
@@ -183,7 +182,7 @@ message
       \If{$wpk_R \in S_I \vee nwpk_R \in S_I \vee \neg $Verify$(n\pi_R)$}
         \State{Abort$()$ \Comment{invalid wallets}}
       \EndIf{}
-      \If{$nS_I[nT] \ne ready$}
+      \If{$nS_I[nT] \ne setup$}
         \State{Abort (unregistered nanopayment channel)}
       \EndIf{}
       \State{$S_I \gets S_I \cup \{nwpk_R, \bot\}$}
