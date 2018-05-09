@@ -44,12 +44,12 @@ work on this front is warranted.
 In our design, we are concerned with memory consumption, kernel socket
 consumption and CPU consumption. Our choice for a tripartite protocol
 effectively shifts the memory consumption of opened and idle micro
-channels to the Intermediary nodes of the network. A more basic setup
+channels to the intermediary nodes of the network. A more basic setup
 whereby each Tor client maintains a micropayment channel with each
 relay would incur an $O(n*m)$ cost with
 respect to channel management complexity, with $n$ the number of Tor clients and $m$ the number of relays. By engineering an additional
 intermediary layer, the complexity of moneTor channel connections is
-reduced to $O(n+m)$. In our implementation, Intermediary relays do not
+reduced to $O(n+m)$. In our implementation, intermediary relays do not
 participate in routing user streams and are tasked only with providing
 payment channel services. Intermediaries devote the full extent of
 their computational resources toward this task, allowing only a few

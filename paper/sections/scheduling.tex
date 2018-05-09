@@ -1,15 +1,15 @@
 \label{sec:scheduling}
 \subsection{background: scheduling}
 
-Tor handles multiple queues of cells, for each circuit, and manages to write
-cells in the outbound connection while favoring bursty over bulky traffic. The
-main idea is to prioritize circuit handling interactive data streams, like chats
-or web browsing. Tor uses an heuristic called EWMA~\cite{tang2010improved}
-(i.e., computes the exponentially weighted moving average for the number of
-cells sent on each circuit) to decide which circuit to prioritize. Recently, the
-efficiency of EWMA has been improved with the Kist~\cite{jansen2014never}
-scheduler used to reduce the congestion on the kernel outbound queue and push
-back this delicate problem on the Tor layer.
+Tor handles multiple queues of cells for each circuit and writes cells in the
+outbound connection while favoring bursty over bulky traffic. The main idea is
+to prioritize circuit handling interactive data streams, like chats or web
+browsing. Tor uses an heuristic called EWMA~\cite{tang2010improved} (i.e.,
+computes the exponentially weighted moving average for the number of cells sent
+on each circuit) to decide which circuit to prioritize. Recently, the efficiency
+of EWMA has been improved with the Kist~\cite{jansen2014never} scheduler used to
+reduce the congestion on the kernel outbound queue and push back this delicate
+problem on to the Tor layer.
 
 In an ideal network, we might expect that traffic movement is an exclusive
 function of the raw bandwidth capacity in each edge connection and the
@@ -40,20 +40,19 @@ differentiation with low values of $\beta$, we adopted a more blunt policy which
 zero-overhead version of moneTor.\footnote{This ideal version of moneTor strips
   away all payment operations and instead passes a single signal through the
   network to distinguish premium circuits.} The results are displayed in
-Figure~\ref{fig:scheduling_priority}.
+Figure~\ref{fig:scheduling_priority}. Although we observed some moderate
+differentiation, the difference falls well short of the benefit needed to
+incentivize paid users as well as our expectations for such an inequitable
+scheduling policy. This result holds even under very heavy levels of induced
+congestion.
 
 \begin{figure} \centering
   \includegraphics[trim={0 3cm 0 3cm}, clip, width=0.32\textwidth]{images/scheduling_priority.pdf}
-  \caption[Prioritized Scheduling]{\textbf{Prioritized Scheduling} CDF download
+  \caption[Prioritized Scheduling]{Prioritized Scheduling --- CDF download
     times for superimposed web and bulk clients where premium status is enforced
     only via scheduling.}
   \label{fig:scheduling_priority}
 \end{figure}
-
-Although we observed some moderate differentiation, the difference falls well
-short of the benefit needed to incentivize paid users as well as our
-expectations for such an inequitable scheduling policy. This result holds even
-under very heavy levels of induced congestion.
 
 \subsection{Investigation}
 
@@ -67,50 +66,47 @@ continuous point in time while the colors group quantities of cells that belong
 to the same circuit. Figure~\ref{fig:scheduling_close} displays a subset of the
 same information within a smaller time interval.\footnote{While the graph has
   the visual appearance of a bar graph, this is just a function of the striking
-  data pattern. In actuality, the plot displays a stacked area graph.}
-
-
-\begin{figure} \centering
-  \includegraphics[width=0.5\textwidth]{images/scheduling_far.png}
-  \caption[Queue Temporal Profile (60 seconds)]{\textbf{Queue Temporal Profile
-      (60 seconds)} Size of the scheduling buffer over time at a single exit
-    relay in terms of number of cells. Colors group cells belonging to the same circuit.}
-  \label{fig:scheduling_far}
-\end{figure}
-
-\begin{figure} \centering
-  \includegraphics[width=0.5\textwidth]{images/scheduling_close.png}
-  \caption[Queue Temporal Profile (2 seconds)]{\textbf{Queue Temporal Profile
-      (2 seconds)} Size of the scheduling buffer over time at a single exit
-    relay in terms of number of cells. Colors group cells belonging to the same
-    circuit.}
-  \label{fig:scheduling_close}
-\end{figure}
-
-
-In the aforementioned figures, notice that the queue is only populated for a
-period of 10 $ms$ before it is completely flushed, implying the queue spends the
-vast majority of its time empty. This 10 $ms$ window is a product of Tor's
-internal event handling framework and is consistent with data from Jansen et
+  data pattern. In actuality, the plot displays a stacked area graph.} In the
+aforementioned figures, notice that the queue is only populated for a period of
+10 $ms$ before it is completely flushed, implying the queue spends the vast
+majority of its time empty. This 10 $ms$ window is a product of Tor's internal
+event handling framework and is consistent with data from Jansen et
 al~\cite{jansen2017tor}. We found in an analysis of the line-by-line
 observations of the queue activity that while cells are flushed in the correct
 order, they appear in the queue at roughly equal proportions. In effect,
 bandwidth in our simulation is not constrained by the ordering policy of the
 scheduler but rather by the rate at which they arrive from the network.
 
+\begin{figure} \centering
+  \includegraphics[width=0.5\textwidth]{images/scheduling_far.png}
+  \caption[Queue Temporal Profile (60 seconds)]{Queue Temporal Profile
+      (60 seconds) --- Size of the scheduling buffer over time at a single exit
+    relay in terms of number of cells. Colors group cells belonging to the same circuit.}
+  \label{fig:scheduling_far}
+\end{figure}
+
+\begin{figure} \centering
+  \includegraphics[width=0.5\textwidth]{images/scheduling_close.png}
+  \caption[Queue Temporal Profile (2 seconds)]{Queue Temporal Profile
+      (2 seconds) --- Size of the scheduling buffer over time at a single exit
+    relay in terms of number of cells. Colors group cells belonging to the same
+    circuit.}
+  \label{fig:scheduling_close}
+\end{figure}
+
 \subsection{Discussion}
 
 There are two plausible contributing explanations. First, it may be the case
 that other network control mechanisms within the Tor codebase constrain the flow
 of cells, rendering the mostly idle scheduler to be ineffective. This may be
-caused by any combination of point-to-point flow control, connection throttling,
-or some less documented threshold embedded in the code. The positive results
-covered in Section~\ref{sec:priority_exp} suggests that flow-control may play a
-key role. The second explanation states that even in high-congestion, the
-constraining network bottleneck does not lie within the Tor network itself but
-at the exit relay interface with external servers on the web. In this scenario,
-cell queuing within Tor is not nearly as important as the TCP/IP packet handling
-at each exit relay.
+caused by any combination of factors including point-to-point flow control,
+connection throttling, or some less documented threshold embedded in the
+code. The positive results covered in Section~\ref{sec:priority_exp} suggests
+that flow-control may play a key role. The second explanation states that even
+in high-congestion, the constraining network bottleneck does not lie within the
+Tor network itself but at the exit relay interface with external servers on the
+web. In this scenario, cell queuing within Tor is not nearly as important as the
+TCP/IP packet handling at each exit relay.
 
 We must emphasize that our results are in no way indicative or predictive of the
 state of affairs on the live Tor network. The aforementioned experiments were
