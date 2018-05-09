@@ -196,32 +196,30 @@ hardware. The results are summarized in Figure~\ref{fig:overhead}.
 \end{figure*}
 
 Our findings indicate that even the worst case scenario our system incurs
-statistically negligible overhead at these scales. This result is explained by
-raw values shown in Table~\ref{tab:overhead}, which indicates that less than
-0.4\% of the network traffic is attributable to moneTor payment messages, with a payment rate of 1 payment (1 cell) every 1000 data cells exchanged in either direction. Note that Tor's control-flow mechanism induces more than 10 times this overhead cost. Nothing prevent us to increase the payment rate to achieve more fairness if needed, as far as the total overhead induced from control cells is kept under an acceptable fraction of the overall data bandwidth.
+statistically negligible overhead at these scales. Note that a small fraction ($< 1\%$) of the network traffic is attributable to moneTor payment messages, with a payment rate of 1 payment (1 cell) every 1000 data cells exchanged in either direction. In comparison, Tor's control-flow mechanism induces more than 10 times this overhead cost. Nothing prevent us to increase the payment rate to achieve more fairness if needed, as far as the total overhead induced from control cells is kept under an acceptable fraction of the overall data bandwidth.
 
-\begin{table}
-  \caption[Overhead Throughput Total]{\textbf{Overhead Throughput Total} Total
-    transferred application traffic over the duration of the over head trials
-    compared to total transferred payment traffic.}
-  \begin{center}
-    \begin{tabular}{ c c c }
-      & Throughput (GiB) & Payment Traffic (GiB) \\ \hline
-      Baseline & 128.4 & 0.000 \\
-      Multi-Core & 129.1 & 0.449 \\
-      Single-Core & 127.6 & 0.396
-    \end{tabular}
-  \end{center}
-  \label{tab:overhead}
-\end{table}
+%\begin{table}
+%  \caption[Overhead Throughput Total]{\textbf{Overhead Throughput Total} Total
+%    transferred application traffic over the duration of the over head trials
+%    compared to total transferred payment traffic.}
+%  \begin{center}
+%    \begin{tabular}{ c c c }
+%      & Throughput (GiB) & Payment Traffic (GiB) \\ \hline
+%      Baseline & 128.4 & 0.000 \\
+%      Multi-Core & 129.1 & 0.449 \\
+%      Single-Core & 127.6 & 0.396
+%    \end{tabular}
+%  \end{center}
+%  \label{tab:overhead}
+%\end{table}
 
 \subsubsection{Payment Latency}
 
 Given results from our data collection, we surmise that payment
 latency is a crucial factor in servicing our front-loaded clients. To this end,
 we measure the distribution of completion times for various steps in the
-protocol. The results shown here are collected from a large experiment featuring
-50\% premium clients. To highlight the effects of native latency in the Tor
+protocol. The results shown here are collected from the worst case 100 relays, 1000 Clients experiment featuring
+100\% premium clients. To highlight the effects of native latency in the Tor
 network, we show payments split across each relay role of guard, middle, and
 exit.
 
@@ -236,7 +234,7 @@ before the client can complete hers.
 \begin{figure*} \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_establish.pdf}
-		\caption{Establish}
+		\caption{Nano-Establish}
 \label{fig:payments_establish}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
@@ -246,24 +244,18 @@ before the client can complete hers.
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_close.pdf}
-		\caption{Close}
+		\caption{Nano-Close}
 \label{fig:payments_close}
 	\end{subfigure}
-	\caption{Protocol Execution Time}
+	\caption{Protocol Execution Time on a simulation featuring 100 relays, 2 authorities, 1 ledger authority, 10 intermediaries and 1000 Tor clients scaled down from the public consensus file `2018-02-03-00-00-00-consensus'.}
 \label{fig:latencymeasurements}
 \end{figure*}
 
 
 Figure~\ref{fig:ttfp} illustrates time to first payments, our most
-revealing latency metric. The figure superimposes the time to first payment as
-measured from when the client would first like to send a payment (call) and the
-time when she actual does send the payment (send). The first measure includes
+revealing latency metric. This measure includes
 the overhead in channel establishment when we do not have available preemptive
-channels. The second measure is essentially equivalent to one round trip time to
-each of the relays and represents a theoretical best-case bound for any payment
-system. Note from the juxtaposition of these two measures that our effective
-time to first payment (call) is generally much faster than the raw time to
-establish period, indicating the effectiveness of preemptive channel building.
+channels. In the best case scenario, when the 3 payment channels are correctly pre-built for the circuit, this measure is equivalent to one round trip time to each of the relays. Comparing this Figure~\ref{fig:ttfp} to Figure~\ref{fig:payments_establish}, we observe the effectiveness of preemptive channel building.
 
 In all protocol phases, we observe that latency for guard relays are negligible
 in comparison to the middle and exit relays, further validating our design
