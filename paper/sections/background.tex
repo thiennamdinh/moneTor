@@ -24,15 +24,16 @@ assumes a local adversary who can manipulate user streams by inserting,
 modifying, deleting or delaying data to create observable
 perturbations. Typically, by observing both ends of an anonymous stream, an
 attacker can infer the participating parties using statistical correlation. The
-adversary's precision can also be improved by traffic flow perturbations. This
-attack is called \textit{end-to-end correlation}. Tor does not implement
-explicit countermeasures to this attack but does strive to minimize its
-impact. Still, Rochet and Pereira recently showed that Tor's essential
-forward-compatibility feature can be exploited in a silent near to perfect and
-instantaneous active traffic confirmation attack~\cite{rochet2018dropping}.These
-developments imply a serious need to induce more diversity to the Tor network
-which would make such traffic analysis against a large fraction of Tor users
-more costly. One such solution is presented in this paper.
+adversary's precision can be further improved by adding traffic flow
+perturbations. This attack is called \textit{end-to-end correlation}. Tor does
+not implement explicit countermeasures to this attack but does strive to
+minimize its impact. However, Rochet and Pereira recently showed that Tor's
+essential forward-compatibility feature can be exploited in a silent
+near-perfect and instantaneous active traffic confirmation
+attack~\cite{rochet2018dropping}.These developments imply a serious need to
+induce more diversity to the Tor network, which would make such traffic analysis
+against a large fraction of Tor users more costly. One such solution is
+presented in this paper.
 
 \subsubsection{Circuit handling on Tor clients}
 %
@@ -56,24 +57,26 @@ interfaces with the simulator via an external application-specific
 plugin. Within the simulation environment itself, Shadow faithfully mimics the
 real Tor network conditions including bandwidth and latency. As a result,
 experiments conducted with this tool tends to be more accurate than ones
-conducted over alternatives such as private universities networks or
+conducted over alternatives such as private university networks or
 PlanetLab~\cite{chun2003planetlab}. We utilize the shadow framework to
 evaluate the costs and performance of our algorithms over network-level
 simulations.
 
 %\subsubsection{Tor's Scheduling}
 
-\subsubsection{Flow Control} Tor seeks to maintain an optimal flow of cells in each
-circuit by capping the rate of transmission to fixed-sized windows. The
+\subsubsection{Flow Control} Tor seeks to maintain an optimal flow of cells in
+each circuit by capping the rate of transmission to fixed-sized windows. The
 CIRCWINDOWSTART value dictates flow for the overall circuit while
 STREAMWINDOWSTART dictates each end-to-end flow between a client and the edge
 connection at an exit relay.\footnote{Default values, expressed in number of
-  cells, are CIRCWINDOWSTART = 1000 and STREAMWINDOWSTART = 500} The number
-of cells going in each direction are tracked separately. In effect, Tor attempts
-to keep the flow of cells on each circuit as high as possibly which ensuring
-that the number of cells in transition do not exceed the limit. In the network
-design of moneTor, we will exploit these flow control windows to differentiate
-preferred traffic.
+  cells, are CIRCWINDOWSTART = 1000 and STREAMWINDOWSTART = 500} The number of
+cells going in each direction are tracked separately. In effect, Tor attempts to
+keep the flow of cells on each circuit as full as possible while ensuring that
+the number of cells in transition do not exceed the limit. Flow control has a
+strong impact on network conditions as shown by AlSabah \textit{et
+  al.}~\cite{pets2011-defenestrator} in work toward improving total global
+performance.  In the design of moneTor, we will adapt these flow control windows
+toward our somewhat different objective to prioritize paid traffic.
 
 \subsection{Payment Channels}
 
@@ -111,7 +114,7 @@ path toward better scalability thus far is work in off-chain payment channel
 networks~\cite{poon2016bitcoin}. In this setup, a single ledger transaction is
 used to escrow funds by two parties $A$ and $B$. These parties may then proceed
 to make bidirectional micropayments to each other \emph{without ledger
-  interaction} through the exchange of signed ``I owe you'' tokens. By
+  interaction} through the exchange of signed ``I Owe You'' tokens. By
 themselves, channels are useful for reducing the number of ledger interactions
 for parties with reoccurring interactions. More consequential for the
 scalability problem is the tripartite channel paradigm in which $A$ pays $B$
@@ -138,27 +141,25 @@ protocols through simple hash commitment and transaction delay primitives. The
 end result is a game-theoretic notion of security whereby all parties are
 incentivized to behave honestly.
 
-\subsubsection{Anonymous Payment Channels} The micropayment channel concept has since
-been extended to support anonymity design goals. Z-Channel specifies an
+\subsubsection{Anonymous Payment Channels} The micropayment channel concept has
+since been extended to support anonymity design goals. Z-Channel specifies an
 implementation designed specifically for Zerocash which only supports two-party
 channels~\cite{zhang2017z}. Green and Miers designed Bolt, which is the only
 known anonymous micropayment scheme to date that supports three-party
-intermediary channels~\cite{green2017bolt}. In their framework, the anonymity
-set is defined with respect to the collection of users connected to the same
+intermediary channels~\cite{green2017bolt}. In this framework, the anonymity set
+is defined with respect to the collection of users connected to the same
 intermediary. In other words, given a set of end users
 $E_{all} = \{E_1, E_2, ... E_n\}$ who each have an active channel with $I$,
-$E_a$ should be able to send a secure payment to $E_b$ even though $I$ cannot
+$E_a$ should be able to send a secure payment to $E_b$ such that $I$ cannot
 identify $E_a$ or $E_b$ from $E_{all}$ nor can $I$ infer the payment value. Of
 course, $I$ must still be able to verify that the payment is valid and that its
-internal channel states have been updated accordingly.
-\footnote{This is achieved
-  using a combination of zero-knowledge proofs and blind signatures, in the case
-  of Bolt}
-Several nuances arise concerning end user privacy in certain
+internal channel states have been updated accordingly.  \footnote{This is
+  achieved using a combination of zero-knowledge proofs and blind signatures, in
+  the case of Bolt} Several nuances arise concerning end user privacy in certain
 situations, such as during the micropayment setup escrow phase and in the event
 that $I$ maliciously aborts. We do not consider it necessary to discuss these
-caveats here as they are not critical to our later treatment of anonymous
-payment channels.
+caveats here as they are not prohibitively problematic for our later treatment
+of anonymous payment channels.
 
 %%% Local Variables:
 %%% mode: latex

@@ -22,14 +22,20 @@ relay cells. Figure~\ref{fig:relay_command_mt_structure} shows the internal stru
 
 All the bytes starting from StreamID (included) are onion-encrypted. RelCMD is set to RELAY\_COMMAND\_MT, PCMD is the payment command which is different for each step of the payment protocol. If some message overflow the payload available length (495 bytes), we queue multiple cells of the same PCMD and buffer them on the receiver side to unpack the whole message.
 
-\subsection{Channels are pre-built}
-Tor already follows the
-same strategy with streams: a circuit must be ready before a stream is created,
-such that it can be attached to a ready circuit and sends its data directly
-through the anonymous tunnel. Similarly, moneTor allows secure and anonymous
-payment channels to be pre-built over an unused clean circuit, which allows the Tor client to hold some payment circuit in reserve. Our implementation features some initial predict and pre-built strategy, where the Tor client is able to predict to some extend the number of pre-build channels to create using previous usage information. However, the approach is somewhat prototyped, and Tor may need cleverer strategy not to exhaust the network's resource by pre-building unnecessary nanopayment channels.
+\subsection{Pre-built Channels}
+By default, Tor attempts to pre-build circuits in order to reduce latency once a
+user wishes to create a data stream. Much like circuits, moneTor payment
+channels are high in initial latency. We therefore exploit the same strategy by
+allowing payment channels to be preemptively set up and established on clean
+pre-built circuits. This dramatically reduces the effective time to first
+payment. Unfortunately, excessive establishment of preemptive channels will
+eventually afflict the network with unused overhead. Our implementation features
+a rudimentary prediction strategy that attempts to balance this trade-off by
+anticipating the number of needed channels using historical usage
+information. However, our approach may not be sufficiently optimized and further
+work on this front is warranted.
 
-\subsection{Scalability of the moneTor Scheme}
+\subsection{Network Scalability}
 \label{subsub:scalability}
 %\td{TODO: describe scalability of intermediary system and any networking
 %  bottlenecks that might arise such as port limits, etc.}
@@ -44,8 +50,8 @@ intermediary layer, the complexity of moneTor channel connections is reduced to
 $O(n+m)$. In our implementation, Intermediary relays do not participate in
 routing user streams and are tasked only with providing payment channel
 services. Intermediaries devote the full extent of their computational resources
-toward this task allowing only a few strong nodes to handle all of the premium
-channel establishments required the network.
+toward this task, allowing only a few strong nodes to handle all of channel
+management needs of the network.
 
 %\td{Should we emphaisize more the need to anonymousely manage circuits between
 %  parties? Or is this obvious?}
@@ -74,19 +80,15 @@ to implement our desired functionality. Recall that edge nodes regulate the
 traffic flux in either direction using a set of flow control windows. Roughly
 speaking, these windows determine space allotted to each circuit on a relay's
 scheduling queue, which in turn is positively correlated with effective
-bandwidth. AlSabah \textit{et al.}~\cite{pets2011-defenestrator} have explored
-the affects of changing flow control windows as a way to improve total
-performance. Our objective slightly differs: we want to improve the performance
-of a subset of premium users, at the cost of decreasing the performance for
-unpaid bandwidth.  We implement our prioritization scheme by readjusting the
-windows according to the following formula.
+bandwidth. We implement our prioritization scheme by readjusting the windows
+according to the following formula.
 \begin{equation}
   window' = window(1+ \alpha(premium / premium\% - 1))
   \label{eq:flow}
 \end{equation}
 Here, a circuit is marked as prioritized by the bit $premium \in \{0, 1\}$. The
 tunable priority benefit $\alpha \in [0, 1)$ defines the total amount of flow
-capacity we wish to transfer to premium clients. Accounting for
+capacity we wish to transfer to premium clients. By accounting for
 $premium\%s \in [0,100]$, the fraction of premium to nonpremium clients, we can
 keep the total flow capacity constant. Our policy may be implemented in one of
 two ways. First, each node could track the $premium\%$ locally and dynamically

@@ -1,6 +1,5 @@
 Where we previously assumed the existence of an ideal payment procedure, we now
-describe the technical construction for the moneTor payment scheme. The protocol
-setup and algorithmic overview of the payment layer is covered in this chapter.
+describe the concrete technical construction for the moneTor payment scheme.
 
 \subsection{Base Layer}
 
@@ -25,10 +24,10 @@ ledger of last resort in the event that the moneTor ledger goes
 offline. Effectively, honest users will always be able to make some claim to
 their funds so long as the Ethereum network is operational.
 
-Finally, moneTor requires an anonymous base-layer payment protocol to allow
-users to make private low-frequency transactions. Potential candidates include
-Cryptonote, which makes use of stealth addresses and ring
-signatures~\cite{van2013cryptonote}, or Zerocash, which employs more expensive
+Finally, moneTor requires anonymous payment procedures to allow users to make
+private low-frequency transactions. Potential candidates include Cryptonote,
+which makes use of stealth addresses and ring
+signatures~\cite{van2013cryptonote}, and Zerocash, which employs more expensive
 but more theoretically secure zero-knowledge proofs~\cite{sasson2014zerocash}.
 
 \subsection{Relay Payment Protocols}
@@ -58,9 +57,9 @@ specifications~\cite{green2017bolt}.
   channel from their respective halves
 \item \textbf{Pay}: $C$ interacts with $I$ and $R$ to send a single micropayment to $R$
 \item \textbf{Refund}: $E$ closes a channel on $L$ and makes a claim on
-  the escrow.
+  the escrowed funds.
 \item \textbf{Refute}: $I$ closes a channel on $L$ and makes a claim on
-  the escrowed.
+  the escrowed funds.
 \item \textbf{Resolve}: $L$ determines the final balance of funds awarded to
   each party.
 \end{itemize}
@@ -87,19 +86,20 @@ micropayment operations.
   \includegraphics[trim={0.5cm, 0.5cm, 0.5cm, 0.5cm}, clip, scale=0.6]{images/party_diagram.png}
   \caption[Payment Roles]{Payment Roles --- Dashed lines represent periodic
     transactions, thin double lines indicate micropayment channels, and thick
-    double lines indicate a nanopayment channel. The gray area around the
+    double lines indicate a nanopayment channel. The dashed outline around the
     intermediary represents a notion of payment anonymity for the end users.}
   \label{fig:parties}
 \end{figure}
-Generic parties $C$ and $R$ can construct a nanopayment channel once both have
+Any two parties $C$ and $R$ can construct a nanopayment channel once both have
 completed $Establish$ with a common intermediary $I$. We define the following
 set of protocols needed to manage nanopayments.
 
 \begin{itemize}
-\item \textbf{Nano-Setup} $C$ and $I$ interact to prepare a nanopayment channel on top
-  of their existing micropayment channel.
-\item \textbf{Nano-Establish} $C$ sends her nanopayment channel information to $R$,
-  who establishes it with $I$ on top of their existing micropayment channel.
+\item \textbf{Nano-Setup} $C$ and $I$ interact to prepare an incomplete half of
+  a nanopayment channel on top of their existing micropayment channel.
+\item \textbf{Nano-Establish} $C$ sends her nanopayment channel information to
+  $R$, who interacts with $I$ to complete the second half of the nanopayment
+  channel on top of their own existing micropayment channel.
 \item \textbf{Nano-Pay} $C$ sends a single nanopayment channel to $R$. This is
   repeatable for up to $n$ operations.
 \item \textbf{Nano-Close-R} $R$ closes his nanopayment channel with $I$.
@@ -111,8 +111,8 @@ We also specify the following modified channel conflict resolution procedures to
 ensure secure closure properties for the nanopayment scheme.
 
 \begin{itemize}
-\item \textbf{Nano-Refund} $E$ closes channel on $L$.
-\item \textbf{Nano-Refute} $I$ closes channel on $L$.
+\item \textbf{Nano-Refund} $E$ closes the channel on $L$.
+\item \textbf{Nano-Refute} $I$ closes the channel on $L$.
 \item \textbf{Nano-Resolve} $L$ makes final determination on both micropayment and
   outstanding nanopayment balances.
 \end{itemize}
@@ -158,12 +158,12 @@ statements:
   \delta$ funds.
 \end{enumerate}
 
-$I$ verifies these messages and blindly supplies $C$ with a new refund token
+$I$ verifies these messages and supplies $C$ with a new signed refund token
 $nrt$ that entitles $C$ to cash out the full balance of the micropayment channel
 along with any nanopayments to $L$. $C$, now protected against misbehavior by
 $I$, agrees to send a revocation token $\sigma_w$, which revokes her right to
-use $w$ or $rt$. $I$, now protected against double spending by $C$, can safely
-inform $C$ that the nanopayment channel has been set up successfully.
+use $w$ or $rt$. $I$ is now protected against double spending by $C$ and can
+safely inform $C$ that the nanopayment channel has been set up successfully.
 
 \textbf{Nano-Establish} At this point, $C$ sends $R$ the same $nT$ token used to
 setup the channel with $I$. $R$ uses the token to initiate her end of the
@@ -192,8 +192,8 @@ zero-knowledge proof of the following statements:
 
 \begin{enumerate}
 \item $w'$ is well-formed from $w$
-\item The balance of $w'$ is equal to the sum of the previous wallet $w$ and
-  $\delta * k$
+\item The balance of $w'$ is equal to the sum of the balance from the previous
+  wallet $w$ and $\delta * k$
 \end{enumerate}
 
 Once verified, $I$ issues a refund token $rt'$ on the new funds. $R$ agrees to
@@ -213,51 +213,10 @@ event of malicious behavior or premature abortion, \emph{Nano-Refund} and
 \emph{Nano-Refute} outlines procedures for $E$ and $I$ to withdraw funds on the
 ledger at any given step with the latest payment information. After a set amount
 of time allowing for the counterparty to reciprocate, the ledger runs
-\emph{Nano-Close} to make a final publicly verifiable determination on the
-final balance.
-
-\subsection{Payment Security and Anonymity}
-Our security model must account for both privacy and payment security. The
-privacy threat model is derived from the local active adversary paradigm
-ubiquitously found in Tor research~\cite{dingledine2004tor}. Nanopayment pays are locally linkable by relays within the circuits, like any cell flowing through a same circuit can be. Each relay handle one nanopayment establish and nanopayment close per circuit, and since the protocol is zero-knowledge, relays cannot link several establishes or closures belonging to the same premium Tor user. We provide formal definitions, a theorem and proofs in the appendix~\ref{sec:proof}.
-
-Our threat model for payment security is similar to those found in prior works
-in blockchain micropayment channels~\cite{poon2016bitcoin}. In such models, the
-user is protected from malicious intermediaries by the ability to prove
-misbehavior to a global ledger. The security of the ledger will be subject to
-the guarantees made by the cryptocurrency interface~\cite{back2014enabling,
-  poon2017plasma}. This is in direct contrast to prior Chaumian e-cash proposals
-that employ the \emph{honest but curious} model for the central bank. Indeed,
-this is the basis for the difference in terminology between prior \emph{central
-  banks} and the moneTor \emph{ledger}.
-
-Informally, we claim the following anonymity guarantees relative to unmodified Tor:
-
-\begin{enumerate}
-\item Additional parties needed to operate the moneTor system (i.e. ledgers and
-  intermediaries) cannot extract any more information about a given client than
-  what would be known by adding a second middle relay to the circuit.
-\item Excluding side channels, circuits do not leak any more information other than the single bit needed to differentiate premium and nonpremium users.
-\end{enumerate}
-
-Observing the cash-out transactions on the ledger does not reveal any information regarding the source of the payment. Moreover, any communication in our tripartite nanopayment protocol are protected by Tor circuits. Hence, relationship between Client to Intermediary, Client to Ledger, Relay to Intermediary and Relay to Ledger are themselves anonymized by Tor circuits. If some party abort, which induce a dispute on the Ledger, the relationship between the client and his relays is protect by the various Tor circuits built to resolve the dispute with the ledger.
-
-Our construction exposes a subtle passive attack by $I$. By examining
-the final number of payments made on each channel in conjunction with the
-globally fixed nanopayment cost, $I$ may potentially link all of $C$'s
-nanopayment channels.\footnote{This attack is best illustrated with a trivial
-  example. Suppose that $I$ facilitates a number of nanopayment channels with
-  the following number of payments, each of which is known to represent one unit
-  of money: $[58, 839, 356, 881, 23, 89, 561]$ Now that $C$ closes her
-  micropayment channel and terminates with exactly 404 units of money. Once the
-  micropayment channel is closed, $I$ must necessary gain knowledge of the final
-  balance of funds and can easily link the first and third nanopayment channels
-  as belonging to the same $C$}. To mitigate this vulnerability, we stipulate
-that $C$ must make a least one micropayment, which has a monetary value hidden
-from $I$, before closing a micropayment channel. We expect that this micropayment should
-contain a random value not greater than the channel escrow maximum value as stated in the Tor consensus and may be made to another account owned by $C$.
-
-%An intermediary however, is able to observe any nanopayment channel establishment and closure linked to a particular micro payment channel. Because each nanopayment channel matches a particular Tor circuit, it can match the opening/closure timing of nano channels to track the activity of an anonymous user through time. User's activity may leak some information about the user itself or the user's behaviour (e.g., the timezone). Considering such side-channels is out-of-scope of this paper, however our moneTor design would make inefficient such attack if users open micro-channels with multiple intermediaries and hide their behaviour with a random use of the set of micro-channels they have opened. This would however increase the amount of escrowed fund needed.
+\emph{Nano-Close} to make a final publicly verifiable determination on the final
+balance. Correct execution of these procedures allow all honest parties to
+retain their funds in some cases and obtain the full balance of the malicious
+party's escrowed funds in others.
 
 \subsection{Tor Integration}
 
@@ -272,3 +231,55 @@ the guard relay are transparent and persistent across the timescale of several
 months. We optimize toward this setup by enabling transparent and direct payment
 channels between the client and guard, considerably reducing the network
 overhead costs.
+
+\subsection{Payment Security and Anonymity}
+Our security model must account for both privacy and payment security. The
+privacy threat model is derived from the local active adversary paradigm
+ubiquitously found in Tor research~\cite{dingledine2004tor}. Like all cells in
+Tor, Nanopayment messages are locally linkable by relays participating in the
+circuit. However, since each circuit is only ever associated with one anonymous
+micropayment channel at any given time, we can guarantee that relays and
+intermediaries cannot link two nanopayment channels with the same user. Formal
+definitions, theorems, and proofs are provided in Appendix~\ref{sec:proof}.
+
+Observing the cash-out transactions on the ledger does not reveal any information regarding the source of the payment. Moreover, any communication in our tripartite nanopayment protocol are protected by Tor circuits. Hence, relationship between Client to Intermediary, Client to Ledger, Relay to Intermediary and Relay to Ledger are themselves anonymized by Tor circuits. If some party abort, which induce a dispute on the Ledger, the relationship between the client and his relays is protect by the various Tor circuits built to resolve the dispute with the ledger.
+
+Informally, we claim the following anonymity guarantees relative to unmodified Tor:
+
+\begin{enumerate}
+\item Additional parties needed to operate the moneTor system (i.e. ledgers and
+  intermediaries) cannot extract any more information about a given client than
+  what would be known by adding a second middle relay to the circuit.
+\item Excluding side channels, circuits do not leak any more information other than the single bit needed to differentiate premium and nonpremium users.
+\end{enumerate}
+
+The unmodified construction exposes a subtle passive attack by $I$. By examining
+the final number of payments made on each channel in conjunction with the
+globally fixed nanopayment cost, $I$ may potentially link all of $C$'s
+nanopayment channels.\footnote{This attack is best illustrated with a trivial
+  example. Suppose that $I$ facilitates a number of nanopayment channels with
+  the following number of payments, each of which is known to represent one unit
+  of money: $[58, 839, 356, 881, 23, 89, 561]$ Now that $C$ closes her
+  micropayment channel and terminates with exactly 404 units of money. Once the
+  micropayment channel is closed, $I$ must necessary gain knowledge of the final
+  balance of funds and can easily link the first and third nanopayment channels
+  as belonging to the same $C$}. To mitigate this vulnerability, we stipulate
+that $C$ must make a least one micropayment, which has a monetary value hidden
+from $I$, before closing a micropayment channel. We expect that this
+micropayment should contain a random value not greater than the channel escrow
+maximum value as stated in the Tor consensus and may be made to another account
+owned by $C$.
+
+Our threat model for payment security is similar to those found in prior works
+in blockchain micropayment channels~\cite{poon2016bitcoin}. In such models, the
+user is protected from malicious intermediaries by the ability to prove
+misbehavior to a global ledger. The security of the ledger will be subject to
+the guarantees made by the cryptocurrency interface~\cite{back2014enabling,
+  poon2017plasma}. This is in direct contrast to prior Chaumian e-cash proposals
+that employ the \emph{honest but curious} model for the central bank in which
+banks have full control over user funds. Indeed, this is the basis for the
+difference in terminology between prior \emph{central banks} and the moneTor
+\emph{ledger}.
+
+
+%An intermediary however, is able to observe any nanopayment channel establishment and closure linked to a particular micro payment channel. Because each nanopayment channel matches a particular Tor circuit, it can match the opening/closure timing of nano channels to track the activity of an anonymous user through time. User's activity may leak some information about the user itself or the user's behaviour (e.g., the timezone). Considering such side-channels is out-of-scope of this paper, however our moneTor design would make inefficient such attack if users open micro-channels with multiple intermediaries and hide their behaviour with a random use of the set of micro-channels they have opened. This would however increase the amount of escrowed fund needed.

@@ -69,26 +69,27 @@ in electricity~\cite{biryukov2015proof}.
 \subsection{Monetary Payments}
 \label{sub:monetary}
 
-This final class of incentivization offers rewards relays with externally
-valuable money. Generally, this tends to be the most economically
-sound approach and the one that moneTor adopts.
+The final class of incentivizations offer rewards with what might be considered
+real money that holds external value. Generally, this tends to be the most
+economically sound approach and the one that moneTor adopts.
 
-\subsubsection{PAR} A pre-Bitcoin design, PAR allow clients to send direct payments to
-relays in a hybrid payment scheme which makes use of inefficient but anonymous
-Chaumian e-cash protocols and efficient but transparent probabilistic
-micropayments. PAR introduces the \emph{honest but curious} bank paradigm in
-which the bank cannot deanonymize clients but is in control of their deposited
-financial assets. As with BRAIDS, PAR suffers from an unscalable centralized
-design~\cite{androulaki2008payment}.
+\subsubsection{PAR} A pre-Bitcoin design, PAR allow clients to send direct
+payments to relays in a hybrid payment scheme which makes use of inefficient but
+anonymous Chaumian e-cash protocols~\cite{chaum1988untraceable} and efficient
+but transparent probabilistic micropayments. PAR introduces the \emph{honest but
+  curious} bank paradigm in which the bank cannot deanonymize clients but is in
+control of their deposited financial assets. As with BRAIDS, PAR suffers from an
+unscalable centralized design~\cite{androulaki2008payment}.
 
-\subsubsection{ORPay, PlusPay, CoinPay} These three protocols, part of the Chaumian
-e-cash tradition of payments schemes, are a series of incremental improvements
-released across two papers~\cite{chen2009xpay, carbunar2012tipping}. In
-each of the designs, the micropayment building block is derived from Payword
-hash chains, as is ours. While the schemes offer practical advantages to many
-aspects of PAR, they are limited by the same \emph{honest but curious} security
-assumptions and their scalability remains capped by the need for all clients to
-interact with the central bank for each payment chain.
+\subsubsection{ORPay, PlusPay, CoinPay} These three protocols, part of the
+Chaumian e-cash tradition of payments schemes, are a series of incremental
+improvements released across two papers~\cite{chen2009xpay,
+  carbunar2012tipping}. In each of the designs, the micropayment building block
+is derived from Payword hash chains~\cite{rivest1996payword}, as is ours. While
+the schemes offer practical advantages to many aspects of PAR, they are limited
+by the same \emph{honest but curious} security assumptions and their scalability
+remains capped by the need for all clients to interact with the central bank for
+each payment chain.
 
 %\subsubsection{Orchid} Orchid is an alternative project to Tor altogether which we
 %include for thoroughness and some broad ideological similarities

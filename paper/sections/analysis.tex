@@ -1,6 +1,5 @@
-To validate our design decisions, we used a two-pronged approach that consists
-of both real-world data collection from live Tor users and simulations on our
-software implementation.
+To validate our design decisions, began with analysis of data collected from
+real-world Tor users.
 
 \subsection{Data Collection}
 \label{subsec:datacollection}
@@ -28,17 +27,17 @@ To ensure ethical experimentation, we first contacted the Tor research safety
 board~\cite{torsafety}. The feedback we received was subsequently used to refactor our data
 collection process.
 
-Data from multiple old and very stable exit relays was collected, stripped of origin metadata, and
-aggregate on a central server. The data collected from each relay is itself an
-aggregation which we perform inside the relay's memory. The data collection is
-probabilistic; only 30\% of the circuits processed by our relays were considered
-in order to maintain plausible deniability on the clients' behalf. The
-aggregation is done inside bins of configurable size for every different traffic
-family we consider. Once we collected enough data from a single family, we dump
-the information on the disk, clear the data, and resume a new session. The final
-information dumped contains an aggregation of 1600 circuits over an unspecified
-time frame that is implicitly determined by the rate of user activity. The
-following data was considered:
+Data from multiple old and very stable exit relays was collected, stripped of
+origin metadata, and aggregate on a central server. The data collected from each
+relay is itself an aggregation which we perform inside the relay's memory. The
+data collection is probabilistic; only 30\% of the circuits processed by our
+relays were considered in order to maintain plausible deniability on the
+clients' behalf. The aggregation is done inside bins of configurable size for
+every different traffic family we consider. Once we collected enough data from a
+single family, we dump the information on the disk, clear the data, and resume a
+new session. The final information obtained contains an aggregation of 1600
+circuits over an unspecified time frame that is implicitly determined by the
+rate of user activity. The following data was considered:
 
 \begin{itemize}
 \item \textbf{Time Profile}: The number of cells in each time interval
@@ -71,7 +70,7 @@ flow on disk.
 
 Our measurements successfully captured several important pieces of information
 for the design and justification of moneTor. For example, one important task is
-determine the number of potential users that could benefit from paid
+to determine the number of potential users that could benefit from paid
 traffic. From Figure~\ref{fig:statsb}, we observe that $\approx 82\%$ of
 circuits carrying only web traffic exchanged less than 1000 cells. While we
 cannot deduce any statements about users, we can speak to the fraction of
@@ -137,30 +136,26 @@ through the following proceeding experiments.
 \label{subsec:methodology}
 
 Experiments were conducted using the Tor shadow simulator
-tool~\cite{jansen2011shadow}.
-%Shadow is a discrete event networking simulator
-%that allows real, unmodified applications to run within a virtual network. Its
-%primary advantage is the ability to emulate native application code. Originally
-%built for Tor, Shadow faithfully mimics the real Tor network conditions
-%including bandwidth and latency while allowing greater scale and network
-%accuracy than alternative test beds.
-We approach the problem at multiple scales ranging between small (50 relays, 200
-clients), medium (100 relays, 400 clients), and large (200 relays, 800
-clients). Experiments ran for 1.5 hours of virtual time allowing for 30 minutes
-of bootstrapping and one hour of simulated steady state traffic. Simulated
-traffic features 16\% \emph{bulk} clients who continuously download 5 MiB files
-and 84\% \emph{web} clients who periodically download 2 MiB
-files,\footnote{While 5 MiB bulk files are a common standard in Tor
-  benchmarking~\cite{portal2018tormetrics}, 2 MiB web files reflect the
-  approximate size of modern web pages~\cite{team2018httparchive}}. In all cases, the number and behavior of
-clients were chosen to satisfy (A) realistic congestion rates measured by a
-transfer timeout percentage around 4\%~\cite{portal2018tormetrics} and a historical
-bulk/web global traffic ratio of about 50\%~\cite{chaabane2010digging,
-  mccoy2008shining}. Importantly, it should be noted that neither the scale of
-our experiments nor the precise configuration of client nodes are intended to be
-precise replicas of real-world conditions. Tor networking is itself a complex
-area of research and we are content to adopt the simplest model that will
-highlight the relatively crude networking needs of our payment scheme.
+tool~\cite{jansen2011shadow}. We ran two sets of experiments at different
+scales. The first set featured 100 relays, 1000 clients, 10 intermediaries, and
+ran for a total of 90 minutes. These experiments were used to gather information
+concerning the system overhead and protocol execution times. The second set
+featured 250 relays, 2500 clients, 25 intermediaries, 80 minutes of total run
+time, and was used to measure the performance benefits conferred to premium
+clients. In both cases, simulated traffic features 16\% \emph{bulk} clients who
+continuously download 5 MiB files and 84\% \emph{web} clients who periodically
+download 2 MiB files,\footnote{While 5 MiB bulk files are a common standard in
+  Tor benchmarking~\cite{portal2018tormetrics}, 2 MiB web files reflect the
+  approximate size of modern web pages~\cite{team2018httparchive}}. The number
+and behavior of clients were chosen to satisfy (A) realistic congestion rates
+measured by a transfer timeout percentage around 4\%~\cite{portal2018tormetrics}
+and a historical bulk/web global traffic ratio of about
+50\%~\cite{chaabane2010digging, mccoy2008shining}. Importantly, it should be
+noted that neither the scale of our experiments nor the precise configuration of
+client nodes are intended to be precise replicas of real-world conditions. Tor
+networking is itself a complex area of research and we are content to adopt the
+simplest model that will highlight the relatively crude networking needs of our
+incentivization scheme.
 
 \subsection{Experiments}
 \label{subsec:experiments}
@@ -329,13 +324,6 @@ likely enough to induce some amount of monetary exchange.
 	\end{subfigure}
 	\caption{Prioritization Benefit}
 \end{figure*}
-
-
-Finally, we note that while we performed similar experiments for $\alpha = 0.75$
-we observed that network performance as a whole suffered dramatically. The crude
-numbers are quantified in Table~\ref{tab:modifier}. At more reasonable
-prioritization levels, however, the performance loss from network imbalance is
-statistically negligible at this scale.
 
 \begin{table}
   \caption[Prioritized Throughput]{\textbf{Prioritized Throughput} Tabulate total

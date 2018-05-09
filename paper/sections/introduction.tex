@@ -9,12 +9,12 @@ highly effective option for privacy-seeking users, it suffers from two
 orthogonal issues that are relevant to this work. The first is the broad family
 of collusion attacks. These threats are relevant in scenarios where an attacker,
 who controls multiple nodes or network vantage points, is probabilistically
-placed at the first and last hop along a single circuit, opening a much easier
-path to client deanonymization~\cite{wright2004predecessor,murdoch2005low}. The
-second problem is overall performance. Although the overlay protocol itself
-generates an inherent overhead in network resources, Tor suffers from additional
-traffic congestion that leads to suboptimal network
-performance~\cite{portal2018tormetrics, alsabah2016performance}.
+placed in key roles along a single circuit, opening a much easier path to client
+deanonymization~\cite{wright2004predecessor,murdoch2005low}. The second problem
+is performance. Although the overlay protocol itself generates an inherent
+overhead in network resources, Tor suffers from additional traffic congestion
+that leads to suboptimal network performance~\cite{portal2018tormetrics,
+  alsabah2016performance}.
 
 One approach to mitigate these problems is to address them separately from a
 networking standpoint. Indeed, a significant portion of recent research in Tor
@@ -33,8 +33,8 @@ trifecta of challenging constraints:
 
 \begin{itemize}
 \item \emph{Anonymity}: The paramount mission of Tor is user privacy. This
-  cannot be compromised or reduced by transparent money transactions trail.
-\item \emph{Payment Security}: Anonymity also prohibits the formation of large
+  cannot be compromised or reduced by transparent money transaction trails.
+\item \emph{Payment Security}: Anonymity prohibits the formation of large
   credit and trust systems. As such, financial transactions cannot transpire
   without strong guarantees of cryptographic security.
 \item \emph{Efficiency}: Tor services millions of concurrent users, all of whom
@@ -49,15 +49,13 @@ so as to warrant further development. We speculate that the lack of a
 breakthrough in this niche area is not a matter of insufficient ingenuity but
 rather one of timing. In recent years, there has been an explosion of academic
 research within the domain of cryptocurrencies. As of this writing, Satoshi
-Nakamoto's Bitcoin whitepaper has already garnered over 3,000 references in
-citing publications~\cite{nakamoto2008bitcoin}.
-\footnote{The recency of this
+Nakamoto's Bitcoin whitepaper has already garnered over 3,200 references in
+citing publications~\cite{nakamoto2008bitcoin}.  \footnote{The recency of this
   development is highlighted by the fact that about half of this work is dated
-  after 2017}.
-This body of work sparked the development of a multitude of new techniques that
-will prove indispensable to our own area of research. Our objective then, is to
-leverage the full extent of these innovations into a practical next-generation
-incentivization strategy for Tor.
+  after 2017}.  This body of work has sparked the development of a multitude of
+new techniques that will prove indispensable to our own area of research. Our
+objective then, is to leverage the full extent of these innovations into a
+practical next-generation incentivization strategy for Tor.
 
 \label{sec:Contributions}
 \textbf{Contributions} The moneTor scheme is a novel full-stack framework for
@@ -75,17 +73,31 @@ Tor incentives. We make the following contributions in this paper:
   and argue for efficacy
 \item Implement a proof-of-concept partial prototype extending the Tor protocol
   in the core daemon, featuring more than 15k lines of code
-\item Conduct network-scale simulations to analyzing the performance impact of
-  our embedded payment and incentivization scheme
+\item Conduct network-scale simulations to analyze the performance impact of the
+  embedded payment and incentivization scheme
 \end{enumerate}
 
-The moneTor design leverages peer-reviewed research for some components and
-novel, fully-specified techniques in all others. In effect, we claim that the
+The moneTor design leverages fully-specified algorithms for some components and
+well-studied existing research for all others. Consequently, we claim that the
 entire technical stack is accounted for and that moneTor can be feasibly
 developed today.
-\paragraph*{Roadmap.} In Section~\ref{sec:background}, we draw on technical preliminaries from two distinct fields: applied Tor research and payment channels. Section~\ref{sec:related_work} presents the related work. In Section~\ref{sec:economic} we describe how we engineer the flow of money in a way that is both economically stable yet still adheres to the core mission of the Tor project. In Section~\ref{sec:payment} we
-describe the technical construction for the moneTor payment scheme at the payment protocol level. We pursue in Section~\ref{sec:network} with the technical construction of moneTor at the network level. In section~\ref{sec:analysis} we  validate our design decisions with real-world data collection from live Tor users.
-In Section~\ref{sec:experimentations}, we validate our technical design via experiments performed on a proof-of-concept software implementation within the native Tor codebase. We finally address concerns for limitations and future work in Section~\ref{sec:limitations_futurework}, point to our code sources in Section~\ref{sec:code} and conclude in Section~\ref{sec:conclusion}.
+
+\paragraph*{Roadmap.} In Section~\ref{sec:background}, we draw on technical
+preliminaries from two distinct fields: applied Tor research and cryptographic
+payment channels. Section~\ref{sec:related_work} presents the related work. Our
+contributions begin formally with Section~\ref{sec:economic}, were we first
+describe a high-level economic model for the flow of money through the
+network. In Section~\ref{sec:payment}, we outline the technical construction of
+our nanopayment scheme at the payment protocol level. Section~\ref{sec:network}
+expands the technical construction of moneTor to cover modifications at the
+network level. In section~\ref{sec:analysis} we justify our design decisions
+with real-world data collection from live Tor users. We continue in
+Section~\ref{sec:experimentations} with a validation of our technical design,
+carried out through experiments performed on a native proof-of-concept
+implementation. Finally, we discuss limitations and future work in
+Section~\ref{sec:limitations_futurework}, reference our source code in
+Section~\ref{sec:code}, and present concluding remarks in
+Section~\ref{sec:conclusion}.
 
 %%% Local Variables:
 %%% mode: latex
