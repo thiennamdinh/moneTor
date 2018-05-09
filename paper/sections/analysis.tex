@@ -58,12 +58,14 @@ flow on disk.
 
 \begin{figure} \centering
   \includegraphics[width=0.4\textwidth]{images/exitmeasurement.png}
-  \caption{Time Profile}
-\label{fig:statsa}
+  \caption{Time Profile --- Average distribution of traffic across a circuits
+    lifetime beginning with the first successful DNS request.}
+  \label{fig:statsa}
 \end{figure}
 \begin{figure} \centering
   \includegraphics[width=0.4\textwidth]{images/totcellcountscdf.png}
-  \caption{Total Counts}
+  \caption{Total Counts --- Distribution of circuit size with respect to the
+    number of cells processed across the circuit lifetime}
 \label{fig:statsb}
 \end{figure}
 
@@ -79,16 +81,15 @@ around $50\%$ of them do not carry data and less than $17\%$ of them carry at
 least one web page. The remaining $18\%$ would appear to be better candidates
 for moneTor.
 
-It is also evident from Figure~\ref{fig:statsa} that most of the traffic
-usually happens within the first few tens of seconds, and that all types of
-traffic we collected seems to follow the same rule. From that result, we believe
-that the reliability of payment is critical within the first few seconds,
-especially from a relay viewpoint. Our payment channels should ideally be
-established and ready before the user begins to use the circuit which is made
-possible by our design decision to integrate into Tor's preemptive circuit build
-strategy. \op{``should ideally'': is it really ideally? My understanding is that this point motivated the creation of payment channels at circuit creation time, that is, before any real traffic happens.}
-
-
+It is also evident from Figure~\ref{fig:statsa} that most of the traffic usually
+happens within the first few tens of seconds, and that all types of traffic we
+collected seems to follow the same rule. From that result, we believe that the
+reliability of payment is critical within the first few seconds, especially from
+a relay viewpoint. Our payment channels should ideally be established and ready
+before the user begins to use the circuit. While this result cannot be
+guaranteed for an unbounded number of circuits, a well-designed preemptive
+circuit build strategy should do a sufficient job of eliminating channel
+setup/establish latency in the average case.
 
 %% In another area of research, it may be interesting to point out that since %
 %$\approx 50\%$ of users do not carry data after their DNS request, some %
@@ -176,7 +177,6 @@ relays. This information is not publicly available. As a result, we performed
 provide two trials with moneTor: one where we assume all nodes are running on
 multi-core hardware and one in which all nodes are running on single-core
 hardware. The results are summarized in Figure~\ref{fig:overhead}.
-\op{Why do you have 2 sets of curves in (a) and (c)? For the two file sizes? This should probably be added.}
 
 \begin{figure*} \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
@@ -192,9 +192,17 @@ hardware. The results are summarized in Figure~\ref{fig:overhead}.
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
 		\caption{Some type of Shadow.log Graph}
-		\label{fig:stats_c}
+		\label{fig:overhead_shadow}
 	\end{subfigure}
-	\caption{Global Overhead}
+	\caption{Global Overhead --- Comparison of results run across a
+          baseline, multicore moneTor, and singlecore moneTor
+          trials. Figure~\ref{fig:overhead_ttlastbyte} shows two sets of
+          download time CDF curves for each file size (2 MiB and 5 MiB),
+          Figure~\ref{fig:overhead_throughput} shoes the 5 minute moving average
+          throughput over time, and Figure~\ref{fig:overhead_shadow} shows
+          (what?). The simulation includes 100 relays, 2 authorities, 1 ledger
+          authority, 10 intermediaries and 1000 Tor clients scaled down from the
+          public consensus file `2018-02-03-00-00-00-consensus'.}
 	\label{fig:overhead}
 \end{figure*}
 
@@ -250,7 +258,11 @@ before the client can complete hers.
 		\caption{Nano-Close}
 \label{fig:payments_close}
 	\end{subfigure}
-	\caption{Protocol Execution Time on a simulation featuring 100 relays, 2 authorities, 1 ledger authority, 10 intermediaries and 1000 Tor clients scaled down from the public consensus file `2018-02-03-00-00-00-consensus'.}
+	\caption{Protocol Execution Time --- Time to finish each protocol step
+          split across interactions with each of the three relay. The simulation
+          includes 100 relays, 2 authorities, 1 ledger authority, 10
+          intermediaries and 1000 Tor clients scaled down from the public
+          consensus file `2018-02-03-00-00-00-consensus'.}
 \label{fig:latencymeasurements}
 \end{figure*}
 
@@ -317,7 +329,12 @@ likely enough to induce some amount of monetary exchange.
 		\caption{Throughput}
 \label{fig:modifier_pr25_all}
 	\end{subfigure}
-	\caption{Prioritization Benefit on simulations featuring 250 relays, 2 authorities, 1 ledger authority, 25 intermediaries and 2500 Tor clients scaled down from the public consensus file `2018-02-03-00-00-00-consensus'. Figures (a), (b) and (c) show results for 50\% of the clients being premium users. Figure (d), (e) and (f) show results for 25\% of the clients being premium users.}
+	\caption{Prioritization Benefit --- Performance differentiation between
+          paid and unpaid users. The first row displays results with 50\%
+          premium users while the second row displays results for 25\% premium
+          users. Simulations feature 250 relays, 2 authorities, 1 ledger
+          authority, 25 intermediaries and 2500 Tor clients scaled down from the
+          public consensus file `2018-02-03-00-00-00-consensus'.}
 \end{figure*}
 
 %\begin{table}
