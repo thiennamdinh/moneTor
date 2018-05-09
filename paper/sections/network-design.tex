@@ -20,7 +20,7 @@ relay cells. Figure~\ref{fig:relay_command_mt_structure} shows the internal stru
 \label{fig:relay_command_mt_structure}
 \end{figure}
 
-All the bytes starting from StreamID (included) are onion-encrypted. RelCMD is set to RELAY\_COMMAND\_MT, PCMD is the payment command which is different for each step of the payment protocol. If some message overflow the payload available length (495 bytes), we queue multiple cells of the same PCMD and buffer them on the receiver side to unpack the whole message.
+All the bytes starting from StreamID (included) are onion encrypted. RelCMD is set to RELAY\_COMMAND\_MT, PCMD is the payment command which is different for each step of the payment protocol. If some message overflow the payload available length (495 bytes), we queue multiple cells of the same PCMD and buffer them on the receiver side to unpack the whole message.
 
 \subsection{Pre-built Channels}
 By default, Tor attempts to pre-build circuits in order to reduce latency once a
