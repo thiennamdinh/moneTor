@@ -177,14 +177,14 @@ hardware. The results are summarized in Figure~\ref{fig:overhead}.
 
 \begin{figure*} \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_throughput.pdf}
-		\caption{Throughput Overhead}
-		\label{fig:overhead_throughput}
-	\end{subfigure}
-	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
 		\caption{Download Time Overhead}
 		\label{fig:overhead_ttlastbyte}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_throughput.pdf}
+		\caption{Throughput Overhead}
+		\label{fig:overhead_throughput}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
@@ -293,17 +293,17 @@ likely enough to induce some amount of monetary exchange.
 
 \begin{figure*} \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr25_web.pdf}
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr50_web.pdf}
 		\caption{Web Download Time}
 \label{fig:modifier_pr25_web}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr25_bulk.pdf}
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr50_bulk.pdf}
 		\caption{Bulk Download Time}
 \label{fig:modifier_pr25_bulk}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr25_bulk.pdf}
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr50_all.pdf}
 		\caption{Throughput}
 \label{fig:modifier_pr25_bulk}
 	\end{subfigure}
@@ -318,7 +318,7 @@ likely enough to induce some amount of monetary exchange.
 \label{fig:modifier_pr25_bulk}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr25_bulk.pdf}
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/modifier_pr25_all.pdf}
 		\caption{Throughput}
 \label{fig:modifier_pr25_bulk}
 	\end{subfigure}
@@ -333,11 +333,11 @@ likely enough to induce some amount of monetary exchange.
     \begin{tabular}{ c c c c}
       & Throughput & Timeouts & Timeout \\
       & (GiB) & (Web) & (Bulk) \\ \hline
-      $\alpha = 0.00$ & 46.6 & 115 & 354 \\ \hline
-      $\alpha = 0.25,\ pr\% = 50$ & 46.2 & 206 & 404 \\
-      $\alpha = 0.25,\ pr\% = 25$ & 46.0 & 231 & 459 \\ \hline
-      $\alpha = 0.50,\ pr\% = 50$ & 46.4 & 233 & 356 \\
-      $\alpha = 0.50,\ pr\% = 25$ & 44.9 & 381 & 513 \\
+      $\alpha = 0.00$ & 427 & 115 & 354 \\ \hline
+      $\alpha = 0.25,\ pr\% = 50$ & 429 & 206 & 404 \\
+      $\alpha = 0.25,\ pr\% = 25$ & 433 & 231 & 459 \\ \hline
+      $\alpha = 0.50,\ pr\% = 50$ & 420 & 233 & 356 \\
+      $\alpha = 0.50,\ pr\% = 25$ & 414 & 381 & 513 \\
     \end{tabular}
   \end{center}
   \label{tab:modifier}
