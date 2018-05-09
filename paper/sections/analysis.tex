@@ -208,14 +208,16 @@ hardware. The results are summarized in Figure~\ref{fig:overhead}.
 \end{figure*}
 
 Our findings indicate that even in the worst case scenario, our system incurs
-statistically negligible overhead at these scales. Note that regarding bandwidth
-overhead, a small fraction ($< 1\%$) of the network traffic is attributable to
-moneTor payment messages, with a payment rate of 1 payment (1 cell) every 1000
-data cells exchanged in either direction. It is also possible to increase the
-payment rate for more fairness if needed, as long as the total overhead induced
-from control cells is kept under an acceptable fraction of the overall data
-bandwidth. This low overhead cost is separate from adverse networking effects of
-prioritization, which has the potential to more drastically affect performance.
+statistically negligible overhead at these scales across all three measures of
+download time, throughput, and memory usage. This in line with the raw bandwidth
+overhead observations in which a small fraction ($< 1\%$) of the network traffic
+is attributable to moneTor payment messages. This is true for all of our trials
+which feature a payment rate of 1 payment (1 cell) every 1000 data cells
+exchanged in either direction. It is also possible to increase the payment rate
+for more fairness if needed, as long as the total overhead induced from control
+cells is kept under an acceptable fraction of the overall data bandwidth. This
+low overhead cost is separate from adverse networking effects of prioritization,
+which has the potential to more drastically affect performance.
 
 %\begin{table}
 %  \caption[Overhead Throughput Total]{\textbf{Overhead Throughput Total} Total
