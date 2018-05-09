@@ -190,8 +190,8 @@ hardware. The results are summarized in Figure~\ref{fig:overhead}.
 		\label{fig:overhead_throughput}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
-		\caption{Some type of Shadow.log Graph}
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_memory.pdf}
+		\caption{Simulation Memory}
 		\label{fig:overhead_shadow}
 	\end{subfigure}
 	\caption{Global Overhead --- Comparison of results run across a
@@ -199,10 +199,11 @@ hardware. The results are summarized in Figure~\ref{fig:overhead}.
           trials. Figure~\ref{fig:overhead_ttlastbyte} shows two sets of
           download time CDF curves for each file size (2 MiB and 5 MiB),
           Figure~\ref{fig:overhead_throughput} shoes the 5 minute moving average
-          throughput over time, and Figure~\ref{fig:overhead_shadow} shows
-          (what?). The simulation includes 100 relays, 2 authorities, 1 ledger
-          authority, 10 intermediaries and 1000 Tor clients scaled down from the
-          public consensus file `2018-02-03-00-00-00-consensus'.}
+          throughput over time, and Figure~\ref{fig:overhead_shadow} shows the
+          memory consumption across the experiment lifetime. The simulation
+          includes 100 relays, 2 authorities, 1 ledger authority, 10
+          intermediaries and 1000 Tor clients scaled down from the public
+          consensus file `2018-02-03-00-00-00-consensus'.}
 	\label{fig:overhead}
 \end{figure*}
 
