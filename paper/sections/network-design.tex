@@ -45,8 +45,8 @@ consumption and CPU consumption. Our choice for a tripartite protocol
 effectively shifts the memory consumption of opened and idle micro
 channels to the Intermediary nodes of the network. A more basic setup
 whereby each Tor client maintains a micropayment channel with each
-relay would incur an $O(n*m)$ \op{what are $n$ and $m$ here?}  cost with
-respect to channel management complexity. By engineering an additional
+relay would incur an $O(n*m)$ cost with
+respect to channel management complexity, with $n$ the number of Tor clients and $m$ the number of relays. By engineering an additional
 intermediary layer, the complexity of moneTor channel connections is
 reduced to $O(n+m)$. In our implementation, Intermediary relays do not
 participate in routing user streams and are tasked only with providing
@@ -91,8 +91,7 @@ Here, a circuit is marked as prioritized by the bit
 $premium \in \{0, 1\}$. The tunable priority benefit
 $\alpha \in [0, 1)$ defines the proportion of the non-premium capacity that we wish
 to transfer to premium clients. By accounting for
-$premium\%s \in [0,100]$, \op{Is this really between 0 and 100 and not
-  between 0 and 1?} the fraction of premium to nonpremium clients, we
+$premium\%s \in [0,1]$, the fraction of premium to nonpremium clients, we
 can keep the total flow capacity constant. Our policy may be
 implemented in one of two ways. First, each node could track the
 $premium\%$ locally and dynamically adjust their own windows. This
