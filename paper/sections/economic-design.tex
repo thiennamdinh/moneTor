@@ -1,7 +1,7 @@
 
 We first summarize the economic layer of the incentivization scheme. At this
 level, we assume the existence of an ideally secure and efficient payment layer
-and proceed to outline the high-level policy design. 
+and proceed to outline the high-level policy design.
 %The challenge here is to
 %engineer the flow of money in a way that is both economically stable yet still
 %adheres to the core mission of the Tor Project.
@@ -38,19 +38,15 @@ essence, taxation provides a tunable control mechanism for The Tor
 Project to shape the topology of the network towards some notion of
 optimal diversity and performance.
 
-A key economic question to address is the issue of price
-determination. While it would be tempting to enlist any number of
-market-based mechanisms to set premium bandwidth prices, any price
-differentiation between clients or relays inevitably leaks additional
-information. \op{Maybe a short explanation would be useful here? Not
-  sure that I have the reason in mind. Is it because someone who is
-  both guard and exit could notice: ``oh, this is they guy who pays
-  this unique xyz price for his premium bandwidth'' just by seeing
-  that person one day from a guard position, and another day from the exit
-  position? } We therefore impose the constraint that all users should
-pay a single uniform price for premium bandwidth at any time $t$. This
-price may be set through a centralized calculation by the authorities
-or a more dynamical consensus vote reached by the network.
+A key economic question to address is the issue of price determination. While it
+would be tempting to enlist some market-based mechanisms to set premium
+bandwidth prices, any price differentiation between clients or relays inevitably
+leaks more information. This leakage becomes more severe with higher granularity
+payment options as adversaries begin to use price to link payment channels and
+circuits. We therefore impose the constraint that all users should pay a single
+uniform price for premium bandwidth at any time $t$. This price may be set
+through a centralized calculation by the authorities or a more dynamical
+consensus vote reached by the network.
 
 \subsection{Incentivized Conformity} In a decentralized network, there is no
 practical way to enforce standard behavior at each local node. We must therefore
@@ -69,9 +65,8 @@ bandwidth measurement authorities must anticipate such modes of deviation from
 the standard behavior to ensure that the risk for a relay to get blacklisted
 from the network is greater than the incremental gains it might attain from
 cheating. These attacks, while manageable, suggest that it would be prudent to
-maintain a simple incentive model until we can better study behavioral deviation
-dynamics in the live network.
-\op{Not sure of what is referred to by this ``simple incentive model''}
+limit the complexity of our economic policies until we can better study
+behavioral deviation dynamics in the live network.
 
 %%% Local Variables:
 %%% mode: latex

@@ -103,25 +103,25 @@ preferred traffic.
 %configured \emph{child chains} that inherit many security properties from the
 %original blochain.
 
-\subsubsection{Payment Channels} The core cryptocurrency component featured in moneTor
-is the tripartite bidirectional micropayment channel. Base layer cryptocurrency
-protocols are typically capped on the order of tens of transactions per
-seconds~\cite{team2018blockchain}. The most actively pursued path toward better
-scalability thus far is work in off-chain payment channel
+\subsubsection{Payment Channels} The core cryptocurrency component featured in
+moneTor is the tripartite bidirectional micropayment channel. Base layer
+cryptocurrency protocols are typically capped on the order of tens of
+transactions per seconds~\cite{team2018blockchain}. The most actively pursued
+path toward better scalability thus far is work in off-chain payment channel
 networks~\cite{poon2016bitcoin}. In this setup, a single ledger transaction is
 used to escrow funds by two parties $A$ and $B$. These parties may then proceed
 to make bidirectional micropayments to each other \emph{without ledger
-  interaction} through the exchange of signed IOU tokens. \op{What does IOU stand for?} By themselves,
-channels are useful for reducing the number of ledger interactions for parties
-with reoccurring interactions. More consequential for the scalability problem is
-the tripartite channel paradigm in which $A$ pays $B$ through some
-\emph{intermediary} party $I$ with which they both maintain active channels. In
-practice, $A$ and $B$ might occupy the roles of a customer and merchant who are
-registered with a well-known financial service provider $I$. $A$, $B$, and $I$
-need only interact with the ledger periodically to deposit and withdraw large sums of
-money, improving the network capacity by multiple orders of
-magnitude. Informally, tripartite channels are secure if the following
-requirements are met.
+  interaction} through the exchange of signed ``I owe you'' tokens. By
+themselves, channels are useful for reducing the number of ledger interactions
+for parties with reoccurring interactions. More consequential for the
+scalability problem is the tripartite channel paradigm in which $A$ pays $B$
+through some \emph{intermediary} party $I$ with which they both maintain active
+channels. In practice, $A$ and $B$ might occupy the roles of a customer and
+merchant who are registered with a well-known financial service provider
+$I$. $A$, $B$, and $I$ need only interact with the ledger periodically to
+deposit and withdraw large sums of money, improving the network capacity by
+multiple orders of magnitude. Informally, tripartite channels are secure if the
+following requirements are met.
 
 \begin{enumerate}
 \item At every step of the protocol, all parties possess proof of execution of
@@ -153,7 +153,7 @@ course, $I$ must still be able to verify that the payment is valid and that its
 internal channel states have been updated accordingly.
 \footnote{This is achieved
   using a combination of zero-knowledge proofs and blind signatures, in the case
-  of Bolt} 
+  of Bolt}
 Several nuances arise concerning end user privacy in certain
 situations, such as during the micropayment setup escrow phase and in the event
 that $I$ maliciously aborts. We do not consider it necessary to discuss these
