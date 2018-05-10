@@ -5,8 +5,7 @@
 
 We deployed during two weeks a data collection system to look for empirical temporal information
 about lifetime and bandwidth consumption in Tor circuits. Our objective was to
-have a deeper understanding of typical Tor usage and wheth
-er such usage can
+have a deeper understanding of typical Tor usage and whether such usage can
 benefit from our channel-based payment system. For example, these measurements
 might capture some notion about the type and magnitude of potential premium
 traffic. We classify the traffic type based on the service connection
@@ -173,10 +172,13 @@ scale experiment consisting of 100\% of premium clients and compare to a
 baseline trial with 0\% premium clients. No actual traffic priority is
 conferred. Since our algorithms makes use of some concurrent crytpographic
 operations, we are concerned with the number of CPU cores available to most
-relays. This information is not publicly available. As a result, we performed
+relays. This information is not publicly available. As a result, we 
 provide two trials with moneTor: one where we assume all nodes are running on
 multi-core hardware and one in which all nodes are running on single-core
 hardware. The results are summarized in Figure~\ref{fig:overhead}.
+
+% Add information about how we simulate singlecore and multicore hardware
+% That gonna overflow 12 pages, though :/
 
 \begin{figure*} \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
