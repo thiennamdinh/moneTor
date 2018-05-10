@@ -102,6 +102,16 @@ the Tor authorities to track the global value for $premium\%$ and
 periodically broadcast static flow control windows to be used by the
 entire network. We adopt the latter approach in this iteration of
 moneTor.
+
+\paragraph*{Interlude.} This concludes the design of the moneTor framework. In
+the proceeding sections, we describe steps taken to iteratively select and
+validate key parameters as well as the scheme as a whole. Such parameters
+include: payment frequency, preemptive channel creation, and prioritization
+amounts ($\alpha$). Throughout this process, the underlying objective is to
+prove that we can confer qualitatively ``significant'' advantage to paid premium
+users while incurring minimal overhead costs with respect to throughput, memory
+usage, and latency within a realistic network environment.
+
 %\footnote{Our
 %  research in traffic prioritization is meant to demonstrate at least some crude
 %  capacity for premium advantage in our models and to suggest potential avenues

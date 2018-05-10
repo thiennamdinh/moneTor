@@ -11,18 +11,17 @@ Bitcoin, it is unnecessary for moneTor to rely on an inefficient decentralized
 consensus mechanism. Since Tor already relies on a centralized set of
 authorities, we simply introduce a new ledger authority role to maintain the
 global payment state on a public tamper-evident
-database~\cite{crosby2009efficient}.
-
-Structuring the ledger to understand blockchain-like semantics allows us to make
-use of recent developments in blockchain interoperability, allowing moneTor
-tokens to be pegged at a 1:1 ratio to a more popular cryptocurrency such as
-Bitcoin or Ethereum~\cite{back2014enabling, poon2017plasma}. The Plasma model in
-particular has many desirable properties. Under this setup, the moneTor ledger
-would act as a ``child chain'' that is coupled to the main Ethereum
-blockchain. This allows the external public blockchain to become the authority
-ledger of last resort in the event that the moneTor ledger goes
-offline. Effectively, honest users will always be able to make some claim to
-their funds so long as the Ethereum network is operational.
+database~\cite{crosby2009efficient}. Structuring the ledger to understand
+blockchain-like semantics allows us to make use of recent developments in
+blockchain interoperability, allowing moneTor tokens to be pegged at a 1:1 ratio
+to a more popular cryptocurrency such as Bitcoin or
+Ethereum~\cite{back2014enabling, poon2017plasma}. The Plasma model in particular
+has many desirable properties. Under this setup, the moneTor ledger would act as
+a ``child chain'' that is coupled to the main Ethereum blockchain. This allows
+the external public blockchain to become the authority ledger of last resort in
+the event that the moneTor ledger goes offline. Effectively, honest users will
+always be able to make some claim to their funds so long as the Ethereum network
+is operational.
 
 Finally, moneTor requires anonymous payment procedures to allow users to make
 private low-frequency transactions. Potential candidates include Cryptonote,
@@ -305,6 +304,5 @@ that employ the \emph{honest but curious} model for the central bank in which
 banks have full control over user funds. Indeed, this is the basis for the
 difference in terminology between prior \emph{central banks} and the moneTor
 \emph{ledger}.
-
 
 %An intermediary however, is able to observe any nanopayment channel establishment and closure linked to a particular micro payment channel. Because each nanopayment channel matches a particular Tor circuit, it can match the opening/closure timing of nano channels to track the activity of an anonymous user through time. User's activity may leak some information about the user itself or the user's behaviour (e.g., the timezone). Considering such side-channels is out-of-scope of this paper, however our moneTor design would make inefficient such attack if users open micro-channels with multiple intermediaries and hide their behaviour with a random use of the set of micro-channels they have opened. This would however increase the amount of escrowed fund needed.

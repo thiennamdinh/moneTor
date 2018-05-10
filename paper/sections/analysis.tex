@@ -1,12 +1,12 @@
-To validate our design decisions, began with analysis of data collected from
-real-world Tor users. \op{Is it only validation? It seems that some of the paramters are also chosen based on these simulations. Also, the discussion seems to be using some parameters which are only made explicit later. For instance, in 7.1.2, the circuits with less than 1000 cells are described as useless for premium. The reson for that seems to only become clear when reading 8.3.1, which indicates that payments are made after 1000 cells. I wonder if, at the end of this section, and before the experimental analysis, it would make sense to add a frame that sums-up what protocol will be analyzed, including the parameters: what channels and circuits are created when, when is payment happening, when are channels closed, \dots}
+%\op{Is it only validation? It seems that some of the paramters are also chosen based on these simulations. Also, the discussion seems to be using some parameters which are only made explicit later. For instance, in 7.1.2, the circuits with less than 1000 cells are described as useless for premium. The reson for that seems to only become clear when reading 8.3.1, which indicates that payments are made after 1000 cells. I wonder if, at the end of this section, and before the experimental analysis, it would make sense to add a frame that sums-up what protocol will be analyzed, including the parameters: what channels and circuits are created when, when is payment happening, when are channels closed, \dots}
 
 \subsection{Data Collection}
 \label{subsec:datacollection}
 
 We deployed during two weeks a data collection system to look for empirical temporal information
 about lifetime and bandwidth consumption in Tor circuits. Our objective was to
-have a deeper understanding of typical Tor usage and whether such usage can
+have a deeper understanding of typical Tor usage and wheth
+er such usage can
 benefit from our channel-based payment system. For example, these measurements
 might capture some notion about the type and magnitude of potential premium
 traffic. We classify the traffic type based on the service connection
@@ -58,14 +58,14 @@ flow on disk.
 
 \begin{figure} \centering
   \includegraphics[width=0.4\textwidth]{images/exitmeasurement.png}
-  \caption{Time Profile --- Average distribution of traffic across a circuits
-    lifetime beginning with the first successful DNS request.}
+  \caption{Time Profile --- Average distribution of traffic across circuit
+    lifetime beginning with the first DNS request.}
   \label{fig:statsa}
 \end{figure}
 \begin{figure} \centering
   \includegraphics[width=0.4\textwidth]{images/totcellcountscdf.png}
   \caption{Total Counts --- Distribution of circuit size with respect to the
-    number of cells processed across the circuit lifetime}
+    total number of cells processed}
 \label{fig:statsb}
 \end{figure}
 
@@ -111,12 +111,12 @@ of the moneTor framework. The modifications, applied to Tor release version
 core C software. We emphasize that the implementation is not a fully functional
 prototype and is optimized solely for our experiments. Most notably, we
 simulated crytographic operations in the nanopayment creation and close
-procedures using cpu delays. These delays were tuned to conservatively reflect
+procedures using CPU delays. These delays were tuned to conservatively reflect
 real measurements in background work~\cite{green2017bolt}.\footnote{Extracted
   values are conservative in the sense that our zero-knowledge proofs require
   proving only a subset of the statements required in each corresponding Bolt
-  zero-knowledge proof.}  In spirit, the partial prototype serves the following
-purposes in our study.
+  zero-knowledge proof.} The partial prototype serves the following purposes in
+our study.
 
 \begin{enumerate}
 \item A proof-of-concept implementation covering nuances not explicitly
@@ -194,9 +194,9 @@ hardware. The results are summarized in Figure~\ref{fig:overhead}.
 		\caption{Simulation Memory}
 		\label{fig:overhead_shadow}
 	\end{subfigure}
-	\caption{Global Overhead --- Comparison of results run across a
-          baseline, multicore moneTor, and singlecore moneTor
-          trials. Figure~\ref{fig:overhead_ttlastbyte} shows two sets of
+	\caption{Global Overhead --- Comparison of overhead in pure multicore
+          and singlecore network
+          conditions. Figure~\ref{fig:overhead_ttlastbyte} shows two sets of
           download time CDF curves for each file size (2 MiB and 5 MiB),
           Figure~\ref{fig:overhead_throughput} shoes the 5 minute moving average
           throughput over time, and Figure~\ref{fig:overhead_shadow} shows the
