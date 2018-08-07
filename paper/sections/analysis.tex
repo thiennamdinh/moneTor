@@ -26,12 +26,13 @@ To ensure ethical experimentation, we first contacted the Tor research safety
 board~\cite{torsafety}. The feedback we received was subsequently used to refactor our data
 collection process.
 
-Data from multiple old and very stable exit relays was collected, stripped of
-origin metadata, and aggregate on a central server. The data collected from each
-relay is itself an aggregation which we perform inside the relay's memory. The
-data collection is probabilistic; only 30\% of the circuits processed by our
-relays were considered in order to maintain plausible deniability on the
-clients' behalf. The aggregation is done inside bins of configurable size for
+Data from five old and very stable exit relays was collected, stripped of
+origin metadata, and aggregated on a central server. The data collected from each
+relay is itself an aggregation which we perform inside the relay's memory. 
+%The data collection is probabilistic; only 30\% of the circuits processed by our
+%relays were considered in order to maintain plausible deniability on the
+%clients' behalf.
+The aggregation is done inside bins of configurable size for
 every different traffic family we consider. Once we collected enough data from a
 single family, we dump the information on the disk, clear the data, and resume a
 new session. The final information obtained contains an aggregation of 1600
@@ -312,7 +313,7 @@ basis. Figures \ref{fig:modifier_pr25_web}, \ref{fig:modifier_pr25_bulk}, and
 \ref{fig:modifier_pr25_all} shows that this is indeed the result. Users across
 the spectrum of web speed enjoyed $\approx 100\%$ improvements in download
 speeds relative to nonpremium users --- likely enough to induce some amount of
-monetary exchange.
+monetary exchange. 
 
 \begin{figure*} \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering

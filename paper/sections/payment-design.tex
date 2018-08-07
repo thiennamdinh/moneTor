@@ -1,33 +1,38 @@
 Where we previously assumed the existence of an ideal payment procedure, we now
 describe the concrete technical construction for the moneTor payment scheme.
 
-\subsection{Base Layer}
+\subsection{Ledger}
 
-The moneTor framework first requires a base layer payment protocol for users to
-anonymously and securely manage their funds. We follow the Bitcoin paradigm in
+%The moneTor framework first requires a base layer payment protocol for users to
+%anonymously and securely manage their funds. 
+In our payment design, we follow the Bitcoin paradigm in
 which all users maintain full and exclusive control of their monetary wealth
-through use of public key cryptography~\cite{nakamoto2008bitcoin}. Unlike
+through use of public key cryptography~\cite{nakamoto2008bitcoin}. However, unlike
 Bitcoin, it is unnecessary for moneTor to rely on an inefficient decentralized
 consensus mechanism. Since Tor already relies on a centralized set of
 authorities, we simply introduce a new ledger authority role to maintain the
 global payment state on a public tamper-evident
-database~\cite{crosby2009efficient}. Structuring the ledger to understand
-blockchain-like semantics allows us to make use of recent developments in
-blockchain interoperability, allowing moneTor tokens to be pegged at a 1:1 ratio
-to a more popular cryptocurrency such as Bitcoin or
-Ethereum~\cite{back2014enabling, poon2017plasma}. The Plasma model in particular
-has many desirable properties. Under this setup, the moneTor ledger would act as
-a ``child chain'' that is coupled to the main Ethereum blockchain. This allows
-the external public blockchain to become the authority ledger of last resort in
-the event that the moneTor ledger goes offline. Effectively, honest users will
-always be able to make some claim to their funds so long as the Ethereum network
-is operational.
+database~\cite{crosby2009efficient}. For availability concerns, nothing prevents this ledger to be distributed across several authorities.
 
-Finally, moneTor requires anonymous payment procedures to allow users to make
-private low-frequency transactions. Potential candidates include Cryptonote,
-which makes use of stealth addresses and ring
-signatures~\cite{van2013cryptonote}, and Zerocash, which employs more expensive
-but more theoretically secure zero-knowledge proofs~\cite{sasson2014zerocash}.
+%%% 
+%  This part would either need more information or be removed to avoid reviewers to feel confused 
+%%%
+%Structuring the ledger to understand
+%blockchain-like semantics allows us to make use of recent developments in
+%blockchain interoperability, allowing moneTor tokens to be pegged at a 1:1 ratio
+%to a more popular cryptocurrency such as Bitcoin or
+%Ethereum~\cite{back2014enabling, poon2017plasma}. The Plasma model in particular
+%has many desirable properties. Under this setup, the moneTor ledger would act as
+%a ``child chain'' that is coupled to the main Ethereum blockchain. This allows
+%the external public blockchain to become the authority ledger of last resort in
+%the event that the moneTor ledger goes offline. Effectively, honest users will
+%always be able to make some claim to their funds so long as the Ethereum network
+%is operational.
+%Finally, moneTor requires anonymous payment procedures to allow users to make
+%private low-frequency transactions. Potential candidates include Cryptonote,
+%which makes use of stealth addresses and ring
+%signatures~\cite{van2013cryptonote}, and Zerocash, which employs more expensive
+%but more theoretically secure zero-knowledge proofs~\cite{sasson2014zerocash}.
 
 \subsection{Relay Payment Protocols}
 
@@ -39,7 +44,7 @@ assume that one client is paying one relay through a single channel and that
 communication lines will be appropriately anonymized by the Tor networking
 protocol.
 
-\textbf{Bolt} The moneTor payment scheme is a superset of Bolt's three-party
+\textbf{Bolt} The moneTor payment scheme is an extension of Bolt's three-party
 bidirectional micropayment channels. As such, we adopt its nomenclature where
 possible but adapt it to our concepts of ledgers, clients, and relays. The
 following is brief outline of the prerequisite micropayment channel procedures
@@ -140,7 +145,7 @@ payment protocol. A more formal algorithmic treatment of the steps are provided
 in Appendix~\ref{chap:algorithms}.
 
 \textbf{Nano-Setup} At the start of this protocol, $C$ has access to a
-micropayment wallet $w$ that enables her to operate her micropayment channel
+micropayment wallet $w$ obtained from Bolt's \textbf{Establish} that enables her to operate her micropayment channel
 with $I$ as well as a refund token $rt$ that entitles her to claim her current
 funds on $L$ should $I$ misbehave or go offline. To construct a nanopayment
 channel, $C$ first generates an array of values $hc$ of length $n$ where
@@ -190,7 +195,7 @@ $R$ first sends to $I$ a commitment to a new micropayment wallet $w'$ and a
 zero-knowledge proof of the following statements:
 
 \begin{enumerate}
-\item $w'$ is well-formed from $w$
+\item $w'$ is well-formed from $w$ ($w$ was either created by Bolt's establish phase or by a previous moneTor Nano-Close)
 \item The balance of $w'$ is equal to the sum of the balance from the previous
   wallet $w$ and $\delta * k$
 \end{enumerate}
@@ -205,14 +210,14 @@ to complete the exact same close protocol. All parties are now reverted to the
 original state they occupied prior to \emph{Nano-Setup} save for a securely updated
 balance.
 
-\textbf{Nano-Refund, Nano-Refute, Nano-Close} Honest parties will not typically
+\textbf{Nano-Refund, Nano-Refute, Nano-Resolve} Honest parties will not typically
 close active nanopayment channels on the ledger, opting instead to run Bolt
 micropayment closure procedures when they wish to cash out. However, in the
 event of malicious behavior or premature abortion, \emph{Nano-Refund} and
 \emph{Nano-Refute} outlines procedures for $E$ and $I$ to withdraw funds on the
 ledger at any given step with the latest payment information. After a set amount
 of time allowing for the counterparty to reciprocate, the ledger runs
-\emph{Nano-Close} to make a final publicly verifiable determination on the final
+\emph{Nano-Resolve} to make a final publicly verifiable determination on the final
 balance. Correct execution of these procedures allow all honest parties to
 retain their funds in some cases and obtain the full balance of the malicious
 party's escrowed funds in others.
@@ -222,7 +227,7 @@ party's escrowed funds in others.
 Up to this point, we have described payments that occur between a single client
 and a single relay. In practice, it is typical for each client to maintain a
 handful of concurrently active circuits,\footnote{For instance, the popular Tor
-  Browser user application dedicates a separate circuit for each SOCKS request.}  each of
+  Browser user application typically do not share circuits with streams targeting a different destination address unless those streams come from the same SOCKS connection}  each of
 which requires three streams of payments to the guard, middle, and exit
 relays. These channels must be actively managed to optimize computational
 overhead as well as money flow. Furthermore, connections between the client and
@@ -273,7 +278,7 @@ Informally, we claim the following anonymity guarantees relative to unmodified T
 \begin{enumerate}
 \item Additional parties needed to operate the moneTor system (i.e. ledgers and
   intermediaries) cannot extract any more information about a given client than
-  what would be known by adding a second middle relay to the circuit.
+  any middle relay.
 \item Excluding side channels, circuits do not leak any more information than the single bit needed to differentiate premium and nonpremium users.
 \end{enumerate}
 
