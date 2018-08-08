@@ -24,11 +24,11 @@ methodology allows us to reason based on application specific traffic.
 
 To ensure ethical experimentation, we first contacted the Tor research safety
 board~\cite{torsafety}. The feedback we received was subsequently used to refactor our data
-collection process.
+collection process (e.g., no metadata from any specific flow or circuit should be written on disk).
 
-Data from five old and very stable exit relays was collected, stripped of
+Data from five old and very stable exit relays with a total bandwidth of 50 MiB/s was collected, stripped of
 origin metadata, and aggregated on a central server. The data collected from each
-relay is itself an aggregation which we perform inside the relay's memory. 
+relay is itself an aggregation which we perform inside the relay's memory. The aggregation is done only for ``active circuits'' from the exit relay perspective. We consider a circuit active when it has received a connection request to an IP address on the internet.
 %The data collection is probabilistic; only 30\% of the circuits processed by our
 %relays were considered in order to maintain plausible deniability on the
 %clients' behalf.
@@ -81,8 +81,8 @@ around $50\%$ of them do not carry data and less than $17\%$ of them carry at
 least one web page. The remaining $18\%$ would appear to be better candidates
 for moneTor.
 
-It is also evident from Figure~\ref{fig:statsa} that most of the traffic usually
-happens within the first few tens of seconds, and that all types of traffic we
+It is also evident from Figure~\ref{fig:statsa} that most of the traffic is usually
+carried within the first few tens of seconds, and that all types of traffic we
 collected seems to follow the same rule. From that result, we believe that the
 reliability of payment is critical within the first few seconds, especially from
 a relay viewpoint. Our payment channels should ideally be established and ready
@@ -100,7 +100,7 @@ setup/establish latency in the average case.
 \label{sec:experimentations}
 
 Having established the empirical context for a channel payment scheme, we
-validated our technical design via experiments performed on a proof-of-concept
+validated our technical design via experiments performed on a prototype
 software implementation within the native Tor codebase.
 
 \subsection{Prototype}
@@ -119,7 +119,7 @@ real measurements in background work~\cite{green2017bolt}.\footnote{Extracted
 our study.
 
 \begin{enumerate}
-\item A proof-of-concept implementation covering nuances not explicitly
+\item An implementation covering nuances not explicitly
   covered in the protocol designs. In effect, we would like to show that there
   are no unexpected and prohibitive practical conflicts with the existing Tor
   design.
@@ -218,9 +218,13 @@ is attributable to moneTor payment messages. This is true for all of our trials
 which feature a payment rate of 1 payment (1 cell) every 1000 data cells
 exchanged in either direction. It is also possible to increase the payment rate
 for more fairness if needed, as long as the total overhead induced from control
-cells is kept under an acceptable fraction of the overall data bandwidth. This
-low overhead cost is separate from adverse networking effects of prioritization,
-which has the potential to more drastically affect performance.
+cells is kept under an acceptable fraction of the overall data bandwidth. 
+%%%
+% Reading this sentence appears to be unclear to me
+%%%
+%This
+%low overhead cost is separate from adverse networking effects of prioritization,
+%which has the potential to more drastically affect performance.
 
 %\begin{table}
 %  \caption[Overhead Throughput Total]{\textbf{Overhead Throughput Total} Total

@@ -62,19 +62,23 @@ practical next-generation incentivization strategy for Tor.
 Tor incentives. We make the following contributions in this paper:
 
 \begin{enumerate}
-\item Design an economic model to favor network diversity, offering enough
-  market control such that the Tor project can decide which notion of diversity
-  to promote
+\item Discuss economic considerations for the Tor network to favor network
+  diversity and to help supporting Tor as a public good
+  %market control such that the Tor project can decide which notion of diversity
+  %to promote
 \item Introduce new highly-efficient nanopayment protocols which may be of some
   independent interest for other high-frequency payment applications
-\item Specify an integration strategy to integrate payments and user incentives
-  into the existing Tor architecture and networking layer
+\item Detail an integration strategy to add payment
+  into the existing Tor architecture and networking layer while being compatible
+  with Tor's anonymity properties and efficiency
 \item Collect privacy-preserving client usage data to justify design parameters
   and argue for efficacy
-\item Implement a proof-of-concept partial prototype extending the Tor protocol
-  in the core daemon, featuring more than 15k lines of code
+\item Implement a prototype extending the Tor protocol
+  in the core C software, featuring more than 15k lines of code
 \item Conduct network-scale simulations to analyze the performance impact of the
   embedded payment and incentivization scheme
+\item Identify an efficient method of throttling to give priority users an
+  advantage
 \end{enumerate}
 
 The moneTor design leverages fully-specified algorithms for some components and
@@ -85,7 +89,7 @@ developed today.
 \paragraph*{Roadmap.} In Section~\ref{sec:background}, we draw on technical
 preliminaries from two distinct fields: applied Tor research and cryptographic
 payment channels. Section~\ref{sec:related_work} presents the related work. Our
-contributions begin formally with Section~\ref{sec:economic}, were we first
+contributions begin formally with Section~\ref{sec:economic}, where we first
 describe a high-level economic model for the flow of money through the
 network. In Section~\ref{sec:payment}, we outline the technical construction of
 our nanopayment scheme at the payment protocol level. Section~\ref{sec:network}
