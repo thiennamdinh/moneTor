@@ -4,7 +4,7 @@ describe the concrete technical construction for the moneTor payment scheme.
 \subsection{Ledger}
 
 %The moneTor framework first requires a base layer payment protocol for users to
-%anonymously and securely manage their funds. 
+%anonymously and securely manage their funds.
 In our payment design, we follow the Bitcoin paradigm in
 which all users maintain full and exclusive control of their monetary wealth
 through use of public key cryptography~\cite{nakamoto2008bitcoin}. However, unlike
@@ -12,10 +12,11 @@ Bitcoin, it is unnecessary for moneTor to rely on an inefficient decentralized
 consensus mechanism. Since Tor already relies on a centralized set of
 authorities, we simply introduce a new ledger authority role to maintain the
 global payment state on a public tamper-evident
-database~\cite{crosby2009efficient}. For availability concerns, nothing prevents this ledger to be distributed across several authorities.
+database~\cite{crosby2009efficient}. To maximize availability,
+this ledger may also be distributed across several authorities.
 
-%%% 
-%  This part would either need more information or be removed to avoid reviewers to feel confused 
+%%%
+%  This part would either need more information or be removed to avoid reviewers to feel confused
 %%%
 %Structuring the ledger to understand
 %blockchain-like semantics allows us to make use of recent developments in
@@ -227,7 +228,7 @@ party's escrowed funds in others.
 Up to this point, we have described payments that occur between a single client
 and a single relay. In practice, it is typical for each client to maintain a
 handful of concurrently active circuits,\footnote{For instance, the popular Tor
-  Browser user application typically do not share circuits with streams targeting a different destination address unless those streams come from the same SOCKS connection}  each of
+  Browser user application typically does not share circuits with streams targeting a different destination address unless those streams come from the same SOCKS connection}  each of
 which requires three streams of payments to the guard, middle, and exit
 relays. These channels must be actively managed to optimize computational
 overhead as well as money flow. Furthermore, connections between the client and
