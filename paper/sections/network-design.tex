@@ -60,7 +60,7 @@ strong nodes to handle all of channel management needs of the network.
 %  parties? Or is this obvious?}
 %FR: looks obvious to me from the phrase below
 Interactions between parties are realised within Tor circuits to allow
-multiplexing of circuits over the same TCP connection. As a result, the
+multiplexing of circuits over the same TCP connection and protect the identity of the client and its chosen circuit against identification by the ledger or the intermediary\footnote{We assumed no side-channels exploitation in this work but we discuss timing attacks in further works Section.}. As a result, the
 intermediary and the ledger must have a number of available sockets higher than
 the number of relays in the network in the worst case. Since this limit is in
 line with Tor's current assumption, our design inherits the same socket
@@ -72,9 +72,9 @@ consumption scalability of the greater Tor network.
 \label{subsub:prioritized}
 
 The final component of our network-oriented design addresses the need to deliver
-prioritized bandwidth given an explicit signaling of premium or nonpremium
+prioritized bandwidth given an explicit signalling of premium or nonpremium
 traffic. Our objective is to provide a tunable range of prioritization while
-incurring as little cost as possible to average global performance. Traffic
+incurring as little cost as possible to average global performance. In our design, we enforce this range to be modified network-wide by the directory authorities to avoid partitioning of the anonymity set. Traffic
 scheduling is perhaps the most intuitive mechanism with which to implement
 prioritization. However, we found in our investigation that practical
 modification of the Tor scheduling infrastructure is nontrivial. A more detailed

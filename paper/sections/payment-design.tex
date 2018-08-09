@@ -93,7 +93,7 @@ micropayment operations. The idea here is to relax payments unlinkability offere
   \caption[Payment Roles]{Payment Roles --- Dashed lines represent periodic
     transactions, thin double lines indicate micropayment channels, and thick
     double lines indicate a nanopayment channel. The dashed outline around the
-    intermediary represents a notion of payment anonymity for the end users.}
+    intermediary represents a notion of payment anonymity for the end users. Connections to the ledger and to the intermediary are protected by an internal Tor circuit.}
   \label{fig:parties}
 \end{figure}
 Any two parties $C$ and $R$ can construct a nanopayment channel once both have
@@ -166,8 +166,12 @@ statements:
 \end{enumerate}
 
 $I$ verifies these messages and supplies $C$ with a new signed refund token
-$nrt$ that entitles $C$ to cash out the full balance of the micropayment channel
-along with any nanopayments to $L$. $C$, now protected against misbehavior by
+$nrt$ that entitles $C$ to cash out the full balance of the micropayment channel.
+%%%
+%wut? Any nanopayments to L?
+%%%
+%along with any nanopayments to $L$. 
+$C$, now protected against misbehavior by
 $I$, agrees to send a revocation token $\sigma_w$, which revokes her right to
 use $w$ or $rt$. $I$ is now protected against double spending by $C$ and can
 safely inform $C$ that the nanopayment channel has been set up successfully.
@@ -188,7 +192,7 @@ then claim an equivalent value of funds from $C$. As a result, the
 scheme satisfies a correct-by-construction property of \emph{atomicity}
 whereby both legs of the protocol are finalized at the same time.
 
-\textbf{Nano-Close} After some number of payments $k < n$ has transpired, $C$ and $R$ will both wish
+\textbf{Nano-Close} After some number of payments $k < n$ has transpired or when $C$ desires to close the Tor circuit, $C$ and $R$ will both wish
 to close their nanopayment channels through $I$. In this process, the $R$-$I$ leg
 must be closed before the $C$-$I$ leg. This is due to the unidirectional nature
 of nanopayment channels. Since payments are flowing form $C$ to $R$, $I$ must
@@ -284,6 +288,7 @@ Informally, we claim the following anonymity guarantees relative to unmodified T
   intermediaries) cannot extract any more information about a given client than
   any middle relay.
 \item Excluding side channels, circuits do not leak any more information than the single bit needed to differentiate premium and nonpremium users.
+\item There is no more anonymity set partitioning than a partition of premium Tor users and non-premium Tor users.
 \end{enumerate}
 
 The unmodified construction exposes a subtle passive attack by $I$. By examining
