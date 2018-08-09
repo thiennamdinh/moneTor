@@ -86,7 +86,8 @@ fixed value $\delta$, established at the start of the channel. The payments
 themselves are \emph{locally transparent} in the sense that each nanopayment in
 the same channel is trivially linked to each other. However, the nanopayment
 channels themselves are unlinkable to other nanopayment channels and
-micropayment operations.
+micropayment operations. The idea here is to relax payments unlinkability offered by Bolt because we do not need each payment to be unlinkable in Tor: we do not care about unlinkability of incremental payments inside a same circuit to a same relay but we do care about unlikability of payments to different circuits and to different relays.
+
 \begin{figure}[h] \centering
   \includegraphics[trim={0.5cm, 0.5cm, 0.5cm, 0.5cm}, clip, scale=0.6]{images/party_diagram.png}
   \caption[Payment Roles]{Payment Roles --- Dashed lines represent periodic
@@ -142,8 +143,9 @@ the end of the channel life cycle.
 
 \subsection{Nanopayment Protocols}
 In this section, we provide a summarized intuition for the basic steps in the
-payment protocol. A more formal algorithmic treatment of the steps are provided
-in Appendix~\ref{chap:algorithms}.
+payment protocol. A more formal treatment of the steps are provided
+in Appendix~\ref{chap:algorithms} with algorithmic details. Security considerations are detailed in following Section~\ref{subsec:paysecurity} and formally described in Appendix~\ref{sec:proof}.
+
 
 \textbf{Nano-Setup} At the start of this protocol, $C$ has access to a
 micropayment wallet $w$ obtained from Bolt's \textbf{Establish} that enables her to operate her micropayment channel
@@ -256,6 +258,7 @@ authority. Note that this does \emph{not} mean that $L$ can arbitrarily control
 money as this process is well-defined in setup of the network protocol.
 
 \subsection{Payment Security and Anonymity}
+\label{subsec:paysecurity}
 Our security model must account for both privacy and payment security. The
 privacy threat model is derived from the local active adversary paradigm
 ubiquitously found in Tor research~\cite{dingledine2004tor}. Like all cells in
