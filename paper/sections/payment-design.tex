@@ -86,7 +86,15 @@ fixed value $\delta$, established at the start of the channel. The payments
 themselves are \emph{locally transparent} in the sense that each nanopayment in
 the same channel is trivially linked to each other. However, the nanopayment
 channels themselves are unlinkable to other nanopayment channels and
-micropayment operations. The idea here is to relax payments unlinkability offered by Bolt because we do not need each payment to be unlinkable in Tor: we do not care about unlinkability of incremental payments inside a same circuit to a same relay but we do care about unlikability of payments to different circuits and to different relays.
+micropayment operations. It is by design that this channel anonymity model fits
+well with Tor's existing circuit framework in which messages within circuits are
+linkable with eachother but the circuits themselves are not. In this sense, the
+overarching motivation of our work is to relax the costly anonymity guarantees
+provided by Bolt toward the design of a new set of protocols that have been
+optimized for Tor. The new protocols are briefly described in this section.
+% to FR: I thought the sentences you added were a bit confusing... here's an
+% attempt to improve them but let me know whether it fits what you were going
+% for
 
 \begin{figure}[h] \centering
   \includegraphics[trim={0.5cm, 0.5cm, 0.5cm, 0.5cm}, clip, scale=0.6]{images/party_diagram.png}
@@ -143,8 +151,10 @@ the end of the channel life cycle.
 
 \subsection{Nanopayment Protocols}
 In this section, we provide a summarized intuition for the basic steps in the
-payment protocol. A more formal treatment of the steps are provided
-in Appendix~\ref{chap:algorithms} with algorithmic details. Security considerations are detailed in following Section~\ref{subsec:paysecurity} and formally described in Appendix~\ref{sec:proof}.
+payment protocol. A more formal treatment of the steps are provided in
+Appendix~\ref{chap:algorithms} with algorithmic details. Security considerations
+are detailed next in Section~\ref{subsec:paysecurity} and formally
+described in Appendix~\ref{sec:proof}.
 
 
 \textbf{Nano-Setup} At the start of this protocol, $C$ has access to a
@@ -169,8 +179,11 @@ $I$ verifies these messages and supplies $C$ with a new signed refund token
 $nrt$ that entitles $C$ to cash out the full balance of the micropayment channel.
 %%%
 %wut? Any nanopayments to L?
+% This would be analagous to transation fees in Bitcoin as way to compensate
+% ledges strictly for their computational consts... I guess we don't have
+% to explicitly mention this if you don't want.
 %%%
-%along with any nanopayments to $L$. 
+%along with any nanopayments to $L$.
 $C$, now protected against misbehavior by
 $I$, agrees to send a revocation token $\sigma_w$, which revokes her right to
 use $w$ or $rt$. $I$ is now protected against double spending by $C$ and can
@@ -192,11 +205,12 @@ then claim an equivalent value of funds from $C$. As a result, the
 scheme satisfies a correct-by-construction property of \emph{atomicity}
 whereby both legs of the protocol are finalized at the same time.
 
-\textbf{Nano-Close} After some number of payments $k < n$ has transpired or when $C$ desires to close the Tor circuit, $C$ and $R$ will both wish
-to close their nanopayment channels through $I$. In this process, the $R$-$I$ leg
-must be closed before the $C$-$I$ leg. This is due to the unidirectional nature
-of nanopayment channels. Since payments are flowing form $C$ to $R$, $I$ must
-first determine its debt to $R$ in order to know how much it can claim from $C$.
+\textbf{Nano-Close} After some number of payments $k < n$ has transpired and $C$
+wants to close the Tor circuit, both $C$ and $R$ will generally prefer to close
+their nanopayment channels through $I$. In this process, the $R$-$I$ leg must be
+closed before the $C$-$I$ leg. This is due to the unidirectional nature of
+nanopayment channels. Since payments are flowing form $C$ to $R$, $I$ must first
+determine its debt to $R$ in order to know how much it can claim from $C$.
 
 $R$ first sends to $I$ a commitment to a new micropayment wallet $w'$ and a
 zero-knowledge proof of the following statements:
@@ -287,8 +301,13 @@ Informally, we claim the following anonymity guarantees relative to unmodified T
 \item Additional parties needed to operate the moneTor system (i.e. ledgers and
   intermediaries) cannot extract any more information about a given client than
   any middle relay.
-\item Excluding side channels, circuits do not leak any more information than the single bit needed to differentiate premium and nonpremium users.
-\item There is no more anonymity set partitioning than a partition of premium Tor users and non-premium Tor users.
+\item Excluding side channels, circuits do not leak any more information than
+  the single bit needed to differentiate premium and nonpremium users.
+%\item There is no more anonymity set partitioning than a partition of premium Tor users and non-premium Tor users.
+  % ^^ this seems partially redundant with point 2, no? 2 implicitly says that (A) the anonymity set
+  % is partiioned and (B) we know that people in the premium group somehow care
+  % more about their traffic speed. Maybe we can break it up along those lines
+  % if you want to be more explict
 \end{enumerate}
 
 The unmodified construction exposes a subtle passive attack by $I$. By examining
