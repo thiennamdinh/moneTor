@@ -67,12 +67,11 @@ Tor incentives. We make the following contributions in this paper:
   %to promote
 \item Introduce new highly-efficient nanopayment protocols which overcome the trifecta of constraints \emph{Anonymity}, \emph{Payment Security} and \emph{Efficiency}. Moreover, these protocols may be of some
   independent interest for other high-frequency payment applications
-\item Detail an integration strategy to add payment
-  into the existing Tor architecture and networking layer while being compatible
-  with Tor's anonymity properties and efficiency
+\item Detail our integration strategy to add a payment layer
+  which extends the existing Tor architecture but does not modifies it
 \item Collect privacy-preserving client usage data to justify design parameters
   and argue for efficacy
-\item Implement a prototype extending the Tor protocol
+\item Implement a prototype of our nanopayment protocols extending the Tor protocol
   in the core C software, featuring more than 15k lines of code
 \item Conduct network-scale simulations to analyze the performance impact of the
   embedded payment and incentivization scheme
@@ -81,9 +80,8 @@ Tor incentives. We make the following contributions in this paper:
 \end{enumerate}
 
 The moneTor design leverages fully-specified algorithms for some components and
-well-studied existing research for all others. Consequently, we claim that the
-entire technical stack is accounted for and that moneTor can be feasibly
-developed today.
+well-studied existing research for all others. On a technical level, we believe that moneTor could be feasibly
+developed today within a deployed system such as the Tor network.
 
 \paragraph*{Roadmap.} In Section~\ref{sec:background}, we draw on technical
 preliminaries from two distinct fields: applied Tor research and cryptographic
