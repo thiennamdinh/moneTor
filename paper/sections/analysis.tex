@@ -309,15 +309,17 @@ the evenly split premium and nonpremium performance ``averages out'' to
 approximately mirror the baseline experiment, indicating little loss in overall
 network performance, and confirming our overhead experiment.
 
-A more realistic model should most likely assume a smaller minority of premium
-users. We therefore conducted a separate set of experiments to study an
-environment comprised of only 25\% premium users who, according to
-Equation~\ref{eq:flow}, should expect an even greater benefit on a per-user
+Note, one difference of our priority mechanism over a scheduling approach is that the
+latency is unchanged: there is no reason for the first byte to come faster for premium users since our priority mechanism only change the size of the control flow window (i.e., how much cells the circuit is allowed to carry at any time, see again Section~\ref{subsub:prioritized} for details). Such approach would keep the network responsive for nonpremium and low-bandwidth usage, while still offering an upward benefit for premium users when loading web pages, as shown in Figure~\ref{fig:modifier}.
+
+Our first analysis on Figures \ref{fig:modifier_pr50_web}, \ref{fig:modifier_pr50_bulk}, and
+\ref{fig:modifier_pr50_all} assumes 50\% of premium users. Reducing that fraction to 25\%, which we assume to be a more realistic model should most likely, according to 
+Equation~\ref{eq:flow}, expect an even greater benefit on a per-user
 basis. Figures \ref{fig:modifier_pr25_web}, \ref{fig:modifier_pr25_bulk}, and
 \ref{fig:modifier_pr25_all} shows that this is indeed the result. Users across
 the spectrum of web speed enjoyed $\approx 100\%$ improvements in download
 speeds relative to nonpremium users --- likely enough to induce some amount of
-monetary exchange. 
+monetary exchange. Note that the parameters from Equation~\ref{eq:flow} can be tuned (enforced network-wide) to offer more or less benefit for premium users on the willingness of the directory authorities.
 
 
 \begin{figure*} \centering
