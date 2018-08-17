@@ -111,7 +111,8 @@ of the moneTor framework. The modifications, applied to Tor release version
 core C software. We emphasize that the implementation is not a fully functional
 prototype and is optimized solely for our experiments. Most notably, we
 simulated crytographic operations such as zpk proofs and commitments in the nanopayment creation and close
-procedures using CPU delays. These delays were tuned to conservatively reflect
+procedures using CPU delays. Furthermore, those delays are implemented in account for Shadow CPU delay design: if the Tor process is considered to run over a multicore computer, the costly operations are simulated over a dedicated core. If the Tor process is considered to run over a singlecore computer, then the costly operations are simulated by an appropriate number of dummy AES encryptions in a thread concurrently to the Tor process main thread. Those AES encryptions are captured by Shadow and replaced by CPU delays on the virtual CPU, affecting Tor's main thread.
+These delays were tuned to conservatively reflect
 real measurements in background work~\cite{green2017bolt}.\footnote{Extracted
   values are conservative in the sense that our zero-knowledge proofs require
   proving only a subset of the statements required in each corresponding Bolt
@@ -310,7 +311,7 @@ approximately mirror the baseline experiment, indicating little loss in overall
 network performance, and confirming our overhead experiment.
 
 Note, one difference of our priority mechanism over a scheduling approach is that the
-latency is unchanged: there is no reason for the first byte to come faster for premium users since our priority mechanism only change the size of the control flow window (i.e., how much cells the circuit is allowed to carry at any time, see again Section~\ref{subsub:prioritized} for details). Such approach would keep the network responsive for nonpremium and low-bandwidth usage, while still offering an upward benefit for premium users when loading web pages, as shown in Figure~\ref{fig:modifier}.
+latency is unchanged: there is no reason for the first byte to come faster for premium users since our priority mechanism only change the size of the control flow window (i.e., how many cells the circuit is allowed to carry at any time, see again Section~\ref{subsub:prioritized} for details). Such approach would keep the network responsive for nonpremium and low-bandwidth usage, while still offering an upward benefit for premium users while loading web pages, as shown in Figure~\ref{fig:modifier}.
 
 Our first analysis on Figures \ref{fig:modifier_pr50_web}, \ref{fig:modifier_pr50_bulk}, and
 \ref{fig:modifier_pr50_all} assumes 50\% of premium users. Reducing that fraction to 25\%, which we assume to be a more realistic model should most likely, according to 
