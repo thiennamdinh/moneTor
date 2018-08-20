@@ -108,10 +108,17 @@ software implementation within the native Tor codebase.
 A substantial contribution of the research is embedded within our implementation
 of the moneTor framework. The modifications, applied to Tor release version
 0.3.2.10, cover approximately fifteen thousand added lines of code across Tor's
-core C software. We emphasize that the implementation is not a fully functional
-prototype and is optimized solely for our experiments. Most notably, we
-simulated crytographic operations such as zpk proofs and commitments in the nanopayment creation and close
-procedures using CPU delays. Furthermore, those delays are implemented in account for Shadow CPU delay design: if the Tor process is considered to run over a multicore computer, the costly operations are simulated over a dedicated core. If the Tor process is considered to run over a singlecore computer, then the costly operations are simulated by an appropriate number of dummy AES encryptions in a thread concurrently to the Tor process main thread. Those AES encryptions are captured by Shadow and replaced by CPU delays on the virtual CPU, affecting Tor's main thread.
+core C software. We emphasize that the implementation is  optimized solely for
+our experiments. Most notably, we simulated crytographic operations such as zpk
+proofs and commitments in the nanopayment creation and close procedures using
+CPU delays. Furthermore, those delays are implemented in account for Shadow CPU
+delay design: if the Tor process is considered to run over a multicore
+computer, the costly operations are simulated over a dedicated core. If the Tor
+process is considered to run over a singlecore computer, then the costly
+operations are simulated by an appropriate number of dummy AES encryptions in a
+thread concurrently to the Tor process main thread. Those AES
+encryptions are captured by Shadow and replaced by CPU delays on the virtual
+CPU, affecting Tor's main thread.
 These delays were tuned to conservatively reflect
 real measurements in background work~\cite{green2017bolt}.\footnote{Extracted
   values are conservative in the sense that our zero-knowledge proofs require
