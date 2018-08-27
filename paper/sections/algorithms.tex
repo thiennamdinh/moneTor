@@ -56,6 +56,8 @@ $nS_I = \{nT: channel\_state\}$ --- Intermediary Nanopayment State --- Map of
 all past and present nanopayment channels and the corresponding channel
 state. Possible states are:
 
+\op{$S_I$ should be added, and make clear that it is unique for each circuit.}
+
 \begin{itemize}
 \item $\bot$ --- failed attempt at setting up a nanopayment channel
 \item $setup$ --- channel has been set up by $C$
@@ -394,3 +396,7 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 \end{algorithm}
 
 %\clearpage
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../main"
+%%% End:

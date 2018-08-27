@@ -61,25 +61,27 @@ practical next-generation incentivization strategy for Tor.
 Tor incentives. We make the following contributions in this paper:
 
 \begin{enumerate}
-\item Discuss economic considerations for the Tor network to favor network
-  diversity and to help support Tor as a public good
+\item Discuss economic considerations for the Tor network % to favor network
+  % diversity and
+  to support Tor as a public good;
   %market control such that the Tor project can decide which notion of diversity
   %to promote
-\item Introduce new highly-efficient nanopayment protocols which satisfies all
+\item Introduce new highly-efficient nanopayment protocols which satisfy all
   \emph{Anonymity}, \emph{Payment Security} and \emph{Efficiency}
-  constraints. These protocols are formally verified and may be of some independent interest for
-  other high-frequency payment applications as well
+  constraints. These protocols are % formally  verified
+  analyzed and may be of some independent interest for
+  other high-frequency payment applications as well;
 \item Detail our integration strategy to add a payment layer
-  which extends the existing Tor architecture
+  which extends the existing Tor architecture;
   % idk I kinda liked the previous wording better.
-\item Collect privacy-preserving client usage data to justify design parameters
-  and argue for efficacy
-\item Implement a prototype of our nanopayment protocols extending the Tor protocol
-  in the core C software, featuring more than 15k lines of code
-\item Conduct network-scale simulations to analyze the performance impact of the
-  embedded payment and incentivization scheme
+\item Collect privacy-preserving client usage data in order to justify design parameters
+  and argue for their efficacy;
 \item Identify an efficient method of throttling to give priority users an
-  advantage
+  advantage;
+\item Implement a prototype of our nanopayment protocols extending the Tor protocol
+  in the core C software, featuring more than 15k lines of code; \op{Add somewhere in the paper a paragraph explaining what is in those 15k lines (everything, but crypto replaced by delays and coin management). }
+\item Conduct large scale simulations to analyze the performance impact of the
+  embedded payment and incentivization scheme.
 \end{enumerate}
 
 The moneTor design leverages fully-specified algorithms for some components and
