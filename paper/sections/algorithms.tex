@@ -56,7 +56,7 @@ $nS_I = \{nT: channel\_state\}$ --- Intermediary Nanopayment State --- Map of
 all past and present nanopayment channels and the corresponding channel
 state. Possible states are:
 
-\op{$S_I$ should be added, and make clear that it is unique for each circuit.}
+$S_I$ --- State of the Intermediary. Used to avoid multiple creations of nanopayment channels over the same micropayment wallet in parallel.
 
 \begin{itemize}
 \item $\bot$ --- failed attempt at setting up a nanopayment channel
