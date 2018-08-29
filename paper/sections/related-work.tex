@@ -9,7 +9,7 @@ payments.\footnote{Generally speaking, incentives provided by monetary payments
   introducing financial profitability into the Tor ecosystem. We consider these
   to be out of scope for the purposes of our research.}
 
-\op{Need to explain why our solution is better/more interesting than all these.}
+%\op{Need to explain why our solution is better/more interesting than all these.}
 
 \subsection{Non-Transferable Benefits}
 
@@ -20,7 +20,7 @@ intended for personal use which cannot be securely sold for financial profit.
 introduces the notion of premium bandwidth. Premium, or \emph{gold star} status,
 is awarded exclusively to the fastest 7/8 fraction of relays. While highly attractive
 for its conceptual simplicity, Gold Star leaks a considerable amount of user
-information as the set of relays in the Tor network is much smaller than the set
+information as the set of relays in the Tor network is now much smaller than the set
 of users~\cite{dingledine2010building}.
 
 \subsubsection{BRAIDS/LIRA} The BRAIDS scheme introduces \emph{tickets} to represent
@@ -33,7 +33,9 @@ to BRAIDs which reduces scalability problems imposed by the centralized
 infrastructure. Clients in LIRA probabilistically ``win'' premium tickets
 without any interaction with the bank. While LIRA improves the efficiency of
 BRAIDS, neither of these designs were constructed to prevent strong threats of
-client cheating~\cite{jansen2013lira}.
+client cheating~\cite{jansen2013lira}. 
+
+moneTor has the advantage to both prevent any client cheating (i.e., they cannot obtain priority without paying for it) and to prevent double-spending without leaking timing information.
 
 \subsection{Transferable Benefits}
 
@@ -48,18 +50,19 @@ which are securely exchanged tokens, can then be redeemed for BRAIDS-style
 \emph{priority passes}. While fully exchangeable shallots represent an economic
 improvement over non-transferable privileges, these tokens are conceptually
 discrete and indivisible assets that are not as easily exchanged as true
-currency. Furthermore, its reliance on a centralized bank and bandwidth
-measurement authority place implicit limits on its scalability and
-security~\cite{jansen2010recruiting}.
+currency. 
+%Furthermore, its reliance on a centralized bank and bandwidth
+%measurement authority place implicit limits on its scalability and
+%security~\cite{jansen2010recruiting}.
+
+moneTor has the advantage to offer transferability with divisibility, and like TEARS, moneTor does not  change the base of the Tor design and can be integrated inside the current architecture.
 
 \subsubsection{TorPath to TorCoin} TorCoin proposes to revamp the Tor architecture into one which can serve as the
 basis for a new cryptocurrency mined with proof-of-bandwidth. The networking
 component specifies verifiable pseudorandom shuffling as the new method for user
 circuit selection. This modified protocol would in theory provide a weakly
 secure means for relays to mint new TorCoin tokens based on their bandwidth
-contribution. In addition to several unresolved security issues enumerated by
-the authors, it is not clear whether the earned TorCoins would be able to hold
-real-world value~\cite{ghosh2014torpath}.
+contribution~\cite{ghosh2014torpath}. While researching on TorCoin-like approach has the potential to help the Tor project on one of the fundamental security problems (i.e., the bandwidth measurement system), outcomes are not clear as many vulnerabilities and deployment questions remain.
 
 \subsubsection{Proof-of-work as anonymous micropayment} Users in this simple design
 provide partial proof-of-work tokens that can then be redeemed by relays for
@@ -91,6 +94,8 @@ the schemes offer practical advantages to many aspects of PAR, they are limited
 by the same \emph{honest but curious} security assumptions and their scalability
 remains capped by the need for all clients to interact with the central bank for
 each payment chain.
+
+In the following presentation of moneTor, we will see how our approach resolves the scalability problem which all those schemes suffer by designing protocols based on payment channels.
 
 %\subsubsection{Orchid} Orchid is an alternative project to Tor altogether which we
 %include for thoroughness and some broad ideological similarities
