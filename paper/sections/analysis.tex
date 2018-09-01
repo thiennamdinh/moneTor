@@ -320,8 +320,14 @@ the evenly split premium and nonpremium performance ``averages out'' to
 approximately mirror the baseline experiment, indicating little loss in overall
 network performance, and confirming our overhead experiment.
 
-Note, one difference of our priority mechanism over a scheduling approach is that the
-latency is unchanged: there is no reason for the first byte to come faster for premium users since our priority mechanism only change the size of the control flow window (i.e., how many cells the circuit is allowed to carry at any time, see again Section~\ref{subsub:prioritized} for details). Such approach would keep the network responsive for nonpremium and low-bandwidth usage, while still offering an upward benefit for premium users while loading web pages, as shown in Figure~\ref{fig:modifier}.
+Note, one difference of our priority mechanism over a scheduling approach is
+that the latency is unchanged: there is no reason for the first byte to come
+faster for premium users since our priority mechanism only changes the size of
+the control flow window (i.e., how many cells the circuit is allowed to carry at
+any time. See Section~\ref{subsub:prioritized} for details). Such an approach
+keeps the network responsive for nonpremium and low-bandwidth usage, while still
+offering an upward benefit for premium users loading standard-to-large web pages, as shown
+in Figure~\ref{fig:modifier}.
 
 Our first analysis on Figures \ref{fig:modifier_pr50_web}, \ref{fig:modifier_pr50_bulk}, and
 \ref{fig:modifier_pr50_all} assumes 50\% of premium users. Reducing that fraction to 25\%, which we assume to be a more realistic model should most likely, according to

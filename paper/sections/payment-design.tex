@@ -5,15 +5,16 @@ describe the concrete technical construction for the moneTor payment scheme.
 
 %The moneTor framework first requires a base layer payment protocol for users to
 %anonymously and securely manage their funds.
-In our payment design, we follow the Bitcoin paradigm in
-which all users maintain full and exclusive control of their monetary wealth
-through use of public key cryptography~\cite{nakamoto2008bitcoin}. However, unlike
-Bitcoin, it is unnecessary for moneTor to rely on an inefficient decentralized
-consensus mechanism. Since Tor already relies on a centralized set of
-authorities, we simply introduce a new ledger authority role to maintain the
-global payment state on a public tamper-evident
-database~\cite{crosby2009efficient}. To maximize availability,
-this ledger may also be distributed across several authorities with, for example, a particular instance of RSCoin~\cite{danezis2015centrally} compatible with our payment system. 
+In our payment design, we follow the Bitcoin paradigm in which all users
+maintain full and exclusive control of their monetary wealth through use of
+public key cryptography~\cite{nakamoto2008bitcoin}. However, unlike Bitcoin, it
+is unnecessary for moneTor to rely on an inefficient decentralized consensus
+mechanism. Since Tor already relies on a centralized set of authorities, we
+simply introduce a new ledger authority role to maintain the global payment
+state on a public tamper-evident database~\cite{crosby2009efficient}. To
+maximize availability, this ledger may also be distributed across several
+authorities with, for example, the architecture proposed by
+RSCoin~\cite{danezis2015centrally}.
 
 %\op{Maybe add that RScoin might be a good ledger architecture on which our protocols rely?}
 

@@ -2,7 +2,7 @@
 \subsection{Extending the Tor protocol}
 
 We extend the Tor routing protocol described in Tor's
-specifications~\cite{dingledine2018tor} and we exploit Tor's leaky-pipe circuit
+specifications~\cite{dingledine2018tor} and exploit Tor's leaky-pipe circuit
 topology\footnote{``Leaky pipe'' refers to the ability of the user to direct
   traffic that ends at an intermediate hop along the circuit} to exchange
 payment information with each hop of the circuit. We introduce two new control
@@ -56,9 +56,6 @@ payment channel services. Intermediaries devote the full extent of
 their computational resources toward this task, allowing only a few
 strong nodes to handle all of channel management needs of the network.
 
-%\td{Should we emphaisize more the need to anonymousely manage circuits between
-%  parties? Or is this obvious?}
-%FR: looks obvious to me from the phrase below
 Interactions between parties are realized within Tor circuits to allow
 multiplexing of circuits over the same TCP connection. This also protects the
 identity of the client and its chosen circuit against identification by the
