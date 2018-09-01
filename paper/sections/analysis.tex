@@ -108,23 +108,26 @@ software implementation within the native Tor codebase.
 A substantial contribution of the research is embedded within our implementation
 of the moneTor framework. The modifications, applied to Tor release version
 0.3.2.10, cover approximately fifteen thousand added lines of code across Tor's
-core C software. We emphasize that the implementation is  optimized solely for
-our experiments. Most notably, we simulated cryptographic operations such as zpk
-proofs and commitments in the nanopayment creation and close procedures using
-CPU delays. Furthermore, those delays are implemented in account for Shadow CPU
-delay design: if the Tor process is considered to run over a multicore
-computer, the costly operations are simulated over a dedicated core. If the Tor
-process is considered to run over a singlecore computer, then the costly
-operations are simulated by an appropriate number of dummy AES encryptions in a
-thread concurrently to the Tor process main thread. Those AES
-encryptions are captured by Shadow and replaced by CPU delays on the virtual
-CPU, affecting Tor's main thread.
-These delays were tuned to conservatively reflect
-real measurements in background work~\cite{green2017bolt}.\footnote{Extracted
-  values are conservative in the sense that our zero-knowledge proofs require
-  proving only a subset of the statements required in each corresponding Bolt
-  zero-knowledge proof.}  Note that our prototype does not implement anything that does not help us to answer our research goals, such as coin/wallet management, extension of the Tor control protocol to manage the asset and various options, Intermediary information recovery in case of crash, etc.
-The prototype serves the following purposes in
+core C software. We emphasize that the implementation is engineered solely for
+our experiments. Most notably, expensive cryptographic operations such as zpk
+proofs and commitments were simulated using methods that account for Shadow's
+unique virtual time management. We consider both scenarios in which the
+simulated Tor process is running on a multicore or singlecore processor. In the
+multicore case, the cryptographic operations are replaced by an ``idle'' command
+that allows the virtual node to complete other tasks in parallel. In the
+singlecore case, cryptographic operations are simulated by looping through a
+series of dummy AES encryption operations. Since Shadow intercepts these AES
+calls and in turn replaces them with virtual CPU delays, we can optimize
+real-life run time while allowing Shadow to accurately account for the virtual
+computation. Using these methods, duration of the delays were tuned to
+conservatively reflect real measurements in prior background
+work~\cite{green2017bolt}.\footnote{Extracted values are conservative in the
+  sense that our zero-knowledge proofs require proving only a subset of the
+  statements required in each corresponding Bolt zero-knowledge proof.}  Note
+that our prototype does not implement anything that does not help us to answer
+our research goals, such as coin/wallet management, extension of the Tor control
+protocol to manage the asset and various options, Intermediary information
+recovery in case of crash, etc. The prototype serves the following purposes in
 our study.
 \begin{enumerate}
 \item An implementation covering nuances not explicitly
@@ -181,7 +184,7 @@ scale experiment consisting of 100\% of premium clients and compare to a
 baseline trial with 0\% premium clients. No actual traffic priority is
 conferred. Since our algorithms makes use of some concurrent crytpographic
 operations, we are concerned with the number of CPU cores available to most
-relays. This information is not publicly available. As a result, we 
+relays. This information is not publicly available. As a result, we
 provide two trials with moneTor: one where we assume all nodes are running on
 multi-core hardware and one in which all nodes are running on single-core
 hardware. The results are summarized in Figure~\ref{fig:overhead}.
@@ -226,7 +229,7 @@ is attributable to moneTor payment messages. This is true for all of our trials
 which feature a payment rate of 1 payment (1 cell) every 1000 data cells
 exchanged in either direction. It is also possible to increase the payment rate
 for more fairness if needed, as long as the total overhead induced from control
-cells is kept under an acceptable fraction of the overall data bandwidth. 
+cells is kept under an acceptable fraction of the overall data bandwidth.
 %%%
 % Reading this sentence appears to be unclear to me
 %%%
@@ -321,7 +324,7 @@ Note, one difference of our priority mechanism over a scheduling approach is tha
 latency is unchanged: there is no reason for the first byte to come faster for premium users since our priority mechanism only change the size of the control flow window (i.e., how many cells the circuit is allowed to carry at any time, see again Section~\ref{subsub:prioritized} for details). Such approach would keep the network responsive for nonpremium and low-bandwidth usage, while still offering an upward benefit for premium users while loading web pages, as shown in Figure~\ref{fig:modifier}.
 
 Our first analysis on Figures \ref{fig:modifier_pr50_web}, \ref{fig:modifier_pr50_bulk}, and
-\ref{fig:modifier_pr50_all} assumes 50\% of premium users. Reducing that fraction to 25\%, which we assume to be a more realistic model should most likely, according to 
+\ref{fig:modifier_pr50_all} assumes 50\% of premium users. Reducing that fraction to 25\%, which we assume to be a more realistic model should most likely, according to
 Equation~\ref{eq:flow}, expect an even greater benefit on a per-user
 basis. Figures \ref{fig:modifier_pr25_web}, \ref{fig:modifier_pr25_bulk}, and
 \ref{fig:modifier_pr25_all} shows that this is indeed the result. Users across
