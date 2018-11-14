@@ -1,5 +1,3 @@
-\label{chap:algorithms}
-
 This appendix more fully describes the algorithms we design to operate moneTor nanopayment
 channels.
 
@@ -78,30 +76,28 @@ $nrt_R$ --- Relay Nanopayment Refund --- See $nrt_C$
 $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 
 \subsection{Algorithms}
-
 \begin{algorithm}
-  \caption[Create Wallet]{\textbf{Create Wallet} Helper function for creating a new wallet}
+	%\caption[Create Wallet]{\textbf{Create Wallet} Helper function for creating a new 	wallet}
   \begin{algorithmic}[1]
     \Function{Wal}{$pp, pk_{payee}, w, \epsilon$}
     \State{parse $w$ as $(B, wpk, wsk, r, \sigma^w)$}
     \State{$(wsk', wpk') \gets $KeyGen$(pp)$}
     \State{$r' \gets $Random$()$}
     \State{$wCom' \gets $Commit$(wpk', B + \epsilon, r')$}
-    \State{$\pi \gets PK\{(wpk', B, r', \sigma^w)$: \par}
+    \State{$\pi \gets PK\{(wpk', B, r', \sigma^w)$: \par})
     \State{\hskip\algorithmicindent{} $wCom' = $~Commit$(wpk', B + \epsilon, r')\ \wedge$}
-    \State{\hskip\algorithmicindent{} Verify$(pk_{payee}, (wpk, B), \sigma^w) = 1\ \wedge$}
+    \State{\hskip\algorithmicindent{} Verify$(pk_{payee}, (wpk, B), \sigma^w = 1\ \wedge$}
     \State{\hskip\algorithmicindent{} $B + \epsilon \geq 0\}$}
     \State{\Return{$(wsk', wpk', wCom', \pi)\}$}}
     \EndFunction{}
-
   \end{algorithmic}
 \end{algorithm}
 
 
 \begin{algorithm}
-  \caption[Nano-Setup]{\textbf{Nano-Setup} Protocol
-    between a client and intermediary to create a new nanopayment channel from an
-    existing micropayment wallet. Run prior to circuit setup.}
+%  \caption[Nano-Setup]{\textbf{Nano-Setup} Protocol
+%    between a client and intermediary to create a new nanopayment channel from an
+%    existing micropayment wallet. Run prior to circuit setup.}
   \begin{algorithmic}[1]
     \Procedure{Client}{$pp, pk_I, w_C, \delta_C, n$}
       \State{parse $w_C$ as $(B_C, wpk_C, wsk_C, r_C, \sigma^w_C)$}
@@ -156,10 +152,10 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Establish]{\textbf{Nano-Establish}
-    Protocol between a client, intermediary, and relay to establish the
-    nanopayment channel between the client and relay. Run at the start of
-    circuit setup.}
+%  \caption[Nano-Establish]{\textbf{Nano-Establish}
+%    Protocol between a client, intermediary, and relay to establish the
+%    nanopayment channel between the client and relay. Run at the start of
+%    circuit setup.}
   \begin{algorithmic}[1]
 
     \Procedure{Client}{$nT$}
@@ -205,9 +201,9 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Pay]{\textbf{Nano-Pay} Protocol
-    between the client and relay to forward a single nanopayment. Run
-    periodically throughout the lifetime of the circuit.}
+%  \caption[Nano-Pay]{\textbf{Nano-Pay} Protocol
+%    between the client and relay to forward a single nanopayment. Run
+%    periodically throughout the lifetime of the circuit.}
   \begin{algorithmic}[1]
 
     \Procedure{Client}{$nT, ncsk_C, nS_C$}
@@ -235,10 +231,10 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Close]{\textbf{Nano-Close}
-    Protocol between an end user (client or relay) and an intermediary to close
-    out the nanopayment channel and receive a micropayment wallet. Run any time
-    after the circuit closure. Also, the relay must close first}
+%  \caption[Nano-Close]{\textbf{Nano-Close}
+%    Protocol between an end user (client or relay) and an intermediary to close
+%    out the nanopayment channel and receive a micropayment wallet. Run any time
+%    after the circuit closure. Also, the relay must close first}
   \begin{algorithmic}[1]
     \State{$\forall E \in \{Client, Relay\}$}
     \Procedure{EndUser}{$pp, pk_I, w_E, nT, ncsk_E, nS_E$}
@@ -296,10 +292,10 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Refund]{\textbf{Nano-Refund} Algorithm by an end user to close a micropayment
-    channel and claim ledger funds. This is a modified version of
-    Bolt's Refund algorithm to also allows for granular claims on
-    open nanopayment channels}
+%  \caption[Nano-Refund]{\textbf{Nano-Refund} Algorithm by an end user to close a micropayment
+%    channel and claim ledger funds. This is a modified version of
+%    Bolt's Refund algorithm to also allows for granular claims on
+%    open nanopayment channels}
   \begin{algorithmic}[1]
     \State{$\forall E \in \{Client, Relay\}$}
     \Function{EndUser}{$pp, csk_E, w_E, nT, ncsk_E, nS_E, nrt_E$}
@@ -317,7 +313,7 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Refute]{\textbf{Nano-Refute} Algorithm by an intermediary to respond to an end user's refund claim by posting its own channel closure message to the ledger}
+  %\caption[Nano-Refute]{\textbf{Nano-Refute} Algorithm by an intermediary to respond to an end user's refund claim by posting its own channel closure message to the ledger}
   \begin{algorithmic}[1]
     \State{$\forall E \in \{Client, Relay\}$}
     \Function{Intermediary}{$pp, T_E, S_I, nS_I, nrc_E$}
@@ -346,7 +342,7 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Resolve]{\textbf{Nano-Resolve} Algorithm run by the ledger (and everyone verifying the ledger) to resolve all channel closure messages and allocate the appropriate final balances}
+  %\caption[Nano-Resolve]{\textbf{Nano-Resolve} Algorithm run by the ledger (and everyone verifying the ledger) to resolve all channel closure messages and allocate the appropriate final balances}
   \begin{algorithmic}[1]
     \State{\Comment{Returns the tuple $(B^{final}_E, B^{final}_I)$}}
     \Function{Ledger}{$pp, T_E, T_I, nrc_E, nrc_I$}

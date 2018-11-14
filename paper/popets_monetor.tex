@@ -1,0 +1,158 @@
+\documentclass[USenglish,oneside,twocolumn]{article}
+\usepackage[utf8]{inputenc}%(only for the pdftex engine)
+%\RequirePackage[no-math]{fontspec}%(only for the luatex or the xetex engine)
+
+\usepackage[big]{dgruyter_NEW}
+\usepackage{hyperref}
+\usepackage{subcaption}
+%\usepackage{algorithmicx}
+\usepackage{caption}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\algrenewcommand{\algorithmiccomment}[1]{{\color{gray}$\triangleright$ #1}}
+\usepackage[
+n,
+advantage,
+operators,
+sets,
+adversary,
+landau,
+probability,
+notions,
+logic,
+ff,
+mm,
+primitives,
+events,
+complexity,
+asymptotics,
+keys
+]{cryptocode}
+
+
+\hyphenation{moneTor}
+\hyphenation{CIRCWINDOWSTART}
+\hyphenation{STREAMWINDOWSTART}
+\makeatletter
+\renewcommand{\ALG@beginalgorithmic}{\small}
+\makeatother
+
+\newcommand{\flo}[1]{ {\color{red} FR: #1}}
+\newcommand{\td}[1]{ {\color{blue} TD: #1}}
+\newcommand{\op}[1]{ {\color{olive} OP: #1}}
+
+\cclogo{\includegraphics{by-nc-nd.pdf}}
+
+\begin{document}
+ 
+
+\title{\huge Monetary Tor Incentives with Efficient Nanopayment Channels} % TODO: replace with your title
+
+\runningtitle{Monetary Tor Incentives with Efficient Nanopayment Channels}
+
+  %\subtitle{...}
+\begin{abstract}
+{Tor, the most widely used and well-studied traffic anonymization network in
+  the world, suffers from orthogonal limitations in network diversity and
+  performance. We propose to mitigate both problems simultaneously through the
+  introduction of a premium bandwidth market between clients and relays. To this
+  end, we present moneTor: a relay incentivization scheme featuring anonymous,
+  efficient, and economically robust nanopayments. Our approach leverages the
+  latest advances in cryptocurrency research toward a design that is directly
+  integrated into the existing Tor architecture. This work describes a
+  full-stack strategy that covers economic policy, novel payment algorithms, and
+  networking implementation. Through live empirical data collection and analysis
+  of our emulated prototype, we argue that moneTor is the first technically
+  feasible monetary incentive scheme for Tor, offering upwards of 100\%
+  improvements in differentiated bandwidth for paying users at near-optimal
+  throughput and latency overhead.}
+\end{abstract}
+
+  \keywords{Tor, cryptocurrency, payment channels}
+%  \classification[PACS]{}
+ % \communicated{...}
+ % \dedication{...}
+
+  \journalname{Proceedings on Privacy Enhancing Technologies}
+\DOI{Editor to enter DOI}
+  \startpage{1}
+  \received{..}
+  \revised{..}
+  \accepted{..}
+
+  \journalyear{..}
+  \journalvolume{..}
+  \journalissue{..}
+  
+  
+ \maketitle
+
+
+\section{Introduction}
+\label{sec:introduction}
+\input{sections/introduction.tex}
+
+\section{Background}
+\label{sec:background}
+\input{sections/background.tex}
+
+\section{Related Work}
+\label{sec:related_work}
+\input{sections/related-work.tex}
+
+\section{Economic Design}
+\label{sec:economic}
+\input{sections/economic-design.tex}
+
+\section{Payment Design}
+\label{sec:payment}
+\input{sections/payment-design.tex}
+
+\section{Network Design}
+\label{sec:network}
+\input{sections/network-design.tex}
+
+\section{Empirical Analysis}
+\label{sec:analysis}
+\input{sections/analysis.tex}
+
+\section{Limitations and Future Work}
+\label{sec:limitations_futurework}
+\input{sections/discussion.tex}
+
+\section{Data Reproducibility}
+\label{sec:code}
+\input{sections/codeinfo.tex}
+
+\section{Conclusion}
+\label{sec:conclusion}
+\input{sections/conclusion.tex}
+
+%Acknowledgements:
+% Edouard Cuvelier for comments
+% Tor safety board
+
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,sections/references.bib}
+
+%\textbf{Sandia National Laboratories is a multimission laboratory managed and operated by National Technology \& Engineering Solutions of Sandia, LLC, a wholly owned subsidiary of Honeywell International Inc., for the U.S. Department of Energy’s National Nuclear Security Administration under contract DE-NA0003525.}
+%
+\appendix
+\label{sec:algorithms}
+\input{sections/algorithms.tex}
+
+%\appendix[Formal Definitions and Proofs]
+%\label{sec:proof}
+
+%Full paper available at http://u6qr2zmt2bhiw5tm.onion/gender-jubilant,  using Tor Browser (total of 20 pages with formal verifications).
+%\input{sections/proof.tex}
+
+%\appendix[Scheduling]
+%\label{sec:scheduling}
+
+%\input{sections/scheduling.tex}
+%Full paper available at http://u6qr2zmt2bhiw5tm.onion/gender-jubilant, using Tor Browser (total of 21 pages with extensive analysis on why a scheduling-based priority does not work well).
+%Full paper available at http://u6qr2zmt2bhiw5tm.onion/gender-jubilant, using Tor Browser (total of 21 pages with extensive analysis on why a scheduling-based priority does not work well).
+
+
+\end{document}

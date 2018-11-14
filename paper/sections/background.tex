@@ -1,23 +1,23 @@
 \subsection{Tor}
 
-\subsubsection{Tor Architecture}
-The Tor network is composed of multiple different components, each of which run
-the same code base. Volunteers can run relays and enable specific roles or tasks
-such as \textit{network consensus directories}, \textit{HSDirs} and \textit{Exit
-  policies}. \textit{Directory authorities} and \textit{Bandwidth authorities}
-are the most important components of the network, and are only operated by
-trustworthy core contributors. There are currently nine directory authorities
-which periodically reach agreement over the state of the network, called the
-\textit{consensus document}. This consensus document holds the identification
-information related to all available relays inside the network, as well as the
-result of the authority vote (e.g., a set of \textit{flags} associated to each
-relay). The bandwidth authorities constantly measure every relay and provide to
-the directory authorities a measurement value for each of them, which plays a
-critical role in the path selection algorithm. This paper extends the
-architecture by adding two new roles needed for our monetary relay
-incentivization: $intermediary$ and $ledger$.
+%\paragraph*{Tor Architecture}
+%The Tor network is composed of multiple different components, each of which run
+%the same code base. Volunteers can run relays and enable specific roles or tasks
+%such as \textit{network consensus directories}, \textit{HSDirs} and \textit{Exit
+%  policies}. \textit{Directory authorities} and \textit{Bandwidth authorities}
+%are the most important components of the network, and are only operated by
+%trustworthy core contributors. There are currently nine directory authorities
+%which periodically reach agreement over the state of the network, called the
+%\textit{consensus document}. This consensus document holds the identification
+%information related to all available relays inside the network, as well as the
+%result of the authority vote (e.g., a set of \textit{flags} associated to each
+%relay). The bandwidth authorities constantly measure every relay and provide to
+%the directory authorities a measurement value for each of them, which plays a
+%critical role in the path selection algorithm. This paper extends the
+%architecture by adding two new roles needed for our monetary relay
+%incentivization: $intermediary$ and $ledger$.
 
-\subsubsection{Traffic Analysis}
+\paragraph*{Traffic Analysis}
 Tor's threat model assumes a local adversary who can observe some fraction of
 the network and can operate or compromise a number of onion routers. Tor also
 assumes a local adversary who can manipulate user streams by inserting,
@@ -35,7 +35,7 @@ induce more diversity to the Tor network, which would make such traffic analysis
 against a large fraction of Tor users more costly. One such solution is
 presented in this paper.
 
-\subsubsection{Circuit handling on Tor clients}
+\paragraph*{Circuit handling on Tor clients}
 %
 %\td{TODO: This section will provide a more detailed explanation of how circuits are
 %created and how that affects moneTor's high initial latency and overhead design}
@@ -47,24 +47,24 @@ soon as the client obtains the necessary directory information. Once a stream is
 created by a user application, it can be immediately routed through the idle
 circuit, dramatically improving latency. The anticipated number of required
 preemptive circuits is dynamically calculated every second by the Tor client. We
-exploit this same strategy for moneTor's circuit setup routine.
+exploit this same strategy for moneTor's circuit channel setup routine (i.e., they are pre-built on clean circuits, which dramatically improves the time to first payment).
 
-\subsubsection{Evaluating Tor's performance}
-Shadow~\cite{jansen2011shadow} is a discrete event networking simulator that
-allows real, unmodified applications to run within a virtual network. Its
-primary advantage is the ability to run native networking application code that
-interfaces with the simulator via an external application-specific
-plugin. Within the simulation environment itself, Shadow faithfully mimics the
-real Tor network conditions including bandwidth and latency. As a result,
-experiments conducted with this tool tends to be more accurate than ones
-conducted over alternatives such as private university networks or
-PlanetLab~\cite{chun2003planetlab}. We utilize the shadow framework to
-evaluate the costs and performance of our algorithms over network-level
-simulations.
+%\paragraph*{Evaluating Tor's performance}
+%Shadow~\cite{jansen2011shadow} is a discrete event networking simulator that
+%allows real, unmodified applications to run within a virtual network. Its
+%primary advantage is the ability to run native networking application code that
+%interfaces with the simulator via an external application-specific
+%plugin. Within the simulation environment itself, Shadow faithfully mimics the
+%real Tor network conditions including bandwidth and latency. As a result,
+%experiments conducted with this tool tends to be more accurate than ones
+%conducted over alternatives such as private university networks or
+%PlanetLab~\cite{chun2003planetlab}. We utilize the shadow framework to
+%evaluate the costs and performance of our algorithms over network-level
+%simulations.
 
 %\subsubsection{Tor's Scheduling}
 
-\subsubsection{Flow Control} Tor seeks to maintain an optimal flow of cells in
+\paragraph*{Flow Control} Tor seeks to maintain an optimal flow of cells in
 each circuit by capping the rate of transmission to fixed-sized windows. The
 CIRCWINDOWSTART value dictates flow for the overall circuit while
 STREAMWINDOWSTART dictates each end-to-end flow between a client and the edge

@@ -1,27 +1,27 @@
 
-\subsection{Extending the Tor protocol}
-
-We extend the Tor routing protocol described in Tor's
-specifications~\cite{dingledine2018tor} and exploit Tor's leaky-pipe circuit
-topology\footnote{``Leaky pipe'' refers to the ability of the user to direct
-  traffic that ends at an intermediate hop along the circuit} to exchange
-payment information with each hop of the circuit. We introduce two new control
-cell types: one link-level cell and one relay-level cell. The link-level cell is
-used to exchange information related to the payment protocol between the Tor
-client and its guard relay while the relay-level cell is used for the middle
-relay and the exit relay. This subtype of relay cell is comprised of a payment
-header denoting the type of payment cell, followed by a payload of payment
-data. To an outside observer, payment cells are indistinguishable to normal
-relay cells. Figure~\ref{fig:relay_command_mt_structure} shows the internal structure of the cell.
-\begin{figure}[h]
-    \centering
-    \includegraphics[scale=0.38]{images/payment_cell_header.png}
-    \caption{Relay Payment Cell --- Cell definition specifying the structure of
-      a moneTor payment cell. Note: a block that appears blank and empty is in fact the continuity of the previous row}
-\label{fig:relay_command_mt_structure}
-\end{figure}
-
-All the bytes starting from StreamID (included) are onion encrypted. RelCMD is set to RELAY\_COMMAND\_MT, PCMD is the payment command which is different for each step of the payment protocol. If some message overflows the payload available length (495 bytes), we queue multiple cells of the same PCMD and buffer them on the receiver side to unpack the whole message.
+%\subsection{Extending the Tor protocol}
+%
+%We extend the Tor routing protocol described in Tor's
+%specifications~\cite{dingledine2018tor} and exploit Tor's leaky-pipe circuit
+%topology\footnote{``Leaky pipe'' refers to the ability of the user to direct
+%  traffic that ends at an intermediate hop along the circuit} to exchange
+%payment information with each hop of the circuit. We introduce two new control
+%cell types: one link-level cell and one relay-level cell. The link-level cell is
+%used to exchange information related to the payment protocol between the Tor
+%client and its guard relay while the relay-level cell is used for the middle
+%relay and the exit relay. This subtype of relay cell is comprised of a payment
+%header denoting the type of payment cell, followed by a payload of payment
+%data. To an outside observer, payment cells are indistinguishable to normal
+%relay cells. Figure~\ref{fig:relay_command_mt_structure} shows the internal structure of the cell.
+%\begin{figure}[h]
+%    \centering
+%    \includegraphics[scale=0.38]{images/payment_cell_header.png}
+%    \caption{Relay Payment Cell --- Cell definition specifying the structure of
+%      a moneTor payment cell. Note: a block that appears blank and empty is in fact the continuity of the previous row}
+%\label{fig:relay_command_mt_structure}
+%\end{figure}
+%
+%All the bytes starting from StreamID (included) are onion encrypted. RelCMD is set to RELAY\_COMMAND\_MT, PCMD is the payment command which is different for each step of the payment protocol. If some message overflows the payload available length (495 bytes), we queue multiple cells of the same PCMD and buffer them on the receiver side to unpack the whole message.
 
 \subsection{Pre-built Channels}
 By default, Tor attempts to pre-build circuits in order to reduce latency once a
@@ -97,15 +97,16 @@ $premium \in \{0, 1\}$. The tunable priority benefit
 $\alpha \in [0, 1)$ defines the proportion of the non-premium capacity that we wish
 to transfer to premium clients. By accounting for
 $premium\%s \in [0,1]$, the fraction of premium to nonpremium clients, we
-can keep the total flow capacity constant. Our policy may be
-implemented in one of two ways. First, each node could track the
-$premium\%$ locally and dynamically adjust their own windows. This
-introduces a considerable amount of added complexity with unclear
-consequences on network performance. A more sound approach calls for
-the Tor authorities to track the global value for $premium\%$ and
-periodically broadcast static flow control windows to be used by the
-entire network. We adopt the latter approach in this iteration of
-moneTor.
+can keep the total flow capacity constant. 
+%Our policy may be
+%implemented in one of two ways. First, each node could track the
+%$premium\%$ locally and dynamically adjust their own windows. This
+%introduces a considerable amount of added complexity with unclear
+%consequences on network performance. A more sound approach calls for
+%the Tor authorities to track the global value for $premium\%$ and
+%periodically broadcast static flow control windows to be used by the
+%entire network. We adopt the latter approach in this iteration of
+%moneTor.
 
 \paragraph*{Interlude.} This concludes the design of the moneTor framework. In
 the proceeding sections, we describe steps taken to iteratively select and
