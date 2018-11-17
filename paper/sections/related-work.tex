@@ -1,13 +1,15 @@
 We classify incentivization schemes into three types of strategies:
 non-transferable benefits, transferable benefits, and monetary
-payments.\footnote{Generally speaking, incentives provided by monetary payments
-  are more economically robust than transferable benefits, which in turn are
-  more robust than non-transferable benefits. Although we examine related works
-  through the prism of economic appeal, this is not a statement of superiority
-  so much as an observation on diverging motivation. Indeed, a number of
-  sociological and legal implications must be weighed before
-  introducing financial profitability into the Tor ecosystem. We consider these
-  to be out of scope for the purposes of our research.}
+payments.
+
+%\footnote{Generally speaking, incentives provided by monetary payments
+%  are more economically robust than transferable benefits, which in turn are
+%  more robust than non-transferable benefits. Although we examine related works
+%  through the prism of economic appeal, this is not a statement of superiority
+%  so much as an observation on diverging motivation. Indeed, a number of
+%  sociological and legal implications must be weighed before
+%  introducing financial profitability into the Tor ecosystem. We consider these
+%  to be out of scope for the purposes of our research.}
 
 %\op{Need to explain why our solution is better/more interesting than all these.}
 
@@ -16,14 +18,14 @@ payments.\footnote{Generally speaking, incentives provided by monetary payments
 These proposals aim to recruit relays by offering some privileged status
 intended for personal use which cannot be securely sold for financial profit.
 
-\subsubsection{Gold Star} As one of the earliest incentive proposals, Gold Star
+\paragraph*{Gold Star} As one of the earliest incentive proposals, Gold Star
 introduces the notion of premium bandwidth. Premium, or \emph{gold star} status,
 is awarded exclusively to the fastest 7/8 fraction of relays. While highly attractive
 for its conceptual simplicity, Gold Star leaks a considerable amount of user
 information as the set of relays in the Tor network is now much smaller than the set
 of users~\cite{dingledine2010building}.
 
-\subsubsection{BRAIDS/LIRA} The BRAIDS scheme introduces \emph{tickets} to represent
+\paragraph*{BRAIDS/LIRA} The BRAIDS scheme introduces \emph{tickets} to represent
 premium status. Small numbers of ephemeral tickets are freely distributed by a
 central \emph{bank} to any client upon request or to relays that have
 accumulated spent tickets from clients. Crucially, tickets can only be spent at
@@ -44,7 +46,7 @@ privileges or products intended to hold value in a secondary resale market. Thes
 indirect financial incentives presume to attract a broader demand than in the
 non-transferable case.
 
-\subsubsection{TEARS} TEARS introduces a two-layer approach whereby \emph{shallots}
+\paragraph*{TEARS} TEARS introduces a two-layer approach whereby \emph{shallots}
 token are awarded by a central bank to participating relays. These shallots,
 which are securely exchanged tokens, can then be redeemed for BRAIDS-style
 \emph{priority passes}. While fully exchangeable shallots represent an economic
@@ -57,7 +59,7 @@ underlying Tor architecture.
 %measurement authority place implicit limits on its scalability and
 %security~\cite{jansen2010recruiting}.
 
-\subsubsection{TorPath to TorCoin} TorCoin proposes to revamp the Tor
+\paragraph*{TorPath to TorCoin} TorCoin proposes to revamp the Tor
 architecture into one which can serve as the basis for a new cryptocurrency
 mined via a method called proof-of-bandwidth. The networking component specifies
 verifiable pseudorandom shuffling as the new method for user circuit
@@ -72,7 +74,7 @@ the security and feasibility of the scheme.
 %measurement system), outcomes are not clear as many vulnerabilities and
 %deployment questions remain.
 
-\subsubsection{Proof-of-work as anonymous micropayment} Users in this simple design
+\paragraph*{Proof-of-work as anonymous micropayment} Users in this simple design
 provide partial proof-of-work tokens that can then be redeemed by relays for
 profit in real cryptocurrency mining pools. The drawback of this scheme is
 simply an issue of unrealistic magnitude; the paper estimates that a user who
@@ -85,7 +87,7 @@ in electricity~\cite{biryukov2015proof}.
 The final class of incentivizations offer rewards with what might be considered
 real money that holds external value. This approach is the one that moneTor adopts.
 
-\subsubsection{PAR} A pre-Bitcoin design, PAR~\cite{androulaki2008payment}
+\paragraph*{PAR} A pre-Bitcoin design, PAR~\cite{androulaki2008payment}
 allows clients to send direct payments to relays in a hybrid payment scheme
 which makes use of inefficient but anonymous Chaumian e-cash
 protocols~\cite{chaum1988untraceable} and efficient but transparent
@@ -94,7 +96,7 @@ paradigm in which the bank cannot deanonymize clients but is in control of their
 deposited financial assets. As with BRAIDS, PAR suffers from an unscalable
 centralized design.
 
-\subsubsection{ORPay, PlusPay, CoinPay} These three protocols, part of the
+\paragraph*{ORPay, PlusPay, CoinPay} These three protocols, part of the
 Chaumian e-cash tradition of payments schemes, are a series of incremental
 improvements released across two papers~\cite{chen2009xpay,
   carbunar2012tipping}. In each of the designs, the micropayment building block
