@@ -68,14 +68,17 @@ show that it too can dramatically improve the time to first payment.
 %\subsubsection{Tor's Scheduling}
 
 \paragraph*{Flow Control} Tor seeks to maintain an optimal flow of cells in
-each circuit by capping the rate of transmission to fixed-sized windows. The
-CIRCWINDOWSTART value dictates flow for the overall circuit while
-STREAMWINDOWSTART dictates each end-to-end flow between a client and the edge
-connection at an exit relay.\footnote{Default values, expressed in number of
-  cells, are CIRCWINDOWSTART = 1000 and STREAMWINDOWSTART = 500.} The number of
-cells going in each direction are tracked separately. In effect, Tor attempts to
-keep the flow of cells on each circuit as full as possible while ensuring that
-the number of cells in transition do not exceed the limit. Flow control has a
+each circuit by capping the rate of transmission to fixed-sized windows. 
+%The
+%CIRCWINDOWSTART value dictates flow for the overall circuit while
+%STREAMWINDOWSTART dictates each end-to-end flow between a client and the edge
+%connection at an exit relay.\footnote{Default values, expressed in number of
+% cells, are CIRCWINDOWSTART = 1000 and STREAMWINDOWSTART = 500.} 
+%The number of
+%cells going in each direction are tracked separately. 
+In effect, Tor attempts to
+keep the flow of cells on each circuit as full as possible while ensuring fairness between streams and that
+the number of cells in transition do not exceed a limit defaulted to 1000. Flow control has a
 strong impact on network conditions as shown by AlSabah \textit{et
   al.}~\cite{pets2011-defenestrator} in work toward improving total global
 performance.  In the design of moneTor, we will adapt these flow control windows
