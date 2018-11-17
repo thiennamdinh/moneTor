@@ -251,7 +251,7 @@ party's escrowed funds in others.
 Up to this point, we have described payments that occur between a single client
 and a single relay. In practice, it is typical for each client to maintain a
 handful of concurrently active circuits,\footnote{For instance, the popular Tor
-  Browser user application typically does not share circuits with streams targeting a different destination address unless those streams come from the same SOCKS connection}  each of
+  Browser user application typically does not share circuits with streams targeting a different destination address unless those streams come from the same SOCKS connection.}  each of
 which requires three streams of payments to the guard, middle, and exit
 relays. These channels must be actively managed to optimize computational
 overhead as well as money flow. Furthermore, connections between the client and
@@ -323,7 +323,7 @@ nanopayment channels.\footnote{This attack is best illustrated with a trivial
   micropayment channel and terminates with exactly 404 units of money. Once the
   micropayment channel is closed, $I$ must necessary gain knowledge of the final
   balance of funds and can easily link the first and third nanopayment channels
-  as belonging to the same $C$}. To mitigate this vulnerability, we stipulate
+  as belonging to the same $C$.}. To mitigate this vulnerability, we stipulate
 that $C$ must make a least one micropayment, which has a monetary value hidden
 from $I$, before closing a micropayment channel. We expect that this
 micropayment should contain a random value not greater than the channel escrow

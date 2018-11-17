@@ -69,7 +69,7 @@ each circuit by capping the rate of transmission to fixed-sized windows. The
 CIRCWINDOWSTART value dictates flow for the overall circuit while
 STREAMWINDOWSTART dictates each end-to-end flow between a client and the edge
 connection at an exit relay.\footnote{Default values, expressed in number of
-  cells, are CIRCWINDOWSTART = 1000 and STREAMWINDOWSTART = 500} The number of
+  cells, are CIRCWINDOWSTART = 1000 and STREAMWINDOWSTART = 500.} The number of
 cells going in each direction are tracked separately. In effect, Tor attempts to
 keep the flow of cells on each circuit as full as possible while ensuring that
 the number of cells in transition do not exceed the limit. Flow control has a
@@ -155,7 +155,7 @@ identify $E_a$ or $E_b$ from $E_{all}$ nor can $I$ infer the payment value. Of
 course, $I$ must still be able to verify that the payment is valid and that its
 internal channel states have been updated accordingly.  \footnote{This is
   achieved using a combination of zero-knowledge proofs and blind signatures, in
-  the case of Bolt} Several nuances arise concerning end user privacy in certain
+  the case of Bolt.} Several nuances arise concerning end user privacy in certain
 situations, such as during the micropayment setup escrow phase and in the event
 that $I$ maliciously aborts. We do not consider it necessary to discuss these
 caveats here as they are not prohibitively problematic for our later treatment

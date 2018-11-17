@@ -61,7 +61,7 @@ multiplexing of circuits over the same TCP connection. This also protects the
 identity of the client and its chosen circuit against identification by the
 ledger or the intermediary\footnote{We assumed no side-channel exploitation in
   this work but do discuss timing attacks in
-  Section~\ref{sec:limitations_futurework}}. As a result, the intermediary and
+  Section~\ref{sec:limitations_futurework}.}. As a result, the intermediary and
 the ledger must have a number of available sockets higher than the number of
 relays in the network in the worst case. Since this limit is in line with Tor's
 current assumption, our design inherits the same socket consumption scalability
