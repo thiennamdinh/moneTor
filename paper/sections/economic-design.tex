@@ -60,8 +60,9 @@ policies. For instance, we cannot guarantee that relays will actually confer
 premium bandwidth to paying users. Even though the relay has no particular
 reason to deviate, the client should periodically monitor her bandwidth and only
 make payments when they appear to be making a difference. The relationship
-between the client and relay can then be modelled as a game theoretic tit-for-tat
-dynamic.
+between the client and relay can then be modeled as a game theoretic tit-for-tat
+dynamic within the immediate session. Over the long term, non-conforming relays
+might be blacklisted via Tor's existing reporting system.
 
 At the opposite end of the spectrum, relays might overly prioritize premium
 circuits while rejecting all traffic from unpaid users. They might also attempt
@@ -83,18 +84,19 @@ and destroyed according to a public internal policy. As the tokens are fully
 transferable, we would expect that side-markets would emerge in which they could
 be traded for external assets. This system offers greater control and ability
 for The Tor Project to react to economic fluctuations. However, it requires a
-higher degree of trust in the authorities and presents additional economic
-challenges, for instance, by inviting financial speculation of the Tor
-ecosystem. Alternatively, in an \emph{open-loop} system, moneTor tokens would be
-pegged at a 1:1 conversion rate with some other digital currency. Several
-protocols have emerged in the cyptocurrency space which seeks to facilitate this
-exchange in a trustless manner~\cite{back2014enabling, poon2017plasma}. The
-\emph{open-loop} approach eliminates many trust assumptions that would otherwise
-be required of The Tor Project while deferring economic responsibility away from
-the decision makers. However, it necessarily couples the state of the Tor
-ecosystem with a likely unpredictable external cryptocurrency. Although there
-are some technical considersations supporting each option, these are likely
-overshadowed by political and idealogic considerations. For the purposes of this
+categorically new level of trust on the part of authorities to responsibly
+manage money and monetary policy. Alternatively, in an \emph{open-loop} system,
+moneTor tokens would act as a wrapper for some existing external
+cryptocurrency. In this scenario, Tor would operate its own ledger and make use
+of one of several protocols that have emerged in the cyptocurrency space
+allowing the secure inter-ledger exchange of financial
+assets~\cite{back2014enabling, poon2017plasma}. The \emph{open-loop} approach
+eliminates many trust assumptions that would otherwise be required of The Tor
+Project while deferring economic responsibility away from the decision
+makers. However, it necessarily couples the state of the Tor ecosystem with a
+likely unpredictable external cryptocurrency. Although there are some technical
+considersations supporting each option, these are likely overshadowed by
+political and idealogic considerations. For the purposes of this
 technically-oriented paper, we will consider this decision to be out-of-scope
 and design our payment protocols to function independently of monetary policy.
 

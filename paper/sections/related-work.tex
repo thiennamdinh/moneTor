@@ -20,10 +20,12 @@ intended for personal use which cannot be securely sold for financial profit.
 
 \paragraph*{Gold Star} As one of the earliest incentive proposals, Gold Star
 introduces the notion of premium bandwidth. Premium, or \emph{gold star} status,
-is awarded exclusively to the fastest 7/8 fraction of relays. While highly attractive
-for its conceptual simplicity, Gold Star leaks a considerable amount of user
-information as the set of relays in the Tor network is now much smaller than the set
-of users~\cite{dingledine2010building}.
+is awarded exclusively to the fastest 7/8 fraction of relays, signaling to the
+rest of the network that these relays can enjoy prioritized traffic. While
+highly attractive for its conceptual simplicity, Gold Star leaks a considerable
+amount of user information since priortized traffic can now be trivially
+attributed to this relatively small set of gold star
+relays~\cite{dingledine2010building}.
 
 \paragraph*{BRAIDS/LIRA} The BRAIDS scheme introduces \emph{tickets} to represent
 premium status. Small numbers of ephemeral tickets are freely distributed by a
@@ -35,9 +37,10 @@ to BRAIDs which reduces scalability problems imposed by the centralized
 infrastructure. Clients in LIRA probabilistically ``win'' premium tickets
 without any interaction with the bank. While LIRA improves the efficiency of
 BRAIDS, neither of these designs were constructed to prevent strong threats of
-client cheating~\cite{jansen2013lira}. Thus, one improvement offered by moneTor
-is the ability to strongly prevent double-spending and other forms client
-cheating without any relative loss in anonymity.
+client cheating in the form of double spending~\cite{jansen2013lira}. Thus, one
+improvement offered by moneTor is the ability to strongly prevent
+double-spending and other forms client cheating without any relative loss in
+anonymity.
 
 \subsection{Transferable Benefits}
 
@@ -66,9 +69,10 @@ verifiable pseudorandom shuffling as the new method for user circuit
 selection. This modified protocol would in theory provide a weakly secure means
 for relays to mint new TorCoin tokens based on their bandwidth
 contribution~\cite{ghosh2014torpath}. Although the research is an ambitious
-attempt to tackle many challenges including the unsolved bandwidth measurement
-problem, the authors are clear in stating that many questions remain regarding
-the security and feasibility of the scheme.
+attempt to simultaneously tackle many challenges including both the bandwidth
+measurement and relay incentivization problems, the authors are clear in stating
+that many questions remain regarding the security and feasibility of the scheme,
+which would in effect require a network-wide overhaul of the design of Tor.
 %While researching on TorCoin-like approach has the potential to help the Tor
 %project on one of the fundamental security problems (i.e., the bandwidth
 %measurement system), outcomes are not clear as many vulnerabilities and
@@ -94,7 +98,7 @@ protocols~\cite{chaum1988untraceable} and efficient but transparent
 probabilistic micropayments. PAR introduces the \emph{honest but curious} bank
 paradigm in which the bank cannot deanonymize clients but is in control of their
 deposited financial assets. As with BRAIDS, PAR suffers from an unscalable
-centralized design.
+design owing to its centralized architecture.
 
 \paragraph*{ORPay, PlusPay, CoinPay} These three protocols, part of the
 Chaumian e-cash tradition of payments schemes, are a series of incremental

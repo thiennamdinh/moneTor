@@ -39,7 +39,8 @@ trifecta of challenging constraints:
 \item \emph{Efficiency}: Tor services millions of concurrent users, all of whom
   maintain largely short-term relationships. A robust payment system must handle
   extremely lightweight and scalable payments so as to accommodate the dynamic
-  and often short-lived activities of these clients.
+  and often short-lived activities of these clients, which may include web
+  browsing and large file transfers.
 \end{itemize}
 
 \textbf{Present Landscape} While a number of prior works satisfy some subset of
@@ -51,7 +52,7 @@ research within the domain of cryptocurrencies. As of this writing, Satoshi
 Nakamoto's Bitcoin whitepaper has already garnered over 4,000 references in
 citing publications~\cite{nakamoto2008bitcoin}.  \footnote{The recency of this
   development is highlighted by the fact that about half of this work is dated
-  after 2017}  This body of work has sparked the development of a multitude of
+  after 2017.}  This body of work has sparked the development of a multitude of
 new techniques that will prove indispensable to our own area of research. Our
 objective then, is to leverage the full extent of these innovations into a
 practical next-generation incentivization strategy for Tor.
@@ -78,8 +79,8 @@ Tor incentives. We make the following contributions in this paper:
   and argue for their efficacy;
 \item Identify an efficient method of throttling to give priority users an
   advantage;
-\item Implement a prototype of our nanopayment protocols extending the Tor protocol
-  in the core C software, featuring more than 15k lines of code; %\op{Add somewhere in the paper a paragraph explaining what is in those 15k lines (everything, but crypto replaced by delays and coin management). }
+\item Implement a prototype of our nanopayment protocols to extend the Tor protocol
+  in the core software, resulting in approximately 15k lines of new code in C; %\op{Add somewhere in the paper a paragraph explaining what is in those 15k lines (everything, but crypto replaced by delays and coin management). }
 \item Conduct large scale simulations to analyze the performance impact of the
   embedded payment and incentivization scheme.
 \end{enumerate}
