@@ -3,7 +3,75 @@
 
 \subsection{Economic considerations}
 
-TODO: summarize the removed section on economic: explain how the tax-redistribution system would favor diversity
+The moneTor scheme allows for relays to offer a \emph{premium bandwidth} product
+to Tor users in exchange for monetary payments. Under this framework,
+financially willing users send payments directly to each relay along their circuits
+in exchange for higher internet bandwidth and faster download speeds relative to
+unpaid users. % The moneTor tokens themselves can be viewed as wrappers for some
+% external financial asset that is converted at an exchange service.
+The moneTor tokens %assets
+may be any form of programmatic money which satisfies the standard properties of
+\textit{scarcity}, \textit{fungibility}, \textit{divisibility},
+\textit{durability}, and
+\textit{transferability}~\cite[p.3]{crump2011phenomenon} A schematic of the cash
+flow cycle is illustrated in Figure~\ref{fig:economic}.
+
+\begin{figure}[h] \centering
+  \includegraphics[trim={0.5cm, 0.5cm, 0.5cm, 0.5cm}, clip, scale=0.7]{images/economic_diagram.png}
+  \caption[Cash Flow]{Cash Flow --- movement of moneTor tokens through the
+    network. The value $\tau$ denotes the fraction of money that is collected
+    for taxation purposes.}
+  \label{fig:economic}
+\end{figure}
+
+We argue that a taxation element is necessary to not drift away from the core
+mission of the Tor project.
+Intuitively, the shape of the network that will emerge in a purely
+profit-seeking environment may not perfectly correspond with the central goals
+of the Tor Project: to advance human rights and freedoms. Inline with this core mission, The Tor Project may for instance desire to compensate
+certain types of relays more than others in order to improve the overall quality
+of the network (e.g., supporting areas where anonymity is particularly important
+but financial resources scarce). To this end, we accommodate for a stream of
+taxed income that is anonymously diverted into a shared pool of funds. These
+funds are selectively redistributed to relays via a transparent policy.  In
+essence, taxation provides a tunable control mechanism for The Tor Project to
+shape the topology of the network towards some notion of optimal diversity and
+performance. The exact content of such policy is an active subject of research
+that is orthogonal to our paper (e.g., Waterfilling~\cite{waterfilling-pets2017}
+argues for security by maximum diversity in endpoints of user paths, and
+TAPS~\cite{taps-ndss2017} argues for security by trust policies).
+
+A key economic question to address is the issue of price determination. While it
+would be tempting to enlist some market-based mechanisms to set premium
+bandwidth prices, any price differentiation between clients or relays inevitably
+leaks more information. This leakage becomes more severe with higher granularity
+payment options as adversaries begin to use price to link payment channels and
+circuits. We therefore impose the constraint that all users should pay a single
+uniform price for premium bandwidth at any time $t$. This price may be set
+through a centralized calculation by the authorities or a more dynamical
+consensus vote reached by the network.
+
+%\subsection{Incentivized Conformity} In a decentralized network, there is no
+%practical way to enforce standard behavior at each local node. We must therefore
+%consider whether all nodes are rationally incentivized to obey the stipulated
+%policies. For instance, we cannot guarantee that relays will actually confer
+%premium bandwidth to paying users. Even though the relay has no particular
+%reason to deviate, the client should periodically monitor her bandwidth and only
+%make payments when they appear to be making a difference. The relationship
+%between the client and relay can then be modeled as a game theoretic tit-for-tat
+%dynamic within the immediate session. Over the long term, non-conforming relays
+%might be blacklisted via Tor's existing reporting system.
+%
+%At the opposite end of the spectrum, relays might overly prioritize premium
+%circuits while rejecting all traffic from unpaid users. They might also attempt
+%to game the tax redistribution process to gain larger share of the proceeds. The
+%bandwidth measurement authorities must anticipate such modes of deviation from
+%the standard behavior to ensure that the risk for a relay to get blacklisted
+%from the network is greater than the incremental gains it might attain from
+%cheating. These attacks, while manageable, suggest that it would be prudent to
+%limit the complexity of our economic policies until we can better study
+%behavioral deviation dynamics in the live network.
+
 
 \subsection{Ledger}
 
@@ -42,7 +110,7 @@ RSCoin~\cite{danezis2015centrally}.
 %signatures~\cite{van2013cryptonote}, and Zerocash, which employs more expensive
 %but more theoretically secure zero-knowledge proofs~\cite{sasson2014zerocash}.
 
-\subsection{Relay Payment Protocols}
+\subsection{Payment Protocols Overview}
 
 In this section we specify formal protocols that comprise the payment
 scheme. All protocols are either two or three party interactions between a
@@ -156,7 +224,7 @@ concrete scheme which incurs an overhead penalty of approximately two
 micropayment operations per nanopayment channel, one at the beginning and one at
 the end of the channel life cycle.
 
-\subsection{Nanopayment Protocols}
+\subsection{Nanopayment Protocols Details}
 In this section, we provide a summarized intuition for the basic steps in the
 payment protocol. A more formal treatment of the steps are provided in
 Appendix~\ref{chap:algorithms} with algorithmic details. Security considerations
