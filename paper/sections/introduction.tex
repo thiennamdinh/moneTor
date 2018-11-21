@@ -25,7 +25,7 @@ the anonymity and performance of the network are both proportional to the number
 of nodes and users. From this perspective, the problem becomes a largely
 economic question: how can we incentivize more relay participation? 
 
-We chose monetary incentives as a participation incentivization, and we design moneTor, a monetary incentive scheme which allows for relays to offer a \emph{premium bandwidth} product
+We chose monetary incentives as a participation incentivization, and we design moneTor: a monetary incentive scheme which allows for relays to offer a \emph{premium bandwidth} product
 to Tor users in exchange for monetary payments. Under this framework,
 financially willing users send payments directly to each relay along their circuits
 in exchange for higher internet bandwidth and faster download speeds relative to
@@ -106,10 +106,11 @@ Tor incentives. We make the following contributions in this paper:
 
 \paragraph*{Roadmap.} In Section~\ref{sec:background}, we draw on technical
 preliminaries from two distinct fields: applied Tor research and cryptographic
-payment channels. Section~\ref{sec:related_work} presents the related work. Our
-contributions begin formally with Section~\ref{sec:economic}, where we first
-describe a high-level economic model for the flow of money through the
-network. In Section~\ref{sec:payment}, we outline the technical construction of
+payment channels. Section~\ref{sec:related_work} presents the related work. 
+%Our contributions begin formally with Section~\ref{sec:economic}, where we first
+%describe a high-level economic model for the flow of money through the
+%network. 
+In Section~\ref{sec:payment}, we outline the technical construction of
 our nanopayment scheme at the payment protocol level. Section~\ref{sec:network}
 expands the technical construction of moneTor to cover modifications at the
 network level. In section~\ref{sec:analysis} we justify our design decisions
