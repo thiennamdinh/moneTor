@@ -36,11 +36,8 @@ spending problem~\cite{jansen2010recruiting}. LIRA is an ideological successor
 to BRAIDs which reduces scalability problems imposed by the centralized
 infrastructure. Clients in LIRA probabilistically ``win'' premium tickets
 without any interaction with the bank. While LIRA improves the efficiency of
-BRAIDS, neither of these designs were constructed to prevent strong threats of
-client cheating in the form of double spending~\cite{jansen2013lira}. Thus, one
-improvement offered by moneTor is the ability to strongly prevent
-double-spending and other forms client cheating without any relative loss in
-anonymity.
+BRAIDS, it suffers from the cheating incentive to continuously build circuits to try to win premium tickets~\cite{jansen2013lira, jansenblogpost}. 
+Thus, comparing to BRAID and LIRA, moneTor offers the ability to strongly prevent double-spending without suffering from an inefficient centralized exchange process~\cite{jansenblogpost}(BRAID) and from incentives to behave differently than non-premium users (LIRA).
 
 \subsection{Transferable Benefits}
 
@@ -62,21 +59,21 @@ underlying Tor architecture.
 %measurement authority place implicit limits on its scalability and
 %security~\cite{jansen2010recruiting}.
 
-\paragraph*{TorPath to TorCoin} TorCoin proposes to revamp the Tor
-architecture into one which can serve as the basis for a new cryptocurrency
-mined via a method called proof-of-bandwidth. The networking component specifies
-verifiable pseudorandom shuffling as the new method for user circuit
-selection. This modified protocol would in theory provide a weakly secure means
-for relays to mint new TorCoin tokens based on their bandwidth
-contribution~\cite{ghosh2014torpath}. Although the research is an ambitious
-attempt to simultaneously tackle many challenges including both the bandwidth
-measurement and relay incentivization problems, the authors are clear in stating
-that many questions remain regarding the security and feasibility of the scheme,
-which would in effect require a network-wide overhaul of the design of Tor.
-%While researching on TorCoin-like approach has the potential to help the Tor
-%project on one of the fundamental security problems (i.e., the bandwidth
-%measurement system), outcomes are not clear as many vulnerabilities and
-%deployment questions remain.
+%\paragraph*{TorPath to TorCoin} TorCoin proposes to revamp the Tor
+%architecture into one which can serve as the basis for a new cryptocurrency
+%mined via a method called proof-of-bandwidth. The networking component specifies
+%verifiable pseudorandom shuffling as the new method for user circuit
+%selection. This modified protocol would in theory provide a weakly secure means
+%for relays to mint new TorCoin tokens based on their bandwidth
+%contribution~\cite{ghosh2014torpath}. Although the research is an ambitious
+%attempt to simultaneously tackle many challenges including both the bandwidth
+%measurement and relay incentivization problems, the authors are clear in stating
+%that many questions remain regarding the security and feasibility of the scheme,
+%which would in effect require a network-wide overhaul of the design of Tor.
+%%While researching on TorCoin-like approach has the potential to help the Tor
+%%project on one of the fundamental security problems (i.e., the bandwidth
+%%measurement system), outcomes are not clear as many vulnerabilities and
+%%deployment questions remain.
 
 \paragraph*{Proof-of-work as anonymous micropayment} Users in this simple design
 provide partial proof-of-work tokens that can then be redeemed by relays for
