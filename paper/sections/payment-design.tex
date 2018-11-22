@@ -22,7 +22,7 @@ of the Tor Project: to advance human rights and freedoms. Inline with this core 
 certain types of relays more than others in order to improve the overall quality
 of the network (e.g., supporting areas where anonymity is particularly important
 but financial resources scarce). To this end, we accommodate for a stream of
-taxed income that is anonymously diverted into a shared pool of funds. These
+taxed income that is anonymously diverted into a shared pool of funds when clients finalize their payments to the relays of their circuit. These
 funds are selectively redistributed to relays via a transparent policy.  In
 essence, taxation provides a tunable control mechanism for The Tor Project to
 shape the topology of the network towards some notion of optimal diversity and
@@ -308,8 +308,7 @@ balance. Correct execution of these procedures allow all honest parties to
 retain their funds in some cases and obtain the full balance of the malicious
 party's escrowed funds in others.
 
-\subsection{Tor Integration}
-
+\subsection{Integration in Tor circuits}
 Up to this point, we have described payments that occur between a single client
 and a single relay. In practice, it is typical for each client to maintain a
 handful of concurrently active circuits,\footnote{For instance, the popular Tor
@@ -322,9 +321,9 @@ months. We optimize toward this setup by enabling transparent and direct payment
 channels between the client and guard, considerably reducing the network
 overhead costs.
 
-\flo{TODO: integrates the tax stuff in the Nano-setup and remove this whole section}
+\subsection{Tax Integration}
 
-The zero-knowledge setup also allows an elegant way to anonymously handle the
+The zero-knowledge setup allows an elegant way to anonymously handle the
 tax collection policy. Thus far, we have
 treated the nanopayment value $\delta$ as symmetric for both the client and
 relay leg. In practice, it requires only a trivial modification to specify
@@ -344,7 +343,6 @@ money as this process is well-defined in setup of the network protocol.
 
 \subsection{Payment Security and Anonymity}
 \label{subsec:paysecurity}
-\flo{TODO: give the theorem in this section}
 Our security model must account for both privacy and payment security. The
 privacy threat model is derived from the local active adversary paradigm
 ubiquitously found in Tor research~\cite{dingledine2004tor}. Like all cells in
@@ -352,10 +350,15 @@ Tor, Nanopayment messages are locally linkable by relays participating in the
 circuit. However, since each circuit is only ever associated with one anonymous
 micropayment channel at any given time, we can guarantee that relays and
 intermediaries cannot link two nanopayment channels with the same user. Formal
-definitions, theorems, and proofs are provided in Appendix~\ref{sec:proof}.
+definitions and proofs are provided in Appendix~\ref{sec:proof} for the following theorem:
 
-Observing the cash-out transactions on the ledger does not reveal any
-information regarding the source of the payment. Moreover, any communication in
+\begin{theorem}
+The nanopayment channel scheme satisfies the properties of anonymity (\ref{def:anon1}, \ref{def:anon2})
+ and security (\ref{def:balance}) under the restriction that the adversary does not abort before Nano-Close finished, the restrictions that at most one nanopayment channel can be open per micropayment channel, the restriction that the client must make at least one micropayment which has a monetary value hidden from I, the assumptions that the commitment scheme is secure, the zero-knowledge system is simulation extractable and zero-knowledge, and the hash function used to create the hashchain and verify the preimage during the Nano-Pay is a cryptographic hash function.
+
+\end{theorem}
+
+Any communication in
 our tripartite nanopayment protocol are protected by Tor circuits. Hence,
 relationship between client to intermediary, client to ledger, relay to
 intermediary and relay to ledger are themselves anonymized by Tor circuits. If
@@ -378,10 +381,10 @@ Informally, we claim the following anonymity guarantees relative to unmodified T
   % if you want to be more explict
 \end{enumerate}
 
-The unmodified construction exposes a subtle passive attack by $I$. By examining
+Our current implementation exposes a subtle passive attack by $I$. By examining
 the final number of payments made on each channel in conjunction with the
 globally fixed nanopayment cost, $I$ may potentially link all of $C$'s
-nanopayment channels.\footnote{This attack is best illustrated with a trivial
+nanopayment channels\footnote{This attack is best illustrated with a trivial
   example. Suppose that $I$ facilitates a number of nanopayment channels with
   the following number of payments, each of which is known to represent one unit
   of money: $[58, 839, 356, 881, 23, 89, 561]$ Now that $C$ closes her
@@ -389,7 +392,7 @@ nanopayment channels.\footnote{This attack is best illustrated with a trivial
   micropayment channel is closed, $I$ must necessary gain knowledge of the final
   balance of funds and can easily link the first and third nanopayment channels
   as belonging to the same $C$.}. To mitigate this vulnerability, we stipulate
-that $C$ must make a least one micropayment, which has a monetary value hidden
+that $C$ must make at least one micropayment, which has a monetary value hidden
 from $I$, before closing a micropayment channel. We expect that this
 micropayment should contain a random value not greater than the channel escrow
 maximum value as stated in the Tor consensus and may be made to another account
@@ -398,13 +401,15 @@ owned by $C$.
 Our threat model for payment security is similar to those found in prior works
 in blockchain micropayment channels~\cite{poon2016bitcoin}. In such models, the
 user is protected from malicious intermediaries by the ability to prove
-misbehavior to a global ledger. The security of the ledger will be subject to
-the guarantees made by the cryptocurrency interface~\cite{back2014enabling,
-  poon2017plasma}. This is in direct contrast to prior Chaumian e-cash proposals
-that employ the \emph{honest but curious} model for the central bank in which
-banks have full control over user funds. Indeed, this is the basis for the
-difference in terminology between prior \emph{central banks} and the moneTor
-\emph{ledger}.
+misbehavior to a global ledger. Our protocols also guarantee that the client would not be claimed more money than initially agreed (Balance property \ref{def:balance}). 
+%
+%The security of the ledger will be subject to
+%the guarantees made by the cryptocurrency interface~\cite{back2014enabling,
+%  poon2017plasma}. This is in direct contrast to prior Chaumian e-cash proposals
+%that employ the \emph{honest but curious} model for the central bank in which
+%banks have full control over user funds. Indeed, this is the basis for the
+%difference in terminology between prior \emph{central banks} and the moneTor
+%\emph{ledger}.
 
 %An intermediary however, is able to observe any nanopayment channel establishment and closure linked to a particular micro payment channel. Because each nanopayment channel matches a particular Tor circuit, it can match the opening/closure timing of nano channels to track the activity of an anonymous user through time. User's activity may leak some information about the user itself or the user's behaviour (e.g., the timezone). Considering such side-channels is out-of-scope of this paper, however our moneTor design would make inefficient such attack if users open micro-channels with multiple intermediaries and hide their behaviour with a random use of the set of micro-channels they have opened. This would however increase the amount of escrowed fund needed.
 

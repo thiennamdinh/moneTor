@@ -56,18 +56,22 @@ flow on disk.
 
 \paragraph*{Observations}
 
-\begin{figure} \centering
-  \includegraphics[width=0.4\textwidth]{images/exitmeasurement.png}
+\begin{figure*} \centering
+\begin{subfigure}[t]{0.47\textwidth} \centering
+  \includegraphics[width=0.9\textwidth]{images/exitmeasurement.png}
   \caption{Time Profile --- Average distribution of traffic across circuit
     lifetime beginning with the first DNS request.}
   \label{fig:statsa}
-\end{figure}
-\begin{figure} \centering
-  \includegraphics[width=0.4\textwidth]{images/totcellcountscdf.png}
+\end{subfigure}
+\begin{subfigure}[t]{0.47\textwidth} \centering\centering
+  \includegraphics[width=0.9\textwidth]{images/totcellcountscdf.png}
   \caption{Total Counts --- Distribution of circuit size with respect to the
     total number of cells processed}
 \label{fig:statsb}
-\end{figure}
+\end{subfigure}
+\caption{Data collection from 5 old and stable exit relays with a cumulative bandwidth of $\approx$50 MiB/s}
+\label{fig:stats}
+\end{figure*}
 
 
 Our measurements successfully captured several important pieces of information
