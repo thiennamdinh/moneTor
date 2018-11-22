@@ -308,19 +308,6 @@ balance. Correct execution of these procedures allow all honest parties to
 retain their funds in some cases and obtain the full balance of the malicious
 party's escrowed funds in others.
 
-\subsection{Integration in Tor circuits}
-Up to this point, we have described payments that occur between a single client
-and a single relay. In practice, it is typical for each client to maintain a
-handful of concurrently active circuits,\footnote{For instance, the popular Tor
-  Browser user application typically does not share circuits with streams targeting a different destination address unless those streams come from the same SOCKS connection.}  each of
-which requires three streams of payments to the guard, middle, and exit
-relays. These channels must be actively managed to optimize computational
-overhead as well as money flow. Furthermore, connections between the client and
-the guard relay are transparent and persistent across the timescale of several
-months. We optimize toward this setup by enabling transparent and direct payment
-channels between the client and guard, considerably reducing the network
-overhead costs.
-
 \subsection{Tax Integration}
 
 The zero-knowledge setup allows an elegant way to anonymously handle the
@@ -340,6 +327,19 @@ many nanopayment channels. When it is time for $I$ to cash out the full
 micropayment channel, $L$ simply divides the funds between the $I$ and the tax
 authority. Note that this does \emph{not} mean that $L$ can arbitrarily control
 money as this process is well-defined in setup of the network protocol.
+
+\subsection{Integration in Tor circuits}
+Up to this point, we have described payments that occur between a single client
+and a single relay. In practice, it is typical for each client to maintain a
+handful of concurrently active circuits,\footnote{For instance, the popular Tor
+  Browser user application typically does not share circuits with streams targeting a different destination address unless those streams come from the same SOCKS connection.}  each of
+which requires three streams of payments to the guard, middle, and exit
+relays. These channels must be actively managed to optimize computational
+overhead as well as money flow. Furthermore, connections between the client and
+the guard relay are transparent and persistent across the timescale of several
+months. We optimize toward this setup by enabling transparent and direct payment
+channels between the client and guard, considerably reducing the network
+overhead costs.
 
 \subsection{Payment Security and Anonymity}
 \label{subsec:paysecurity}
