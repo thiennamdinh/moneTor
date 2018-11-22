@@ -1,8 +1,28 @@
 \documentclass[USenglish,oneside,twocolumn]{article}
+\makeatletter
+
+% Don't use the obsolete fixltx2e package on newer systems (2015 or later).
+\@namedef{ver@fixltx2e.sty}{2006/03/24}
+\@namedef{opt@fixltx2e.sty}{}
+
+% Don't use the multicol package (it raises a warning in twocolumn format).
+\@namedef{ver@multicol.sty}{2016/04/07}
+\@namedef{opt@multicol.sty}{}
+
+% Footnote hyperlinks don't work due to a conflict between hyperref and footmisc.
+% Turning them off prevents the warnings and broken links.
+\PassOptionsToPackage{hyperfootnotes=false}{hyperref}
 \usepackage[utf8]{inputenc}%(only for the pdftex engine)
 %\RequirePackage[no-math]{fontspec}%(only for the luatex or the xetex engine)
 
+
 \usepackage[big]{dgruyter_NEW}
+
+
+% Don't use non-existant fonts for labels in footnotes.
+\def\@makefnmark{\hbox{\@textsuperscript{\normalfont\@thefnmark}}}
+\makeatother
+\usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 \usepackage{subcaption}
 %\usepackage{algorithmicx}
@@ -10,6 +30,9 @@
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 \algrenewcommand{\algorithmiccomment}[1]{{\color{gray}$\triangleright$ #1}}
+\makeatletter
+\def\plist@algorithm{\space}
+\makeatother
 \usepackage[
 n,
 advantage,
@@ -42,7 +65,6 @@ keys
 \newcommand{\op}[1]{ {\color{olive} OP: #1}}
 
 \cclogo{\includegraphics{by-nc-nd.pdf}}
-
 \begin{document}
  
 

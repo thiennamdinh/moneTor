@@ -217,7 +217,7 @@ the end of the channel life cycle.
 \subsection{Nanopayment Protocols Details}
 In this section, we provide a summarized intuition for the basic steps in the
 payment protocol. A more formal treatment of the steps are provided in
-Appendix~\ref{chap:algorithms} with algorithmic details. Security considerations
+Appendix~\ref{sec:algorithms} with algorithmic details. Security considerations
 are detailed next in Section~\ref{subsec:paysecurity} and formally
 described in Appendix~\ref{sec:proof}.
 
@@ -322,8 +322,10 @@ months. We optimize toward this setup by enabling transparent and direct payment
 channels between the client and guard, considerably reducing the network
 overhead costs.
 
+\flo{TODO: integrates the tax stuff in the Nano-setup and remove this whole section}
+
 The zero-knowledge setup also allows an elegant way to anonymously handle the
-tax collection policy described in Section~\ref{sec:economic}. Thus far, we have
+tax collection policy. Thus far, we have
 treated the nanopayment value $\delta$ as symmetric for both the client and
 relay leg. In practice, it requires only a trivial modification to specify
 separate values of $\delta_C$ and $\delta_R$ such that the following equality is
@@ -342,6 +344,7 @@ money as this process is well-defined in setup of the network protocol.
 
 \subsection{Payment Security and Anonymity}
 \label{subsec:paysecurity}
+\flo{TODO: give the theorem in this section}
 Our security model must account for both privacy and payment security. The
 privacy threat model is derived from the local active adversary paradigm
 ubiquitously found in Tor research~\cite{dingledine2004tor}. Like all cells in
