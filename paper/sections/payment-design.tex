@@ -14,24 +14,35 @@
 %  \label{fig:economic}
 %\end{figure}
 
-We argue that a taxation element is necessary to not drift away from the core
-mission of the Tor project.
-Intuitively, the shape of the network that will emerge in a purely
-profit-seeking environment may not perfectly correspond with the central goals
-of the Tor Project: to advance human rights and freedoms. Inline with this core mission, The Tor Project may for instance desire to compensate
-certain types of relays more than others in order to improve the overall quality
-of the network (e.g., supporting areas where anonymity is particularly important
-but financial resources scarce). To this end, we accommodate for a stream of
-taxed income that is anonymously diverted into a shared pool of funds when clients finalize their payments to the relays of their circuit. These
-funds are selectively redistributed to relays via a transparent policy.  In
-essence, taxation provides a tunable control mechanism for The Tor Project to
-shape the topology of the network towards some notion of optimal diversity and
-performance. The exact content of such policy is an active subject of research
-that is orthogonal to our paper (e.g., Waterfilling~\cite{waterfilling-pets2017}
-argues for security by maximum diversity in endpoints of user paths, and
-TAPS~\cite{taps-ndss2017} argues for security by trust policies).
+Given the delicate nature of this research area, a key motivation in
+the design of our scheme is to explicitly accommodate some of the more
+consequential economic considerations. For instance, to ensure that
+tokens maintain real-world value, the Tor Project has two clear
+choices. One option is to reserve total monetary policy, allowing
+moneTor tokens to mirror some external value signal such as the USD or
+the Euro. Alternatively, by making use of such inter-ledger protocols
+as~\cite{back2014} or~\cite{poon2017plasma}, tokens can act act
+as wrapper for an external cryptocurrency such as Bitcoin or
+Ethereum. This choice represents a tradeoff between financial
+stability and responsibility and our technical scheme allows for
+either option.
 
-A key economic question to address is the issue of price determination. While it
+The shape of the network that will emerge in a purely profit-seeking
+environment may not perfectly correspond with the central goals of the
+Tor Project: to advance human rights and freedoms. To this end, we
+introduce a taxation element, enabling a tunnable control mechanism
+for The Tor Project to shape the topology of the network towards some
+notion of desirable diversity and performance. Taxes in moneTor are
+anonymously diverted into a shared global fund and eventually
+redistributed to relays via a transparent policy, for instance, to
+support areas where anonymity is needed but financial resources are
+scarce. The exact content of such policy is an active subject of
+research that is orthogonal to our paper.~\footnote{E.g.,
+  Waterfilling~\cite{waterfilling-pets2017} argues for security by
+  maximum diversity in endpoints of user paths, and
+  TAPS~\cite{taps-ndss2017} argues for security by trust policies.}
+
+The final considerationis the issue of price determination. While it
 would be tempting to enlist some market-based mechanisms to set premium
 bandwidth prices, any price differentiation between clients or relays inevitably
 leaks more information. This leakage becomes more severe with higher granularity
