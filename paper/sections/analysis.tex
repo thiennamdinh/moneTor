@@ -109,6 +109,35 @@ software implementation within the native Tor codebase.
 
 \subsection{Prototype}
 
+\begin{figure*} \centering
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
+		\caption{Download Time Overhead}
+		\label{fig:overhead_ttlastbyte}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_throughput.pdf}
+		\caption{Throughput Overhead}
+		\label{fig:overhead_throughput}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_memory.pdf}
+		\caption{Simulation Memory}
+		\label{fig:overhead_shadow}
+	\end{subfigure}
+	\caption{Global Overhead --- Comparison of overhead in pure multicore
+          and singlecore network
+          %% conditions. Figure~\ref{fig:overhead_ttlastbyte} shows two sets of
+          %% download time CDF curves for each file size (2 MiB and 5 MiB),
+          %% Figure~\ref{fig:overhead_throughput} shoes the 5 minute moving average
+          %% throughput over time, and Figure~\ref{fig:overhead_shadow} shows the
+          %% memory consumption across the experiment lifetime. The simulation
+          %% includes 100 relays, 2 authorities, 1 ledger authority, 10
+          %% intermediaries and 1000 Tor clients scaled down from the public
+          consensus file `2018-02-03-00-00-00-consensus'.}
+	\label{fig:overhead}
+\end{figure*}
+
 A substantial contribution of the research is embedded within our implementation
 of the moneTor framework. The modifications, applied to Tor release version
 0.3.2.10, cover approximately fifteen thousand added lines of code across Tor's
@@ -154,35 +183,6 @@ through the following proceeding experiments.
 \label{subsec:methodology}
 
 
-\begin{figure*} \centering
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
-		\caption{Download Time Overhead}
-		\label{fig:overhead_ttlastbyte}
-	\end{subfigure}
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_throughput.pdf}
-		\caption{Throughput Overhead}
-		\label{fig:overhead_throughput}
-	\end{subfigure}
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_memory.pdf}
-		\caption{Simulation Memory}
-		\label{fig:overhead_shadow}
-	\end{subfigure}
-	\caption{Global Overhead --- Comparison of overhead in pure multicore
-          and singlecore network
-          %% conditions. Figure~\ref{fig:overhead_ttlastbyte} shows two sets of
-          %% download time CDF curves for each file size (2 MiB and 5 MiB),
-          %% Figure~\ref{fig:overhead_throughput} shoes the 5 minute moving average
-          %% throughput over time, and Figure~\ref{fig:overhead_shadow} shows the
-          %% memory consumption across the experiment lifetime. The simulation
-          %% includes 100 relays, 2 authorities, 1 ledger authority, 10
-          %% intermediaries and 1000 Tor clients scaled down from the public
-          consensus file `2018-02-03-00-00-00-consensus'.}
-	\label{fig:overhead}
-\end{figure*}
-
 Experiments were conducted using the Tor shadow simulator
 tool~\cite{jansen2011shadow, tracey2018high}. We ran two sets of experiments at different
 scales from a consensus document published in early February 2018. The first set featured 100 relays, 1000 clients, 10 intermediaries, and
@@ -224,6 +224,30 @@ results are summarized in Figure~\ref{fig:overhead}.
 
 % Add information about how we simulate singlecore and multicore hardware
 % That gonna overflow 12 pages, though :/
+
+\begin{figure*} \centering
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_establish.pdf}
+		\caption{Nano-Establish}
+\label{fig:payments_establish}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_pay.pdf}
+		\caption{First Payment}
+\label{fig:ttfp}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_close.pdf}
+		\caption{Nano-Close}
+\label{fig:payments_close}
+	\end{subfigure}
+	\caption{Protocol Execution Time --- Time to finish each protocol step
+          split across interactions with each of the three relays. The
+          simulation includes 100 relays, 2 authorities, 1 ledger authority, 10
+          intermediaries and 1000 Tor clients scaled down from the public
+          consensus file `2018-02-03-00-00-00-consensus'.}
+\label{fig:latencymeasurements}
+\end{figure*}
 
 Our findings indicate that even in the worst case scenario, our system incurs
 statistically negligible overhead at these scales across all three measures of
@@ -278,30 +302,6 @@ correctly pre-built for the circuit, this measure is equivalent to a single trip
 toward each relay. Comparing this Figure~\ref{fig:ttfp} to
 Figure~\ref{fig:payments_establish}, we observe the effectiveness of preemptive
 channel building.
-
-\begin{figure*} \centering
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_establish.pdf}
-		\caption{Nano-Establish}
-\label{fig:payments_establish}
-	\end{subfigure}
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_pay.pdf}
-		\caption{First Payment}
-\label{fig:ttfp}
-	\end{subfigure}
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_close.pdf}
-		\caption{Nano-Close}
-\label{fig:payments_close}
-	\end{subfigure}
-	\caption{Protocol Execution Time --- Time to finish each protocol step
-          split across interactions with each of the three relays. The
-          simulation includes 100 relays, 2 authorities, 1 ledger authority, 10
-          intermediaries and 1000 Tor clients scaled down from the public
-          consensus file `2018-02-03-00-00-00-consensus'.}
-\label{fig:latencymeasurements}
-\end{figure*}
 
 In all protocol phases, we observe that latency for guard relays are negligible
 in comparison to the middle and exit relays, further validating our design
