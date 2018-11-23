@@ -147,25 +147,33 @@ following requirements are met.
 %end result is a game-theoretic notion of security whereby all parties are
 %incentivized to behave honestly.
 
-%\paragraph*{Payment Channels} The micropayment channel concept has
-%since been extended to support anonymity design goals. Z-Channel specifies an
-%implementation designed specifically for Zerocash which only supports two-party
-%channels~\cite{zhang2017z}. Green and Miers designed Bolt, which is the only
-%known anonymous micropayment scheme to date that supports three-party
-%intermediary channels~\cite{green2017bolt}. In this framework, the anonymity set
-%is defined with respect to the collection of users connected to the same
-%intermediary. In other words, given a set of end users
-%$E_{all} = \{E_1, E_2, ... E_n\}$ who each have an active channel with $I$,
-%$E_a$ should be able to send a secure payment to $E_b$ such that $I$ cannot
-%identify $E_a$ or $E_b$ from $E_{all}$ nor can $I$ infer the payment value. Of
-%course, $I$ must still be able to verify that the payment is valid and that its
-%internal channel states have been updated accordingly.  \footnote{This is
-%  achieved using a combination of zero-knowledge proofs and blind signatures, in
-%  the case of Bolt.} Several nuances arise concerning end user privacy in certain
-%situations, such as during the micropayment setup escrow phase and in the event
-%that $I$ maliciously aborts. We do not consider it necessary to discuss these
-%caveats here as they are not prohibitively problematic for our later treatment
-%of anonymous payment channels.
+\paragraph*{Anonymous Payment Channels} The micropayment channel concept has
+since been extended to support anonymity design goals. Tumblebit is a
+channel-like mixing protocol designed for Bitcoin that allows fast and
+anonymous off-chain payments~\cite{heilman2017tumblebit}. Malvavolta
+et\ al.\ describe a varient on payment channels that provides Tor-like
+privacy in the sense that sender/receiver privacy is preserved under
+the assumption of at least one trusted
+intermediary~\cite{malavolta2017concurrency}. However, these schemes
+are not ideal for our purposes as~\cite{heilman2017tumblebit} requires
+unrealistic synchronization between payment parties for the Tor
+environment while~\cite{malavolta2017concurrency} introduces
+additional potentially malicious parties. More applicable is Bolt, a
+tripartite anonymous channel protocol based on zero-knowledge proofs
+proposed by Green and Miers~\cite{green2017bolt}. In this framework,
+the anonymity set is defined with respect to the collection of users
+connected to the same intermediary. In other words, given a set of end
+users $E_{all} = \{E_1, E_2, ... E_n\}$ who each have an active
+channel with $I$, $E_a$ should be able to send a secure payment to
+$E_b$ such that $I$ cannot identify $E_a$ or $E_b$ from $E_{all}$ nor
+can $I$ infer the payment value. Of course, $I$ must still be able to
+verify that the payment is valid and that its internal channel states
+have been updated accordingly. Several nuances arise concerning end
+user privacy in certain situations, such as during the micropayment
+setup escrow phase and in the event that $I$ maliciously aborts. We do
+not consider it necessary to discuss these caveats here as they are
+not prohibitively problematic for our later treatment of anonymous
+payment channels.
 
 %%% Local Variables:
 %%% mode: latex
