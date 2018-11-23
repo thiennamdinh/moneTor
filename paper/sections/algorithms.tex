@@ -6,8 +6,8 @@ channels.
 We adopt the following conventions in our algorithms.
 
 \begin{itemize}
-\item All variable names in this section except those in $Create Wallet$ are
-  globally unique.
+%% \item All variable names in this section except those in $Create Wallet$ are
+%%   globally unique.
 \item Variable subscripts denote a party or role ((I)ntermediary,
   (C)lient, (R)elay, (E)nd user).
 \item New nanopayment variables are prefixed with the character
@@ -105,7 +105,7 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
         \State{Abort$()$ \Comment{consider new micropayment channel}}
       \EndIf{}
       \State{$\epsilon_C \gets \delta_C * n$}
-      \State{$(nwpk_C, nwsk_C, nwCom_C, n\pi_C) \gets$ Wal$(pp, pk_I, w_C, \epsilon_C)$}
+      \State{$(nwpk_C, nwsk_C, nwCom_C, n\pi_C) \gets $Wal$(pp, pk_I, w_C, \epsilon_C)$}
       \State{$\delta_R \gets -(\delta_C  + tax)$} \Comment{the tax is a net profit for $I$}
       \State{$HC \gets $MakeHC$($Random$(), n)$}
       \State{$nT \gets (\delta_C, \delta_R, n, HC[0])$}
@@ -231,10 +231,9 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Close]{\textbf{Nano-Close}
-    Protocol between an end user (client or relay) and an intermediary to close
-    out the nanopayment channel and receive a micropayment wallet. Run any time
-    after the circuit closure. Also, the relay must close first}
+  \caption[Nano-Close]{\textbf{Nano-Close} Protocol between an end
+    user and an intermediary to close a channel.}
+
   \begin{algorithmic}[1]
     \State{$\forall E \in \{Client, Relay\}$}
     \Procedure{EndUser}{$pp, pk_I, w_E, nT, ncsk_E, nS_E$}
@@ -243,7 +242,7 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
       \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E, \_)$}
       \State{parse $nS_E$ as $(k, hc^k)$}
       \State{$\epsilon_E \gets \delta_C * k$ if (EndUser = Client) else $ \delta_R * k$}
-      \State{$(wpk'_E, wsk'_E, wCom'_E, \pi'_E) \gets $Wal$(pp, pk_I, wpk_B, \sigma^w_E, B_E, \epsilon_E$)}
+      \State{$(wpk'_E, wsk'_E, wCom'_E, \pi'_E) \gets$ $Wal(pp, pk_I, wpk_B, \sigma^w_E, B_E, \epsilon_E$)}
       \State{Intermediary.Send$(wpk_E, wCom'_E, \pi'_E, nT, \epsilon_E, k, hc^k)$}
     \EndProcedure{}
 
@@ -293,9 +292,7 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 
 \begin{algorithm}
   \caption[Nano-Refund]{\textbf{Nano-Refund} Algorithm by an end user to close a micropayment
-    channel and claim ledger funds. This is a modified version of
-    Bolt's Refund algorithm to also allows for granular claims on
-    open nanopayment channels}
+    channel and claim ledger funds.}
   \begin{algorithmic}[1]
     \State{$\forall E \in \{Client, Relay\}$}
     \Function{EndUser}{$pp, csk_E, w_E, nT, ncsk_E, nS_E, nrt_E$}
