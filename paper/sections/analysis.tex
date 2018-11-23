@@ -58,13 +58,13 @@ flow on disk.
 
 \begin{figure*} \centering
 \begin{subfigure}[t]{0.47\textwidth} \centering
-  \includegraphics[width=0.9\textwidth]{images/exitmeasurement.png}
+  \includegraphics[width=0.7\textwidth]{images/exitmeasurement.png}
   \caption{Time Profile --- Average distribution of traffic across circuit
     lifetime beginning with the first DNS request.}
   \label{fig:statsa}
 \end{subfigure}
 \begin{subfigure}[t]{0.47\textwidth} \centering\centering
-  \includegraphics[width=0.9\textwidth]{images/totcellcountscdf.png}
+  \includegraphics[width=0.7\textwidth]{images/totcellcountscdf.png}
   \caption{Total Counts --- Distribution of circuit size with respect to the
     total number of cells processed}
 \label{fig:statsb}
@@ -153,6 +153,36 @@ through the following proceeding experiments.
 \subsection{Methodology}
 \label{subsec:methodology}
 
+
+\begin{figure*} \centering
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
+		\caption{Download Time Overhead}
+		\label{fig:overhead_ttlastbyte}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_throughput.pdf}
+		\caption{Throughput Overhead}
+		\label{fig:overhead_throughput}
+	\end{subfigure}
+	\begin{subfigure}[t]{0.32\textwidth} \centering
+\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_memory.pdf}
+		\caption{Simulation Memory}
+		\label{fig:overhead_shadow}
+	\end{subfigure}
+	\caption{Global Overhead --- Comparison of overhead in pure multicore
+          and singlecore network
+          %% conditions. Figure~\ref{fig:overhead_ttlastbyte} shows two sets of
+          %% download time CDF curves for each file size (2 MiB and 5 MiB),
+          %% Figure~\ref{fig:overhead_throughput} shoes the 5 minute moving average
+          %% throughput over time, and Figure~\ref{fig:overhead_shadow} shows the
+          %% memory consumption across the experiment lifetime. The simulation
+          %% includes 100 relays, 2 authorities, 1 ledger authority, 10
+          %% intermediaries and 1000 Tor clients scaled down from the public
+          consensus file `2018-02-03-00-00-00-consensus'.}
+	\label{fig:overhead}
+\end{figure*}
+
 Experiments were conducted using the Tor shadow simulator
 tool~\cite{jansen2011shadow}. We ran two sets of experiments at different
 scales from a consensus document published in early February 2018. The first set featured 100 relays, 1000 clients, 10 intermediaries, and
@@ -194,35 +224,6 @@ results are summarized in Figure~\ref{fig:overhead}.
 
 % Add information about how we simulate singlecore and multicore hardware
 % That gonna overflow 12 pages, though :/
-
-\begin{figure*} \centering
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
-		\caption{Download Time Overhead}
-		\label{fig:overhead_ttlastbyte}
-	\end{subfigure}
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_throughput.pdf}
-		\caption{Throughput Overhead}
-		\label{fig:overhead_throughput}
-	\end{subfigure}
-	\begin{subfigure}[t]{0.32\textwidth} \centering
-\includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_memory.pdf}
-		\caption{Simulation Memory}
-		\label{fig:overhead_shadow}
-	\end{subfigure}
-	\caption{Global Overhead --- Comparison of overhead in pure multicore
-          and singlecore network
-          conditions. Figure~\ref{fig:overhead_ttlastbyte} shows two sets of
-          download time CDF curves for each file size (2 MiB and 5 MiB),
-          Figure~\ref{fig:overhead_throughput} shoes the 5 minute moving average
-          throughput over time, and Figure~\ref{fig:overhead_shadow} shows the
-          memory consumption across the experiment lifetime. The simulation
-          includes 100 relays, 2 authorities, 1 ledger authority, 10
-          intermediaries and 1000 Tor clients scaled down from the public
-          consensus file `2018-02-03-00-00-00-consensus'.}
-	\label{fig:overhead}
-\end{figure*}
 
 Our findings indicate that even in the worst case scenario, our system incurs
 statistically negligible overhead at these scales across all three measures of
