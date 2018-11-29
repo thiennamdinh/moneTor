@@ -17,11 +17,11 @@
 Given the delicate nature of this research area, a key motivation in
 the design of our scheme is to explicitly accommodate some of the more
 consequential economic considerations. For instance, to ensure that
-tokens maintain real-world value, the Tor Project has two clear
+tokens maintain real-world value, the Tor Project has two 
 choices. One option is to reserve total monetary policy, allowing
 moneTor tokens to mirror some external value signal such as the USD or
 the Euro. Alternatively, by making use of such inter-ledger protocols
-as~\cite{back2014} or~\cite{poon2017plasma}, tokens can act act
+as~\cite{back2014enabling} or~\cite{poon2017plasma}, tokens can act act
 as wrapper for an external cryptocurrency such as Bitcoin or
 Ethereum. This choice represents a tradeoff between financial
 stability and responsibility and our technical scheme allows for
@@ -89,7 +89,7 @@ simply introduce a new ledger authority role to maintain the global payment
 state on a public tamper-evident database~\cite{crosby2009efficient}. To
 maximize availability, this ledger may also be distributed across several
 authorities with, for example, the architecture proposed by
-RSCoin~\cite{danezis2015centrally}.
+RSCoin~\cite{danezis2015centrally}. This work focuses on payment protocol designs and evaluation. Therefore, we consider the investigation and choice of the right ledger technology as an independent problem out of scope of this paper.
 
 %\op{Maybe add that RScoin might be a good ledger architecture on which our protocols rely?}
 
@@ -149,11 +149,10 @@ specifications~\cite{green2017bolt}.
 
 While anonymous micropayment channels present a tremendous advance for many
 applications, the relatively heavy cryptography ($37-100\ ms$) and communication
-(7 message legs) is a prohibitive expense for Tor relay payments.\footnote{In addition to
-concerns regarding global network overhead, it is also desirable to keep the
-barrier of entry low for smaller relay operators.} To overcome this
-barrier, we present a new payment layer design enabling far more efficient
-nanopayments that will satisfy our constraints.
+(7 message legs) is a prohibitive expense for Tor relay payments. Indeed, using Bolt would not permit a fair exchange between a client and a relay since we would need several \textit{RTTs} to complete a payment while ``consuming'' premium bandwidth and not being able to keep up with payments (in Bolt, the previous Pay needs to be finished to start the next one). Moreover, in terms of CPU overhead, it is also desirable to keep the
+barrier of entry low for smaller relay operators. To overcome these
+concerns, we present a new payment layer design enabling far more efficient
+nanopayments that will satisfy our fair exchange problem and our overhead problem.
 
 \textbf{moneTor} The moneTor construction makes use of the existing anonoymous
 micropayment structure to facilitate \emph{locally transparent nanopayments}. In
@@ -228,6 +227,7 @@ micropayment operations per nanopayment channel, one at the beginning and one at
 the end of the channel life cycle.
 
 \subsection{Nanopayment Protocols Details}
+\label{sec:nanopaymentdetails}
 In this section, we provide a summarized intuition for the basic steps in the
 payment protocol. A more formal treatment of the steps are provided in
 Appendix~\ref{sec:algorithms} with algorithmic details. Security considerations
@@ -394,7 +394,7 @@ Informally, we claim the following anonymity guarantees relative to unmodified T
   % if you want to be more explict
 \end{enumerate}
 
-Our current implementation exposes a subtle passive attack by $I$. By examining
+Our current payment protocols expose a subtle passive attack by $I$ which our security model does not capture. By examining
 the final number of payments made on each channel in conjunction with the
 globally fixed nanopayment cost, $I$ may potentially link all of $C$'s
 nanopayment channels\footnote{This attack is best illustrated with a trivial

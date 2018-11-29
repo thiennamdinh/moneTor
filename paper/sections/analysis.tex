@@ -58,13 +58,13 @@ flow on disk.
 
 \begin{figure*} \centering
 \begin{subfigure}[t]{0.47\textwidth} \centering
-  \includegraphics[width=0.8\textwidth]{images/exitmeasurement.png}
+  \includegraphics[width=0.7\textwidth]{images/exitmeasurement.png}
   \caption{Time Profile --- Average distribution of traffic across circuit
     lifetime beginning with the first DNS request.}
   \label{fig:statsa}
 \end{subfigure}
 \begin{subfigure}[t]{0.47\textwidth} \centering\centering
-  \includegraphics[width=0.8\textwidth]{images/totcellcountscdf.png}
+  \includegraphics[width=0.7\textwidth]{images/totcellcountscdf.png}
   \caption{Total Counts --- Distribution of circuit size with respect to the
     total number of cells processed}
 \label{fig:statsb}
@@ -89,7 +89,7 @@ It is also evident from Figure~\ref{fig:statsa} that most of the traffic is usua
 carried within the first few tens of seconds, and that all types of traffic we
 collected seems to follow the same rule. From that result, we believe that the
 reliability of payment is critical within the first few seconds, especially from
-a relay viewpoint. Our payment channels should ideally be established and ready
+a relay viewpoint. This result highlight our choice to extend Bolt to offer high fairness. Our payment channels should ideally be established and ready
 before the user begins to use the circuit. While this result cannot be
 guaranteed for an unbounded number of circuits, a well-designed preemptive
 circuit build strategy should do a sufficient job of eliminating channel
@@ -144,7 +144,7 @@ of the moneTor framework. The modifications, applied to Tor release version
 core C software. We emphasize that the implementation is engineered solely for
 our experiments. Most notably, expensive cryptographic operations such as zpk
 proofs and commitments were simulated using methods that account for Shadow's
-unique virtual time management. We consider both scenarios in which the
+unique virtual time management~\cite{jansen2011shadow}. We consider both scenarios in which the
 simulated Tor process is running on a multicore or singlecore processor. In the
 multicore case, the cryptographic operations are replaced by an ``idle'' command
 that allows the virtual node to complete other tasks in parallel. In the
@@ -289,7 +289,7 @@ results shown here are collected from a worst case multicore experiment
 featuring 100 relays and 1000 clients all of whom run premium circuits. To
 highlight the effects of native latency in the Tor network, we show payments
 split across each relay role of guard, middle, and exit. Recall that moneTor
-makes use of high-overhead, low-marginal cost payment channels. The bulk of the
+makes use of high-overhead, low-marginal cost payment channels (i.e., the channels take time to build but the client needs them long after they are built). The bulk of the
 cost in our scheme lies in the conduction of the nanopayment channel
 \emph{establish} and \emph{close} protocols as shown in
 Figure~\ref{fig:payments_establish} and Figure~\ref{fig:payments_close}. Notice
@@ -332,8 +332,7 @@ keeps the network responsive for nonpremium and low-bandwidth usage, while still
 offering an upward benefit for premium users loading standard-to-large web pages, as shown
 in Figure~\ref{fig:modifier}.
 
-Our first analysis on Figures \ref{fig:modifier_pr50_web}, \ref{fig:modifier_pr50_bulk}, and
-\ref{fig:modifier_pr50_all} assumes 50\% of premium users. Reducing that fraction to 25\%, which we assume to be a more realistic model should most likely, according to
+Reducing the fraction of premium users to 25\%, which we assume to be a more realistic model should most likely, according to
 Equation~\ref{eq:flow}, expect an even greater benefit on a per-user
 basis. Figures \ref{fig:modifier_pr25_web}, \ref{fig:modifier_pr25_bulk}, and
 \ref{fig:modifier_pr25_all} shows that this is indeed the result. Users across
