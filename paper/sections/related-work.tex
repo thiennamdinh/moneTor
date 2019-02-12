@@ -1,6 +1,17 @@
 We classify incentivization schemes into three types of strategies:
-non-transferable benefits, transferable benefits, and monetary
-payments.
+\begin{enumerate}
+	\item Non-transferable benefits: these proposals aim to recruit relays by offering some
+	 privileged status intended for personal use which cannot be securely sold for reimbursement
+	  of financial investment.
+	\item transferable benefits: these schemes offer
+privileges or products intended to hold value in a secondary resale market. These
+indirect financial incentives presume to attract a broader demand than in the
+non-transferable case.
+	\item monetary payments: these schemes offer rewards with what might be considered
+real money that holds external value. This approach is the one that moneTor adopts.
+
+\end{enumerate}
+
 
 %\footnote{Generally speaking, incentives provided by monetary payments
 %  are more economically robust than transferable benefits, which in turn are
@@ -13,40 +24,38 @@ payments.
 
 %\op{Need to explain why our solution is better/more interesting than all these.}
 
-\subsection{Non-Transferable Benefits}
-
-These proposals aim to recruit relays by offering some privileged status
-intended for personal use which cannot be securely sold for financial profit.
-
-\paragraph*{Gold Star} As one of the earliest incentive proposals, Gold Star
+\paragraph*{Non-transferable benefits - Gold Star} As one of the earliest incentive proposals, Gold Star
 introduces the notion of premium bandwidth. Premium, or \emph{gold star} status,
-is awarded exclusively to the fastest 7/8 fraction of relays, signaling to the
+is awarded exclusively to the fastest 7/8 fraction of relays, signalling to the
 rest of the network that these relays can enjoy prioritized traffic. While
 highly attractive for its conceptual simplicity, Gold Star leaks a considerable
 amount of user information since priortized traffic can now be trivially
 attributed to this relatively small set of gold star
-relays~\cite{dingledine2010building}.
+relays~\cite{dingledine2010building}, since gold star is by design non-transferable.
 
-\paragraph*{BRAIDS/LIRA} The BRAIDS scheme introduces \emph{tickets} to represent
-premium status. Small numbers of ephemeral tickets are freely distributed by a
+\paragraph*{Non-transferable benefits - BRAIDS/LIRA} The BRAIDS scheme introduces \emph{tickets} to represent
+premium status. Users may wish to transfer tickets to other users, but this transfer must be done through a trusted-third party (hence not secure).  Small numbers of ephemeral tickets are freely distributed by a
 central \emph{bank} to any client upon request or to relays that have
 accumulated spent tickets from clients. Crucially, tickets can only be spent at
 a single relay defined at the time of their minting to circumvent the double
-spending problem~\cite{jansen2010recruiting}. LIRA is an ideological successor
-to BRAIDs which reduces scalability problems imposed by the centralized
-infrastructure. Clients in LIRA probabilistically ``win'' premium tickets
+spending problem~\cite{jansen2010recruiting}, yet those tickets can be exchanged at the bank for others bound to a new relay assuming that the exchange happens within the allowed time interval. BRAIDS suffers from four major concerns: 1) everyone connects to a central bank through Tor, which raises scalability issues; 2) the bank is not trustless: by design the bank can issue valid tickets for anyone, and guard relays can steal tickets in the distribution process; 3) verifying a blind signature on relay side for each payment is computationally intensive if the rate of payment is high, and current high-bandwidth Tor relays are already CPU-bound; 4) tickets are designed to be relay-specific to overcome the double-spending problem. As a consequence, this does not scale on the economic appeal: the larger the network becomes, the more the users stockpile tickets for all the relays or need to interact with the bank to exchange them.
+
+LIRA is an ideological successor
+to BRAIDS which reduces scalability problems imposed by the centralized
+infrastructure and improves the relay side verification of ticket by a factor $\approx 80$. Clients in LIRA probabilistically ``win'' premium tickets
 without any interaction with the bank. While LIRA improves the efficiency of
-BRAIDS, it suffers from the cheating incentive to continuously build circuits to try to win premium tickets~\cite{jansen2013lira, jansenblogpost}.
-Thus, compared to BRAID and LIRA, moneTor offers the ability to strongly prevent double-spending without suffering from an inefficient centralized exchange process~\cite{jansenblogpost}(BRAID) and from incentives to behave differently than non-premium users (LIRA).
+BRAIDS, and could even offer high fairness (i.e., high rate of payments), it suffers 
+from the \textit{client} cheating incentive to continuously build circuits to try to 
+win premium tickets~\cite{jansen2013lira, jansenblogpost}. Depending on the chosen 
+value for the payment rate, this problem by itself could prevent the scheme to be a 
+realistic option. If the payment rate 
+is too low, then the incentive to cheat is increased because a large priority bandwidth would be rewarded between guesses. If a high payment rate is 
+chosen, then guessers would have difficulties to maintain good guesses through their 
+circuit lifetime (as the probability to maintain priority through guesses exponentially decrease), which makes the idea of the scheme to have increasing buyer anonymity through successful guessers to be meaningless. Moreover, LIRA still have the major concerns 2) and 4) inherited from BRAIDS.
 
-\subsection{Transferable Benefits}
+Compared to BRAIDS and LIRA, moneTor offers the ability to strongly prevent double-spending without suffering from an inefficient centralized exchange process~\cite{jansenblogpost}(BRAIDS) and from incentives to cheat and behave differently than non-premium users (LIRA). Moreover, moneTor offers high fairness with payment verification improved by a factor $\approx 6$ to LIRA (one $\hash$ operation instead of six) and $\approx 500$ to BRAIDS. Also, moneTor does not suffer from 2) if moneTor tokens act as a wrapper from an external cryptocurrency such as Bitcoin or Ethereum using inter-ledger protocols~\cite{back2014enabling, poon2017plasma}. More important, moneTor tokens are not relay-specific, which solves the scalability problem on the economic appeal. Finally, moneTor payments offer to the relay what we could consider real money, that can be transferred or used to buy premium bandwidth directly (while in LIRA and BRAIDS, an exchange process with the bank is needed).
 
-The next class of transferable benefits describes schemes which offers
-privileges or products intended to hold value in a secondary resale market. These
-indirect financial incentives presume to attract a broader demand than in the
-non-transferable case.
-
-\paragraph*{TEARS} TEARS introduces a two-layer approach whereby \emph{shallots}
+\paragraph*{Transferable benefits - TEARS} TEARS introduces a two-layer approach whereby \emph{shallots}
 token are awarded by a central bank to participating relays. These shallots,
 which are securely exchanged tokens, can then be redeemed for BRAIDS-style
 \emph{priority passes}. While fully exchangeable shallots represent an economic
@@ -75,20 +84,15 @@ underlying Tor architecture.
 %%measurement system), outcomes are not clear as many vulnerabilities and
 %%deployment questions remain.
 
-\paragraph*{Proof-of-work as anonymous micropayment} Users in this simple design
+\paragraph*{Transferable benefits - Proof-of-work as anonymous micropayment} Users in this simple design
 provide partial proof-of-work tokens that can then be redeemed by relays for
 profit in real cryptocurrency mining pools. The drawback of this scheme is
 simply an issue of unrealistic magnitude; the paper estimates that a user who
 continuously mines with typical consumer CPU hardware will be able to make only
 a few cents worth of payments every 24 hours while incurring a much higher cost
 in electricity~\cite{biryukov2015proof}.
-\subsection{Monetary Payments}
-\label{sub:monetary}
 
-The final class of incentivizations offer rewards with what might be considered
-real money that holds external value. This approach is the one that moneTor adopts.
-
-\paragraph*{PAR} A pre-Bitcoin design, PAR~\cite{androulaki2008payment}
+\paragraph*{Monetary Payment - PAR} A pre-Bitcoin design, PAR~\cite{androulaki2008payment}
 allows clients to send direct payments to relays in a hybrid payment scheme
 which makes use of inefficient but anonymous Chaumian e-cash
 protocols~\cite{chaum1988untraceable} and efficient but transparent
@@ -97,7 +101,7 @@ paradigm in which the bank cannot deanonymize clients but is in control of their
 deposited financial assets. As with BRAIDS, PAR suffers from an unscalable
 design owing to its centralized architecture.
 
-\paragraph*{ORPay, PlusPay, CoinPay} These three protocols, part of the
+\paragraph*{Monetary Payment - ORPay, PlusPay, CoinPay} These three protocols, part of the
 Chaumian e-cash tradition of payments schemes, are a series of incremental
 improvements released across two papers~\cite{chen2009xpay,
   carbunar2012tipping}. In each of the designs, the micropayment building block
