@@ -1,16 +1,25 @@
 We classify incentivization schemes into three types of strategies:
-\begin{enumerate}
-	\item Non-transferable benefits: these proposals aim to recruit relays by offering some
-	 privileged status intended for personal use which cannot be securely sold for reimbursement
-	  of financial investment.
-	\item transferable benefits: these schemes offer
+
+	\emph{1. Non-transferable benefits:} these proposals aim to recruit relays by offering some
+	 privileged status intended for personal use which cannot be \emph{securely} sold for reimbursement
+	  of financial investment~\cite{dingledine2010building,jansen2010recruiting, jansen2013lira}. Current state-of-the art schemes for Tor incentives are in this category and the next one, and we focus our comparison to them.
+	  
+	\emph{2. transferable benefits:} these schemes offer
 privileges or products intended to hold value in a secondary resale market. These
 indirect financial incentives presume to attract a broader demand than in the
-non-transferable case.
-	\item monetary payments: these schemes offer rewards with what might be considered
-real money that holds external value. This approach is the one that moneTor adopts.
+non-transferable case. Partial proof-of-work tokens that can then be redeemed by relays for
+profit in real cryptocurrency mining pools~\cite{biryukov2015proof} and exchangeable shallots in TEARS~\cite{jansen2014onions} are part of this category.
 
-\end{enumerate}
+	\emph{3. monetary payments:} these schemes offer rewards with what might be considered
+real money that holds external value. PAR~\cite{androulaki2008payment}
+allows clients to send direct payments to relays in a hybrid payment scheme
+which makes use of inefficient but anonymous Chaumian e-cash
+protocols~\cite{chaum1988untraceable} and efficient but transparent
+probabilistic micropayments. PAR introduces the \emph{honest but curious} bank
+paradigm in which the bank cannot deanonymize clients but is in control of their
+deposited financial assets. PAR suffers from an unscalable
+design owing to its centralized architecture. Other monetary payments schemes such as Xpay~\cite{chen2009xpay} and Carbunar~\textit{et al.}~\cite{carbunar2012tipping} are limited by the same \emph{honest but curious} security assumptions and their scalability
+remains capped by the need for all clients to interact with the central bank for each payment chain. The moneTor scheme can be seen as an idealogical member of this family of solutions, yet we resolve the scalability issue inherent with approaches in this category and we relieve the need to rely on a \textit{honest but curious} bank.
 
 
 %\footnote{Generally speaking, incentives provided by monetary payments
@@ -24,14 +33,14 @@ real money that holds external value. This approach is the one that moneTor adop
 
 %\op{Need to explain why our solution is better/more interesting than all these.}
 
-\paragraph*{Non-transferable benefits - Gold Star} As one of the earliest incentive proposals, Gold Star
-introduces the notion of premium bandwidth. Premium, or \emph{gold star} status,
-is awarded exclusively to the fastest 7/8 fraction of relays, signalling to the
-rest of the network that these relays can enjoy prioritized traffic. While
-highly attractive for its conceptual simplicity, Gold Star leaks a considerable
-amount of user information since priortized traffic can now be trivially
-attributed to this relatively small set of gold star
-relays~\cite{dingledine2010building}, since gold star is by design non-transferable.
+%\paragraph*{Non-transferable benefits - Gold Star} As one of the earliest incentive proposals, Gold Star
+%introduces the notion of premium bandwidth. Premium, or \emph{gold star} status,
+%is awarded exclusively to the fastest 7/8 fraction of relays, signalling to the
+%rest of the network that these relays can enjoy prioritized traffic. While
+%highly attractive for its conceptual simplicity, Gold Star leaks a considerable
+%amount of user information since priortized traffic can now be trivially
+%attributed to this relatively small set of gold star
+%relays~\cite{dingledine2010building}, since gold star is by design non-transferable.
 
 \paragraph*{Non-transferable benefits - BRAIDS/LIRA} The BRAIDS scheme introduces \emph{tickets} to represent
 premium status. Users may wish to transfer tickets to other users, but this transfer must be done through a trusted-third party (hence not secure).  Small numbers of ephemeral tickets are freely distributed by a
@@ -53,7 +62,8 @@ is too low, then the incentive to cheat is increased because a large priority ba
 chosen, then guessers would have difficulties to maintain good guesses through their 
 circuit lifetime (as the probability to maintain priority through guesses exponentially decrease), which makes the idea of the scheme to have increasing buyer anonymity through successful guessers to be meaningless. Moreover, LIRA still have the major concerns 2) and 4) inherited from BRAIDS.
 
-Compared to BRAIDS and LIRA, moneTor offers the ability to strongly prevent double-spending without suffering from an inefficient centralized exchange process~\cite{jansenblogpost}(BRAIDS) and from incentives to cheat and behave differently than non-premium users (LIRA). Moreover, moneTor offers high fairness with payment verification improved by a factor $\approx 6$ to LIRA (one $\hash$ operation instead of six) and $\approx 500$ to BRAIDS. Also, moneTor does not suffer from 2) if moneTor tokens act as a wrapper from an external cryptocurrency such as Bitcoin or Ethereum using inter-ledger protocols~\cite{back2014enabling, poon2017plasma}. More important, moneTor tokens are not relay-specific, which solves the scalability problem on the economic appeal. Finally, moneTor payments offer to the relay what we could consider real money, that can be transferred or used to buy premium bandwidth directly (while in LIRA and BRAIDS, an exchange process with the bank is needed).
+Compared to BRAIDS and LIRA, moneTor offers the ability to strongly prevent double-spending without suffering from an inefficient centralized exchange process~\cite{jansenblogpost}(BRAIDS) and from incentives to cheat and behave differently than non-premium users (LIRA). Moreover, moneTor offers high fairness with payment verification improved by a factor $\approx 6$ to LIRA (one $\hash$ operation instead of six) and $\approx 500$ to BRAIDS. Also, moneTor does not suffer from 2) if moneTor tokens act as a wrapper from an external cryptocurrency such as Bitcoin or Ethereum using inter-ledger protocols~\cite{back2014enabling, poon2017plasma}. Finally and more important, moneTor tokens are not relay-specific, which solves the scalability problem on the economic appeal.
+%Finally, moneTor payments offer to the relays what we could consider real money, that can be transferred or used to buy premium bandwidth directly (while in LIRA and BRAIDS, an exchange process with the bank is needed).
 
 \paragraph*{Transferable benefits - TEARS} TEARS introduces a two-layer approach whereby \emph{shallots}
 token are awarded by a central bank to participating relays. These shallots,
@@ -62,7 +72,7 @@ which are securely exchanged tokens, can then be redeemed for BRAIDS-style
 improvement over non-transferable privileges, these tokens are conceptually
 discrete and indivisible assets that are not as easily exchanged as true
 currency. Our scheme improves on this model by offering arbitrarily high
-transferability and divisbility of priority tokens without changing the
+transferability and divisibility of priority tokens without changing the
 underlying Tor architecture.
 %Furthermore, its reliance on a centralized bank and bandwidth
 %measurement authority place implicit limits on its scalability and
@@ -84,36 +94,36 @@ underlying Tor architecture.
 %%measurement system), outcomes are not clear as many vulnerabilities and
 %%deployment questions remain.
 
-\paragraph*{Transferable benefits - Proof-of-work as anonymous micropayment} Users in this simple design
-provide partial proof-of-work tokens that can then be redeemed by relays for
-profit in real cryptocurrency mining pools. The drawback of this scheme is
-simply an issue of unrealistic magnitude; the paper estimates that a user who
-continuously mines with typical consumer CPU hardware will be able to make only
-a few cents worth of payments every 24 hours while incurring a much higher cost
-in electricity~\cite{biryukov2015proof}.
+%\paragraph*{Transferable benefits - Proof-of-work as anonymous micropayment} Users in this simple design
+%provide partial proof-of-work tokens that can then be redeemed by relays for
+%profit in real cryptocurrency mining pools. The drawback of this scheme is
+%simply an issue of unrealistic magnitude; the paper estimates that a user who
+%continuously mines with typical consumer CPU hardware will be able to make only
+%a few cents worth of payments every 24 hours while incurring a much higher cost
+%in electricity~\cite{biryukov2015proof}.
 
-\paragraph*{Monetary Payment - PAR} A pre-Bitcoin design, PAR~\cite{androulaki2008payment}
-allows clients to send direct payments to relays in a hybrid payment scheme
-which makes use of inefficient but anonymous Chaumian e-cash
-protocols~\cite{chaum1988untraceable} and efficient but transparent
-probabilistic micropayments. PAR introduces the \emph{honest but curious} bank
-paradigm in which the bank cannot deanonymize clients but is in control of their
-deposited financial assets. As with BRAIDS, PAR suffers from an unscalable
-design owing to its centralized architecture.
-
-\paragraph*{Monetary Payment - ORPay, PlusPay, CoinPay} These three protocols, part of the
-Chaumian e-cash tradition of payments schemes, are a series of incremental
-improvements released across two papers~\cite{chen2009xpay,
-  carbunar2012tipping}. In each of the designs, the micropayment building block
-is derived from Payword hash chains~\cite{rivest1996payword}, as is ours. While
-the schemes offer practical advantages to many aspects of PAR, they are limited
-by the same \emph{honest but curious} security assumptions and their scalability
-remains capped by the need for all clients to interact with the central bank for
-each payment chain. The moneTor scheme can be seen as an idealogical member of
-this family of solutions. In the remainder of the paper, we will explain how our
-payment channel approach resolves the scalability problems inherent in the
-existing protocols and explore the auxillary implications in greater detail than
-in prior works.
+%\paragraph*{Monetary Payment - PAR} A pre-Bitcoin design, PAR~\cite{androulaki2008payment}
+%allows clients to send direct payments to relays in a hybrid payment scheme
+%which makes use of inefficient but anonymous Chaumian e-cash
+%protocols~\cite{chaum1988untraceable} and efficient but transparent
+%probabilistic micropayments. PAR introduces the \emph{honest but curious} bank
+%paradigm in which the bank cannot deanonymize clients but is in control of their
+%deposited financial assets. As with BRAIDS, PAR suffers from an unscalable
+%design owing to its centralized architecture.
+%
+%\paragraph*{Monetary Payment - ORPay, PlusPay, CoinPay} These three protocols, part of the
+%Chaumian e-cash tradition of payments schemes, are a series of incremental
+%improvements released across Xpay~\cite{chen2009xpay} and Carbunar~\textit{et al.}~\cite{carbunar2012tipping}.
+% In each of the designs, the micropayment building block
+%is derived from Payword hash chains~\cite{rivest1996payword}, as is ours. While
+%the schemes offer practical advantages to many aspects of PAR, they are limited
+%by the same \emph{honest but curious} security assumptions and their scalability
+%remains capped by the need for all clients to interact with the central bank for
+%each payment chain. The moneTor scheme can be seen as an idealogical member of
+%this family of solutions. In the remainder of the paper, we will explain how our
+%payment channel approach resolves the scalability problems inherent in the
+%existing protocols and explore the auxillary implications in greater detail than
+%in prior works.
 
 %\subsubsection{Orchid} Orchid is an alternative project to Tor altogether which we
 %include for thoroughness and some broad ideological similarities
