@@ -68,12 +68,16 @@ Compared to BRAIDS and LIRA, moneTor offers the ability to strongly prevent doub
 \paragraph*{Transferable benefits - TEARS} TEARS introduces a two-layer approach whereby \emph{shallots}
 token are awarded by a central bank to participating relays. These shallots,
 which are securely exchanged tokens, can then be redeemed for BRAIDS-style
-\emph{priority passes}. While fully exchangeable shallots represent an economic
+\emph{Priority Passes}. While fully exchangeable shallots represent an economic
 improvement over non-transferable privileges, these tokens are conceptually
 discrete and indivisible assets that are not as easily exchanged as true
 currency. Our scheme improves on this model by offering arbitrarily high
 transferability and divisibility of priority tokens without changing the
-underlying Tor architecture.
+underlying Tor architecture, while also offering a transparent, trustless, incremental and distributed system. Also, TEARS is a discussion paper without detailed construction and experimentation. Yet, TEARS suggests to construct Priority Passes using blind signatures, which would make moneTor faster on payment verification by a factor $\approx 500$. Finally, a major difference with previous work (TEARS, LIRA, BRAIDS) is that moneTor does not require to audit relay's bandwidth to distribute tokens. Relays receive currency directly from client from the rate of provided bandwidth and potentially more from the Tor authorities after tax redistribution. The tax redistribution mechanism may involve bandwidth audits, yet this is not mandatory.
+
+\paragraph*{Related work concluding remarks}
+Introducing a monetary system may have a social impact on relay operators and Tor users~\cite{jansenblogpost}. This social impact may also depends on the technical properties and user-convenience of the used monetary scheme (e.g., the social impact of client cheating should not be ignored). We showed in this paper that technical progress is still possible, which could likely influence the social impact. In summary, the barriers to deployment of a payment system are first a community-wide agreement on good technical properties, and then the social impact barrier. We progress on the first barrier, offering a new payment system with no cheating incentives, anonymous, efficient and secure.
+
 %Furthermore, its reliance on a centralized bank and bandwidth
 %measurement authority place implicit limits on its scalability and
 %security~\cite{jansen2010recruiting}.
