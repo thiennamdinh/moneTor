@@ -1,4 +1,4 @@
-\subsection{Tor}
+%\subsection{Tor}
 
 %\paragraph*{Tor Architecture}
 %The Tor network is composed of multiple different components, each of which run
@@ -84,7 +84,7 @@ strong impact on network conditions as shown by AlSabah \textit{et
 performance.  In the design of moneTor, we will adapt these flow control windows
 toward our somewhat different objective to prioritize paid traffic.
 
-\subsection{Payment Channels}
+\paragraph*{Payment Channels}
 
 %\textbf{Secure Payments} The modern generation of decentralized digital
 %currencies traces its roots to Nakamoto's Bitcoin
@@ -147,33 +147,48 @@ following requirements are met.
 %end result is a game-theoretic notion of security whereby all parties are
 %incentivized to behave honestly.
 
-\paragraph*{Anonymous Payment Channels} The micropayment channel concept has
+The micropayment channel concept has
 since been extended to support anonymity design goals. Tumblebit is a
 channel-like mixing protocol designed for Bitcoin that allows fast and
-anonymous off-chain payments~\cite{heilman2017tumblebit}. Malvavolta
-et\ al.\ describe a varient on payment channels that provides Tor-like
+anonymous off-chain payments~\cite{heilman2017tumblebit}. Malvavolta~\textit{et al.}~\cite{malavolta2017concurrency}
+describe a variant on payment channels that provides Tor-like
 privacy in the sense that sender/receiver privacy is preserved under
 the assumption of at least one trusted
-intermediary~\cite{malavolta2017concurrency}. However, these schemes
-are not ideal for our purposes as~\cite{heilman2017tumblebit} requires
+intermediary. However, these schemes
+are not ideal for our purposes as Tumblebit requires
 unrealistic synchronization between payment parties for the Tor
-environment while~\cite{malavolta2017concurrency} introduces
-additional potentially malicious parties. More applicable is Bolt, a
-tripartite anonymous channel protocol based on zero-knowledge proofs
-proposed by Green and Miers~\cite{green2017bolt}. In this framework,
-the anonymity set is defined with respect to the collection of users
-connected to the same intermediary. In other words, given a set of end
-users $E_{all} = \{E_1, E_2, ... E_n\}$ who each have an active
-channel with $I$, $E_a$ should be able to send a secure payment to
-$E_b$ such that $I$ cannot identify $E_a$ or $E_b$ from $E_{all}$ nor
-can $I$ infer the payment value. Of course, $I$ must still be able to
-verify that the payment is valid and that its internal channel states
-have been updated accordingly. Several nuances arise concerning end
-user privacy in certain situations, such as during the micropayment
-setup escrow phase and in the event that $I$ maliciously aborts. We do
-not consider it necessary to discuss these caveats here as they are
-not prohibitively problematic for our later treatment of anonymous
-payment channels.
+environment while Malvavolta~\textit{et al.} introduces
+additional potentially malicious parties.
+
+We show in Section~\ref{sec:payment_overview} how well an extension to Bolt~\cite{green2017bolt}, a tripartite anonymous channel protocol based on zero-knowledge proofs proposed by Green and Miers, is applicable for Tor incentives and provides the technical promise of anonymity, efficiency and payment security. Our construction called moneTor bridges the advance in the cryptocurrency space with the concrete requirements of a complex and advanced distributed system such as the Tor network.
+
+%\paragraph*{Anonymous Payment Channels} The micropayment channel concept has
+%since been extended to support anonymity design goals. Tumblebit is a
+%channel-like mixing protocol designed for Bitcoin that allows fast and
+%anonymous off-chain payments~\cite{heilman2017tumblebit}. Malvavolta
+%et\ al.\ describe a varient on payment channels that provides Tor-like
+%privacy in the sense that sender/receiver privacy is preserved under
+%the assumption of at least one trusted
+%intermediary~\cite{malavolta2017concurrency}. However, these schemes
+%are not ideal for our purposes as~\cite{heilman2017tumblebit} requires
+%unrealistic synchronization between payment parties for the Tor
+%environment while~\cite{malavolta2017concurrency} introduces
+%additional potentially malicious parties. More applicable is Bolt, a
+%tripartite anonymous channel protocol based on zero-knowledge proofs
+%proposed by Green and Miers~\cite{green2017bolt}. In this framework,
+%the anonymity set is defined with respect to the collection of users
+%connected to the same intermediary. In other words, given a set of end
+%users $E_{all} = \{E_1, E_2, ... E_n\}$ who each have an active
+%channel with $I$, $E_a$ should be able to send a secure payment to
+%$E_b$ such that $I$ cannot identify $E_a$ or $E_b$ from $E_{all}$ nor
+%can $I$ infer the payment value. Of course, $I$ must still be able to
+%verify that the payment is valid and that its internal channel states
+%have been updated accordingly. Several nuances arise concerning end
+%user privacy in certain situations, such as during the micropayment
+%setup escrow phase and in the event that $I$ maliciously aborts. We do
+%not consider it necessary to discuss these caveats here as they are
+%not prohibitively problematic for our later treatment of anonymous
+%payment channels.
 
 %%% Local Variables:
 %%% mode: latex
