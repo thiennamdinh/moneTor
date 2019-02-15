@@ -112,12 +112,12 @@ software implementation within the native Tor codebase.
 \begin{figure*} \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
-		\caption{Download Time Overhead}
+		\caption{Download Time Overhead - Web + Bulk}
 		\label{fig:overhead_ttlastbyte}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_throughput.pdf}
-		\caption{Throughput Overhead}
+		\caption{Throughput Overhead - Compared to baseline}
 		\label{fig:overhead_throughput}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
@@ -228,17 +228,17 @@ results are summarized in Figure~\ref{fig:overhead}.
 \begin{figure*} \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_establish.pdf}
-		\caption{Nano-Establish}
+		\caption{Nano-Establish - Built after the circuit construction, but before the circuit usage!}
 \label{fig:payments_establish}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_pay.pdf}
-		\caption{First Payment}
+		\caption{First Payment - Should match 1 half RTT if the preemptive Nano-Establish is perfect}
 \label{fig:ttfp}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/payment_close.pdf}
-		\caption{Nano-Close}
+		\caption{Nano-Close - Happens just before the circuit is destroyed}
 \label{fig:payments_close}
 	\end{subfigure}
 	\caption{Protocol Execution Time --- Time to finish each protocol step

@@ -45,16 +45,18 @@ information in a similar way Tor anticipates the need for a fresh circuit.
 In our design, we are concerned with memory consumption, kernel socket
 consumption and CPU consumption. Our choice for a tripartite protocol
 effectively shifts the memory consumption of opened and idle micro
-channels to the intermediary nodes of the network. A more basic setup
-whereby each Tor client maintains a micropayment channel with each
-relay would incur an $O(n*m)$ cost with
-respect to channel management complexity, with $n$ the number of Tor clients and $m$ the number of relays. By engineering an additional
-intermediary layer, the complexity of moneTor channel connections is
-reduced to $O(n+m)$. In our implementation, intermediary relays do not
-participate in routing user streams and are tasked only with providing
-payment channel services. Intermediaries devote the full extent of
-their computational resources toward this task, allowing only a few
-strong nodes to handle all of channel management needs of the network.
+channels to the intermediary nodes of the network.
+ 
+% A more basic setup
+%whereby each Tor client maintains a micropayment channel with each
+%relay would incur an $O(n*m)$ cost with
+%respect to channel management complexity, with $n$ the number of Tor clients and $m$ the number of relays. By engineering an additional
+%intermediary layer, the complexity of moneTor channel connections is
+%reduced to $O(n+m)$. In our implementation, intermediary relays do not
+%participate in routing user streams and are tasked only with providing
+%payment channel services. Intermediaries devote the full extent of
+%their computational resources toward this task, allowing only a few
+%strong nodes to handle all of channel management needs of the network.
 
 Interactions between parties are realized within Tor circuits to allow
 multiplexing of circuits over the same TCP connection. This also protects the
@@ -66,7 +68,7 @@ ledger or the intermediary.
  As a result, the intermediary and
 the ledger must have a number of available sockets higher than the number of
 relays in the network in the worst case. Since this limit is in line with Tor's
-current assumption, our design inherits the same socket consumption scalability
+current assumption (i.e., any relay has available sockets to connect to every other relay), our design inherits the same socket consumption scalability
 of the greater Tor network.
 
 \subsection{Prioritized Traffic}
