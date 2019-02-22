@@ -121,7 +121,7 @@ subset of the following roles: $C$ (client), $R$ (relay), $E$ (end user: either
 a client or relay), $I$ (intermediary), and $L$ (ledger). All communications between end users and Intermediaries or the ledger are routed through Tor circuits.
 
 The moneTor payment scheme is an extension of Bolt's three-party
-bidirectional micropayment channels. In Bolt, multiple payments happens off-chain and cannot be linked together, even if the parties collide. Inspired from the Lightning Network~\cite{poon2016bitcoin}, payments can be routed through a third-party in a trustless fashion. In our design, we introduce an Intermediary relay which is only tasked to provide \emph{atomic} payment channel services between clients and relays and does not participate in routing user streams. These choices are made from the following benefits: 1) it escapes the naive setting whereby each Tor client maintains a micropayment channel with each
+bidirectional micropayment channels. In Bolt, multiple payments happens off-chain and cannot be linked together, even if the parties collide. Inspired from the Lightning Network~\cite{poon2016bitcoin}, payments can be routed through a third-party in a trustless fashion. In our design, we introduce an Intermediary relay which is only tasked to provide \emph{atomic} payment channel services between clients and relays and does not participate in routing user streams. These choices are argued from the following benefits: 1) it escapes the naive setting whereby each Tor client maintains a micropayment channel with each
 relay would incur an $O(n*m)$ cost with
 respect to channel management complexity, with $n$ the number of Tor clients and $m$ the number of relays. By engineering an additional
 intermediary layer, the complexity of moneTor channel connections is
@@ -238,8 +238,8 @@ described in Appendix~\ref{sec:proof}.
 
 \textbf{Nano-Setup} At the start of this protocol, $C$ has access to a
 micropayment wallet $w$ obtained from Bolt's \textbf{Establish} that enables her to operate her micropayment channel
-with $I$ as well as a refund token $rt$ that entitles her to claim her current
-funds on $L$ should $I$ misbehave or go offline. To construct a nanopayment
+with the Intermediary $I$ as well as a refund token $rt$ that entitles her to claim her current
+funds on the ledger $L$ should $I$ misbehave or go offline. To construct a nanopayment
 channel, $C$ first generates an array of values $hc$ of length $n$ where
 $hc_i = H(hc_{i+1})$ and $hc_n$ is a random number. The root of the hash chain
 $hc_0$ is used to create a globally unique nanopayment token $nT$ that encodes
@@ -288,7 +288,7 @@ whereby both legs of the protocol are finalized at the same time.
 wants to close the Tor circuit, both $C$ and $R$ will generally prefer to close
 their nanopayment channels through $I$. In this process, the $R$-$I$ leg must be
 closed before the $C$-$I$ leg. This is due to the unidirectional nature of
-nanopayment channels. Since payments are flowing form $C$ to $R$, $I$ must first
+nanopayment channels. Since payments are flowing from $C$ to $R$, $I$ must first
 determine its debt to $R$ in order to know how much it can claim from $C$.
 
 $R$ first sends to $I$ a commitment to a new micropayment wallet $w'$ and a
@@ -354,7 +354,6 @@ the guard relay are transparent and persistent across the timescale of several
 months. We optimize toward this setup by enabling transparent and direct payment
 channels between the client and guard, considerably reducing the network
 overhead costs.
-
 \subsection{Payment Security and Anonymity}
 \label{subsec:paysecurity}
 Our security model must account for both privacy and payment security. The
