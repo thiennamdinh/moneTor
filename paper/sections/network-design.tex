@@ -90,17 +90,17 @@ to implement our desired priority functionality. Recall that edge nodes regulate
 traffic flux in either direction using a set of flow control windows. Roughly
 speaking, these windows determine space allotted to each circuit on a relay's
 scheduling queue, which in turn is positively correlated with effective
-bandwidth. We implement our prioritization scheme by statically readjusting the windows
+bandwidth. We implement our prioritization scheme by statically readjusting the window maximum sizes once
 according to the following formula.
 \begin{equation}
-  window' = window(1+ \alpha(premium / premium\% - 1))
+  window' = window(1+ \alpha(premium / pr\% - 1))
   \label{eq:flow}
 \end{equation}
 Here, a circuit is marked as prioritized by the bit
 $premium \in \{0, 1\}$. The tunable priority benefit
 $\alpha \in [0, 1)$ defines the proportion of the non-premium capacity that we wish
 to transfer to premium clients. By accounting for
-$premium\%s \in [0,1]$, the fraction of premium to nonpremium clients, we
+$pr\% \in [0,1]$, the fraction of premium to nonpremium clients, we
 can keep the total flow capacity constant.
 %Our policy may be
 %implemented in one of two ways. First, each node could track the
