@@ -74,23 +74,23 @@ of the greater Tor network.
 \subsection{Prioritized Traffic}
 \label{subsub:prioritized}
 
-The final component of our network-oriented design addresses the need to deliver
-prioritized bandwidth given an explicit signalling of premium or nonpremium
-traffic. Our objective is to provide a tunable range of prioritization while
-incurring as little cost as possible to average global performance. In our
-design, the chosen value is enforced network-wide by the directory authorities
-in order to avoid partitioning of the anonymity set. Traffic scheduling is
+%The final component of our network-oriented design addresses the need to deliver
+%prioritized bandwidth given an explicit signalling of premium or nonpremium
+%traffic. Our objective is to provide a tunable range of prioritization while
+%incurring as little cost as possible to average global performance. In our
+%design, the chosen value is enforced network-wide by the directory authorities
+%in order to avoid partitioning of the anonymity set. 
+Traffic scheduling is
 perhaps the most intuitive mechanism with which to implement
-prioritization. However, we found in our investigation that practical
-modification of the Tor scheduling infrastructure is nontrivial. A more detailed
-discussion of our findings can be found in Appendix~\ref{sec:scheduling}.
+prioritization. However, we found that local scheduling decisions on each relay for priority do not work well anymore with the current state of the Tor network, which precludes previous works scheduling approaches based on DiffServ~\cite{dovrolis1999case} and EWMA~\cite{tang2010improved} to offer the expected priority. A more detailed
+discussion of our findings can be found in Appendix~\ref{sec:scheduling}, and raises interest for future work to comprehensively understand when priority mechanisms, including the one we suggest here, fail to provide the expected priority.
 
-Fortunately, Tor's overlay flow control mechanism provides an alternative route
-to implement our desired functionality. Recall that edge nodes regulate the
+Tor's overlay flow control mechanism provides an alternative route than local scheduling policies
+to implement our desired priority functionality. Recall that edge nodes regulate the
 traffic flux in either direction using a set of flow control windows. Roughly
 speaking, these windows determine space allotted to each circuit on a relay's
 scheduling queue, which in turn is positively correlated with effective
-bandwidth. We implement our prioritization scheme by readjusting the windows
+bandwidth. We implement our prioritization scheme by statically readjusting the windows
 according to the following formula.
 \begin{equation}
   window' = window(1+ \alpha(premium / premium\% - 1))
