@@ -55,7 +55,7 @@ This is quite a severe issue since all previous works are using strategies that 
   \label{fig:scheduling_priority}
 \end{figure}
 
-\subsection{Investigation}
+\subsection{Investigation and discussion}
 
 Our negative results can be explained if scheduling is not the most decisive
 determining factor in performance. To verify this hypothesis, we studied the
@@ -76,7 +76,8 @@ al~\cite{jansen2017tor}. We found in an analysis of the line-by-line
 observations of the queue activity that while cells are flushed in the correct
 order, they appear in the queue at roughly equal proportions. In effect,
 bandwidth in our simulation is not constrained by the ordering policy of the
-scheduler but rather by the rate at which they arrive from the network.
+scheduler but rather by the rate at which they arrive from the network. As a consequence, local decisions at a particular relay for scheduling falls short to offer the expected priority.
+
 
 \begin{figure} \centering
   \includegraphics[width=0.49\textwidth]{images/scheduling_far.png}
@@ -95,19 +96,64 @@ scheduler but rather by the rate at which they arrive from the network.
   \label{fig:scheduling_close}
 \end{figure}
 
-\subsection{Discussion}
-
-There are two plausible contributing explanations. First, it may be the case
+Now, we may investigate why prioritisation based on making decisions inside the 
+relay's scheduler worked fine for previous works such as BRAIDS and LIRA while we 
+follow the same methodology to evaluate moneTor. So, what could be wrong? First, 
+it may be the case
 that other network control mechanisms within the Tor codebase constrain the flow
 of cells, rendering the mostly idle scheduler to be ineffective. This may be
 caused by any combination of factors including point-to-point flow control,
 connection throttling, or some less documented threshold embedded in the
-code. The positive results covered in Section~\ref{sec:priority_exp} suggests
-that flow-control may play a key role. The second explanation states that even
-in high-congestion, the constraining network bottleneck does not lie within the
+code. Yet, we believe that some differences in the code could not explain our 
+results for the following reason: our positive results covered in Section~
+\ref{sec:priority_exp} showing
+increasing performance (resp. decreasing) when we increase (resp. decrease) the 
+circuit windows are counter-intuitive compared to previous works exploring the 
+effect of changing the window sizes~\cite{archive-2009-mail, kiraly2008solving, 
+dingledine2009performance}, and Tor's code covering those aspects did not change 
+meaningfully for many years. This is an interesting piece of information, and we 
+expect these results to be linked to our actual 
+problem of not achieving to prioritize flows based on relays' scheduler decision.
+
+To explain those oddities, we found and verified the following reason: the 
+constraining network bottleneck does not lie within the
 Tor network itself but at the exit relay interface with external servers on the
 web. In this scenario, cell queuing within Tor is not nearly as important as the
-TCP/IP packet handling at each exit relay.
+TCP/IP packet handling at each exit relay. Actually, both approaches to prioritize 
+flows are complementary: when the congestion is inside the Tor network, applying 
+local scheduling policies makes an efficient priority mechanism. However, priority 
+based on the flow-control (that is, a function of the global circuit) would not be 
+efficient, because all cells would spend the majority of the time waiting in 
+relays' FIFO queues anyway. In the opposite, if the congestion is outside the Tor 
+network (between the exit relays and the destination), then local scheduling 
+policies would fall short to make any prioritization, but priority based on the 
+flow-control would achieve to prioritize flows, as demonstrated in Section~\ref{subsec:experiments}. 
+
+One mystery remains: why are our scheduling results so different from BRAIDS and LIRA? BRAIDS run experiments with Tor version 0.2.0.35~\cite{braids-repository}. This Tor 
+version's commit date is before a major change in the path selection mechanism that reduced Tor's 
+internal congestion problem and greatly improved performance. This major change was 
+introduced as the well-known bandwidth-weights in Mike Perry's commit 
+0ff86042ac16 dated from September 2010. The bandwidth-weights are a set of weights 
+specified in the directory specifications, section 3.8.4~\cite{dirspec}, that aim at 
+balancing the overall network usage for each relay position. Those weights are 
+critical for the network performance, and also for anonymity~\cite{waterfilling-
+pets2017, wf_proposal}. Importantly, the benefit of Mike Perry's bandwidh-weights 
+are proportional to the inequalities between the overall bandwidth in circuit 
+positions. These inequalities are growing fast for years, as we can observe on 
+Figure~\ref{fig:bw_inequalities}. In consequences, compared to BRAIDS's experiments, 
+we are no more in a situation where we have a lot of internal congestion, and we 
+cannot achieve the same priority improvement using a local scheduler at each relay.
+
+\begin{figure}
+	\includegraphics[scale=0.415]{images/bandwidth-flags-2011-01-01-2019-02-25.pdf}
+	\caption{Bandwidth aggregated by relay flags}
+	\label{fig:bw_inequalities}
+\end{figure}
+
+Then, we could argue that an ideal priority mechanism that covers various aspect of circuit congestions may be composed of local scheduling decisions and circuit-wide policies. We leave the design of a new priority-based scheme that works under various congestion situation as a further work.
+
+%To confirm it, we run highly congested simulations with many more Tor 
+%clients than what the scaled-down Tor network could reasonably handle, and observed the same results: we were not able to achieve meaningful flow priority with local scheduling decisions, but only by tweaking the flow-control mechanism.
 
 We must emphasize that our results are in no way indicative or predictive of the
 state of affairs on the live Tor network. The aforementioned experiments were
