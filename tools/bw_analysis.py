@@ -172,18 +172,20 @@ def  parse_descriptors(in_dirs):
       cons_f.close()
 
 
-def analyse_bw(network_state_file, outpath):
+def analyse_bw(network_state_files, outpath):
   """ Collect observed bandwith data 24h past to a consensus file and adver-
       tised bandwidth of all nodes in the processed consensus
       
       Compute approximation of bandwidh used for each position of each nodes
       based on relay selection probabilities
       """
-  (cons_valid_after, cons_fresh_until, cons_bw_weights,\
-    cons_bwweightscale, cons_rel_stats, hibernating_statuses,\
-    descriptors) = get_network_state(network_state_file)
-  assert len(cons_rel_stats) == 2: "len: {0}".format(len(cons_rel_stats)
-  [lira, moneTor] = cons_rel_stats
+  (cons_valid_afterL, cons_fresh_untilL, cons_bw_weightsL,\
+    cons_bwweightscale, lira, hibernating_statusesL,\
+    descriptorsL) = get_network_state(network_state_files[0]       )
+
+  (cons_valid_afterM, cons_fresh_untilM, cons_bw_weightsM,\
+    cons_bwweightscale, moneTor, hibernating_statusesM,\
+    descriptorsM) = get_network_state(network_state_file[1]
   #cons_rel_stats should only contains two of them 
   T, G, E, D, M , guardsL, guardexitsL, middlesL, exitsL = filter_relays(lira)
   TM, GM, EM, DM, MM , guardsM, guardexitsM, middlesM, exitsM = filter_relays(moneTor)
@@ -251,11 +253,11 @@ def filter_relays(cons_rel_stats):
 
 if __name__ == "__main__":
 
-    if sys.argv[1] == "process":
+  if sys.argv[1] == "process":
         #Process just one month file
     in_dirs = [(sys.argv[2], sys.argv[3], sys.argv[4])]
     parse_descriptors(in_dirs)
-elif sys.argv[1] == "analyse_bw":
-    analyse_bw(sys.argv[2], sys.argv[3])
-else:
+  elif sys.argv[1] == "analyse_bw":
+    analyse_bw([sys.argv[2], sys.argv[3]], sys.argv[4])
+  else:
     raise ValueError("Command %s does not exist".format(sys.argv[1]))
