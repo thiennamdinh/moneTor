@@ -54,7 +54,7 @@ to work well anymore.
   \includegraphics[trim={0 3cm 0 3cm}, clip, width=0.32\textwidth]{images/scheduling_priority.pdf}
   \caption[Prioritized Scheduling]{Prioritized Scheduling --- CDF download
     times for superimposed web and bulk clients where premium status is enforced
-    only via scheduling.}
+    only via scheduling. Almost no priority is observed.}
   \label{fig:scheduling_priority}
 \end{figure}
 
@@ -121,17 +121,17 @@ expect these results to be linked to our actual
 problem of not achieving to prioritize flows based on relays' scheduler decision.
 
 To explain those oddities, we found and verified the following reason: the 
-constraining network bottleneck does not lie within the
-Tor network itself but at the exit relay interface with external servers on the
+constraining network bottleneck has moved from the
+Tor network itself to the exit relay interface with external servers on the
 web. In this scenario, cell queuing within Tor is not nearly as important as the
 TCP/IP packet handling at each exit relay. Actually, both approaches to prioritize 
 flows are complementary: when the congestion is inside the Tor network, applying 
-local scheduling policies makes an efficient priority mechanism as demonstrated by previous works. However, priority 
+local scheduling policies makes an efficient priority mechanism as demonstrated by previous works. Also in such a situation, priority 
 based on the flow-control (that is, a function of the global circuit) would not be 
 efficient, because all cells would spend the majority of the time waiting in 
 relays' FIFO queues anyway. In the opposite, if the congestion is outside the Tor 
 network (between the exit relays and the destination), then local scheduling 
-policies would fall short to make any prioritization, but priority based on the 
+policies would fall short to make any prioritization as showed in Figure~\ref{fig:scheduling_priority}, but priority based on the 
 flow-control would achieve to prioritize flows, as demonstrated in Section~\ref{subsec:experiments}. 
 
 The shift of congestion from the internal Tor network to the exit gateways explains why our scheduling results in Figure~\ref{fig:scheduling_priority} are different from BRAIDS
@@ -157,18 +157,25 @@ the overall bandwidth in circuit positions. These inequalities are growing fast 
 \end{figure}
 
 LIRA is based on \texttt{tor-0.2.3.13-alpha} from March 2012, which benefits
-from Mike Perry's bandwidth-weights. This may explain why LIRA has less impressive priority advantage than the one exposed in BRAIDS: experiments in LIRA are probably less internally congested than the ones from BRAIDS, and a major change in the path selection to solve a performance problem seems to bear some responsibilities for this case. However, the different congestion status may also be due to other factors, such as a different client usage model and the local scheduling policies. Comparing to our experiments, LIRA uses a simulated environment scaled down from a 2012 consensus with $\approx 42\%$ of relays with the \texttt{Exit} flag, while our (5x larger) experiments only have $\approx 13\%$ of relays with the \texttt{Exit} flag. 
+from Mike Perry's bandwidth-weights. This may explain why LIRA has less impressive priority advantage than the one exposed in BRAIDS: experiments in LIRA are probably less internally congested than the ones from BRAIDS, and a major change in the path selection to solve a performance problem seems to bear some responsibilities for this case. However, the different congestion status may also be due to other factors, such as a different client usage model and the local scheduling policies. Comparing to our experiments, LIRA uses a simulated environment scaled down from an April 2012 consensus with $\approx 42\%$ of relays with the \texttt{Exit} flag, while our experiments only have $\approx 13\%$ of relays with the \texttt{Exit} flag. This is a consequence of the state of the Tor network from which Shadow simulations are built from. The difference in the state of the Tor network may also be observed on Figure~\ref{fig:bw_comp}, where we plotted the distribution of bandwidth allocated to each position during both experiments. LIRA's experiments were performed when the exit capacity of the Tor network was not scarce. This is not the case anymore as observed for moneTor's used consensus. This result holds now since a few years~\cite{waterfilling-pets2017}.
+
+
+\begin{figure}
+	\centering
+  \includegraphics[scale=0.415]{images/bw_analysis_comp.png}
+  \caption{Bandwidth distribution in consensuses used for BRAIDS, LIRA and moneTor experiments - BRAIDS does not benefit from bandwidth-weights to refill Middle, LIRA benefits from bandwidth-weights to offer balance between all positions, moneTor benefits from bandwidth-weights to balance entry and middle, yet does not have enough exit nodes to achieve the full balance} 
+  \label{fig:bw_comp}
+\end{figure}
+
  
-To summarize, as the network grows to offer a lot of internal bandwidth (Figure~\ref{fig:bw_inequalities}), LIRA and BRAIDS's schedulers would tend to become inefficient for providing priority, as demonstrated in our experiments and showed in Figure~\ref{fig:scheduling_close}. 
+To summarize, as the network grows to offer a lot of internal bandwidth (Figure~\ref{fig:bw_inequalities}, Figure~\ref{fig:bw_comp}), LIRA and BRAIDS's schedulers would tend to become less efficient for providing priority, as demonstrated in our experiments and showed in Figure~\ref{fig:scheduling_close}. 
 We must emphasize that we argue for a tendency: our results are no way indicative of the exact same state of affairs for all relays in the real Tor network. The aforementioned experiments
 were performed on a considerably smaller scale than the real Tor network with simplistic models for
 network topology and user behavior. What can be said is that networking as a
 whole is an immensely complex and unpredictable domain and that the attainment
 of a simulation environment conducive to effective scheduling is, at the very
-least, nontrivial. Consequently, we could argue that an ideal priority mechanism that covers various
-aspect of circuit congestion may be composed of local scheduling decisions and
-circuit-wide policies. We leave the design of a new priority-based scheme that
-works under various congestion situation as a further work.
+least, nontrivial. Consequently, we could argue that the barrier to deploy monetary incentives is not only a social barrier. Technically, we may not be yet ready and further research should be conducted to find  an ideal priority mechanism that covers various
+aspect of circuit congestions. We leave the design of a new priority-based scheme which takes those aspects in account as a further work.
 
 %To confirm it, we run highly congested simulations with many more Tor clients
 %than what the scaled-down Tor network could reasonably handle, and observed
