@@ -9,6 +9,9 @@ import datetime
 from utils import NetworkStatusDocument
 from utils import ServerDescriptor
 import math
+import numpy as np
+import matplotlib
+matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import sys
 """ 
@@ -181,22 +184,26 @@ def analyse_bw(network_state_files, outpath):
       """
   (cons_valid_afterL, cons_fresh_untilL, cons_bw_weightsL,\
     cons_bwweightscale, lira, hibernating_statusesL,\
-    descriptorsL) = get_network_state(network_state_files[0]       )
+    descriptorsL) = get_network_state(network_state_files[0])
 
   (cons_valid_afterM, cons_fresh_untilM, cons_bw_weightsM,\
     cons_bwweightscale, moneTor, hibernating_statusesM,\
-    descriptorsM) = get_network_state(network_state_file[1]
+    descriptorsM) = get_network_state(network_state_files[1])
   #cons_rel_stats should only contains two of them 
   T, G, E, D, M , guardsL, guardexitsL, middlesL, exitsL = filter_relays(lira)
   TM, GM, EM, DM, MM , guardsM, guardexitsM, middlesM, exitsM = filter_relays(moneTor)
   
-  fig, ax = plt.subplot()
+  fig, ax = plt.subplots()
   width=0.35
-  p1 = ax.bar(np.arange(3), [G, M, E], width, color='r')
-  p2 = ax.bar(np.arange(3)+width, [GM, MM, EM], width, color='b')
+  p1 = ax.bar(np.arange(3), [(G*cons_bw_weightsL['Wgg']/float(cons_bwweightscale))+(D*cons_bw_weightsL['Wgd']/float(cons_bwweightscale)),\
+      M+(G*cons_bw_weightsL['Wmg']/float(cons_bwweightscale))+(D*cons_bw_weightsL['Wmd']/float(cons_bwweightscale)),\
+          E+(D*cons_bw_weightsL['Wed']/float(cons_bwweightscale))], width, color='r')
+  p2 = ax.bar(np.arange(3)+width,[(GM*cons_bw_weightsM['Wgg']/float(cons_bwweightscale))+(DM*cons_bw_weightsM['Wgd']/float(cons_bwweightscale)),\
+      MM+(GM*cons_bw_weightsM['Wmg']/float(cons_bwweightscale))+(M*cons_bw_weightsM['Wmd']/float(cons_bwweightscale)),\
+          EM+(DM*cons_bw_weightsM['Wed']/float(cons_bwweightscale))], width, color='b')
 
   plt.tight_layout()
-  plt.show()
+  plt.savefig(outpath)
     
 ##############################################"
 
@@ -248,7 +255,7 @@ def filter_relays(cons_rel_stats):
       guardexits[fprint] = rel_stat
     else:
       M += rel_stat.bandwidth 
-      middles[fprint] = middle
+      middles[fprint] = rel_stat
   return T, G, E, D, M , guards, guardexits, middles, exits
 
 if __name__ == "__main__":
