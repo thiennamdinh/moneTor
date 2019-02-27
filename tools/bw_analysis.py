@@ -200,7 +200,7 @@ def analyse_bw(network_state_files, outpath):
   TM, GM, EM, DM, MM , guardsM, guardexitsM, middlesM, exitsM = filter_relays(moneTor)
   fig, ax = plt.subplots()
   width=0.2
-  p0 = ax.bar(np.arange(3)-width, [GB+DB/2.0, MB, EB + DB/2.0], width, color='y')
+  p0 = ax.bar(np.arange(3)-width, [GB+DB, MB, EB + DB], width, color='y')
   p1 = ax.bar(np.arange(3), [(G*cons_bw_weightsL['Wgg']/float(cons_bwweightscale))+(D*cons_bw_weightsL['Wgd']/float(cons_bwweightscale)),\
       M+(G*cons_bw_weightsL['Wmg']/float(cons_bwweightscale))+(D*cons_bw_weightsL['Wmd']/float(cons_bwweightscale)),\
           E+(D*cons_bw_weightsL['Wed']/float(cons_bwweightscale))], width, color='r')
