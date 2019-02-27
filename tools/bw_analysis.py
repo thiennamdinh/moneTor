@@ -208,7 +208,7 @@ def analyse_bw(network_state_files, outpath):
       MM+(GM*cons_bw_weightsM['Wmg']/float(cons_bwweightscale))+(M*cons_bw_weightsM['Wmd']/float(cons_bwweightscale)),\
           EM+(DM*cons_bw_weightsM['Wed']/float(cons_bwweightscale))], width, color='b')
     
-  ax.set_xticks(np.arange(3)+width/2)
+  ax.set_xticks(np.arange(3)+width/3)
   ax.set_xticklabels(('Entry', 'Middle', 'Exit'))
   ax.legend((p0[0], p1[0], p2[0]), ('BRAIDS', 'LIRA', 'moneTor'))
   ax.autoscale_view()
