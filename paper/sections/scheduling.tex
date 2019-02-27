@@ -131,7 +131,7 @@ based on the flow-control (that is, a function of the global circuit) would not 
 efficient, because all cells would spend the majority of the time waiting in 
 relays' FIFO queues anyway. In the opposite, if the congestion is outside the Tor 
 network (between the exit relays and the destination), then local scheduling 
-policies would fall short to make any prioritization, but priority based on the 
+policies would fall short to make any prioritization as showed in Figure~\ref{fig:scheduling_priority}, but priority based on the 
 flow-control would achieve to prioritize flows, as demonstrated in Section~\ref{subsec:experiments}. 
 
 The shift of congestion from the internal Tor network to the exit gateways explains why our scheduling results in Figure~\ref{fig:scheduling_priority} are different from BRAIDS

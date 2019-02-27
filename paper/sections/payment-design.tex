@@ -149,8 +149,7 @@ specifications~\cite{green2017bolt}.
   each party.
 \end{itemize}
 
-While anonymous micropayment channels present a tremendous advance for many
-applications, the relatively heavy cryptography ($37-100\ ms$) and communication
+Bolt's micropayment channels suffer from relatively heavy cryptography ($37-100\ ms$) and communication
 (7 message legs) is a prohibitive expense for Tor relay payments. Indeed, using Bolt would not permit a fair exchange (i.e., a high payment rate) between a client and a relay since we would need several \textit{RTTs} to complete a payment while ``consuming'' premium bandwidth and not being able to keep up with payments (in Bolt, the previous Pay needs to be finished to start the next one). Moreover, in terms of CPU overhead, it is also desirable to keep the
 barrier of entry low for smaller relay operators. To overcome these
 concerns, we present a new payment layer design enabling far more efficient
