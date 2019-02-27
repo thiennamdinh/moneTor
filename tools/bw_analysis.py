@@ -198,10 +198,9 @@ def analyse_bw(network_state_files, outpath):
   T, G, E, D, M , guardsL, guardexitsL, middlesL, exitsL = filter_relays(lira)
   TB, GB, EB, DB, MB , guardsL, guardexitsL, middlesL, exitsL = filter_relays(braids)
   TM, GM, EM, DM, MM , guardsM, guardexitsM, middlesM, exitsM = filter_relays(moneTor)
-  pdb.set_trace() 
   fig, ax = plt.subplots()
-  width=0.15
-  p0 = ax.bar(np.arange(3)-width, [GB+DB/2.0, M, E + D/2.0], width, color='y')
+  width=0.2
+  p0 = ax.bar(np.arange(3)-width, [GB+DB/2.0, MB, EB + DB/2.0], width, color='y')
   p1 = ax.bar(np.arange(3), [(G*cons_bw_weightsL['Wgg']/float(cons_bwweightscale))+(D*cons_bw_weightsL['Wgd']/float(cons_bwweightscale)),\
       M+(G*cons_bw_weightsL['Wmg']/float(cons_bwweightscale))+(D*cons_bw_weightsL['Wmd']/float(cons_bwweightscale)),\
           E+(D*cons_bw_weightsL['Wed']/float(cons_bwweightscale))], width, color='r')
