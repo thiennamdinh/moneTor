@@ -29,7 +29,7 @@ def  parse_descriptors(in_dirs):
   for in_consensuses_dir, in_descriptors, desc_out_dir in in_dirs:
     num_descriptors = 0
     num_relays = 0
-    with reader.DescriptorReader(in_descriptors, validate=True) as r:
+    with reader.DescriptorReader(in_descriptors, validate=False) as r:
       for desc in r:
         if desc.fingerprint not in descriptors:
           descriptors[desc.fingerprint] = {}
@@ -182,19 +182,26 @@ def analyse_bw(network_state_files, outpath):
       Compute approximation of bandwidh used for each position of each nodes
       based on relay selection probabilities
       """
+  
+  (cons_valid_afterB, cons_fresh_untilB, cons_bw_weightsB,\
+    cons_bwweightscale, braids, hibernating_statusesB,\
+    descriptorsB) = get_network_state(network_state_files[0])
+  
   (cons_valid_afterL, cons_fresh_untilL, cons_bw_weightsL,\
     cons_bwweightscale, lira, hibernating_statusesL,\
-    descriptorsL) = get_network_state(network_state_files[0])
+    descriptorsL) = get_network_state(network_state_files[1])
 
   (cons_valid_afterM, cons_fresh_untilM, cons_bw_weightsM,\
     cons_bwweightscale, moneTor, hibernating_statusesM,\
-    descriptorsM) = get_network_state(network_state_files[1])
+    descriptorsM) = get_network_state(network_state_files[2])
   #cons_rel_stats should only contains two of them 
   T, G, E, D, M , guardsL, guardexitsL, middlesL, exitsL = filter_relays(lira)
+  TB, GB, EB, DB, MB , guardsL, guardexitsL, middlesL, exitsL = filter_relays(braids)
   TM, GM, EM, DM, MM , guardsM, guardexitsM, middlesM, exitsM = filter_relays(moneTor)
-  
+  pdb.set_trace() 
   fig, ax = plt.subplots()
   width=0.35
+  p0 = ax.bar(np.arange(3), [GB+DB/2.0, M, E + D/2.0], width, color='y')
   p1 = ax.bar(np.arange(3), [(G*cons_bw_weightsL['Wgg']/float(cons_bwweightscale))+(D*cons_bw_weightsL['Wgd']/float(cons_bwweightscale)),\
       M+(G*cons_bw_weightsL['Wmg']/float(cons_bwweightscale))+(D*cons_bw_weightsL['Wmd']/float(cons_bwweightscale)),\
           E+(D*cons_bw_weightsL['Wed']/float(cons_bwweightscale))], width, color='r')
@@ -204,7 +211,7 @@ def analyse_bw(network_state_files, outpath):
     
   ax.set_xticks(np.arange(3)+width/2)
   ax.set_xticklabels(('Entry', 'Middle', 'Exit'))
-  ax.legend((p1[0], p2[0]), ('LIRA', 'moneTor'))
+  ax.legend((p0[0], p1[0], p2[0]), ('BRAIDS', 'LIRA', 'moneTor'))
   ax.autoscale_view()
   plt.tight_layout()
   plt.savefig(outpath)
@@ -269,6 +276,6 @@ if __name__ == "__main__":
     in_dirs = [(sys.argv[2], sys.argv[3], sys.argv[4])]
     parse_descriptors(in_dirs)
   elif sys.argv[1] == "analyse_bw":
-    analyse_bw([sys.argv[2], sys.argv[3]], sys.argv[4])
+    analyse_bw([sys.argv[2], sys.argv[3], sys.argv[4]], sys.argv[5])
   else:
     raise ValueError("Command %s does not exist".format(sys.argv[1]))
