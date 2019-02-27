@@ -210,7 +210,7 @@ def analyse_bw(network_state_files, outpath):
     
   ax.set_xticks(np.arange(3))
   ax.set_xticklabels(('Entry', 'Middle', 'Exit'))
-  ax.legend((p0[0], p1[0], p2[0]), ('BRAIDS', 'LIRA', 'moneTor'))
+  ax.legend((p0[0], p1[0], p2[0]), ('BRAIDS (Jan 2010)', 'LIRA (Apr 2012)', 'moneTor (Feb 2018)'))
   ax.autoscale_view()
   plt.tight_layout()
   plt.savefig(outpath)
