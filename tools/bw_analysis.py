@@ -205,7 +205,7 @@ def analyse_bw(network_state_files, outpath):
   p1 = ax.bar(np.arange(3), [(G*cons_bw_weightsL['Wgg']/float(cons_bwweightscale))+(D*cons_bw_weightsL['Wgd']/float(cons_bwweightscale)),\
       M+(G*cons_bw_weightsL['Wmg']/float(cons_bwweightscale))+(D*cons_bw_weightsL['Wmd']/float(cons_bwweightscale)),\
           E+(D*cons_bw_weightsL['Wed']/float(cons_bwweightscale))], width, color='r')
-  p2 = ax.bar(np.arange(3)+width,[(GM*cons_bw_weightsM['Wgg']/float(cons_bwweightscale))+(DM*cons_bw_weightsM['Wgd']/float(cons_bwweightscale)),\
+  p2 = ax.bar(np.arange(3)+2*width,[(GM*cons_bw_weightsM['Wgg']/float(cons_bwweightscale))+(DM*cons_bw_weightsM['Wgd']/float(cons_bwweightscale)),\
       MM+(GM*cons_bw_weightsM['Wmg']/float(cons_bwweightscale))+(M*cons_bw_weightsM['Wmd']/float(cons_bwweightscale)),\
           EM+(DM*cons_bw_weightsM['Wed']/float(cons_bwweightscale))], width, color='b')
     
