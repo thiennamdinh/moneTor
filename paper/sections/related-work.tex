@@ -58,9 +58,7 @@ introduces \emph{tickets} to represent premium status. Users may wish
 to transfer tickets to other users, but this transfer must be done
 through a trusted-third party.  Small numbers of ephemeral tickets are
 freely distributed by a central \emph{bank} to any client upon request
-or to relays that have accumulated tickets spent by clients \op{do I
-  understand correctly that the bank distributes free tickets to
-  relays?}. Crucially, tickets can only be spent at a single relay
+or to relays that have accumulated tickets spent by clients. Crucially, tickets can only be spent at a single relay
 defined at the time of their minting, in order to circumvent the
 double spending problem~\cite{jansen2010recruiting}, yet those tickets
 can be exchanged at the bank for others bound to a new relay assuming
@@ -80,7 +78,7 @@ relays they may use or need to interact more and more frequently with
 the bank to exchange them.
 
 LIRA is an ideological successor to BRAIDS which reduces scalability
-issuesand improves the efficiency of the relay side verification of
+issues and improves the efficiency of the relay side verification of
 tickets by a factor $\approx 80$. Clients in LIRA probabilistically
 ``win'' premium tickets without any interaction with the bank. While
 LIRA improves the efficiency of BRAIDS, and could even offer high
@@ -106,7 +104,7 @@ premium access and stockpile relay-specific information
 (LIRA). Moreover, moneTor offers high fairness with payment
 verification improved by a factor $\approx 6$ compared to LIRA (one
 $\hash$ operation instead of six) and $\approx 500$ to BRAIDS. Also,
-moneTor does not suffer from Concern 2) if moneTor tokens act as a
+moneTor does not suffer from concern 2) if moneTor tokens act as a
 wrapper from an external cryptocurrency such as Bitcoin or Ethereum
 using inter-ledger protocols~\cite{back2014enabling,
   poon2017plasma}. \op{Do you mean that we need to be stuck to an
@@ -119,14 +117,14 @@ funds are independent of the network size).
 %Finally, moneTor payments offer to the relays what we could consider real money, that can be transferred or used to buy premium bandwidth directly (while in LIRA and BRAIDS, an exchange process with the bank is needed).
 
 \paragraph*{Transferable benefits - TEARS} TEARS introduces a two-layer approach whereby \emph{shallots}
-token are awarded by a central bank to participating relays. These shallots,
+token are awarded by a distributed semi-trusted bank to participating relays. These shallots,
 which are securely exchanged tokens, can then be redeemed for BRAIDS-style
 \emph{Priority Passes}. While fully exchangeable shallots represent an economic
 improvement over non-transferable privileges, these tokens are conceptually
 discrete and indivisible assets that are not as easily exchanged as true
 currency. Our scheme improves on this model by offering arbitrarily high
 transferability and divisibility of priority tokens without changing the
-underlying Tor architecture, while also offering a transparent, trustless, incremental and distributed system. Also, TEARS is a discussion paper without detailed construction and experimentation. Yet, TEARS suggests to construct Priority Passes using blind signatures, which would make moneTor faster on payment verification by a factor $\approx n$ \op{What is $n$?} since we need one blind signature for up to $n$ nanopayments. Finally, a major difference with previous work (TEARS, LIRA, BRAIDS) is that moneTor does not require to audit relay's bandwidth to distribute tokens. Relays receive currency directly from client from the rate of provided bandwidth and potentially more from the Tor authorities after tax redistribution. The tax redistribution mechanism may involve bandwidth audits, yet this is not mandatory.
+underlying Tor architecture, while also scaling on trustless entities (our intermediaries) instead of a distribution of semi-trusted banks that must be operated by trusted people. Also, TEARS is a discussion paper without detailed construction and experimentation. The moneTor scheme is also designed for fair-exchange with Bolt's ZKP construction to open and close the nanopayment channels but offering $n$ nanopayments for which the relay only has to perform $1$ $\hash$ operation to validate. This is a strong contrast to TEARS requiring a blind signature for each payment. Finally, a major difference with previous work (TEARS, LIRA, BRAIDS) is that moneTor does not require to audit relay's bandwidth to distribute tokens. Relays receive currency directly from client from the rate of provided bandwidth and potentially more from the Tor authorities after tax redistribution. The tax redistribution mechanism may involve bandwidth audits, yet this is not mandatory.
 
 One remaining limitation of moneTor's direct payments to the relays is
 that it offers an opportunity for the exit relay to inject junk

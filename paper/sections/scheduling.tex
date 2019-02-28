@@ -46,7 +46,7 @@ scheduling policy. This result holds even under very heavy levels of induced
 congestion.
 
 This is a severe issue since all previous works are using strategies that
-make local scheduling decisions on each relay only to serve premium bandwidth.
+make local scheduling decisions on each relay to serve premium bandwidth.
 We observe that offering bandwidth priority based on local decisions seems not
 to work well anymore.
 
@@ -81,7 +81,7 @@ order, they appear in the queue at roughly equal proportions. In effect,
 bandwidth in our simulation is not constrained by the ordering policy of the
 scheduler but rather by the rate at which they arrive from the network. As a
 consequence, local decisions at a particular relay for scheduling falls short
-to offer the expected priority. Note that the same problem was already spotted by Jansen \textit{et al.}~\cite{jansen2018kist} which motivated the deployment of KIST. Our result show that despite the use of KIST, relays may still be able to flush all queues at once, dismissing the effect of the scheduler's choice. 
+to offer the expected priority. Note that the same problem was already spotted by Jansen \textit{et al.}~\cite{jansen2018kist} which motivated the deployment of KIST. Our results show that despite the use of KIST, relays may still be able to flush all queues at once, dismissing the effect of the scheduler's choice. 
 
 
 \begin{figure} \centering
@@ -157,7 +157,7 @@ the overall bandwidth in circuit positions. These inequalities are growing fast 
 \end{figure}
 
 LIRA's experiments are based on \texttt{tor-0.2.3.13-alpha} from March 2012, which benefits
-from Mike Perry's bandwidth-weights. This may explain why LIRA has less impressive priority advantage than the one exposed in BRAIDS: experiments in LIRA are probably less internally congested than the ones from BRAIDS, and a major change in the path selection to solve a performance problem seems to bear some responsibilities for this case. However, the different congestion status may also be due to other factors, such as a different client usage model and the local scheduling policies. Comparing to our experiments, LIRA uses a simulated environment scaled down from an April 2012 consensus with $\approx 42\%$ of relays with the \texttt{Exit} flag, while our experiments only have $\approx 13\%$ of relays with the \texttt{Exit} flag. This is a consequence of the state of the Tor network from which Shadow simulations are built from. The difference in the state of the Tor network may also be observed on Figure~\ref{fig:bw_comp}, where we plotted the distribution of bandwidth allocated to each position. LIRA's experiments were performed when the exit capacity of the Tor network was not scarce. This is not the case anymore as observed for moneTor's used consensus. This result holds now since a few years~\cite{waterfilling-pets2017}.
+from Mike Perry's bandwidth-weights. This may explain why LIRA has less impressive priority advantage than the one exposed in BRAIDS: experiments in LIRA are probably less internally congested than the ones from BRAIDS, and a major change in the path selection to solve a performance problem seems to bear some responsibilities for this case. However, the different congestion status may also be due to other factors, such as a different client usage model and the local scheduling policies. Comparing to our experiments, LIRA uses a simulated environment scaled down from an April 2012 consensus with $\approx 42\%$ of relays with the \texttt{Exit} flag, while our experiments only have $\approx 13\%$ of relays with the \texttt{Exit} flag. This is a consequence of the state of the Tor network from which Shadow simulations are built. The difference in the state of the Tor network may also be observed on Figure~\ref{fig:bw_comp}, where we plotted the distribution of bandwidth allocated to each position. LIRA's experiments were performed when the exit capacity of the Tor network was not scarce. This is not the case anymore as observed for moneTor's used consensus. This result holds now since a few years~\cite{waterfilling-pets2017}.
 
 
 \begin{figure}
