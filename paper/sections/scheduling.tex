@@ -45,7 +45,7 @@ incentivize paid users as well as our expectations for such an inequitable
 scheduling policy. This result holds even under very heavy levels of induced
 congestion.
 
-This is quite a severe issue since all previous works are using strategies that
+This is a severe issue since all previous works are using strategies that
 make local scheduling decisions on each relay only to serve premium bandwidth.
 We observe that offering bandwidth priority based on local decisions seems not
 to work well anymore.
@@ -81,7 +81,7 @@ order, they appear in the queue at roughly equal proportions. In effect,
 bandwidth in our simulation is not constrained by the ordering policy of the
 scheduler but rather by the rate at which they arrive from the network. As a
 consequence, local decisions at a particular relay for scheduling falls short
-to offer the expected priority.
+to offer the expected priority. Note that the same problem was already spotted by Jansen \textit{et al.}~\cite{jansen2018kist} which motivated the deployment of KIST. Our result show that despite the use of KIST, relays may still be able to flush all queues at once, dismissing the effect of the scheduler's choice. 
 
 
 \begin{figure} \centering
@@ -101,7 +101,7 @@ to offer the expected priority.
   \label{fig:scheduling_close}
 \end{figure}
 
-Now, we may investigate why prioritization based on making decisions inside the 
+Now, we may investigate why this situation happens over our simulations while prioritization based on making decisions inside the 
 relay's scheduler worked fine for previous works such as BRAIDS and LIRA while we 
 follow the same methodology to evaluate moneTor. So, what could be wrong? First, 
 it may be the case
@@ -156,8 +156,8 @@ the overall bandwidth in circuit positions. These inequalities are growing fast 
   \caption{Evolution of bandwidth aggregated by relay flags} \label{fig:bw_inequalities}
 \end{figure}
 
-LIRA is based on \texttt{tor-0.2.3.13-alpha} from March 2012, which benefits
-from Mike Perry's bandwidth-weights. This may explain why LIRA has less impressive priority advantage than the one exposed in BRAIDS: experiments in LIRA are probably less internally congested than the ones from BRAIDS, and a major change in the path selection to solve a performance problem seems to bear some responsibilities for this case. However, the different congestion status may also be due to other factors, such as a different client usage model and the local scheduling policies. Comparing to our experiments, LIRA uses a simulated environment scaled down from an April 2012 consensus with $\approx 42\%$ of relays with the \texttt{Exit} flag, while our experiments only have $\approx 13\%$ of relays with the \texttt{Exit} flag. This is a consequence of the state of the Tor network from which Shadow simulations are built from. The difference in the state of the Tor network may also be observed on Figure~\ref{fig:bw_comp}, where we plotted the distribution of bandwidth allocated to each position during both experiments. LIRA's experiments were performed when the exit capacity of the Tor network was not scarce. This is not the case anymore as observed for moneTor's used consensus. This result holds now since a few years~\cite{waterfilling-pets2017}.
+LIRA's experiments are based on \texttt{tor-0.2.3.13-alpha} from March 2012, which benefits
+from Mike Perry's bandwidth-weights. This may explain why LIRA has less impressive priority advantage than the one exposed in BRAIDS: experiments in LIRA are probably less internally congested than the ones from BRAIDS, and a major change in the path selection to solve a performance problem seems to bear some responsibilities for this case. However, the different congestion status may also be due to other factors, such as a different client usage model and the local scheduling policies. Comparing to our experiments, LIRA uses a simulated environment scaled down from an April 2012 consensus with $\approx 42\%$ of relays with the \texttt{Exit} flag, while our experiments only have $\approx 13\%$ of relays with the \texttt{Exit} flag. This is a consequence of the state of the Tor network from which Shadow simulations are built from. The difference in the state of the Tor network may also be observed on Figure~\ref{fig:bw_comp}, where we plotted the distribution of bandwidth allocated to each position. LIRA's experiments were performed when the exit capacity of the Tor network was not scarce. This is not the case anymore as observed for moneTor's used consensus. This result holds now since a few years~\cite{waterfilling-pets2017}.
 
 
 \begin{figure}
@@ -174,8 +174,8 @@ were performed on a considerably smaller scale than the real Tor network with si
 network topology and user behavior. What can be said is that networking as a
 whole is an immensely complex and unpredictable domain and that the attainment
 of a simulation environment conducive to effective scheduling is, at the very
-least, nontrivial. Consequently, we could argue that the barrier to deploy monetary incentives is not only a social barrier. Technically, we may not be yet ready and further research should be conducted to find  an ideal priority mechanism that covers various
-aspect of circuit congestions. We leave the design of a new priority-based scheme which takes those aspects in account as a further work.
+least, nontrivial. Consequently, we could argue that the barrier to deploy monetary incentives is not only a social barrier. We may not be ready on a technical level, and technical properties of the scheme may influence social aspects. We showed in this work to be able to offer novel technical properties such as a payment system that scales with trustless entities and fair-exchange (i.e., you pay for what you use), maybe other desirable properties remain to be discovered? Moreover, further research should be conducted to find an ideal priority mechanism that covers various
+aspect of circuit congestion. We leave the design of a new priority-based scheme which takes those aspects in account as a further work.
 
 %To confirm it, we run highly congested simulations with many more Tor clients
 %than what the scaled-down Tor network could reasonably handle, and observed

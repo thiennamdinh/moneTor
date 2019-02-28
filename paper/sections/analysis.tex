@@ -214,8 +214,7 @@ characteristic of the scheme.
 First, we attempt to show the total cost of the moneTor scheme in terms of total
 network throughput. To highlight worst-case performance, we configured a medium
 scale experiment consisting of 100\% of premium clients and compare to a
-baseline trial with 0\% premium clients. No actual traffic priority is
-conferred. Since our algorithms makes use of some concurrent crytpographic
+baseline trial with 0\% premium clients. The payment protocols run but the control-flow stays unchanged to only compare the CPU cost of the payment scheme. Since our algorithms makes use of some concurrent crytpographic
 operations, we are concerned with the number of CPU cores available to most
 relays. This information is not publicly available. As a result, we provide two
 trials with moneTor: one where we assume all nodes are running on multi-core
