@@ -41,7 +41,7 @@ research that is orthogonal to our paper.~\footnote{E.g.,
   maximum diversity in endpoints of user paths, and
   TAPS~\cite{taps-ndss2017} argues for security by trust policies.}
 
-The final considerationis the issue of price determination. While it
+The final consideration is the issue of price determination. While it
 would be tempting to enlist some market-based mechanisms to set premium
 bandwidth prices, any price differentiation between clients or relays inevitably
 leaks more information. This leakage becomes more severe with higher granularity
@@ -152,7 +152,7 @@ specifications~\cite{green2017bolt}.
 \end{itemize}
 
 Bolt's micropayment channels suffer from relatively heavy cryptography ($37-100\ ms$) and communication
-(7 message legs) is a prohibitive expense for Tor relay payments. Indeed, using Bolt would not permit a fair exchange (i.e., a high payment rate) between a client and a relay since we would need several \textit{RTTs} to complete a payment while ``consuming'' premium bandwidth and not being able to keep up with payments (in Bolt, the previous Pay needs to be finished to start the next one). Moreover, in terms of CPU overhead, it is also desirable to keep the
+(7 message legs)~\cite{green2017bolt} is a prohibitive expense for Tor relay payments. Indeed, using Bolt would not permit a fair exchange (i.e., a high payment rate) between a client and a relay since we would need several \textit{RTTs} to complete a payment while ``consuming'' premium bandwidth and not being able to keep up with payments (in Bolt, the previous Pay needs to be finished to start the next one). Moreover, in terms of CPU overhead, it is also desirable to keep the
 barrier of entry low for smaller relay operators. To overcome these
 concerns, we present a new payment layer design enabling far more efficient
 nanopayments that will satisfy our fair exchange problem and our overhead problem.
@@ -367,7 +367,7 @@ definitions and proofs are provided in Appendix~\ref{sec:proof} for the followin
 
 \begin{theorem}
 The nanopayment channel scheme satisfies the properties of anonymity (\ref{def:anon1}, \ref{def:anon2})
- and security (\ref{def:balance}) under the restriction that the adversary does not abort before Nano-Close finished, the restrictions that at most one nanopayment channel can be open per micropayment channel, the assumptions that the commitment scheme is secure, the zero-knowledge system is simulation extractable and zero-knowledge, and the hash function used to create the hashchain and verify the preimage during the Nano-Pay is a cryptographic hash function.
+ and security (\ref{def:balance}) under the restriction that the adversary does not abort before Nano-Close finished, the restriction that at most one nanopayment channel can be open per micropayment channel, the assumptions that the commitment scheme is secure, the zero-knowledge system is simulation extractable and zero-knowledge, and the hash function used to create the hashchain and verify the preimage during the Nano-Pay is a cryptographic hash function.
 
 \end{theorem}
 
@@ -377,7 +377,7 @@ relationship between client to intermediary, client to ledger, relay to
 intermediary and relay to ledger are themselves anonymized by Tor circuits. If
 some party aborts, which induce a dispute on the ledger, the relationship
 between the client and his relays is protected by the various Tor circuits built
-to resolve the dispute with the ledger.
+to resolve the dispute with the ledger. The party which aborted does not gain more information than what could be obtained by observing Tor circuits.
 
 Informally, we claim the following anonymity guarantees relative to unmodified Tor:
 

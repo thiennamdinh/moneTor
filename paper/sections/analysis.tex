@@ -142,8 +142,7 @@ A substantial contribution of the research is embedded within our implementation
 of the moneTor framework. The modifications, applied to Tor release version
 0.3.2.10, cover approximately fifteen thousand added lines of code across Tor's
 core C software. We emphasize that the implementation is engineered solely for
-our experiments. Most notably, expensive cryptographic operations such as zpk
-proofs and commitments were simulated using methods that account for Shadow's
+our experiments. Most notably, expensive cryptographic operations such as ZKPs and commitments were simulated using methods that account for Shadow's
 unique virtual time management~\cite{jansen2011shadow}. We consider both scenarios in which the
 simulated Tor process is running on a multicore or singlecore processor. In the
 multicore case, the cryptographic operations are replaced by an ``idle'' command
