@@ -35,44 +35,55 @@ a rudimentary prediction strategy that attempts to balance this trade-off by
 anticipating the number of needed channels using historical usage
 information in a similar way Tor anticipates the need for a fresh circuit.
 
-Moreover, potential linkability of micro-wallets due to timings should be taken in account in the pre-built strategy. That would depend on the number of users concurrently building channels to the same intermediary when a micro-wallet is renewed at time $t$ and used at the time of the next unlikable nano-establish. By design, the anonymity set of micro-wallets is split within the number of intermediaries. The intermediary flag is validated by the Tor authorities in our implementation, and rules to ensure a sufficient large anonymity set is a deployment problem far from intractable, and out-of-scope of this paper.
+Moreover, potential linkability of micro-wallets due to timings 
+depends on the number of users concurrently building channels to the 
+same intermediary when a micro-wallet is renewed at time $t$ and 
+used at the time of the next unlikable nano-establish. By design, 
+the anonymity set of micro-wallets is split within the number of 
+intermediaries. The intermediary flag is validated by the Tor 
+authorities in our implementation, and rules to ensure a sufficient 
+large anonymity set is a deployment problem far from intractable, 
+and out-of-scope of this paper. Note that the intermediary would 
+have to link all micro-wallets of a same user to learn the full 
+balance of that user, and this is an exponentially difficult problem 
+with the size of the anonymity set. 
 
 %However, our approach may not be sufficiently optimized and further
 %work on this front is warranted.
-
-\subsection{Network Scalability}
-\label{subsub:scalability}
-%\td{TODO: describe scalability of intermediary system and any networking
-%  bottlenecks that might arise such as port limits, etc.}
-
-In our design, we are concerned with memory consumption, kernel socket
-consumption and CPU consumption. Our choice for a tripartite protocol
-effectively shifts the memory consumption of opened and idle micro
-channels to the intermediary nodes of the network.
- 
-% A more basic setup
-%whereby each Tor client maintains a micropayment channel with each
-%relay would incur an $O(n*m)$ cost with
-%respect to channel management complexity, with $n$ the number of Tor clients and $m$ the number of relays. By engineering an additional
-%intermediary layer, the complexity of moneTor channel connections is
-%reduced to $O(n+m)$. In our implementation, intermediary relays do not
-%participate in routing user streams and are tasked only with providing
-%payment channel services. Intermediaries devote the full extent of
-%their computational resources toward this task, allowing only a few
-%strong nodes to handle all of channel management needs of the network.
-
-Interactions between parties are realized within Tor circuits to allow
-multiplexing of circuits over the same TCP connection. This also protects the
-identity of the client and its chosen circuit against identification by the
-ledger or the intermediary.
-%\footnote{We assumed no side-channel exploitation in
-%  this work but do discuss timing attacks in
-%  Section~\ref{sec:limitations_futurework}.}. 
- As a result, the intermediary and
-the ledger must have a number of available sockets higher than the number of
-relays in the network in the worst case. Since this limit is in line with Tor's
-current assumption (i.e., any relay has available sockets to connect to every other relay), our design inherits the same socket consumption scalability
-of the greater Tor network.
+%
+%\subsection{Network Scalability}
+%\label{subsub:scalability}
+%%\td{TODO: describe scalability of intermediary system and any networking
+%%  bottlenecks that might arise such as port limits, etc.}
+%
+%In our design, we are concerned with memory consumption, kernel socket
+%consumption and CPU consumption. Our choice for a tripartite protocol
+%effectively shifts the memory consumption of opened and idle micro
+%channels to the intermediary nodes of the network.
+% 
+%% A more basic setup
+%%whereby each Tor client maintains a micropayment channel with each
+%%relay would incur an $O(n*m)$ cost with
+%%respect to channel management complexity, with $n$ the number of Tor clients and $m$ the number of relays. By engineering an additional
+%%intermediary layer, the complexity of moneTor channel connections is
+%%reduced to $O(n+m)$. In our implementation, intermediary relays do not
+%%participate in routing user streams and are tasked only with providing
+%%payment channel services. Intermediaries devote the full extent of
+%%their computational resources toward this task, allowing only a few
+%%strong nodes to handle all of channel management needs of the network.
+%
+%Interactions between parties are realized within Tor circuits to allow
+%multiplexing of circuits over the same TCP connection. This also protects the
+%identity of the client and its chosen circuit against identification by the
+%ledger or the intermediary.
+%%\footnote{We assumed no side-channel exploitation in
+%%  this work but do discuss timing attacks in
+%%  Section~\ref{sec:limitations_futurework}.}. 
+% As a result, the intermediary and
+%the ledger must have a number of available sockets higher than the number of
+%relays in the network in the worst case. Since this limit is in line with Tor's
+%current assumption (i.e., any relay has available sockets to connect to every other relay), our design inherits the same socket consumption scalability
+%of the greater Tor network.
 
 \subsection{Prioritized Traffic}
 \label{subsub:prioritized}
@@ -86,7 +97,7 @@ of the greater Tor network.
 Traffic scheduling is
 perhaps the most intuitive mechanism with which to implement
 prioritization. However, we found that local scheduling decisions on each relay for priority do not work well anymore with the current state of the Tor network, which precludes previous works scheduling approaches based on DiffServ~\cite{dovrolis1999case} and EWMA~\cite{tang2010improved} to offer the expected priority. A more detailed
-discussion of our findings can be found in Appendix~\ref{sec:scheduling}, and raises interest for future work to comprehensively understand when priority mechanisms, including the one we suggest here, fail to provide the expected priority. Yet, the intuition to understand why previous priority mechanism fail today lays in the evolution of the Tor network capacity since a few years: the capacity for guard bandwidth and middle bandwidth has raised to a magnitude where we now observe most of the congestion happening between the exit relay and the destination address. Apart from the added bandwidth, this evolution affects Tor's performance in the good way because Tor's internal window sizes tend to be more accurate with less congestion inside the Tor network~\cite{archive-2009-mail,kiraly2008solving}. As a downside, it affects schedulers' impact since most of the relays in our experiments were able to flush all queues at once at each write event, which makes meaningless any form of queue priority locally at a particular relay.
+discussion of our findings can be found in Appendix~\ref{sec:scheduling}, and raises interest for future work to comprehensively understand when priority mechanisms, including the one we suggest here, fail to provide the expected priority. Yet, the intuition to understand why previous priority mechanism fail today lays in the evolution of the Tor network capacity since a few years: the capacity for guard bandwidth and middle bandwidth has raised to a magnitude where we now observe most of the congestion happening between the exit relay and the destination address. Apart from the added bandwidth, this evolution affects Tor's performance in the good way because Tor's internal window sizes tend to be more accurate with less congestion inside the Tor network~\cite{archive-2009-mail,kiraly2008solving}. As a downside, it affects schedulers' impact since most of the relays in our experiments were able to flush all queues at once at each write event, which makes inefficient any form of queue priority locally at a particular relay.
 
 However, Tor's overlay flow control mechanism provides an alternative route than local scheduling policies
 to implement our desired priority functionality. Indeed, since local decisions inside the scheduler at a particular relay may fail to achieve priority, designing priority as a global function of the circuit may help. Recall that edge nodes regulate the
