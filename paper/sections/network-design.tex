@@ -44,7 +44,7 @@ intermediaries. The intermediary flag is validated by the Tor
 authorities in our implementation, and rules to ensure a sufficient 
 large anonymity set is a deployment problem far from intractable, 
 and out-of-scope of this paper. Note that the intermediary would 
-have to link all micro-wallets of a same user to learn the full 
+have to link all micro-wallets of a same Tor user to learn the full 
 balance of that user, and this is an exponentially difficult problem 
 with the size of the anonymity set. 
 
@@ -97,7 +97,7 @@ with the size of the anonymity set.
 Traffic scheduling is
 perhaps the most intuitive mechanism with which to implement
 prioritization. However, we found that local scheduling decisions on each relay for priority do not work well anymore with the current state of the Tor network, which precludes previous works scheduling approaches based on DiffServ~\cite{dovrolis1999case} and EWMA~\cite{tang2010improved} to offer the expected priority. A more detailed
-discussion of our findings can be found in Appendix~\ref{sec:scheduling}, and raises interest for future work to comprehensively understand when priority mechanisms, including the one we suggest here, fail to provide the expected priority. Yet, the intuition to understand why previous priority mechanism fail today lays in the evolution of the Tor network capacity since a few years: the capacity for guard bandwidth and middle bandwidth has raised to a magnitude where we now observe most of the congestion happening between the exit relay and the destination address. Apart from the added bandwidth, this evolution affects Tor's performance in the good way because Tor's internal window sizes tend to be more accurate with less congestion inside the Tor network~\cite{archive-2009-mail,kiraly2008solving}. As a downside, it affects schedulers' impact since most of the relays in our experiments were able to flush all queues at once at each write event, which makes inefficient any form of queue priority locally at a particular relay.
+discussion of our findings can be found in Appendix~\ref{sec:scheduling}, and raises interest for future work to comprehensively understand when priority mechanisms, including the one we suggest here, fail to provide the expected priority. Yet, the intuition to understand why previous priority mechanism fail today lays in the evolution of the Tor network capacity since a few years: the capacity for guard bandwidth and middle bandwidth has raised to a magnitude where we now observe most of the congestion happening between the exit relay and the destination address. Apart from performance improvement thanks to the added bandwidth, this evolution affects Tor's performance because Tor's internal control-flow window sizes tend to be more accurate with less congestion inside the Tor network~\cite{archive-2009-mail,kiraly2008solving}. As a downside, it affects schedulers' impact since most of the relays in our experiments were able to flush all queues at once at each write event, which makes inefficient any form of queue priority locally at a particular relay.
 
 However, Tor's overlay flow control mechanism provides an alternative route than local scheduling policies
 to implement our desired priority functionality. Indeed, since local decisions inside the scheduler at a particular relay may fail to achieve priority, designing priority as a global function of the circuit may help. Recall that edge nodes regulate the
