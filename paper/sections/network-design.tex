@@ -34,6 +34,9 @@ eventually afflict the network with unused overhead. Our implementation features
 a rudimentary prediction strategy that attempts to balance this trade-off by
 anticipating the number of needed channels using historical usage
 information in a similar way Tor anticipates the need for a fresh circuit.
+
+Moreover, potential linkability of micro-wallets due to timings should be taken in account in the pre-built strategy. That would depend on the number of users concurrently building channels to the same intermediary when a micro-wallet is renewed at time $t$ and used at the time of the next unlikable nano-establish. By design, the anonymity set of micro-wallets is split within the number of intermediaries. The intermediary flag is validated by the Tor authorities in our implementation, and rules to ensure a sufficient large anonymity set is a deployment problem far from intractable, and out-of-scope of this paper.
+
 %However, our approach may not be sufficiently optimized and further
 %work on this front is warranted.
 
