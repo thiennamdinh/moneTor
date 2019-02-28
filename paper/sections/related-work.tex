@@ -75,12 +75,12 @@ currency. Our scheme improves on this model by offering arbitrarily high
 transferability and divisibility of priority tokens without changing the
 underlying Tor architecture, while also offering a transparent, trustless, incremental and distributed system. Also, TEARS is a discussion paper without detailed construction and experimentation. Yet, TEARS suggests to construct Priority Passes using blind signatures, which would make moneTor faster on payment verification by a factor $\approx n$ since we need one blind signature for up to $n$ nanopayments. Finally, a major difference with previous work (TEARS, LIRA, BRAIDS) is that moneTor does not require to audit relay's bandwidth to distribute tokens. Relays receive currency directly from client from the rate of provided bandwidth and potentially more from the Tor authorities after tax redistribution. The tax redistribution mechanism may involve bandwidth audits, yet this is not mandatory.
 
-One disadvantage of direct payments to the relays is that it offers 
+One disadvantage of moneTor's direct payments to the relays is that it offers 
 an opportunity to the exit relay to inject junk traffic (e.g., 
 padding cells) or to conspire with the destination to inject useless 
 data to get more nanopayments. Junk traffic produced solely by the 
 exit node is already a capital issue~\cite{rochet2018dropping}, and 
-the Tor project already produced several patches to observe bogus 
+the Tor project produced several patches to observe bogus 
 traffic and react to it. The conspirator problem is however 
 intractable by nature since the junk data would appear legit, 
 however our channel establishment procedure offer up to $n$ 
