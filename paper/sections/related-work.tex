@@ -1,25 +1,34 @@
-We classify incentivization schemes into three types of strategies:
+We classify the previously proposed incentivization schemes into three groups:
 
-	\emph{1. Non-transferable benefits:} these proposals aim to recruit relays by offering some
+\noindent	\emph{1. Non-transferable benefits:} these proposals aim to recruit relays by offering some
 	 privileged status intended for personal use which cannot be \emph{securely} sold for reimbursement
 	  of financial investment~\cite{dingledine2010building,jansen2010recruiting, jansen2013lira}. Current state-of-the art schemes for Tor incentives are in this category and the next one, and we focus our comparison to them.
 	  
-	\emph{2. transferable benefits:} these schemes offer
+\noindent	\emph{2. Transferable benefits:} these schemes offer
 privileges or products intended to hold value in a secondary resale market. These
 indirect financial incentives presume to attract a broader demand than in the
 non-transferable case. Partial proof-of-work tokens that can then be redeemed by relays for
 profit in real cryptocurrency mining pools~\cite{biryukov2015proof} and exchangeable shallots in TEARS~\cite{jansen2014onions} are part of this category.
 
-	\emph{3. monetary payments:} these schemes offer rewards with what might be considered
-real money that holds external value. PAR~\cite{androulaki2008payment}
-allows clients to send direct payments to relays in a hybrid payment scheme
-which makes use of inefficient but anonymous Chaumian e-cash
+\noindent \emph{3. Monetary payments:} these schemes offer rewards
+with what might be considered real money that holds external
+value. PAR~\cite{androulaki2008payment} allows clients to send direct
+payments to relays in a hybrid payment scheme which makes use of
+inefficient but anonymous Chaumian e-cash
 protocols~\cite{chaum1988untraceable} and efficient but transparent
-probabilistic micropayments. PAR introduces the \emph{honest but curious} bank
-paradigm in which the bank cannot deanonymize clients but is in control of their
-deposited financial assets. PAR suffers from an unscalable
-design owing to its centralized architecture. Other monetary payments schemes such as Xpay~\cite{chen2009xpay} and Carbunar~\textit{et al.}~\cite{carbunar2012tipping} are limited by the same \emph{honest but curious} security assumptions and their scalability
-remains capped by the need for all clients to interact with the central bank for each payment chain. The moneTor scheme can be seen as an idealogical member of this family of solutions, yet we resolve the scalability issue inherent with approaches in this category and we relieve the need to rely on a \textit{honest but curious} bank.
+probabilistic micropayments. PAR introduces the \emph{honest but
+  curious} bank paradigm in which the bank cannot deanonymize clients
+but is in control of their deposited financial assets. PAR suffers
+from scalability issues owing to its strongly centralized
+architecture. Other monetary payments schemes such as
+Xpay~\cite{chen2009xpay} and the proposal of Carbunar~\textit{et
+  al.}~\cite{carbunar2012tipping} are limited by the same \emph{honest
+  but curious} security assumptions and their scalability remains
+capped by the need for all clients to interact with the central bank
+for each payment chain. The moneTor scheme can be seen as a member of
+this family of solutions, with the following advances: moneTor removes
+the need to rely on a \textit{honest but curious} bank, and offers a
+solution to the scalability issue inherent to previous approaches.
 
 
 %\footnote{Generally speaking, incentives provided by monetary payments
@@ -42,27 +51,71 @@ remains capped by the need for all clients to interact with the central bank for
 %attributed to this relatively small set of gold star
 %relays~\cite{dingledine2010building}, since gold star is by design non-transferable.
 
-\paragraph*{Non-transferable benefits - BRAIDS/LIRA} The BRAIDS scheme introduces \emph{tickets} to represent
-premium status. Users may wish to transfer tickets to other users, but this transfer must be done through a trusted-third party (hence not secure).  Small numbers of ephemeral tickets are freely distributed by a
-central \emph{bank} to any client upon request or to relays that have
-accumulated spent tickets from clients. Crucially, tickets can only be spent at
-a single relay defined at the time of their minting to circumvent the double
-spending problem~\cite{jansen2010recruiting}, yet those tickets can be exchanged at the bank for others bound to a new relay assuming that the exchange happens within the allowed time interval. BRAIDS suffers from four major concerns: 1) everyone connects to a central bank through Tor, which raises scalability issues; 2) the bank is not trustless: by design the bank can issue valid tickets for anyone, and guard relays can steal tickets in the distribution process; 3) verifying a blind signature on relay side for each payment is computationally intensive if the rate of payment is high, and current high-bandwidth Tor relays are already CPU-bound; 4) tickets are designed to be relay-specific to overcome the double-spending problem. As a consequence, this does not scale on the economic appeal: the larger the network becomes, the more the users stockpile tickets for all the relays or need to interact with the bank to exchange them.
+We now review these approaches in more details. 
 
-LIRA is an ideological successor
-to BRAIDS which reduces scalability problems imposed by the centralized
-infrastructure and improves the relay side verification of ticket by a factor $\approx 80$. Clients in LIRA probabilistically ``win'' premium tickets
-without any interaction with the bank. While LIRA improves the efficiency of
-BRAIDS, and could even offer high fairness (i.e., high rate of payments), it suffers 
-from the \textit{client} cheating incentive to continuously build circuits to try to 
-win premium tickets~\cite{jansen2013lira, jansenblogpost}. Depending on the chosen 
-value for the payment rate, this problem by itself could prevent the scheme to be a 
-realistic option. If the payment rate 
-is too low, then the incentive to cheat is increased because a large priority bandwidth would be rewarded between guesses. If a high payment rate is 
-chosen, then guessers would have difficulties to maintain good guesses through their 
-circuit lifetime (as the probability to maintain priority through guesses exponentially decreases), which makes the idea of the scheme to have increasing buyer anonymity through successful guessers to lose efficacy. Moreover, LIRA still have the major concerns 2) and 4) inherited from BRAIDS.
+\paragraph*{Non-transferable benefits - BRAIDS/LIRA} The BRAIDS scheme
+introduces \emph{tickets} to represent premium status. Users may wish
+to transfer tickets to other users, but this transfer must be done
+through a trusted-third party.  Small numbers of ephemeral tickets are
+freely distributed by a central \emph{bank} to any client upon request
+or to relays that have accumulated tickets spent by clients \op{do I
+  understand correctly that the bank distributes free tickets to
+  relays?}. Crucially, tickets can only be spent at a single relay
+defined at the time of their minting, in order to circumvent the
+double spending problem~\cite{jansen2010recruiting}, yet those tickets
+can be exchanged at the bank for others bound to a new relay assuming
+that the exchange happens within the allowed time interval. BRAIDS
+raises four major concerns: 1)~everyone connects to a central bank
+through Tor, which raises scalability issues; 2) the bank is not
+trustless: by design the bank can issue valid tickets for anyone, and
+guard relays can steal tickets in the distribution process; 3)
+verifying a blind signature on relay side for each payment is
+computationally intensive if the rate of payment is high, and current
+high-bandwidth Tor relays are already CPU-bound; 4) interactions with
+the bank is increased by the fact that tickets are designed to be
+relay-specific. As a consequence, BRAIDS can hardly scale as a result
+of an economic appeal: as the size of the network increases, users
+must either stockpile an increasing number of tickets for all the
+relays they may use or need to interact more and more frequently with
+the bank to exchange them.
 
-Compared to BRAIDS and LIRA, moneTor offers the ability to strongly prevent double-spending without suffering from an inefficient centralized exchange process~\cite{jansenblogpost}(BRAIDS) and from incentives to cheat to gain premium access and stockpile relay-specific information (LIRA). Moreover, moneTor offers high fairness with payment verification improved by a factor $\approx 6$ to LIRA (one $\hash$ operation instead of six) and $\approx 500$ to BRAIDS in a fair-exchange situation. Also, moneTor does not suffer from 2) if moneTor tokens act as a wrapper from an external cryptocurrency such as Bitcoin or Ethereum using inter-ledger protocols~\cite{back2014enabling, poon2017plasma}. Finally and more important, moneTor tokens are not relay-specific, which solves the scalability problem on the economic appeal (i.e., frozen funds are independent of the network size in moneTor).
+LIRA is an ideological successor to BRAIDS which reduces scalability
+issuesand improves the efficiency of the relay side verification of
+tickets by a factor $\approx 80$. Clients in LIRA probabilistically
+``win'' premium tickets without any interaction with the bank. While
+LIRA improves the efficiency of BRAIDS, and could even offer high
+fairness (by supporting high payment rates), it suffers from a
+\textit{client} cheating incentive to continuously build circuits to
+try to win premium tickets~\cite{jansen2013lira,
+  jansenblogpost}. Depending on the chosen value for the payment rate,
+this problem by itself could prevent the scheme from offering a
+realistic option. If the payment rate is too low, then the incentive
+to cheat is increased because a large priority bandwidth would be
+rewarded between guesses. If a high payment rate is chosen, then
+guessers would have difficulties to maintain good guesses through
+their circuit lifetime (as the probability to maintain priority
+through guesses exponentially decreases). As a result, the LIRA idea
+to have increasing buyer anonymity through successful guessers is
+losing its efficacy. Moreover, LIRA does not address Concerns 2)
+and 4) inherited from BRAIDS.
+
+Compared to BRAIDS and LIRA, moneTor offers the ability to prevent
+double-spending without suffering from a centralized exchange process
+(BRAIDS)~\cite{jansenblogpost}, or from incentives to cheat to gain
+premium access and stockpile relay-specific information
+(LIRA). Moreover, moneTor offers high fairness with payment
+verification improved by a factor $\approx 6$ compared to LIRA (one
+$\hash$ operation instead of six) and $\approx 500$ to BRAIDS. Also,
+moneTor does not suffer from Concern 2) if moneTor tokens act as a
+wrapper from an external cryptocurrency such as Bitcoin or Ethereum
+using inter-ledger protocols~\cite{back2014enabling,
+  poon2017plasma}. \op{Do you mean that we need to be stuck to an
+  existing crypto-currency if we want problem 2) to be solved? I do
+  not see why, and this looks bad -- many people are likely to not
+  want to be linked to an external currency.} Finally and more
+important, moneTor tokens are not relay-specific, which solves the
+scalability problem on the economic appeal (i.e., in moneTor, frozen
+funds are independent of the network size).
 %Finally, moneTor payments offer to the relays what we could consider real money, that can be transferred or used to buy premium bandwidth directly (while in LIRA and BRAIDS, an exchange process with the bank is needed).
 
 \paragraph*{Transferable benefits - TEARS} TEARS introduces a two-layer approach whereby \emph{shallots}
@@ -73,24 +126,22 @@ improvement over non-transferable privileges, these tokens are conceptually
 discrete and indivisible assets that are not as easily exchanged as true
 currency. Our scheme improves on this model by offering arbitrarily high
 transferability and divisibility of priority tokens without changing the
-underlying Tor architecture, while also offering a transparent, trustless, incremental and distributed system. Also, TEARS is a discussion paper without detailed construction and experimentation. Yet, TEARS suggests to construct Priority Passes using blind signatures, which would make moneTor faster on payment verification by a factor $\approx n$ since we need one blind signature for up to $n$ nanopayments. Finally, a major difference with previous work (TEARS, LIRA, BRAIDS) is that moneTor does not require to audit relay's bandwidth to distribute tokens. Relays receive currency directly from client from the rate of provided bandwidth and potentially more from the Tor authorities after tax redistribution. The tax redistribution mechanism may involve bandwidth audits, yet this is not mandatory.
+underlying Tor architecture, while also offering a transparent, trustless, incremental and distributed system. Also, TEARS is a discussion paper without detailed construction and experimentation. Yet, TEARS suggests to construct Priority Passes using blind signatures, which would make moneTor faster on payment verification by a factor $\approx n$ \op{What is $n$?} since we need one blind signature for up to $n$ nanopayments. Finally, a major difference with previous work (TEARS, LIRA, BRAIDS) is that moneTor does not require to audit relay's bandwidth to distribute tokens. Relays receive currency directly from client from the rate of provided bandwidth and potentially more from the Tor authorities after tax redistribution. The tax redistribution mechanism may involve bandwidth audits, yet this is not mandatory.
 
-One disadvantage of moneTor's direct payments to the relays is that it offers 
-an opportunity to the exit relay to inject junk traffic (e.g., 
-padding cells) or to conspire with the destination to inject useless 
-data to get more nanopayments. Junk traffic produced solely by the 
-exit node is already a severe issue~\cite{rochet2018dropping}, and 
-the Tor project produced several patches to observe bogus 
-traffic and react to it. The conspirator problem is however 
-intractable by nature since the junk data would appear legit, 
-however our channel establishment procedure offers up to $n$ 
-nanopayments which can be tuned to account for this problem. 
-A conspirator can then be reduced to 
-non-fair exchange problem, which is what previous works offer as a basis.
+One remaining limitation of moneTor's direct payments to the relays is
+that it offers an opportunity for the exit relay to inject junk
+traffic (e.g., padding cells) or to conspire with the destination to
+inject useless data in order to receive more nanopayments. Junk
+traffic produced solely by the exit node is already a severe
+issue~\cite{rochet2018dropping}, and the Tor project produced several
+patches to observe bogus traffic and react to it. The conspirator
+problem is however intractable by nature since the junk data would
+appear legit, however our channel establishment procedure offers up to
+$n$ nanopayments which can be tuned to account for this problem.  A
+conspirator can then be reduced to non-fair exchange problem, which is
+what previous works offer as a basis.
 
-\paragraph*{Related work concluding remarks}
-\flo{Maybe merging what follows with the conclusion}
-Introducing a monetary system may have a social impact on relay operators and Tor users~\cite{jansenblogpost}. This social impact may also depends on the technical properties and user-convenience of the used monetary scheme (e.g., the social impact of client cheating should not be ignored). We showed in this paper that technical progresses are still possible and that successfully offering priority requires more than only using a local scheduler on each relay. Better technical achievements could likely influence the social impact. In summary, the barriers to deployment of a payment system are first a community-wide agreement on good technical properties, and then the social impact barrier. We progress on the first barrier, offering a new payment system with no client cheating incentives, anonymous, efficient, distributed, scalable with trustless entities and with secure ownership of funds.
+
 
 %Furthermore, its reliance on a centralized bank and bandwidth
 %measurement authority place implicit limits on its scalability and
@@ -152,7 +203,8 @@ Introducing a monetary system may have a social impact on relay operators and To
 %Tor. Indeed, the external payment protocol adopted by Orchid makes no claims on
 %anonymity whatsoever~\cite{pass2015micropayments}.
 
+
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "../main"
+%%% TeX-master: "../popets_monetor"
 %%% End:

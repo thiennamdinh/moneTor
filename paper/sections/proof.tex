@@ -1,8 +1,8 @@
 
 \subsection{Definitions}
 
-\paragraph*{Anonymity and Security for nanopayment channel}
-Our objective in this work is to provide an efficient, secure and
+\paragraph*{Anonymity and Balance for nanopayment channel}
+Our objective in this work is to provide an efficient, correct and
 privacy-preserving payment system for Tor network bandwidth. Our nanopayment
 channel is built on the top of an existing micropayment channel as designed by
 Green and Miers~\cite{green2017bolt}. Intuitively, the Pay protocol of their
@@ -88,11 +88,16 @@ Where $state$ is the adversary's state and $p_k$ is the preimage of the current 
 
 We say that $\adv$ is $legal$ if $\adv$ never asks to spend more than $n*\delta$.
 
-Let $pp'$ be an auxiliary trapdoor not available to the participants of the real protocol. We require the existence of a simulator $\sdv^{X-Y(\cdot)}(pp, pp', \cdot)$ such that for all $T_\mdv$, no allowed adversary $\adv$ can distinguish the following two experiments with non-negligible advantage:\\
+Let $pp'$ be an auxiliary trapdoor not available to the participants of the real protocol. We say that a payment scheme offers anonymity  if, for every legal $\adv$, there is a simulator $\sdv^{X-Y(\cdot)}(pp, pp', \cdot)$ such that  the following two experiments cannot be distinguished  with non-negligible advantage:\\
 \textbf{Real experiment.} In this experiment, all responses are computed as described in our Algorithms.\\
-\textbf{Ideal experiment.} In this experiment, the micropayment operations and nanopayment operations with the intermediary are handled using our algorithms. However, for the nanopayment procedures between the Tor client and the adversary relay, $\adv$ does not interact with $\cdv_i$ but instead interacts with $\sdv^{X-Y(\cdot)}(pp,pp',\cdot)$.
+\textbf{Ideal experiment.} In this experiment, the micropayment
+operations and nanopayment operations with the intermediary are
+handled using our algorithms. However, for the nanopayment procedures
+between the Tor client and the adversary relay, $\adv$ does not
+interact with $\cdv_i$ but instead interacts with
+$\sdv^{X-Y(\cdot)}(pp,pp',\cdot)$.
 
-\subsubsection{Payment Security (Balance)}
+\subsubsection{Balance}
 \label{def:balance}
 
 Let $\adv$ an adversary playing the role of relay. We consider an experiment
@@ -125,15 +130,18 @@ If $H(p_k)$ matches the hash stored in the adversary's state, then $bal_\adv = b
 $$Nano\-close(\{\adv(pp, \epsilon^i_\adv, nT, ncsk_\adv, nS_\adv)\},$$
 $$\{Intermediary(state)\}) \rightarrow w^i_\adv$$
 
-We denote the adversary output $w^i_\adv$, where it may be $\bot$. The Tor
-client closes also its leg of the nanopayment channel with the intermediary to
-transfer $k*\delta$ and update its wallet accordingly. At any point, all parties
-have the option to call Nano-Refund to initiate a partial or full refund of
-their escrowed fund and close the nanopayment channel. We say that $\adv$ is
-$legal$ if it never agrees to execute the Nano-Pay protocol upon $nT = \bot$. We
-further restrict $\adv$ to establish one nanopayment channel per micropayment
-channel established with any Tor client. $\adv$ wins if after executions of
-queries, $bal_\adv > k*\delta$.
+We denote the adversary output $w^i_\adv$, where it may be $\bot$. The
+Tor client closes also its leg of the nanopayment channel with the
+intermediary to transfer $k*\delta$ and update its wallet
+accordingly. At any point, all parties have the option to call
+Nano-Refund to initiate a partial or full refund of their escrowed
+fund and close the nanopayment channel. We say that $\adv$ is $legal$
+if it never agrees to execute the Nano-Pay protocol upon $nT =
+\bot$. We further restrict $\adv$ to establish one nanopayment channel
+per micropayment channel established with any Tor client. We say that
+a scheme guarantees balance if no $\adv$ can complete, with
+non-neglible probability, the game described above in such a way that
+$bal_\adv > k*\delta$.
 
 \subsection{Theorem}
 The nanopayment channel scheme satisfies the properties of anonymity (\ref{def:anon1}, \ref{def:anon2})
@@ -177,9 +185,13 @@ Since \textbf{Game 2'} is identical in the Ideal experiment, the interaction bet
 
 By showing that the interaction with the intermediary and the interaction with the relay through the nanopayment algorithms are anonymous, we conclude that our nanopayment channel is anonymous.
 
-\subsubsection{Security (Balance)}
+\subsubsection{Balance}
 
-We prove that the Nanopayment channel satisfies the security definition if the micropayment channel is itself secure, if the hash function used is a cryptographic hash function (i.e. it behaves like a random function, it's easy to compute a hash of any given data, it's computationally hard to find a valid preimage of a given hash value, and it is unlikely to find two different pieces of data that hash to the same value), and if the signature scheme is EU-CMA secure (i.e. Existential Unforgeability under a Chosen Message Attack).
+We prove that the Nanopayment channel guarantees correct balance if
+the micropayment channel is itself secure, if the hash function
+behaves like a random oracle, and if the signature scheme is EU-CMA
+secure (i.e. Existential Unforgeability under a Chosen Message
+Attack).
 
 To win, $\adv$ must claim more money than the agreed upon price between a honest
 client and the adversary. The adversary must make this claim while running a
@@ -207,7 +219,8 @@ it to issue a payment. Hence, \textbf{Adv[Game 2]} $\leq \nu_2$.
 
 Finally, the Nano-Close protocol borrows the micropayment Pay protocol to update the micropayment wallet according to the number $k$ of preimages the adversary received from the Tor client. The Pay protocol has been proved secure by Green and Miers, hence we observe that the adversary cannot win the game with a non-negligible probability (claim more than $k*\delta$).
 
+
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "../main"
+%%% TeX-master: "../popets_monetor"
 %%% End:
