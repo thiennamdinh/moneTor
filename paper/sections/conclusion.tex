@@ -1,25 +1,79 @@
-The Tor network suffers from concerns in both performance and diversity. In
-accordance with the general law that large networks are better than small
-networks, we assert that the quality of Tor along both of these vectors can be
-simultaneously improved by incentivizing more relay participation, while
-promoting some diversity notion. To this end, we present moneTor, a
-comprehensive framework for incentivizing Tor relay participation through true
-monetary payments. We make contributions to each broadly technical component of
-the stack including economic policies, payment transactions, and integration
-into the Tor networking architecture. Along the way, we developed novel
-protocols for highly efficient and cryptographically secure nanopayment channels
-as well as novel techniques in networking design. A small venture into
-empirical data collection reinforced our intuition that existing user behavior
-is compatible with a light-weight payment incentive scheme. This led to our more
-involved round of experimentation in which we tested our natively integrated
-moneTor prototype. The results of this investigation were highly encouraging,
-indicating low latencies, negligible throughput overhead, and upwards of 100\%
-benefits for paying users in the simulated environment.
 
-Legal, political, and sociological questions concerning the prudency of
-introducing money into the Tor network are difficult to answer in a laboratory
-setting. However, this work indicates that our solution to Tor incentivizaiton
-offers promising properties on all measured technical and economic
-features. Pending further refinement, we optimistcally conclude that moneTor is
-the first scalable monetary payment framework for Tor that can be feasibly
-developed today.
+The Tor network can, as any network, benefit from improvements in both
+performance and diversity in the positioning of relays. While the idea
+of introducing incentive mechanisms for relay operators has been
+recognized and studied for almost 10 years, this approach left
+numerous questions open.
+
+moneTor makes several important steps to overcome technical
+limitations identified in the previous proposals. We developed new
+approaches and also integrated recent contributions from payment
+technologies within the Tor architecture. As a result, moneTor
+supports highly efficient anonymous transactions in the absence of
+trusted third party, is considerably more scalable than previous
+proposals and offers integrated methods that would support the
+implementation of a broad range of future incentive policies through
+its taxation mechanism. We challenged the moneTor design through important
+simulation efforts that showed the technical efficacy of our solution
+and, along our way, were led to challenge and document the inner
+working of Tor's packet scheduling mechanism.
+
+An important set of open questions, which can hardly be addressed in a
+laboratory setting, focuses on the legal, political and social aspects
+of introducing monetary mechnisms into Tor. We certainly do not
+underrate the importance of these issues, which have been discussed at
+length in the literature~\cite{jansenblogpost}.
+
+Nevertheless, we believe that gaining a good understanding of what
+\emph{can} be done, and about its technical impact in terms of network
+and security properties, is a central part of the debate on what
+\emph{should} be done.
+
+
+
+% \flo{Maybe merging what follows with the conclusion} Introducing a
+% monetary system may have a social impact on relay operators and Tor
+% users~\cite{jansenblogpost}. This social impact may also depends on
+% the technical properties and user-convenience of the used monetary
+% scheme (e.g., the social impact of client cheating should not be
+% ignored). We showed in this paper that technical progresses are still
+% possible and that successfully offering priority requires more than
+% only using a local scheduler on each relay. Better technical
+% achievements could likely influence the social impact. In summary, the
+% barriers to deployment of a payment system are first a community-wide
+% agreement on good technical properties, and then the social impact
+% barrier. We progress on the first barrier, offering a new payment
+% system with no client cheating incentives, anonymous, efficient,
+% distributed, scalable with trustless entities and with secure
+% ownership of funds.
+
+% The Tor network suffers from concerns in both performance and diversity. In
+% accordance with the general law that large networks are better than small
+% networks, we assert that the quality of Tor along both of these vectors can be
+% simultaneously improved by incentivizing more relay participation, while
+% promoting some diversity notion. To this end, we present moneTor, a
+% comprehensive framework for incentivizing Tor relay participation through true
+% monetary payments. We make contributions to each broadly technical component of
+% the stack including economic policies, payment transactions, and integration
+% into the Tor networking architecture. Along the way, we developed novel
+% protocols for highly efficient and cryptographically secure nanopayment channels
+% as well as novel techniques in networking design. A small venture into
+% empirical data collection reinforced our intuition that existing user behavior
+% is compatible with a light-weight payment incentive scheme. This led to our more
+% involved round of experimentation in which we tested our natively integrated
+% moneTor prototype. The results of this investigation were highly encouraging,
+% indicating low latencies, negligible throughput overhead, and upwards of 100\%
+% benefits for paying users in the simulated environment.
+
+% Legal, political, and sociological questions concerning the prudency of
+% introducing money into the Tor network are difficult to answer in a laboratory
+% setting. However, this work indicates that our solution to Tor incentivizaiton
+% offers promising properties on all measured technical and economic
+% features. Pending further refinement, we optimistcally conclude that moneTor is
+% the first scalable monetary payment framework for Tor that can be feasibly
+% developed today.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../popets_monetor"
+%%% End:

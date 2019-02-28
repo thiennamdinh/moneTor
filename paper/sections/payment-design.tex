@@ -366,8 +366,16 @@ intermediaries cannot link two nanopayment channels with the same user. Formal
 definitions and proofs are provided in Appendix~\ref{sec:proof} for the following theorem:
 
 \begin{theorem}
-The nanopayment channel scheme satisfies the properties of anonymity (\ref{def:anon1}, \ref{def:anon2})
- and security (\ref{def:balance}) under the restriction that the adversary does not abort before Nano-Close finished, the restriction that at most one nanopayment channel can be open per micropayment channel, the assumptions that the commitment scheme is secure, the zero-knowledge system is simulation extractable and zero-knowledge, and the hash function used to create the hashchain and verify the preimage during the Nano-Pay is a cryptographic hash function.
+  The nanopayment channel scheme offers anonymity
+  (\ref{def:anon1}, \ref{def:anon2}) and secure balance (\ref{def:balance})
+  under the assumptions that the commitment scheme is secure, the
+  zero-knowledge system is simulation extractable and zero-knowledge,
+  and when the hash function used to create the hashchain and verify
+  the preimage during the Nano-Pay is  modeled as a random oracle.
+%
+    Furthermore, the nanopayment channel scheme enforces that at most one nanopayment channel can be open per micropayment channel. 
+
+% under the restriction that the adversary does not abort before Nano-Close finished, the restrictions that , the assumptions that the commitment scheme is secure, the zero-knowledge system is simulation extractable and zero-knowledge, and the hash function used to create the hashchain and verify the preimage during the Nano-Pay is a cryptographic hash function.
 
 \end{theorem}
 
@@ -375,7 +383,7 @@ Any communication in
 our tripartite nanopayment protocol are protected by Tor circuits. Hence,
 relationship between client to intermediary, client to ledger, relay to
 intermediary and relay to ledger are themselves anonymized by Tor circuits. If
-some party aborts, which induce a dispute on the ledger, the relationship
+a party aborts, which induces a dispute on the ledger, the relationship
 between the client and his relays is protected by the various Tor circuits built
 to resolve the dispute with the ledger. The party which aborted does not gain more information than what could be obtained by observing Tor circuits.
 
@@ -397,14 +405,14 @@ Informally, we claim the following anonymity guarantees relative to unmodified T
 Our current payment protocols expose a subtle passive attack by $I$ which our security model does not capture. By examining
 the final number of payments made on each channel in conjunction with the
 globally fixed nanopayment cost, $I$ may potentially link all of $C$'s
-nanopayment channels\footnote{This attack is best illustrated with a trivial
+nanopayment channels.\footnote{This attack is best illustrated with a trivial
   example. Suppose that $I$ facilitates a number of nanopayment channels with
   the following number of payments, each of which is known to represent one unit
   of money: $[58, 839, 356, 881, 23, 89, 561]$ Now that $C$ closes her
   micropayment channel and terminates with exactly 404 units of money. Once the
   micropayment channel is closed, $I$ must necessary gain knowledge of the final
   balance of funds and can easily link the first and third nanopayment channels
-  as belonging to the same $C$.}. To mitigate this vulnerability, we stipulate
+  as belonging to the same $C$.} To mitigate this vulnerability, we stipulate
 that $C$ must make at least one micropayment, which has a monetary value hidden
 from $I$, before closing a micropayment channel. We expect that this
 micropayment should contain a random value not greater than the channel escrow
@@ -426,7 +434,9 @@ misbehavior to a global ledger. Our protocols also guarantee that the client wou
 
 %An intermediary however, is able to observe any nanopayment channel establishment and closure linked to a particular micro payment channel. Because each nanopayment channel matches a particular Tor circuit, it can match the opening/closure timing of nano channels to track the activity of an anonymous user through time. User's activity may leak some information about the user itself or the user's behaviour (e.g., the timezone). Considering such side-channels is out-of-scope of this paper, however our moneTor design would make inefficient such attack if users open micro-channels with multiple intermediaries and hide their behaviour with a random use of the set of micro-channels they have opened. This would however increase the amount of escrowed fund needed.
 
+
+
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "../main"
+%%% TeX-master: "../popets_monetor"
 %%% End:
