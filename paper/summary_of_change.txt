@@ -1,0 +1,513 @@
+# Summary of Changes - Monetary Tor Incentives with Efficient Nanopayment channels
+
+## Usage
+
+This file uses the Markdown syntax. For a smooth experience, you may want toread
+it in a browser after following commands (if you own a debian-based system):
+
+`apt-get install grip && grip summary_of_change.txt`
+
+Then browse localhost on the given port, or use your favorite markdown reader :)
+
+## Summary
+
+This revision addresses many reviewers concerns and improves on previous version
+with more details and discussion. This revision changes various parts of the
+paper which raised problems due to ambiguous sentences (e.g., overhead
+discussion, the theorem, the priority scheme, etc). To gain space and answer
+reviewers' concerns, we removed the further work section (Section 8 on previous
+version) as we judged this section less important than reviewers' constructive
+comments.
+
+Among the critical concerns, the paper has the following updates: 
+
+  - We rewrote the part explaining our approach to prioritization, and give more details on:
+      
+      - Why previous approaches based on DiffServ fail on the current Tor
+        network, providing further details on the appendix
+      - Why we chose to prioritize flux with the congestion control scheme
+      - Further explanations on the reasons that make us believe that finding
+        the right scheme to prioritize flows in various congestion level of the
+        Tor network and congestion localisation deserves its own paper.
+
+    Findings are explained in the appendix and summarized in the paper.
+  
+  - We rewrote the related work (now Section 7) with a detailed comparisons to
+    the state-of-the-art monetary schemes, and explain why moneTor deserves its
+    place in the landscape for the additional properties it offers.
+
+  - We address most of Reviewer A, B, C, D concerns and provide reasons for the ones
+    not directly addressed
+  
+  - We rewrote must of the concluding remarks throughout the paper
+
+  - We move parts related to the intermediary sooner in the paper to provide a
+    smoother understanding of the design
+
+  - We give more details in the informal explanation of the moneTor scheme, and
+    in the detailed explanation of the Nanopayment channel operations. We hope
+    that the reader would be able to grasp the logic of the protocol without having
+    to rely on the algorithm details in the appendix.
+
+## Answers to reviews
+
+### Reviewer A
+
+---
+>                        PoPETs 2019.3 Review #31A
+>                    Updated 29 Jan 2019 12:03:28am EST
+>
+>  Paper #31: Monetary Tor Incentives with Efficient Nanopayment Channels
+>
+>
+>                      Overall merit: 4. Accept with Minor Revisions (with
+>                                        Shepherding)
+>                 Reviewer expertise: 4. Expert
+>                Reviewer confidence: 3. High
+>                  Relevance to PETS: 3. Directly related to PETs (scope is
+>                                        not an issue)
+>
+>                         ===== Paper summary =====
+>
+> This paper presents "moneTor", a system that would let Tor clients make
+> nano-payments to relays in exchange for premium service.  moneTor is based on
+> ledger-style cryptocurrency systems, but with a trusted ledger instead of
+> Nakamoto consensus (because Tor already has trusted central authorities), adding
+> a level of indirection to off-chain payment schemes such as Bolt.  So clients
+> pay relays using a linkable nanopayment channel based on hash chains, but the
+> hash chains are linked to an unlinkable off-chain intermediary-based
+> micropayment scheme.  The paper also also reports on Shadow experiments to
+> evaluate the computational, latency, and bandwidth overheads of the payment
+> scheme (small), and the effects of the proposed prioritization scheme (paid
+> downloaders improve bandwidth by about 2x, and as a result unpaid downloaders
+> see a loss of about 50% in bandwidth).
+>
+>                      ===== Comments for author =====
+>
+> I don't see any obvious problems in the payment schemes, and I'm pleased to see
+> that the prioritization scheme was evaluated using a full-network simulation,
+> and that the code is publicly downloadable for reproducibility.  My main concern
+> with this paper is really "semi-technical:"
+
+> - Pay-for-play anonymity schemes have failed in the past; the only schemes that
+>   see significant adoption are the ones that are free for users.  Here, of
+> course, users can choose not to pay, but if someone downloads TBB and tries the
+> "free service" and it is very slow, will they choose to leave the network?  A
+> plausible result of deploying moneTor would be that the user-base would
+> significantly shrink, leading to an overall decrease in the anonymity of Tor
+> users.  So what we're really missing is some analysis that estimates the "supply
+> elasticity" of potential relay operators vs the "demand elasticity" of potential
+> paying and non-paying users.
+>
+---
+
+As previous works did, we build on the premise that icentives schemes would bring
+more relays and benefit to everyone. We acknowledge the risks and the importance of
+such an analysis, but this is not part of this research. As we conclude our
+paper, we believe that, as a community, we still need to gain a good
+understanding of what **can** be done (mostly about technical properties), and
+that it is a central part of the debate on what **should** be done.
+
+---
+>
+> - On a related note, I would like to hear more about this "dynamical consensus
+>   vote" process that determines the premium bandwidth price.  What are the
+>   inputs to the calculation?  What are the security requirements?  Who is involved
+>   in the vote?
+
+---
+
+We would love to provide more details. Although, we judged other comments more
+critical and did not address this one in the paper. In consequence, we removed
+the sentence suggesting a dynamical consensus vote, as we cannot provide more
+details.
+
+---
+>
+>- I also don't see an analysis about the potential linkability of micro-wallets
+>  due to timing (e.g. my wallet is renewed at time t, then at time t+w my new
+>  wallet is used to establish a channel.  How do I choose w so that there can be
+>  some level of confusion between the wallets? Does this affect the latency of
+>  channel setup?)
+
+---
+
+We added explanations to this concern in Section 4.1. And yes, that potentially
+affects the channel setup if the preemtive strategy to build channels is not good
+enough for to match user's defense against side-channels with user's needs.
+Altough, the preemptive channel establishement design perfectly fits in a setup where
+we need to find a $w$ that would add a sufficient level of confusion, as you
+mention.
+
+---
+
+> - Also missing: if real money is tied to service provision, and fees are high
+>   enough to cover bandwidth costs (in some locales) at a profit, don't we need
+>   to worry about attacks where a relay injects bogus traffic to earn money?  (Tor
+>   allows e.g. padding cells, or an exit relay could inject a lot of junk headers
+>   in non-TLS traffic, or even conspire with a popular site to generate extra
+>   traffic on paid circuits...)
+
+---
+
+That is indeed a clever point. We add an explanation about it
+in the related work, at the end of it. 
+
+---
+
+> Some deeper analysis of these last three issues, and a discussion of the first,
+> would strengthen the paper in my view. Without these analyses, the contribution
+> doesn't seem to be that original: there are already "off-chain" schemes that use
+> hash chains for micro-payments tied to a ledger-based cryptocurrency; The
+> "micro-payment" scheme here is essentially Bolt; so the moneTor payment scheme
+> just takes "hash chain tied to a wallet" schemes one level further off-chain.
+
+### Reviewer B
+
+>                         PoPETs 2019.3 Review #31B
+>                     Updated 28 Jan 2019 8:07:15am EST
+>---------------------------------------------------------------------------
+>  Paper #31: Monetary Tor Incentives with Efficient Nanopayment Channels
+>---------------------------------------------------------------------------
+>
+>                      Overall merit: 2. Reject and Resubmit
+>                 Reviewer expertise: 4. Expert
+>                Reviewer confidence: 3. High
+>                  Relevance to PETS: 3. Directly related to PETs (scope is
+>                                        not an issue)
+>
+>                         ===== Paper summary =====
+>
+>This paper introduces a Tor relay incentivization scheme called moneTor that
+>uses nanopayment channels to allow Tor clients to issue payments to Tor relays
+>through an intermediary. The paper describes the protocols, implements a
+>prototype of moneTor, conducts a small Tor measurement study to determine
+>suitable parameters for evaluation, and evaluates the system on whole network
+>deployments of moneTor (with 100 and 250 relays) using Shadow.
+>
+>                      ===== Comments for author =====
+>
+>### Main strengths
+>
+>  + The authors are attempting to solve an important problem of how to provide incentives for Tor relays, which is important for the long term growth and sustainability of the Tor network. An incentive system could bring in many new relay operators and increase Tor's available capacity by orders of magnitude.
+>  + The authors are keen to design a Tor-specific solution. The protocols are designed specifically with Tor in mind, the authors take care to choose system parameters based on Tor measurements, and the evaluation is conducted using private Tor networks.
+>  + The paper provides a prototype implementation of their system and simulate it in a full Tor network deployment using Shadow to show it's network performance benefits. The code has been made open source and is available on Github so that other researchers can run the system and verify the results.
+>
+>### Main weaknesses
+>
+>  - The level of contribution in this paper over previous work is very low. It's
+>    yet another incentive system which does not contribute much in the way of
+>solving the actual hard problems that have prevented such systems from gaining
+>traction before [21]. Previous work has already shown priority mechanisms to
+>work, outlined distributed protocols for handling transferable tokens, and
+>provided mechanisms for exchanging Tor tokens for cash.
+---
+
+We know provide more details on previous works guaranteed priority scheduling
+over the current state of the Tor network. This work is not only as reviewer D
+said about the payment scheme: "a solid contribution", but also an alternative
+route (not perfect, yes) to an experimental observation: priority based on local
+scheduling fails to provide the same level of effectivness as showed in previous
+work.
+
+---
+>This paper provides only
+>incremental improvements. All of the issues that this paper claims are out of
+>scope (e.g. community effects and social policies) are precisely the kinds of
+>issues that we as a community really need to solve before any Tor incentive
+>approach is actually viable.
+>  - The technical mechanism to achieve priority (modifying Tor's non-optimal flow protocol) is not guaranteed to actually provide priority to premium clients. Furthermore, the flow approach is less flexible than previously described (and implemented in Tor) priority scheduling approaches. This leads to a significant lack in understanding of how the flow approach is actually working, and under what conditions it fails to work (because there are bottlenecks elsewhere in the protocol). Also, it is likely that Tor will eventually move away from the flow control that is currently in place, which means moneTor would have to be adapted.
+>  - The Tor project is very likely unwilling to adopt any scheme that is primarily meant to attract non-altruistic relay operators (i.e., people trying to get rich). Many previous schemes that intend to provide monetary incentives have received significant criticism because we don't have a great understanding of how it would affect existing volunteers. This issue further limits the potential impact of this paper.
+>
+>### Detailed comments
+>
+>Overall, the paper needs significant additional rigor and polish (e.g., many details are missing from the main portion of the paper) before it could appear at PETS.
+>
+>From the submission instructions, "Submitted papers must be at most 15 pages excluding bibliography and appendices and 20 pages total..."
+>This paper is 26 pages total, and I'm not sure if the authors got approval from the chairs for the additional pages.
+---
+
+Just to be transparent: yes we did receive an authorization for the extended
+appendix on this paper from the program chairs.
+
+---
+>
+>Section 1:
+>
+>  * "contributing over 230 Gbit/s of bandwidth globally": This statement may be misleading: relay bandwidth histories (labeled "Consumed Bandwidth" on the metrics portal) indicate that relays only actually forward about 150 Gbit/s, and it's unclear if relays could actually support the full "advertised bandwidth" amount of 230 Gbit/s as shown on the metrics site. It would be better to conservatively state the amount that we *know* that relays do actually forward ("Consumed Bandwidth"), rather than the amount that we *guess* that they can ("Advertised Bandwidth").
+>
+>Section 3:
+>
+>  * BRAIDS is incorrectly written as BRAID in a few instances.
+>  * When discussing TEARS, the authors should cite the HotPETs 2014 paper.
+>  * It seems that the main contribution of moneTor over TEARS is arbitrary divisibility of currency. This is not enough of a contribution over previous work. The authors have not convincingly shown that such a property is necessary or desired in the context of Tor, how it could lead to broader adoption vs. previous work, etc.
+>  * [22] should be cited much earlier in the paragraph where it is discussed.
+>  * The related work is missing other relevant publications in this area, including:
+>    * The "Onions for Sale: Putting Privacy on the Market" from FC 2013.
+>    * The TorCoin paper from HotPETs 2014
+>  * Dismissing previous approaches simply because they have centralized components comes off as a bit naive when not stated in proper context. Tor has a centralized architecture and supports millions of users. The reader is unable to understand the extent of the problem that centralization raises in the case of Tor incentives because the context is not provided. (moneTor itself later introduces a centralized component to run the ledger, which highlights why the context of the centralization is important. We probably shouldn't dismiss moneTor for its centralization, either.)
+>  * The TEARS approach also designed monetary incentives into their system, but this is not described under the monetary payments section.
+>  * I found it difficult to understand many of the claims/comparisons to moneTor throughout the related work section, since moneTor has not yet been described at this point in the paper. I strongly recommend that the authors move the related work section to the end of the paper (prior to the conclusion).
+---
+
+ Many citations have been added/fixed. Related work has been re-done to improve
+the comparison with state of the art schemes.
+
+---
+>
+>Section 4.1:
+>
+>  * The authors introduce a taxation element in order to gain the benefits of
+>  flexibility in distributing rewards to relays, but yet state that all issues
+>  associated with this suggestion are orthogonal to the paper. I would argue that
+>  if taxation a part of the design, then all issues that it raises are in scope
+>  and should be addressed.
+---
+
+  We said that the redistribution function is orthogonal to this paper, and
+linked to ongoing research for years. We would argue that such utility function
+shares interest to various topics (path selection, Tor incentives, flag
+attribution, etc) is indeed intractable and out of scope of this paper.
+
+In the same logic, designing a secure bandwidth audit system was orthogonal to previous
+incentives schemes requiring it, and we do not think that it should have been part of their design.
+
+---
+>  * "considerationis" --> "consideration is"
+>
+>Section 4.2:
+>
+>  * The authors previously criticize centralized approaches, and then introduce
+>    a centralized ledger approach for their own system (using the Tor directory
+>    authorities). Again, there is no explanation of why this centralized component
+>    is OK when the centralized parts of previous work are not OK.
+>  * Distributing the ledger across directory authorities was previously
+>    introduced and described in TEARS in 2014; the authors should cite this work
+>    and clarify what is new about their approach to the ledger.
+>
+---
+
+This has been clarified in the related work section :)
+
+---
+>
+> Section 4.3:
+>
+>  * "eachother" --> "each other"
+>
+> Section 4.4:
+>
+>  * I keep finding myself confused about the intermediary 'I'. The authors
+> describe that the directory authorities could serve as the ledger 'L', but
+> unless I missed it, the authors don't describe who might serve in the
+> intermediary role. Is this role served by some central entity? Is it served by
+> other relays? Other clients? It would help the reader understand the protocols
+> if more details about the intermediary were given before describing the
+> protocol. (I noticed later in the paper that intermediaries are served by relays
+> that do not serve user traffic. This detail should probably be stated earlier in
+> the design section.) >  * "form C to R" --> "from C to R"
+>
+
+---
+
+It is now explained in the beginning of the payment scheme session.
+Intermediaries are trustless entities that are mainly tasked to route user's
+payments off-chain through channels. The number of intermediaries can scale with
+the size of the Tor network, without needing to scale trusted or semi-trusted
+entities. (i.e., the Ledger is only used every once in a while).
+
+---
+> Section 4.6:
+>
+>  * The authors suggest that moneTor clients do a direct payment to the guard
+>    relay in order to reduce network overhead. If such a technique is possible, then
+>    why can't the client also send direct payments through the guard to the middle
+>    and exit using the already-established Tor circuit (rather than building a new
+>    one to the intermediary)? If the intermediary is not needed with the guard, why
+>    is it needed at all?
+
+---
+
+We tried to give more details for this in the paper. The reasoning behing direct
+payment channels for guard relays is because those relays are not expected to
+connect to every Tor premium users in the guard position, but only to a fraction
+of them. Hence, the scalability optimization offered by intermediary may not be
+necessary for guard relays when they are used in the entry position of Tor circuits.
+
+---
+>
+>Section 4.7:
+>
+>  * The assumption in Theorem 1 that the adversary does not abort before
+>    Nano-Close finishes is impractical. Why would an adversary choose not to
+>    abort if it can gain some advantage by doing so? This needs to be described in
+>    more detail.
+
+---
+
+We mixed up scheme properties and assumption and made the theorem unclear: no
+the adversary cannot gain anything by aborting (cannot steal funds, and cannot
+reveal the identity of a premium user), but force a dispute resolution with the
+Ledger.
+
+---
+
+>  * The assumption in Theorem 1 that at most one nanopayment channel can be open
+>    per micropayment channel is impractical. What would prevent an entity from
+>    opening multiple channels to void this assumption? It seems that a sybil attack
+>    could be problematic here. Also, the authors criticize LIRA in Section 3 for
+>    it's vulnerability to a similar cheating attack, but then assume that their
+>    system is secure as long as such an attack is not performed. More details are
+>    necessary for the reader to understand these issues.
+
+---
+
+It is not an assumption, it is a property of the scheme: Clients cannot open
+more than one nanopayment channel per micropayment channel, and this is how the
+double-spending problem is avoided. There is no possible cheating involved here,
+and we prove it in the appendix.
+
+We have fixed the wording in the paper, thanks to have stepped upon this
+ambiguity!
+
+---
+
+>Section 5.3:
+>
+>  * The priority mechanisms in equation 2 are under-specified. Is the goal that each SENDME cell will cause the exit to open the window by a different amount? Or is it that the maximum window size changes according to your equation 2? And which window is it: the circuit window or the stream window? More generally, it is bad design to tie priority to an incorrect or unoptimized operation of the flow control mechanism.
+>  * It might not matter, because equation 2 is not guaranteed to provide priority to premium clients. To illustrate the issue, suppose that a relay had 100 thousand active circuits and was in a very congested state. The bottleneck in this case is not the flow control mechanism (each of the flow control windows could be wide open) but rather the bandwidth limitation of the relay. Any approach that is not based on scheduling bytes during such a bottleneck scenario cannot guarantee priority.
+>  * Several past work in this area used Proportional Differentiated Services developed by Drovolis et al, which **do** provide guaranteed priority under loaded conditions. The scheduler was used in BRAIDS, LIRA, and TEARS. There are even open source implementations of the approach that have already been implemented in Tor:
+>  https://github.com/robgjansen/tor/commit/634acb8ee1464e747df08430620387ffdf733cf9
+>  More work should be done to explore algorithms such as those by Drovolis that have a significant amount of research backing, and have been shown to work correctly in previous Tor incentive schemes.
+>
+---
+
+We made a careful editing of this section, and provided complementary material
+in the appendix to explain why priority based only on local scheduling tends to
+be less efficient with the current state of the Tor network.
+
+---
+>
+>Section 6.1:
+>
+>  * I appreciate that the authors use a data driven approach to decide on
+>  useful values for the parameters of their system. However, when dealing with Tor
+>  measurement, it is especially important not to risk user privacy if at all
+>  possible and limit the risk if necessary.  >  * "Crucially, we do not record
+>  information linked to any single particular user flow on disk." But, information
+>  about circuits which **can** be linked to a specific Tor user is recorded. And
+>  Tor Browser combines all third party content of a particular website access to
+>  the same circuit, which not only can link the user to the circuit but also the
+>  web session to the circuit as well.  >  * The authors could have used PrivCount
+>  (Safely Measuring Tor, CCS 2016) to do this measurement to gain additional
+>  protection during measurement and to obtain a more private aggregation. Some
+>  effort should be spent on explaining why PrivCount would not have improved the
+>  privacy of Tor users in this case.
+
+---
+
+PriveCount would have improved the privacy of Tor users, yes. However, this
+research took place when PriveCount was still under active development. That's
+true that we do not have differential private data, although we worked carefully
+to obtain what we believe to be enough privacy through data aggregation and noise
+addition before anything was output from the relays' memory, aggregated again,
+plotted and then deleted.
+
+---
+
+
+>  * Several measurement studies have used
+>  PrivCount to measure similar features in Tor to those in your study (CCS 2016,
+>  CCS 2018, IMC 2018). I'm curious why your measurement study was necessary when
+>  at least some of the data that you measured (e.g., total cells per circuit) has
+>  already been recently measured and published.
+
+---
+
+The CCS 2016 paper does not contain the information we needed to argue for our parameter
+choices, as Table 11 is too noisy and does not offer the distribution we wanted.
+
+---
+
+> * Figure 2b is referenced and discussed before Figure 2a, which is awkward; the figures could easily be swapped.
+>
+>Section 7.1:
+>
+>  * "A platform to study the feasibility of premium circuit prioritization from a networking perspective." This has already been done in previous work (LIRA, the implementation linked above), but alas the authors chose not to build upon it in this work. How will the moneTor implementation "platform" not suffer from the same fate where future work rolls their own approach rather than building upon moneTor?
+>
+>Section 7.2:
+>
+>  * Note that a more recent Tor client modeling approach was published in CCS 2018 (I understand the moneTor experiments were run before CCS occurred, so this is just an FYI.)
+>  * It's great that the authors are trying to trying to maintain in the Shadow experiments a bulk/web bytes ratio of 50% based on evidence from previous Tor measurements! However, the studies cited [40, 41] are no longer the most recent to measure the traffic volume ratio. More recently published papers (Safely Measuring Tor from CCS 2016 in Table 8, and Privacy-Preserving Dynamic Learning of Tor Network Traffic from CCS 2018 in Table 6) show that Web is more like ~75% and non-web is more like ~25%. Your references should be updated, and this difference does call into question how applicable your results are in a Tor network whose traffic characteristics are more "recent".
+
+---
+
+To be honest, we missed that information.
+
+---
+
+>
+>Section 7.3:
+>
+>  * Figure 3: I don't understand why Figure 3a shows 6 lines instead of 3 lines like in (b) and (c).
+---
+
+3 lines for web download, 3 lines for bulk download in Figure 3a. 
+
+---
+
+>  * Figure 3: When explaining overheads, it may be more useful to describe the overhead in terms of percentages. Especially for throughput in (b), 55 MiB/s of overhead means something different if the Tor network transfers 1 GiB/s vs if the Tor network transfers 1 TiB/s.
+---
+
+The overhead is relative to the baseline. The point with this graph is that we
+cannot observe a lot of overhead, even in a simulation where every clients are
+doing payment channels.
+
+---
+  * I'm wondering about running dummy AES operations in Shadow. When running `shadow --help-all`, it explains `--cpu-threshold=TIME   TIME delay threshold after which the CPU becomes blocked, in microseconds (negative value to disable CPU delays) (experimental!) [-1]`. So I believe that Shadow's CPU modeling is disabled by default. When running the experiments, was this experimental Shadow feature enabled? Was it verified that Shadow actually does a reasonable job of modeling CPU processing times?
+  * It was my understanding from the moneTor design that both clients and relays use circuits to connect to the intermediary, but the description of Figure 4b seems to indicate that only the clients build such circuits. If both parties build circuits to I, would that further increase latency?
+  * A scheduling approach to prioritization can *also* be applied more strongly as a circuit sends more traffic. (E.g., one could modify for premium circuits the EWMA value on which the scheduler acts.) Therefore, this effect is not uniquely or singularly suited to the proposed moneTor flow control modification mechanism.
+  * Figure 5 demonstrates an interesting effect of moneTor: if everyone becomes a premium user, then no one gets priority. moneTor defines no way to pay more and more to get better and better priority. Previous work has allowed for multiple classes of priority traffic, so such an outcome is technically feasible (in fact the scheduling approach of Drovolis used in LIRA provides such a mechanism.)
+  * Tor metrics indicates that the time to complete a 1 MiB download is around 2-4 seconds in the median, whereas your time to download 2 MiB appears closer to 11-12 seconds. It is unclear how this would change if bulk traffic was reduced to 25% (I could guess that less bulk traffic makes the network less congested and so web downloads would get faster).
+  * Figure 3(b) shows an overhead of 55 MiB/s and Figure 5(c) and (f) show about 150 MiB/s of traffic total. I think this means there is a 55/(150-55) ~58% overhead from the original network, but this can't possibly be correct (the text states that there is less than 1% overhead). Please provide further explanation in the paper to clarify your results.
+  * I found an analysis of cryptographic overhead missing from the paper. For example, how many operations per second can the clients, relays, and intermediaries support? Such an analysis should be conducted outside of Shadow, and would help give a sense of the computation capabilities required for the new intermediary role that moneTor requires.
+
+Section 8.2:
+
+  * "two layers and." ??
+
+References:
+
+Major clean up of references is needed. Here is a subset of the issues that I noticed:
+  * Sort alphabetically by last name
+  * [1] Cite the USENIX Security version of the Tor paper
+  * [20] The citation for LIRA should include the conference where it appeared (NDSS 2013).
+  * [37] Cite the NDSS version of the Shadow paper instead of the technical report
+  * [38] The citation for "High performance tor experimentation from the magic of dynamic elfs." should include the workshop where it appeared (CSET 2018).
+  * [44] Did you mean to cite Bolt twice ([17] and [44])?
+  * [46] You may also want to cite the ACM TOPS 2018 version of KIST (Volume 22, Issue 1, Article 3 (December 2018) - see https://dl.acm.org/citation.cfm?id=3278121), or you may want to cite it instead of the arxiv version.
+  * Also add the citation mentioned throughout my review.
+
+Other:
+
+  * The paper needs a lot of clean up, e.g. Kist -> KIST, BRAID -> BRAIDS, and could benefit from a major in-depth editing pass.
+  * The authors should avoid use citations as a noun, e.g. "Alternatively, by making use of such inter-ledger protocols as [28] or [29],"
+  * Several times throughout the paper, I found claims to be overstated. In particular, I strongly disagree with the last sentence in the conclusion. Please pay attention to this while editing the next revision.
+
+               ===== Response to authors’ rebuttal =====
+
+Here is the list of improvements to focus on for the next revision of the paper, extracted from my review and in order of importance:
+
+1. Use DiffServ to provide priority. Fixing the flow control scheme to ensure that moneTor works correctly is fine, but moneTor should be evaluated independent of the flow control change. In other words, fix the flow control first, and then use that as your baseline and add moneTor incentives (with DiffServ) on top of it.
+
+2. Add a cryptographic overhead analysis for each moneTor role.
+
+3. Clarify why the assumptions that the adversary will not attack the nanopayment/micropayment channel part of the protocol are practical. For example, what would prevent an adversary from aborting early (which may in fact happen naturally due to network connectivity issues)? Is there other cheating that could occur?
+
+4. Provide more context about centralized entities. Describe how the centralized scheme in moneTor does not suffer from the same weaknesses as previous schemes. An analysis of moneTor cryptographic overhead from 2. should be used to support your claims (and compare to previous work).
+
+5. The paper is sloppy and needs a significant amount of editing work. For example, many details are missing throughout the paper, claims are overstated, the reporting of some results are imprecise, related work/references are missing and some of the existing ones are sloppy.
+
+6. While evaluating 1., show how moneTor can maintain performance incentives proportionally to the amount paid. Presumably I should get better performance as I pay more (up to some limit).
+
+7. Show why currency divisibility is necessary in the context of Tor, i.e., what problems does it solves that could not be handled by previous work?
