@@ -16,7 +16,7 @@ with more details and discussion. This revision changes various parts of the
 paper which raised problems due to ambiguous sentences (e.g., overhead
 discussion, the theorem, the priority scheme, etc). To gain space and answer
 reviewers' concerns, we removed the further work section (Section 8 on previous
-version) as we judged this section less important than reviewers' constructive
+version) as we judged this section less important than change made from reviewers' constructive
 comments.
 
 Among the critical concerns, the paper has the following updates: 
@@ -36,15 +36,15 @@ Among the critical concerns, the paper has the following updates:
     the state-of-the-art monetary schemes, and explain why moneTor deserves its
     place in the landscape for the additional properties it offers.
 
-  - We address most of Reviewer A, B, C, D concerns and provide reasons for the ones
+  - We addressed most of Reviewer A, B, C, D concerns and provide reasons for the ones
     not directly addressed
   
   - We rewrote must of the concluding remarks throughout the paper
 
-  - We move parts related to the intermediary sooner in the paper to provide a
+  - We moved parts related to the intermediary sooner in the paper to provide a
     smoother understanding of the design
 
-  - We give more details in the informal explanation of the moneTor scheme, and
+  - We gave more details in the informal explanation of the moneTor scheme, and
     in the detailed explanation of the Nanopayment channel operations. We hope
     that the reader would be able to grasp the logic of the protocol without having
     to rely on the algorithm details in the appendix.
@@ -166,9 +166,9 @@ in the related work, at the end of it.
 
 >                         PoPETs 2019.3 Review #31B
 >                     Updated 28 Jan 2019 8:07:15am EST
->---------------------------------------------------------------------------
+>
 >  Paper #31: Monetary Tor Incentives with Efficient Nanopayment Channels
->---------------------------------------------------------------------------
+>
 >
 >                      Overall merit: 2. Reject and Resubmit
 >                 Reviewer expertise: 4. Expert
@@ -362,7 +362,7 @@ Ledger.
 
 ---
 
-It is not an assumption, it is a property of the scheme: Clients cannot open
+It is not an assumption, it is a property of the scheme: clients cannot open
 more than one nanopayment channel per micropayment channel, and this is how the
 double-spending problem is avoided. There is no possible cheating involved here,
 and we prove it in the appendix.
@@ -384,7 +384,10 @@ ambiguity!
 
 We made a careful editing of this section, and provided complementary material
 in the appendix to explain why priority based only on local scheduling tends to
-be less efficient with the current state of the Tor network.
+be less efficient with the current state of the Tor network. Although, we
+acknowledge that local scheduling might still work fine for many circuits under
+various situation that our simulations did not capture. Yet, we believe to have
+spotted an important tendancy that would require further research. 
 
 ---
 >
@@ -452,7 +455,7 @@ To be honest, we missed that information.
 >  * Figure 3: I don't understand why Figure 3a shows 6 lines instead of 3 lines like in (b) and (c).
 ---
 
-3 lines for web download, 3 lines for bulk download in Figure 3a. 
+3 lines for web download, 3 lines for bulk download in Figure 3a. We put more information within the caption of the many figures
 
 ---
 
@@ -465,12 +468,51 @@ doing payment channels.
 
 ---
   * I'm wondering about running dummy AES operations in Shadow. When running `shadow --help-all`, it explains `--cpu-threshold=TIME   TIME delay threshold after which the CPU becomes blocked, in microseconds (negative value to disable CPU delays) (experimental!) [-1]`. So I believe that Shadow's CPU modeling is disabled by default. When running the experiments, was this experimental Shadow feature enabled? Was it verified that Shadow actually does a reasonable job of modeling CPU processing times?
-  * It was my understanding from the moneTor design that both clients and relays use circuits to connect to the intermediary, but the description of Figure 4b seems to indicate that only the clients build such circuits. If both parties build circuits to I, would that further increase latency?
-  * A scheduling approach to prioritization can *also* be applied more strongly as a circuit sends more traffic. (E.g., one could modify for premium circuits the EWMA value on which the scheduler acts.) Therefore, this effect is not uniquely or singularly suited to the proposed moneTor flow control modification mechanism.
-  * Figure 5 demonstrates an interesting effect of moneTor: if everyone becomes a premium user, then no one gets priority. moneTor defines no way to pay more and more to get better and better priority. Previous work has allowed for multiple classes of priority traffic, so such an outcome is technically feasible (in fact the scheduling approach of Drovolis used in LIRA provides such a mechanism.)
-  * Tor metrics indicates that the time to complete a 1 MiB download is around 2-4 seconds in the median, whereas your time to download 2 MiB appears closer to 11-12 seconds. It is unclear how this would change if bulk traffic was reduced to 25% (I could guess that less bulk traffic makes the network less congested and so web downloads would get faster).
-  * Figure 3(b) shows an overhead of 55 MiB/s and Figure 5(c) and (f) show about 150 MiB/s of traffic total. I think this means there is a 55/(150-55) ~58% overhead from the original network, but this can't possibly be correct (the text states that there is less than 1% overhead). Please provide further explanation in the paper to clarify your results.
-  * I found an analysis of cryptographic overhead missing from the paper. For example, how many operations per second can the clients, relays, and intermediaries support? Such an analysis should be conducted outside of Shadow, and would help give a sense of the computation capabilities required for the new intermediary role that moneTor requires.
+
+---
+
+We're not sure to understand the problem here.
+
+---
+
+>  * It was my understanding from the moneTor design that both clients and
+>   relays use circuits to connect to the intermediary, but the description of
+>   Figure 4b seems to indicate that only the clients build such circuits. If both
+>   parties build circuits to I, would that further increase latency?
+
+---
+
+We are not sure to understand the reviewer's concern here. Figure 4b shows the
+time to first payment as soon as clients needs to pay the first bytes of their
+circuits. Since channels are pre-built, the nanopayment channel is already
+available when the client starts using his circuit, and can pay by sending just
+one cell to each relay of his circuit. What Figure 4b demonstrates is the
+effectivness of the pre-built channel strategy.
+
+---
+
+>  * A scheduling approach to prioritization can *also* be applied more strongly as a circuit sends more traffic. (E.g., one could modify for premium circuits the EWMA value on which the scheduler acts.) Therefore, this effect is not uniquely or singularly suited to the proposed moneTor flow control modification mechanism.
+>  * Figure 5 demonstrates an interesting effect of moneTor: if everyone becomes a premium user, then no one gets priority. moneTor defines no way to pay more and more to get better and better priority. Previous work has allowed for multiple classes of priority traffic, so such an outcome is technically feasible (in fact the scheduling approach of Drovolis used in LIRA provides such a mechanism.)
+>  * Tor metrics indicates that the time to complete a 1 MiB download is around 2-4 seconds in the median, whereas your time to download 2 MiB appears closer to 11-12 seconds. It is unclear how this would change if bulk traffic was reduced to 25% (I could guess that less bulk traffic makes the network less congested and so web downloads would get faster).
+>  * Figure 3(b) shows an overhead of 55 MiB/s and Figure 5(c) and (f) show about 150 MiB/s of traffic total. I think this means there is a 55/(150-55) ~58% overhead from the original network, but this can't possibly be correct (the text states that there is less than 1% overhead). Please provide further explanation in the paper to clarify your results.
+
+---
+
+There is a misunderstanding for these figures. To be clear, the overhead is relative to the baseline curve, and not the ordinate.
+
+---
+
+>  * I found an analysis of cryptographic overhead missing from the paper. For example, how many operations per second can the clients, relays, and intermediaries support? Such an analysis should be conducted outside of Shadow, and would help give a sense of the computation capabilities required for the new intermediary role that moneTor requires.
+
+---
+
+We decided to analyze cryptographic overhead through an overhead shadow
+experiment, to show that even in the worst case, everything is alright. We may
+also discuss the cost of each cryptographic assumption, and put this
+information in the appendix.
+
+---
+
 
 Section 8.2:
 
