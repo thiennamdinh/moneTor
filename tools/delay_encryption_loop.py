@@ -24,7 +24,7 @@
 #    unsigned long start = 1000000 * tv.tv_sec + tv.tv_usec;
 #
 #    for(int j = 0; j < i * 1000; j++){
-cdg#      AES_encrypt(enc_out[j % 2], enc_out[(j + 1) % 2], &enc_key);
+#      AES_encrypt(enc_out[j % 2], enc_out[(j + 1) % 2], &enc_key);
 #    }
 #
 #    gettimeofday(&tv,NULL);

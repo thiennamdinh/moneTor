@@ -2,7 +2,7 @@
 
 ## Usage
 
-This file uses the Markdown syntax. For a smooth experience, you may want toread
+This file uses the Markdown syntax. For a smooth experience, you may want to read
 it in a browser after following commands (if you own a debian-based system):
 
 `apt-get install grip && grip summary_of_change.txt`
@@ -25,7 +25,7 @@ Among the critical concerns, the paper has the following updates:
       
       - Why previous approaches based on DiffServ fail on the current Tor
         network, providing further details on the appendix
-      - Why we chose to prioritize flux with the congestion control scheme
+      - Why we chose to prioritize flux with the flow control scheme
       - Further explanations on the reasons that make us believe that finding
         the right scheme to prioritize flows in various congestion level of the
         Tor network and congestion localisation deserves its own paper.
@@ -36,8 +36,8 @@ Among the critical concerns, the paper has the following updates:
     the state-of-the-art monetary schemes, and explain why moneTor deserves its
     place in the landscape for the additional properties it offers.
 
-  - We addressed most of Reviewer A, B, C, D concerns and provide reasons for the ones
-    not directly addressed
+  - We addressed most of Reviewer A, B, C, D concerns and provide reasons for
+    the concerns not directly addressed
   
   - We rewrote must of the concluding remarks throughout the paper
 
@@ -134,7 +134,7 @@ details.
 
 We added explanations to this concern in Section 4.1. And yes, that potentially
 affects the channel setup if the preemtive strategy to build channels is not good
-enough for to match user's defense against side-channels with user's needs.
+enough to match user's defense against side-channels with user's needs.
 Altough, the preemptive channel establishement design perfectly fits in a setup where
 we need to find a $w$ that would add a sufficient level of confusion, as you
 mention.
@@ -151,7 +151,7 @@ mention.
 ---
 
 That is indeed a clever point. We add an explanation about it
-in the related work, at the end of it. 
+in the related work, at the end of it.
 
 ---
 
@@ -471,7 +471,7 @@ doing payment channels.
 
 ---
 
-We're not sure to understand the problem here.
+We're not sure to understand the problem here. <TODO>
 
 ---
 
