@@ -313,15 +313,25 @@ decision to implement special directly paid guard channels.
 Our final set of experiments studies the success of our scheme in delivering
 prioritized traffic for premium users. To perform this analysis, we prepared
 sets of three small experiments with varying modifier priorities
-$\alpha \in \{0, 0.25, 0.5\}$, where $\alpha = 0$ represents the baseline
-control. Our first set of experiments assuming 50\% of premium users is shown in
-Figures \ref{fig:modifier_pr50_web}, \ref{fig:modifier_pr50_bulk}, and
-\ref{fig:modifier_pr50_all}. From this illustration, is it evident that premium
+$\alpha \in \{0, 0.25, 0.5\}$ and $\beta \in \{1, 5, 10\}$, where $\alpha = 0, \beta = 1$ represents vanilla Tor. In our set of experiments, we assume 25\% of premium users. From Figures \ref{fig:modifier_pr25_web}, \ref{fig:modifier_pr25_bulk}, and
+\ref{fig:modifier_pr25_all}, we observe interesting informations. First, variations in our network-wide tunable parameters do offer differentiation in download speed. Yet, as we detail in appendix~\ref{sec:scheduling}, offering bandwidth differentiation for the Tor network is more complex than previously thought. Indeed, the current state of the Tor network (congestion in the exit interface) makes local scheduling priority ineffective for most circuits, while this method worked fine with previous work when the Tor network was in a very different shape. Second, the differentiation in bandwidth for $\alpha = .25, \beta=5$ ``averages out'' to
+approximately mirror the baseline experiment, indicating little loss in overall
+network performance, and confirming our overhead experiment (recall 25\% of premium users). Nevertheless, our result for $\alpha = 0.5, \beta=10$ indicates that the performance degrades faster for nonpremium the closer we are to the maximum gain we could obtain for the premium users. 
+
+ evident that premium
 users enjoy an advantage in internet speed compared to nonpremium users and that
 this advantage is more pronounced with the higher priority modifier. Moreover,
 the evenly split premium and nonpremium performance ``averages out'' to
 approximately mirror the baseline experiment, indicating little loss in overall
 network performance, and confirming our overhead experiment.
+
+Reducing the fraction of premium users to 25\%, which we assume to be a more realistic model should most likely, according to
+Equation~\ref{eq:flow}, expect an even greater benefit on a per-user
+basis. Figures \ref{fig:modifier_pr25_web}, \ref{fig:modifier_pr25_bulk}, and
+\ref{fig:modifier_pr25_all} shows that this is indeed the result. Users across
+the spectrum of web speed enjoyed $\approx 100\%$ improvements in download
+speeds relative to nonpremium users --- likely enough to induce some amount of
+monetary exchange. Note that the parameters from Equation~\ref{eq:flow} can be tuned (enforced network-wide) to offer more or less benefit for premium users on the willingness of the directory authorities.
 
 Note, one difference of our priority mechanism over a scheduling approach is
 that the latency is unchanged: there is no reason for the first byte to come
@@ -331,14 +341,6 @@ any time. See Section~\ref{subsub:prioritized} for details). Such an approach
 keeps the network responsive for nonpremium and low-bandwidth usage, while still
 offering an upward benefit for premium users loading standard-to-large web pages, as shown
 in Figure~\ref{fig:modifier}.
-
-Reducing the fraction of premium users to 25\%, which we assume to be a more realistic model should most likely, according to
-Equation~\ref{eq:flow}, expect an even greater benefit on a per-user
-basis. Figures \ref{fig:modifier_pr25_web}, \ref{fig:modifier_pr25_bulk}, and
-\ref{fig:modifier_pr25_all} shows that this is indeed the result. Users across
-the spectrum of web speed enjoyed $\approx 100\%$ improvements in download
-speeds relative to nonpremium users --- likely enough to induce some amount of
-monetary exchange. Note that the parameters from Equation~\ref{eq:flow} can be tuned (enforced network-wide) to offer more or less benefit for premium users on the willingness of the directory authorities.
 
 Note that our analysis of the scheme holds the total network capacity static. However Tor incentives build on the premise that everybody would benefit from new relays added in new locations from new operators. We believe that in the worst-case scenario from a performance viewpoint, we would obtain similar performance than the static analysis since it might be possible that Tor usage grows proportionally to the added relays. That is the main reason why we did not experiment with simulated added capacity. However, even in such case, all users would benefit from better anonymity from the new distribution of relays. Moreover, the premise to advance human rights and freedoms to more people would be achieved, which outweighs performance benefit from any simulated static user base but higher Tor network capacity experiment. 
 

@@ -89,7 +89,7 @@ try to win premium tickets~\cite{jansen2013lira,
 this problem by itself could prevent the scheme from offering a
 realistic option. If the payment rate is too low, then the incentive
 to cheat is increased because a large priority bandwidth would be
-rewarded between guesses. If a high payment rate is chosen, then
+rewarded between guesses to the cheater. If a high payment rate is chosen, then
 guessers would have difficulties to maintain good guesses through
 their circuit lifetime (as the probability to maintain priority
 through guesses exponentially decreases). As a result, the LIRA idea
@@ -132,7 +132,7 @@ traffic produced solely by the exit node is already a severe
 issue~\cite{rochet2018dropping}, and the Tor project produced several
 patches to observe bogus traffic and react to it. The conspirator
 problem is however intractable by nature since the junk data would
-appear legit, however our channel establishment procedure offers up to
+appear legit to the Tor circuit layer, however our channel establishment procedure offers up to
 $n$ nanopayments which can be tuned to account for this problem.  A
 conspirator can then be reduced to non-fair exchange problem, which is
 what previous works offer as a basis.
