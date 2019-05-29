@@ -34,8 +34,8 @@ relay is itself an aggregation which we perform inside the relay's memory. The a
 %clients' behalf.
 The aggregation is done inside bins of configurable size for
 every different traffic family we consider. Once we collected enough data from a
-single family, we dump the information on the disk, clear the data, and resume a
-new session. The final information obtained contains an aggregation of 1600
+single family (1600 circuits of a same family), we dump the aggregated information on the disk, clear the relay memory, and resume a
+new session. The final information obtained contains sessions of aggregation of 1600
 circuits over an unspecified time frame that is implicitly determined by the
 rate of user activity. The following data was considered:
 
@@ -56,7 +56,7 @@ flow on disk.
 
 \paragraph*{Observations}
 
-\begin{figure*} \centering
+\begin{figure*}[t] \centering
 \begin{subfigure}[t]{0.47\textwidth} \centering\centering
   \includegraphics[width=0.7\textwidth]{images/totcellcountscdf.png}
   \caption{Total Counts --- Distribution of circuit size with respect to the
@@ -109,7 +109,7 @@ software implementation within the native Tor codebase.
 
 \subsection{Prototype}
 
-\begin{figure*} \centering
+\begin{figure*}[t] \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 3cm 0 3cm}, clip, width=1.0\textwidth]{images/overhead_downloadtime.pdf}
 		\caption{Download Time Overhead - Web + Bulk}
@@ -225,7 +225,7 @@ results are summarized in Figure~\ref{fig:overhead}.
 % Add information about how we simulate singlecore and multicore hardware
 % That gonna overflow 12 pages, though :/
 
-\begin{figure*} \centering
+\begin{figure*}[t] \centering
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 0cm 0 0cm}, clip, width=1.0\textwidth]{images/payment_establish.pdf}
 		\caption{Nano-Establish - Built after the circuit construction, but before the circuit usage!}
@@ -313,36 +313,27 @@ decision to implement special directly paid guard channels.
 Our final set of experiments studies the success of our scheme in delivering
 prioritized traffic for premium users. To perform this analysis, we prepared
 sets of three small experiments with varying modifier priorities
-$\alpha \in \{0, 0.25, 0.5\}$ and $\beta \in \{1, 5, 10\}$, where $\alpha = 0, \beta = 1$ represents vanilla Tor. In our set of experiments, we assume 25\% of premium users. From Figures \ref{fig:modifier_pr25_web}, \ref{fig:modifier_pr25_bulk}, and
-\ref{fig:modifier_pr25_all}, we observe interesting informations. First, variations in our network-wide tunable parameters do offer differentiation in download speed. Yet, as we detail in appendix~\ref{sec:scheduling}, offering bandwidth differentiation for the Tor network is more complex than previously thought. Indeed, the current state of the Tor network (congestion in the exit interface) makes local scheduling priority ineffective for most circuits, while this method worked fine with previous work when the Tor network was in a very different shape. Second, the differentiation in bandwidth for $\alpha = .25, \beta=5$ ``averages out'' to
+$\alpha \in \{0, 0.25, 0.5\}$ and $\beta \in \{1, 5, 10\}$, where $\alpha = 0, \beta = 1$ represents vanilla Tor when payments are off. In our set of experiments, we assume 25\% of premium users. From Figures \ref{fig:modifier_pr25_web}, \ref{fig:modifier_pr25_bulk}, and
+\ref{fig:modifier_pr25_all}, we observe interesting information. First, variations in our network-wide tunable parameters do offer differentiation in download speed. Yet, as we detail in appendix~\ref{sec:scheduling}, offering bandwidth differentiation for the Tor network is more complex than previously exposed. Indeed, the current state of the Tor network (congestion in the exit interface) makes local scheduling priority ineffective for most circuits, while this method worked fine with previous work when the Tor network was in a very different shape. Second, the differentiation in bandwidth for $\alpha = .25, \beta=5$ ``averages out'' to
 approximately mirror the baseline experiment, indicating little loss in overall
-network performance, and confirming our overhead experiment (recall 25\% of premium users). Nevertheless, our result for $\alpha = 0.5, \beta=10$ indicates that the performance degrades faster for nonpremium the closer we are to the maximum gain we could obtain for the premium users. 
+network performance, and confirming our overhead experiment (recall 25\% of premium 
+users). Nevertheless, our result for $\alpha = 0.5, \beta=10$ indicates that the 
+performance degrades faster for nonpremium the closer we are to the maximum gain we 
+could obtain for the premium users. This result also highlight the complexity within 
+the choice of the right set of parameters or techniques to offer efficient 
+prioritization which, after our research and result, we believe to be more complex to get right than the design of the anonymous payment layer itself.
 
- evident that premium
-users enjoy an advantage in internet speed compared to nonpremium users and that
-this advantage is more pronounced with the higher priority modifier. Moreover,
-the evenly split premium and nonpremium performance ``averages out'' to
-approximately mirror the baseline experiment, indicating little loss in overall
-network performance, and confirming our overhead experiment.
-
-Reducing the fraction of premium users to 25\%, which we assume to be a more realistic model should most likely, according to
-Equation~\ref{eq:flow}, expect an even greater benefit on a per-user
-basis. Figures \ref{fig:modifier_pr25_web}, \ref{fig:modifier_pr25_bulk}, and
-\ref{fig:modifier_pr25_all} shows that this is indeed the result. Users across
-the spectrum of web speed enjoyed $\approx 100\%$ improvements in download
-speeds relative to nonpremium users --- likely enough to induce some amount of
-monetary exchange. Note that the parameters from Equation~\ref{eq:flow} can be tuned (enforced network-wide) to offer more or less benefit for premium users on the willingness of the directory authorities.
-
-Note, one difference of our priority mechanism over a scheduling approach is
+Note, one difference of the edge window-based priority mechanism over a scheduling 
+approach is
 that the latency is unchanged: there is no reason for the first byte to come
 faster for premium users since our priority mechanism only changes the size of
 the control flow window (i.e., how many cells the circuit is allowed to carry at
 any time. See Section~\ref{subsub:prioritized} for details). Such an approach
 keeps the network responsive for nonpremium and low-bandwidth usage, while still
-offering an upward benefit for premium users loading standard-to-large web pages, as shown
-in Figure~\ref{fig:modifier}.
+offering an upward benefit for premium users loading standard-to-large web pages, as 
+shown in Figure~\ref{fig:modifier}.
 
-Note that our analysis of the scheme holds the total network capacity static. However Tor incentives build on the premise that everybody would benefit from new relays added in new locations from new operators. We believe that in the worst-case scenario from a performance viewpoint, we would obtain similar performance than the static analysis since it might be possible that Tor usage grows proportionally to the added relays. That is the main reason why we did not experiment with simulated added capacity. However, even in such case, all users would benefit from better anonymity from the new distribution of relays. Moreover, the premise to advance human rights and freedoms to more people would be achieved, which outweighs performance benefit from any simulated static user base but higher Tor network capacity experiment. 
+Note that our analysis of the scheme holds the total network capacity static. However Tor incentives build on the premise that everybody would benefit from new relays added in new locations from new operators. We believe that in the worst-case scenario from a performance viewpoint, we would obtain similar performance than the static analysis since it might be possible that Tor usage grows proportionally to the added relays. That is the main reason why we did not experiment with simulated added capacity. However, even in such case, all users would benefit from better anonymity from the new distribution of relays. Moreover, advancing human rights and freedoms to more people would be achieved, which outweighs performance benefit from any simulated static user base with higher Tor network capacity experiment. 
 
 
 \begin{figure*} \centering

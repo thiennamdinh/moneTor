@@ -16,19 +16,19 @@ scheduling algorithm implemented at each node.  The Tor network employs EWMA to
 favor interactive web clients over continuous bulk clients. In moneTor, we
 originally proposed to modify EWMA with a simple linear scaling factor that
 would favor paid circuits.
-\begin{equation}
-  A_{t + \Delta t} = A_t \times 0.5^{\Delta t/H}
-\end{equation}
-\begin{equation}
-  A'_{t + \Delta t} = A_{t + \Delta t} / \beta + C_{t, t + \Delta t}
-\end{equation}
-Defined in Tang and Goldeberg's original paper~\cite{tang2010improved}, $A$ is a variable score used to
-sort circuits such that the circuit with the lowest $A$ is always next on the
-scheduling queue. $C$ is the number of cells relayed within $\Delta t$, the time
-since the previous observation, and $H$ is a global representing the half-life
-decay interval in the score. Our added term, $\beta \in [1, \inf)$, is a tunable
-parameter such that $Bandwidth_{premium} = Bandwidth_{nonpremium} \times \beta$
-for any given circuit under ideal conditions.
+%\begin{equation}
+%  A_{t + \Delta t} = A_t \times 0.5^{\Delta t/H}
+%\end{equation}
+%\begin{equation}
+%  A'_{t + \Delta t} = A_{t + \Delta t} / \beta + C_{t, t + \Delta t}
+%\end{equation}
+%Defined in Tang and Goldeberg's original paper~\cite{tang2010improved}, $A$ is a variable score used to
+%sort circuits such that the circuit with the lowest $A$ is always next on the
+%scheduling queue. $C$ is the number of cells relayed within $\Delta t$, the time
+%since the previous observation, and $H$ is a global representing the half-life
+%decay interval in the score. Our added term, $\beta \in [1, \inf)$, is a tunable
+%parameter such that $Bandwidth_{premium} = Bandwidth_{nonpremium} \times \beta$
+%for any given circuit under ideal conditions.
 
 \subsection{Obstacles}
 

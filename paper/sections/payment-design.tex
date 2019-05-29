@@ -158,13 +158,13 @@ concerns, we present a new payment layer design enabling far more efficient
 nanopayments that will satisfy our fair exchange problem and our overhead problem.
 
 \textbf{moneTor} The moneTor construction makes use of the existing anonoymous
-micropayment structure to facilitate \emph{locally transparent nanopayments}. In
+micropayment structure to build \emph{locally transparent nanopayments}. In
 this scheme, \emph{nanopayment channels} between clients and relays are established in place of a single
 micropayment operation through an intermediary (Figure~\ref{fig:parties}). These lightweight channels allow the client to send $n$
 number of unidirectional nanopayments to the relay. Each payment represents a
 fixed value $\delta$, established at the start of the channel. The payments
 themselves are \emph{locally transparent} in the sense that each nanopayment in
-the same channel is trivially linked to each other (in contrast to previous works where several payments in the same circuit were needlessly unlinkable, details in Section~\ref{sec:related_work}). However, the nanopayment
+the same channel is trivially linked to each other (in contrast to previous works where several payments in the same circuit were needlessly unlinkable from relay's viewpoint, details in Section~\ref{sec:related_work}). However, the nanopayment
 channels themselves are unlinkable to other nanopayment channels and
 micropayment operations. It is by design that this channel anonymity model fits
 well with Tor's existing circuit framework in which one nanopayment channel is attached per circuit for each relay, and in which messages within circuits are
