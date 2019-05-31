@@ -1,5 +1,7 @@
 # Summary of Changes - Monetary Tor Incentives with Efficient Nanopayment channels
 
+This is a resubmission from paper https://submit.petsymposium.org/2019.3/paper.php/31
+
 ## Summary
 
 This revision addresses many reviewers concerns and improves on previous version
@@ -44,6 +46,10 @@ Among the critical concerns, the paper has the following updates:
     in the detailed explanation of the Nanopayment channel operations. We hope
     that the reader would be able to grasp the logic of the protocol without having
     to rely on the algorithm details in the appendix.
+
+  - Many small updates throughout the paper to fix small issues / add bit of justification, etc.
+
+Next, you could find more details about how we answerd our reviews within this submission.
 
 ## Answers to reviews
 
@@ -452,7 +458,7 @@ To be honest, we missed that information. Yet, we decided not to change our
 bulk/web ratio within our updated simulations as the one we use is a worse
 situation, and one that could re-appear in the future.
 
-(note that this research has been conducted roughly at the same time as the one cited here and published in CCS 2018).
+(note that our research has been conducted roughly at the same time as the one cited here and published in CCS 2018).
 
 ---
 
@@ -488,7 +494,7 @@ calling a particular function would offer us the effect of a computational
 delay in the Tor process, while being handled by Shadow not as computation
 effort but rather as a break to switch to another task rather than executing
 dummy operations. This would have technically just saved time to simulate, but
-since we got it wrong, we just rolled back to simply execute dummy operations
+since we got it wrong, we just rolled back to simply executing dummy operations
 during the needed time to simulate heave cryptography.
 
 We updated our simulations and the papers. 
@@ -533,13 +539,13 @@ There is a misunderstanding for these figures. To be clear, the overhead is rela
 ---
 
 We decided to analyze cryptographic overhead through an overhead shadow
-experiment, to show that even in the worst case, everything is alright.
+experiment, to show that even in the worst case, everything should be alright.
 Although, we made more clear statements about the cpu cost of channels in the
 new related work section.
 
 Something that must be noted, is that our construction allows heavy
-cryptography not to be needed in the critical path. The critical path just
-requires 1 hash operation from the relay at each payment. The critical
+cryptography not to be needed in Tor's critical path. The critical path just
+requires 1 hash operation from the relay at each payment. The heavy
 operations (e.g., Zkp and blind sig) are needed during establish and close
 operations, outside of any data transfer context (which make them perfectly
 fine to be executed in a less priority thread, which influences only the time to
@@ -583,7 +589,7 @@ a property that we have found nowhere else.
 
 ---
 
-The related work section has been fully rewritten 
+The related work section has been fully rewritten and properly fit moneTor's solution in a scientific context 
 
 ---
 
@@ -641,6 +647,15 @@ believe that that gaining a good understanding of what *can* be done, and about
 its technical impact in terms of network and security properties, is a central
 part of the debate on what *should* be done. It is likely that a different
 landscape of technical properties could influence the social aspect discussion.
+For example, our taxation design allows to make a pot to redistribute part of the
+monetary wealth to relays that are more benefical to the Tor network, in terms
+to be defined by the Tor project (e.g., diversity). Another example is the
+high-fairness that this scheme offers (you pay for what you consume). A last
+(but not least) example: this scheme scales on trustless entities
+(intermediaries), and those profit-seeking relays are not tasked to carry user
+connections. That is, this scheme could seperate profit seeking people from
+people just wanting to help the Tor project, who could get (partially) refunded
+thanks to payments.
 
 ---
 
@@ -652,8 +667,10 @@ landscape of technical properties could influence the social aspect discussion.
 
 ---
 
-Our definition of anonymity does not capture side-channel leakages; so yes we assume no side-channel exploitation to prove that the protocol is indeed anonymous.
-Yet, the design of the payment channels fits well with side-channel defenses (e.g., see reviewer's A comment on channel delay establishment).
+Our definition of anonymity does not capture side-channel leakages; so yes we
+assume no side-channel exploitation to prove that the protocol is indeed
+anonymous.  Yet, the design of the payment channels fits well with side-channel
+defenses (e.g., see reviewer's A comment on channel delay establishment).
 
 ---
 
