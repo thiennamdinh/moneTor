@@ -9,7 +9,7 @@ discussion, the theorem, the priority scheme, etc). To gain space and answer
 reviewers' concerns, we removed the further work section (Section 8 on previous
 version) as we judged this section less important than change made from reviewers' constructive
 comments. We also removed the experiment results with 50% users as premium to
-gain space for more important precisions coming from adjustments realized from these reviews.
+gain space to address concerns.
 
 Among the critical concerns, the paper has the following updates: 
 
@@ -632,16 +632,56 @@ We have added more details in the informal description of the protocol.
 >- It's not solely a technical problem: incentivizing relays with money will shift who runs relays, and their motivation, and their choices to keep users safe. also this model could drive out altruist relays, producing a one-way shift in relay population. See Rob's blog post on the topic:
 >https://blog.torproject.org/tor-incentives-research-roundup-goldstar-par-braids-lira-tears-and-torcoin
 >especially including the "social aspects" discussion.
+
+---
+
+We acknowledge the central question on social aspects, and what would be the
+effect of such scheme for the community of relay operators and users. Yet, we
+believe that that gaining a good understanding of what *can* be done, and about
+its technical impact in terms of network and security properties, is a central
+part of the debate on what *should* be done. It is likely that a different
+landscape of technical properties could influence the social aspect discussion.
+
+---
+
 >
 >So from an impact angle, if the question is whether this paper is the one that will make Tor finally move to an incentives scheme, the answer is no, because the hard social problems remain unsolved (and largely unexplored).
 >
 >- "We assumed no side-channel exploitation in this work" Do you think there aren't any, or is this just a way to make your security proofs not be wrong?
 >
+
+---
+
+Our definition of anonymity does not capture side-channel leakages; so yes we assume no side-channel exploitation to prove that the protocol is indeed anonymous.
+Yet, the design of the payment channels fits well with side-channel defenses (e.g., see reviewer's A comment on channel delay establishment).
+
+---
+
+
 >- Increasing circuit window as a priority mechanism is... weird. The reasons are that it's not clear in what situations it actually helps, and it's not clear what side effects it has on performance.
 >
+
+---
+
+We have now added many explanation and analysis (full analysis in the appendix)
+about our reasons to design a priority mechanism with the control-flow scheme.
+
+---
+
+
 >It would be very reasonable for the reviewers to give this paper a reject-and-resubmit or a major-revisions because of this priority scheme.
 >
 >First, it is already unclear what the performance implications are of various window choices. The Tor folks tried to do some experiments to explore the effects, or even to explore dynamic window sizes like have been considered for ssh, but the results were inconclusive and messy: see for example Section 1.2 of
+---
+
+Yes, however those results are quite old and not representative of the current
+state of affairs. We observed the effectivness of the control flow window to be
+tied to the Tor network congestion, and this congestion moved from the inner
+Tor network to the exit gateway since a few years (i.e., with the recent years
+increase of guard+middle bandwidth).
+
+---
+
 >https://svn.torproject.org/svn/projects/roadmaps/2009-03-11-performance.pdf
 >and
 >https://research.torproject.org/techreports/circwindow-2009-09-20.pdf
@@ -655,6 +695,21 @@ We have added more details in the informal description of the protocol.
 >"To highlight worst-case performance, we configured a medium scale experiment consisting of 100% of premium clients and compare to a baseline trial with 0% premium clients. No actual traffic priority is conferred."
 >
 >It seems to me that changing the window size for everybody should have some effect on performance for everybody -- because we achieve a different point on the tradeoff spectrum between needing to wait for another round-trip from the sendme cells vs having more traffic congesting the relays. I don't have a good handle on this tradeoff space, but it seems the authors haven't considered that it exists.
+
+---
+
+There is some ambiguity is our wordings. We did not "change the window size for
+everybody" (that would have screwed the performance results, as pointed out by
+this reviewer). What we did for the overhead experiment is to enable payments
+for everyone, but no one gets any networking advantage. This experience was
+only aimed at evaluating CPU overhead of the payment system over the data
+transfer (that is, if the observed download speed is the same, the cpu
+consumption for the hundreds/s payments running in the network does impact the data
+transfer).
+
+---
+
+
 >
 >Second: what situations is this prioritizing mechanism trying to improve?
 >
@@ -665,11 +720,29 @@ We have added more details in the informal description of the protocol.
 >Taking a step back, a preferential scheduler might try to make priority traffic degrade less quickly in the face of increased congestion, or it might try to make non-priority traffic suffer so that people who can pay will pay, or it might try to do something else. Maybe specifying some goals, and some metrics for these goals, would be a way to get a handle on this area.
 >
 >Third: the analysis in this paper holds the total network capacity static, and tries to show that premium users will have a better experience. But several of the previous incentives papers were built on the premise that if you get more relays, you get more capacity, and *everybody* benefits. I mention this especially in the context of Figure 5b, where it looks like the premium people don't get much improvement over the current situation, but the nonpremium people suffer a lot more (i.e. the particular graph sure doesn't look like it maintains the zero-sum balance).
+
+---
+
+We added some notes about those remarks in the analysis section of the paper.
+
+---
+
 >
 >Other priority mechanisms considered in the past include "the relay reserves x% of its capacity for premium traffic", which intentionally harms nonpriority traffic in order to make the difference clearer.
 >
 >- I am unclear on who gets to see the list of paying users at a given time. At first I worried that the list of paying people was knowable by the Intermediaries. But then it looks like the clients use Tor to reach the Intermedaries? But even there, the anonymity analysis isn't done, because "I do actions A and B on Tor" provides more surface area to the attacker (more chance of doing noticeable or correlatable things) than "I do action A on Tor."
 >
+
+---
+
+Yes, premium users reach their intermediary to build/close nanopayment channels
+on the top of their anonymous micropayment channel. They reach their
+intermediary through a Tor circuit, like a Tor client reaches an introduction
+point to eventually get to an onion service.
+
+---
+
+
 >- Fig 2, I wonder how this analysis compares with the privcount results.
 >
 >Conclusion:
