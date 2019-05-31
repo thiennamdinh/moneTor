@@ -110,8 +110,7 @@ bandwidth and middle bandwidth has raised to a magnitude where we now observe mo
 of the congestion happening between the exit relay and the destination address. 
 Apart from performance improvement thanks to the added bandwidth, this evolution 
 affects Tor's performance because Tor's internal control-flow window sizes tend to 
-be more accurate with less congestion inside the Tor network~\cite{archive-2009-
-mail,kiraly2008solving}. As a downside, it affects schedulers' impact since most of 
+be more accurate with less congestion inside the Tor network~\cite{archive-2009-mail, kiraly2008solving}. As a downside, it affects schedulers' impact since most of 
 the relays in our experiments were able to flush all queues at once at each write 
 event, which makes inefficient any form of queue priority locally at a particular 
 relay.
