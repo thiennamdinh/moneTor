@@ -1,14 +1,5 @@
 # Summary of Changes - Monetary Tor Incentives with Efficient Nanopayment channels
 
-## Usage
-
-This file uses the Markdown syntax. For a smooth experience, you may want to read
-it in a browser after following commands (if you own a debian-based system):
-
-`apt-get install grip && grip summary_of_change.txt`
-
-Then browse localhost on the given port, or use your favorite markdown reader :)
-
 ## Summary
 
 This revision addresses many reviewers concerns and improves on previous version
@@ -17,7 +8,8 @@ paper which raised problems due to ambiguous sentences (e.g., overhead
 discussion, the theorem, the priority scheme, etc). To gain space and answer
 reviewers' concerns, we removed the further work section (Section 8 on previous
 version) as we judged this section less important than change made from reviewers' constructive
-comments.
+comments. We also removed the experiment results with 50% users as premium to
+gain space for more important precisions coming from adjustments realized from these reviews.
 
 Among the critical concerns, the paper has the following updates: 
 
@@ -26,6 +18,10 @@ Among the critical concerns, the paper has the following updates:
       - Why previous approaches based on DiffServ fail on the current Tor
         network, providing further details on the appendix
       - Why we chose to prioritize flux with the flow control scheme
+      - We acknowledge that prioritization with a local scheduling policy is
+        important, and integrate it as part of our prioritization scheme. The
+        priority is now offered with two techniques (control flow + local scheduling).
+      - In consequence of the previous point, the simulations have been updated
       - Further explanations on the reasons that make us believe that finding
         the right scheme to prioritize flows in various congestion level of the
         Tor network and congestion localisation deserves its own paper.
@@ -101,7 +97,7 @@ Among the critical concerns, the paper has the following updates:
 >
 ---
 
-As previous works did, we build on the premise that icentives schemes would bring
+As previous works did, we build on the promise that icentives schemes would bring
 more relays and benefit to everyone. We acknowledge the risks and the importance of
 such an analysis, but this is not part of this research. As we conclude our
 paper, we believe that, as a community, we still need to gain a good
@@ -135,7 +131,7 @@ details.
 We added explanations to this concern in Section 4.1. And yes, that potentially
 affects the channel setup if the preemtive strategy to build channels is not good
 enough to match user's defense against side-channels with user's needs.
-Altough, the preemptive channel establishement design perfectly fits in a setup where
+Altough, the preemptive channel establishment perfectly fits in a setup where
 we need to find a $w$ that would add a sufficient level of confusion, as you
 mention.
 
@@ -585,24 +581,102 @@ a property that we have found nowhere else.
 
 >These concerns persisted in the related work section, which covers a seemingly random set of schemes for benefits and payments without properly fitting this solution into any context.  If moneTor is using a payment channel, why not cover other payment channels aside from Bolt?  If the goal is anonymous payments, why not cover other anonymous solutions like Zcash?  After reading these two sections it should have been much more clear how moneTor would fit into the existing Tor design, why payment channels were chosen to support it, and why Bolt was chosen in particular.
 
-The technical design of the nanopayment channel seems sound, although I would suggest moving some intuition into the body (or adding it to the appendices in the first place; a long list of algorithm environments isn't a great way to interact with a reader!).
+---
 
-Fundamentally, I don't quite see how the solution offered by this paper would solve the problems of performance and anonymity that it uses to motivate moneTor.  What tokens do users have to fund their payment channels with?  What can they do with these tokens that would cause them to provide real incentive?  If the answer is just purchase premium bandwidth then I don't see how it would attract new users to Tor, since it already seems to assume some interest in the first place.  These are big issues that other research has attempted to solve with systems like Bittorrent so I'm not insisting that they be solved here, but I do think the claims should be toned down a bit to reflect these limitations with the approach adopted here.
+The related work section has been fully rewritten 
 
-Minor comments:
+---
 
--Page 4: "idealogical" should be "ideological"
+>The technical design of the nanopayment channel seems sound, although I would suggest moving some intuition into the body (or adding it to the appendices in the first place; a long list of algorithm environments isn't a great way to interact with a reader!).
 
--Page 5: "considerationis" should be "consideration is"
+---
 
--Page 6: where did the specifications for anonymous micropayment channels (37-100 ms and 7 message legs) come from?
+We have added more details in the informal description of the protocol.
 
--I would suggest moving 4.7 to be before 4.5 and 4.6, so that it is closer to the section where the design is proposed.
+---
 
--During which two weeks was the data collected?
 
--Page 11: "zpk proofs" should be just ZKPs (P and proofs is redundant)?
-
--Page 15: "optimistcally"
-
+>                         PoPETs 2019.3 Review #31D
+>
+>  Paper #31: Monetary Tor Incentives with Efficient Nanopayment Channels
+>
+>
+>                      Overall merit: 3. Major Revisions needed
+>                 Reviewer expertise: 3. Knowledgeable
+>                Reviewer confidence: 1. Low
+>                  Relevance to PETS: 3. Directly related to PETs (scope is
+>                                        not an issue)
+>
+>                         ===== Paper summary =====
+>
+>[The chairs asked me to look at this paper not to do a real review but to opine on "the impact of the paper and whether the community would benefit from having it published."]
+>
+>There are two main contributions here. The first is noticing that the recent activity in the anonymous cryptocurrency space means that there are new tools available for the payment side of "clients pay relays for better service". Looking at this, picking one, and fleshing out how it would work is a solid contribution. The second is picking a mechanism inside Tor for prioritizing the traffic of the paying clients. They pick "using larger flow control windows" as their mechanism, which is kind of a weird choice and opens up a lot of questions.
+>
+>                      ===== Comments for author =====
+>
+>Strengths:
+>
+>+ Yay papers that build rather than papers that attack. So from that point alone, all else being equal I would be happier to see 'accept' than 'reject'.
+>
+>+ They made some efforts to explain how it would work in the real Tor circuit-building situation, not some simplified ideal version like many theory papers have done. (But I didn't check deeply enough to know if their Tor circuit understanding was accurate and complete.)
+>
+>+ I'm happy to see discussion of user safety in their experiments.
+>
+>+ It's great that they used Shadow for their whole-system experiments.
+>
+>+ It's a good 'intellectual merit' side to keep exploring this fun and hard problem of how to incentivize relays. It's good that the previous papers in this line of research were published, and this paper would be a fine addition to those papers.
+>
+>Weaknesses:
+>
+>- It's not solely a technical problem: incentivizing relays with money will shift who runs relays, and their motivation, and their choices to keep users safe. also this model could drive out altruist relays, producing a one-way shift in relay population. See Rob's blog post on the topic:
+>https://blog.torproject.org/tor-incentives-research-roundup-goldstar-par-braids-lira-tears-and-torcoin
+>especially including the "social aspects" discussion.
+>
+>So from an impact angle, if the question is whether this paper is the one that will make Tor finally move to an incentives scheme, the answer is no, because the hard social problems remain unsolved (and largely unexplored).
+>
+>- "We assumed no side-channel exploitation in this work" Do you think there aren't any, or is this just a way to make your security proofs not be wrong?
+>
+>- Increasing circuit window as a priority mechanism is... weird. The reasons are that it's not clear in what situations it actually helps, and it's not clear what side effects it has on performance.
+>
+>It would be very reasonable for the reviewers to give this paper a reject-and-resubmit or a major-revisions because of this priority scheme.
+>
+>First, it is already unclear what the performance implications are of various window choices. The Tor folks tried to do some experiments to explore the effects, or even to explore dynamic window sizes like have been considered for ssh, but the results were inconclusive and messy: see for example Section 1.2 of
+>https://svn.torproject.org/svn/projects/roadmaps/2009-03-11-performance.pdf
+>and
+>https://research.torproject.org/techreports/circwindow-2009-09-20.pdf
+>and
+>http://archives.seul.org/or/dev/Feb-2009/msg00000.html
+>and
+>http://disi.unitn.it/locigno/preprints/TR-DISI-08-041.pdf
+>
+>I raise those points not to say "this has been done before", but to question this quote from the submission:
+>
+>"To highlight worst-case performance, we configured a medium scale experiment consisting of 100% of premium clients and compare to a baseline trial with 0% premium clients. No actual traffic priority is conferred."
+>
+>It seems to me that changing the window size for everybody should have some effect on performance for everybody -- because we achieve a different point on the tradeoff spectrum between needing to wait for another round-trip from the sendme cells vs having more traffic congesting the relays. I don't have a good handle on this tradeoff space, but it seems the authors haven't considered that it exists.
+>
+>Second: what situations is this prioritizing mechanism trying to improve?
+>
+>As the paper points out, it seems plausible that making decisions inside the scheduler at a particular relay (like by tweaking EWMA) is not a great place, because *other* relays in the circuit will still be sending all their traffic (possibly too much traffic) toward that relay. Or said another way, it seems that traffic prioritization might need to be a global function of the circuit, not a local function of each relay on the circuit.
+>
+>Doing experiments where all the relays have enough or similar capacity could easily not discover the edge cases that will emerge in reality.
+>
+>Taking a step back, a preferential scheduler might try to make priority traffic degrade less quickly in the face of increased congestion, or it might try to make non-priority traffic suffer so that people who can pay will pay, or it might try to do something else. Maybe specifying some goals, and some metrics for these goals, would be a way to get a handle on this area.
+>
+>Third: the analysis in this paper holds the total network capacity static, and tries to show that premium users will have a better experience. But several of the previous incentives papers were built on the premise that if you get more relays, you get more capacity, and *everybody* benefits. I mention this especially in the context of Figure 5b, where it looks like the premium people don't get much improvement over the current situation, but the nonpremium people suffer a lot more (i.e. the particular graph sure doesn't look like it maintains the zero-sum balance).
+>
+>Other priority mechanisms considered in the past include "the relay reserves x% of its capacity for premium traffic", which intentionally harms nonpriority traffic in order to make the difference clearer.
+>
+>- I am unclear on who gets to see the list of paying users at a given time. At first I worried that the list of paying people was knowable by the Intermediaries. But then it looks like the clients use Tor to reach the Intermedaries? But even there, the anonymity analysis isn't done, because "I do actions A and B on Tor" provides more surface area to the attacker (more chance of doing noticeable or correlatable things) than "I do action A on Tor."
+>
+>- Fig 2, I wonder how this analysis compares with the privcount results.
+>
+>Conclusion:
+>
+>(1) the anonymous payment mechanism is interesting and new, and the priority mechanism is not well analyzed and could well be a bad idea;
+>
+>(2) but the real barrier to deployment of a payment incentivization system inside Tor is the social impact on the relay operator community, and whether it is possible to shift the motivations in a way that doesn't destroy the network long-term;
+>
+>(3) but I like to see that this paper builds a new things, rather than the usual paper that describes an attack and then leaves it to others to fix it.
 
