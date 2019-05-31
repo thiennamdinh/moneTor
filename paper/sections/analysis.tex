@@ -215,7 +215,7 @@ characteristic of the scheme.
 First, we attempt to show the total cost of the moneTor scheme in terms of total
 network throughput. To highlight worst-case performance, we configured a medium
 scale experiment consisting of 100\% of premium clients and compare to a
-baseline trial with 0\% premium clients. The payment protocols run but the control-flow stays unchanged to only compare the CPU cost of the payment scheme. Since our algorithms makes use of some concurrent crytpographic
+baseline trial with 0\% premium clients. The payment protocols run but the control-flow stays unchanged to only compare the CPU cost of the payment scheme (that is, we do not apply any priority function). Since our algorithms makes use of some concurrent crytpographic
 operations, we are concerned with the number of CPU cores available to most
 relays. This information is not publicly available. As a result, we provide two
 trials with moneTor: one where we assume all nodes are running on multi-core
@@ -250,9 +250,8 @@ results are summarized in Figure~\ref{fig:overhead}.
 \end{figure*}
 
 Our findings indicate that even in the worst case scenario, our system incurs
-statistically negligible overhead at these scales across all three measures of
-download time, throughput, and memory usage. This in line with the raw bandwidth
-overhead observations in which a small fraction ($< 1\%$) of the network traffic
+statistically negligible overhead at these scales across the two measures of
+download time (e.g., less than 2\% increase on the mean web download for the singlecore experiment), throughput, and memory usage. This in line with the raw bandwidth observations in which a small fraction ($< 1\%$) of the network traffic
 is attributable to moneTor payment messages. This is true for all of our trials
 which feature a payment rate of 1 payment (1 cell) every 1000 data cells
 exchanged in either direction. It is also possible to increase the payment rate
@@ -302,11 +301,11 @@ channels. In the best case scenario, when all three payment channels have been
 correctly pre-built for the circuit, this measure is equivalent to a single trip
 toward each relay. Comparing this Figure~\ref{fig:ttfp} to
 Figure~\ref{fig:payments_establish}, we observe the effectiveness of preemptive
-channel building.
+channel building. The other observation sustaining the effectiveness of the pre-built strategy is the recorded time for the ``call'' versus ``send'': if no delay is observed, the pre-built was a success.
 
 In all protocol phases, we observe that latency for guard relays are negligible
 in comparison to the middle and exit relays, further validating our design
-decision to implement special directly paid guard channels.
+decision to implement special directly paid guard channels (that is, since a guard is not expected to see all Tor clients in the entry position, it may allocate itself micropayment channels for the subset of clients it serves).
 
 \paragraph*{Network Priority}
 \label{sec:priority_exp}

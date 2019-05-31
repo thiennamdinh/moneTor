@@ -101,9 +101,9 @@ Compared to BRAIDS and LIRA, moneTor offers the ability to prevent
 double-spending without suffering from a centralized exchange process
 (BRAIDS)~\cite{jansenblogpost}, or from incentives to cheat to gain
 premium access and stockpile relay-specific information
-(LIRA). Moreover, moneTor offers high fairness with payment
+(LIRA). Moreover, moneTor offers high fairness with on-the-fly payment
 verification improved by a factor $\approx 6$ compared to LIRA (one
-$\hash$ operation instead of six) and $\approx 500$ to BRAIDS. Also,
+$\hash$ operation instead of six $\hash$ + a few XORs and multiplications) and $\approx 500$ to BRAIDS. This does not account for opening and closing the nanopayment channel, happening outside of the data transfer time window and for which the relay's costly operation is to perform one ZKP (opening) and generating one blind signature (closing). Also,
 moneTor does not suffer from concern 2) and moneTor tokens can act as a
 wrapper from an external cryptocurrency such as Bitcoin or Ethereum
 using inter-ledger protocols~\cite{back2014enabling,
