@@ -425,6 +425,38 @@ the guard relay are transparent and persistent across the timescale of several
 months. We optimize toward this setup by enabling transparent and direct payment
 channels between the client and guard, considerably reducing the time to establish or close the payment channel with the guard relay. Direct payment channels on middle or exit relays would not scale because those relays are expected to eventually serve all Tor users in the worst case.
 
+\subsubsection{Unlinkability of Micropayment}
+
+Micropayment channels are designed in moneTor to create a micropayment 
+wallet and to consume part of it through unlinkable nanopayment channels, updating the balance and refreshing the cryptographic material. It is
+by protocol design that two consecutive micropayment wallets of the 
+same micropayment channel are unlinkable (recall that the next usable wallet tied to a micropayment channel is derivated from the Nano-Close procedure). However, linkability of the 
+micopayment wallets due to timings is a possible threat to the system. 
+That is, even if intermediaries cannot link any message out of the box 
+(because Intermediaries are contacted through internal Tor circuits, and because 
+protocol messages are unlinkable), timings of micropayment events 
+combined to apriori information about some user may allow the intermediary to 
+correlate all of the user's nanopayment channels and learn about the final 
+balance (summing all correlated Nanopayment's channel deltas). In practice, the privacy of the user's final balance depends on the number of users concurrently building channels to the 
+same intermediary when a micro-wallet is renewed between time $t$ and 
+$t+1$. The number of available Intermediaries must be a parameter of 
+the system decided by the Tor authorities to ensure a sufficient 
+anonymity set size for payment events. This number could be recalculated based on the activity of premium users: assuming we want an anonymity set size of $N$, then the maximum allowed Intermediaries in the network could be defined by $\frac{\mathbb{E}[W]}{N}$ with W a random variable holding the number of payment events between any $t, t+1$. Moreover, clients 
+could run several micropayment channels to different intermediaries, 
+and use one of those channels at random for building the next 
+nanopayment channel, virtually increasing the anonymity set size and 
+requiring intermediaries to coerce to make use of any apriori 
+information about some user.
+
+%the anonymity set of micro-wallets is split within the number of 
+%intermediaries. The intermediary flag is validated by the Tor 
+%authorities in our implementation, and rules to ensure a sufficient 
+%large anonymity set is a deployment problem far from intractable, 
+%and out-of-scope of this paper. Note that the intermediary would 
+%have to link all micro-wallets of a same Tor user to learn the full 
+%balance of that user, and this is an exponentially difficult problem 
+%with the size of the anonymity set. 
+
 %
 %The security of the ledger will be subject to
 %the guarantees made by the cryptocurrency interface~\cite{back2014enabling,

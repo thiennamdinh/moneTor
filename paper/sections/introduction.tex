@@ -53,23 +53,23 @@ trifecta of challenging constraints:
   browsing and large file transfers.
 \end{itemize}
 
-\textbf{Present Landscape} While a number of prior works satisfy some subset of
-these constraints, no single proposal has thus far been sufficiently convincing
-so as to warrant further development.
-%We speculate that the lack of a
-%breakthrough in this niche area is not a matter of insufficient ingenuity but
-%rather one of timing.
-In recent years, there has been an explosion of academic
-research within the domain of cryptocurrencies. As of this writing, Satoshi
-Nakamoto's Bitcoin whitepaper has already garnered approximately 5,000 references in
-citing publications~\cite{nakamoto2008bitcoin}.
-%\footnote{The recency of this
-%  development is highlighted by the fact that about half of this work is dated
-%  after 2017.}
-  This body of work has sparked the development of a multitude of
-new techniques that will prove indispensable to our own area of research. Our
-objective then, is to leverage the full extent of these innovations into a
-practical next-generation incentivization strategy for Tor.
+%\textbf{Present Landscape} While a number of prior works satisfy some subset of
+%these constraints, no single proposal has thus far been sufficiently convincing
+%so as to warrant further development.
+%%We speculate that the lack of a
+%%breakthrough in this niche area is not a matter of insufficient ingenuity but
+%%rather one of timing.
+%In recent years, there has been an explosion of academic
+%research within the domain of cryptocurrencies. As of this writing, Satoshi
+%Nakamoto's Bitcoin whitepaper has already garnered approximately 5,000 references in
+%citing publications~\cite{nakamoto2008bitcoin}.
+%%\footnote{The recency of this
+%%  development is highlighted by the fact that about half of this work is dated
+%%  after 2017.}
+%  This body of work has sparked the development of a multitude of
+%new techniques that will prove indispensable to our own area of research. Our
+%objective then, is to leverage the full extent of these innovations into a
+%practical next-generation incentivization strategy for Tor.
 
 \label{sec:Contributions}
 \textbf{Contributions} The moneTor scheme is a novel full-stack framework for
@@ -77,7 +77,7 @@ Tor incentives. We Introduce new highly-efficient nanopayment protocols which sa
  Our construction called moneTor bridges the theoretical advance in the cryptocurrency space with the concrete requirements of a complex and advanced distributed system such as the Tor network. Concretly, we offer:
  
  \begin{itemize}
- 	\item Payment protocols that shift away the heavy cryptography from the critical path when performing payments. That is, during data exchange, the payment processing logic only require computionnaly benign operations (1 hash operation per payment), and shift away the heavy operation outside of the data exchange. Our design allows to reach an unpreceding  granularity of secure and anonymous payments, enabling \textit{fair exchange} between premium users and relays without damaging the expected download time of content (even when no priority is given to the premium stream).
+ 	\item Payment protocols that shift away the heavy cryptography from the critical path when performing payments. That is, during data exchange, the payment processing logic only require computionnaly benign operations (1 hash operation per payment), and shift away the heavy operation outside of the data exchange. Our design allows to reach an unpreceding  granularity of secure and anonymous payments, enabling \textit{fair exchange} between premium users and relays without damaging the expected download time of content (even when no priority discrepency is set).
  	\item Payment protocols that scale on trustless entities (called Intermediaries). Only a few intermediaries are required to handle the heavy cryptography of the payment layer. Their presence are incentivized by monetary rewards through payment fees, and they are only tasked to run the payment protocols (that is, those relays are not selected by clients to process user streams).
  	
  	\item An implementation prototype of our payment layer, extending the Tor Routing protocol, resulting in approximately 15k lines of new code in C. Our networking experiments handle thousands of transactions per second, and could scale to hundred thousands of transactions per second for the real Tor network.
@@ -118,7 +118,7 @@ Tor incentives. We Introduce new highly-efficient nanopayment protocols which sa
 
 \paragraph*{Roadmap.} In Section~\ref{sec:background}, we draw on technical
 preliminaries from two distinct fields: applied Tor research and cryptographic
-payment channels. Section~\ref{sec:related_work} presents the related work.
+payment channels.
 %Our contributions begin formally with Section~\ref{sec:economic}, where we first
 %describe a high-level economic model for the flow of money through the
 %network.
@@ -129,7 +129,9 @@ network level. In section~\ref{sec:analysis} we justify our design decisions
 with real-world data collection from live Tor users. We continue in
 Section~\ref{sec:experimentations} with a validation of our technical design,
 carried out through experiments performed on a native proof-of-concept
-implementation. Finally, we reference our source code in
+implementation.
+ Section~\ref{sec:related_work} presents the related work and compare them to our approach.
+Finally, we reference our source code in
 Section~\ref{sec:code}, and present concluding remarks in
 Section~\ref{sec:conclusion}.
 
