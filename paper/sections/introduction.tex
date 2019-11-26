@@ -77,12 +77,12 @@ Tor incentives. We Introduce new highly-efficient nanopayment protocols which sa
  Our construction called moneTor bridges the theoretical advance in the cryptocurrency space with the concrete requirements of a complex and advanced distributed system such as the Tor network. Concretly, we offer:
  
  \begin{itemize}
- 	\item Payment protocols that shift away the heavy cryptography from the critical path when performing payments. That is, during data exchange, the payment processing logic only require computionnaly benign operations (1 hash operation per payment), and shift away the heavy operation outside of the data exchange. Our design allows to reach an unpreceding  granularity of secure and anonymous payments, enabling \textit{fair exchange} between premium users and relays without damaging the expected download time of content (even when no priority discrepency is set).
+ 	\item Payment protocols that shift away the heavy cryptography from the critical path when performing payments. That is, during data exchange, the payment processing logic only require computionnaly benign operations (1 hash operation per payment), and shift away the heavy operation outside of the data exchange. Our design allows to reach an unpreceding  granularity of secure and anonymous payments, enabling \textit{fair exchange} between premium users and relays without damaging the expected download time of content (that is, the payment layer overhead does not impact the data exchange).
  	\item Payment protocols that scale on trustless entities (called Intermediaries). Only a few intermediaries are required to handle the heavy cryptography of the payment layer. Their presence are incentivized by monetary rewards through payment fees, and they are only tasked to run the payment protocols (that is, those relays are not selected by clients to process user streams).
  	
  	\item An implementation prototype of our payment layer, extending the Tor Routing protocol, resulting in approximately 15k lines of new code in C. Our networking experiments handle thousands of transactions per second, and could scale to hundred thousands of transactions per second for the real Tor network.
  	
- 	\item Experimental analysises showing how previous scheduling approaches~\cite{dovrolis1999case, tang2010improved} used in previous Tor incentives systems fail to offer the expected priority under the current state of the Tor network. We propose an alternative route combining previous approaches with a new method based on control-flow windows to restore the scheduling efficacy.
+ 	\item Experimental analysises showing how previous scheduling approaches~\cite{dovrolis1999case, tang2010improved} used in previous Tor incentives systems fail to offer the expected priority under the current state of the Tor network. We propose an alternative route combining previous approaches with a new method based on control-flow windows to prioritize premium flows.
  \end{itemize}
  
 
