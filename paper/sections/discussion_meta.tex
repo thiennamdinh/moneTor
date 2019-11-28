@@ -22,10 +22,10 @@ community and to prevent monetary rewards to harm it.
 
 Several questions~\cite{jansenblogpost} were raised covering 
 potential social issues from previous attempts to design incentives, 
-and among them the ``crowding out'' effect~\cite{,}, showing how 
+and among them the ``crowding out'' effect~\cite{10.1257/jep.25.4.191}, showing how 
 explicit incentives such as monetary rewards can lead to a decrease 
 of intrinsic motivations. Social experimentation in the litterature 
-covering prosocial behaviours~\cite{} has shown that rewarding the 
+covering prosocial behaviours~\cite{10.1257/aer.96.5.1652} has shown that rewarding the 
 behaviour could backfire and decrease the amount of participants to the 
 task instead of the expected increase, due to psychological effects on 
 self-representation, on the image we want to send to others, or to 
@@ -36,7 +36,7 @@ incentives does not necessarly need to be about that. A
 conservative approach could be taken by not rewarding relays for relaying 
 bandwidth, but by offering an
 in-kind support -- that is, the received money cannot exceed the cost of 
-running relays, and in the best case, it would support the estimated 
+running relays, and is expected to support the estimated 
 cost of the relay. The received money would not compensate the 
 cost of running the infrastructure, which is fueled by the operator's intrinsic 
 motivations.  In practice, moneTor could support this design by ajusting the 
@@ -45,18 +45,20 @@ cheapest place in the Internet to run relays does not exceed the cost of running
 a relay at this place. Then, the tax redistribution could be a function 
 accounting for relay location and relay bandwidth that would try to reimburse 
 the marginal cost of running the relays in the network. Many more questions are 
-tied to tax redistribution, and would be interesting further work, yet the goal 
-would be to try to incentive operators with intrinsic motivations to deploy 
-more relays, and potentially at more diverse locations (usually costly) if the 
-economy generates enough money.
+tied to tax redistribution, such as preventing operators to game the system 
+(security), evaluating the right price for a given location (economic) or 
+protecting the trust relationship~\cite{10.1257/aer.96.5.1611} between Tor authorities and relays (social). 
+Answering those questions would yield interesting further work, with the goal to incentive operators with intrinsic motivations to deploy 
+more relays, and potentially at more diverse locations (usually more costly). It has been shown in incentives for Education~\cite{10.1257/jep.25.4.191, 10.1086/431263}, that when some support was offered for a concrete task (e.g., course enrollment), the social experiment was showing positive results. We expect that offering support for operators with intrinsic motivation to run relays should yield similar results than offering support to student with intrinsic motivation to complete studies (in our case, the existing set of operators would be incentivized to deploy more relays, or to deploy their relays in more diverse locations).
 
 Applying an in-kind support should not mix operators attracted by extrinsic 
 values with operators holding intrinsic motivation, yet this remains to be 
-experimented. However, it could be interesting to motivate the Intermediary 
+verfied in concrete experimentation. However, it could be interesting to motivate the Intermediary 
 role with extrinsic value. The Tor network would require in practice a 
 limited amount of Intermediaries, but they must offer strong availability to 
 maintain the micropayment channel states for all peers and enable 
-robustness in the payment layer. 
+robustness in the payment layer. Running Intermediary nodes requires the operator to have more CS abilities than operators running classical Tor relays. It is likely that observing, understanding and helping the Tor project with technical limitations of the implementation would be an important task for a limited amount of operators handling a new role within the network. However, an Intermediary does not require a trustworthy operator, but someone incentivized to provide good services.
 Those intermediaries are by design not tasked 
 to relay user streams, hence those operators are not to be mixed with the relay 
 operator community.
+
