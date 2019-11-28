@@ -191,15 +191,15 @@ ran for a total of 90 minutes. These experiments were used to gather information
 concerning the system overhead and protocol execution times. The second set
 featured 250 relays, 2500 clients, 25 intermediaries, 80 minutes of total run
 time, and was used to measure the performance benefits conferred to premium
-clients. In both cases, simulated traffic features 16\% \emph{bulk} clients who
-continuously download 5 MiB files and 84\% \emph{web} clients who periodically
-download 2 MiB files,~\footnote{While 5 MiB bulk files are a common standard in
+clients. In both cases, simulated traffic features 8\% \emph{bulk} clients who
+continuously download 5 MiB files and 92\% \emph{web} clients who periodically
+download 2 MiB files~\footnote{While 5 MiB bulk files are a common standard in
   Tor benchmarking~\cite{portal2018tormetrics}, 2 MiB web files reflect the
   approximate size of modern web pages~\cite{team2018httparchive}}. The number
 and behavior of clients were chosen to satisfy (A) realistic congestion rates
 measured by a transfer timeout percentage around 4\%~\cite{portal2018tormetrics}
 and a historical bulk/web global traffic ratio of about
-50\%~\cite{chaabane2010digging, mccoy2008shining}. Importantly, it should be
+25\%/75\%~\cite{privcount-ccs2016, learning-ccs2018}. Importantly, it should be
 noted that neither the scale of our experiments nor the precise configuration of
 client nodes are intended to be precise replicas of real-world conditions. Tor
 networking is itself a complex area of research and we are content to adopt the
@@ -215,7 +215,7 @@ characteristic of the scheme.
 First, we attempt to show the total cost of the moneTor scheme in terms of total
 network throughput. To highlight worst-case performance, we configured a medium
 scale experiment consisting of 100\% of premium clients and compare to a
-baseline trial with 0\% premium clients. The payment protocols run but the control-flow stays unchanged to only compare the CPU cost of the payment scheme (that is, we do not apply any priority function). Since our algorithms makes use of some concurrent crytpographic
+baseline trial with 0\% premium clients. The payment protocols run but the control-flow and EWMA stay unchanged to only compare the CPU cost of the payment scheme (that is, we do not apply any priority function). Since our algorithms makes use of some concurrent crytpographic
 operations, we are concerned with the number of CPU cores available to most
 relays. This information is not publicly available. As a result, we provide two
 trials with moneTor: one where we assume all nodes are running on multi-core
@@ -283,9 +283,7 @@ cells is kept under an acceptable fraction of the overall data bandwidth.
 \paragraph*{Payment Latency}
 Given results from our data collection, we surmise that payment latency is a
 crucial factor in servicing our front-loaded clients. To this end, we measure
-the distribution of completion times for various steps in the protocol. The
-results shown here are collected from a worst case multicore experiment
-featuring 100 relays and 1000 clients all of whom run premium circuits. To
+the distribution of completion times for various steps in the protocol. To
 highlight the effects of native latency in the Tor network, we show payments
 split across each relay role of guard, middle, and exit. Recall that moneTor
 makes use of high-overhead, low-marginal cost payment channels (i.e., the channels take time to build but the client needs them long after they are built). The bulk of the
@@ -332,7 +330,8 @@ prioritization which, after our research and result, we believe to be more compl
 %offering an upward benefit for premium users loading standard-to-large web pages, as 
 %shown in Figure~\ref{fig:modifier}.
 
-Note that our analysis of the scheme holds the total network capacity static. However Tor incentives build on the premise that everybody would benefit from new relays added in new locations from new operators. We believe that in the worst-case scenario from a performance viewpoint, we would obtain similar performance than the static analysis since it might be possible that Tor usage grows proportionally to the added relays. That is the main reason why we did not experiment with simulated added capacity. However, even in such case, all users would benefit from better anonymity from the new distribution of relays. Moreover, advancing human rights and freedoms to more people would be achieved, which outweighs performance benefit from any simulated static user base with higher Tor network capacity experiment. 
+Note that our analysis of the scheme holds the total network capacity static. However Tor incentives build on the premise that everybody would benefit from new relays added in new locations. We believe that in the worst-case scenario from a performance viewpoint, we would obtain similar performance than the static analysis since it might be possible that Tor usage grows proportionally to the added relays. That is the main reason why we did not experiment with simulated added capacity: globally better performance for everyone could be misleading. 
+%However, even in such case, all users would benefit from better anonymity from the new distribution of relays. Moreover, advancing human rights and freedoms to more people would be achieved, which outweighs performance benefit from any simulated static user base with higher Tor network capacity experiment. 
 
 
 \begin{figure*} \centering
@@ -363,7 +362,7 @@ Note that our analysis of the scheme holds the total network capacity static. Ho
 	\end{subfigure}
 	\begin{subfigure}[t]{0.32\textwidth} \centering
 \includegraphics[trim={0 0cm 0 0cm}, clip, width=1.0\textwidth]{images/modifier_pr25_all_lowloss.pdf}
-		\caption{Throughput}
+		\caption{Total throughput, all clients}
 \label{fig:modifier_pr25_all}
 	\end{subfigure}
 	\caption{Prioritization Benefit --- Performance differentiation between
