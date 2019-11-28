@@ -409,11 +409,14 @@ balance (summing all correlated Nanopayment's channel deltas). In practice, the 
 same intermediary when a micro-wallet is renewed between time $t$ and 
 $t+1$. The number of available Intermediaries must be a parameter of 
 the system decided by the Tor authorities to ensure a sufficient 
-anonymity set size for payment events. This number could be recalculated based on the activity of premium users: assuming we want an anonymity set size of $N$, then the maximum allowed Intermediaries in the network could be defined by $\frac{\mathbb{E}[W]}{N}$ with W a discrete random variable holding the number of payment events between any $t, t+1$. Moreover, clients 
+anonymity set size for payment events. This number could be recalculated based on the 
+activity of premium users: assuming we want an anonymity set size of $N$, then the maximum 
+allowed Intermediaries in the network could be defined by $\frac{\mathbb{E}[W]}{N}$ with W a 
+discrete random variable holding the number of payment events between any $t, t+1$. 
+Moreover, clients 
 could run several micropayment channels to different intermediaries, 
 and use one of those channels at random for building the next 
-nanopayment channel, virtually increasing the anonymity set size and 
-requiring intermediaries to coerce to make use of any apriori 
+nanopayment channel, requiring intermediaries to coerce to make use of any apriori 
 information about some user.
 
 \subsection{Tax Integration}

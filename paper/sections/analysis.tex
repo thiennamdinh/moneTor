@@ -322,15 +322,15 @@ could obtain for the premium users. This result also highlight the complexity wi
 the choice of the right set of parameters or techniques to offer efficient 
 prioritization which, after our research and result, we believe to be more complex to get right than the design of the anonymous payment layer itself.
 
-Note, one difference of the edge window-based priority mechanism over a scheduling 
-approach is
-that the latency is unchanged: there is no reason for the first byte to come
-faster for premium users since our priority mechanism only changes the size of
-the control flow window (i.e., how many cells the circuit is allowed to carry at
-any time. See Section~\ref{subsub:prioritized} for details). Such an approach
-keeps the network responsive for nonpremium and low-bandwidth usage, while still
-offering an upward benefit for premium users loading standard-to-large web pages, as 
-shown in Figure~\ref{fig:modifier}.
+%Note, one difference of the edge window-based priority mechanism over a scheduling 
+%approach is
+%that the latency is unchanged: there is no reason for the first byte to come
+%faster for premium users since our priority mechanism only changes the size of
+%the control flow window (i.e., how many cells the circuit is allowed to carry at
+%any time. See Section~\ref{subsub:prioritized} for details). Such an approach
+%keeps the network responsive for nonpremium and low-bandwidth usage, while still
+%offering an upward benefit for premium users loading standard-to-large web pages, as 
+%shown in Figure~\ref{fig:modifier}.
 
 Note that our analysis of the scheme holds the total network capacity static. However Tor incentives build on the premise that everybody would benefit from new relays added in new locations from new operators. We believe that in the worst-case scenario from a performance viewpoint, we would obtain similar performance than the static analysis since it might be possible that Tor usage grows proportionally to the added relays. That is the main reason why we did not experiment with simulated added capacity. However, even in such case, all users would benefit from better anonymity from the new distribution of relays. Moreover, advancing human rights and freedoms to more people would be achieved, which outweighs performance benefit from any simulated static user base with higher Tor network capacity experiment. 
 
