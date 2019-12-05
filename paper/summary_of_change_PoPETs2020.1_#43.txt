@@ -4,6 +4,11 @@ Nanopayment channels)
 
 ## Summary
 
+This major revision covers ... blablah (waiting Olivier's change)
+
+
+ TODO: meta-review goes here, with answers
+
 ## Answers to reviews from PoPETs 2020.1, paper 43
 
 > Review #43A
@@ -437,8 +442,8 @@ Thanks!
 > discussion on how to solve it might help (instead of simply claiming it to be
 > out of scope).
 
-We added a discussion as part of your recommendation Yet, as you say, it is
-impracticable to fully address in this paper. So, we laid a possible direction for
+We added a discussion as part of your recommendation. Yet, as you say, it is
+impracticable to fully address it in this paper. So, we laid a possible direction for
 this incentive mechanism to work, and linked the discussion to several social
 science papers
 
@@ -515,7 +520,7 @@ format (15 pages). And for a complex system, 15 pages isn't easy :(
 > acceptable.
 
 moneTor can be fully similar to those approaches (on the monetary properties,
-and market appraoch). Yet it improves on the technical properties.
+and market approach). Yet it improves on the technical properties.
 
 > It’s fair that the more you contribute to Tor, the more you get. But
 > the idea in this paper is simply to enable users to pay outright. Will this
@@ -537,6 +542,4 @@ the premium userbase, and try to find a correct equilibrium
 In the discussion section, we cover the possibility to instanciate moneTor to
 only support reimbursement of the cost of relays. It radically different than
 the direct market approach; yet both are possible applications of the scheme.
-
-
-
+:
