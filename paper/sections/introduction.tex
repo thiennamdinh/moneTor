@@ -25,27 +25,28 @@ the anonymity and performance of the network are both proportional to the number
 of nodes and users. From this perspective, the problem becomes a largely
 economic question: how can we incentivize more relay participation?
 
-We chose monetary incentives as a participation incentivization, and we design moneTor: a monetary incentive scheme which allows for relays to offer a \emph{premium bandwidth} product
-to Tor users in exchange for monetary payments. Under this framework,
-financially willing users send payments directly to each relay along their circuits and indirectly through taxes
-in exchange for higher internet bandwidth and faster download speeds relative to
-unpaid users. % The moneTor tokens themselves can be viewed as wrappers for some
+We chose monetary incentives as a participation incentivization, and we design
+moneTor: a monetary incentive scheme which allows for relays to offer a
+\emph{premium bandwidth} product to Tor users in exchange for monetary payments.
+Under this framework, financially willing users send payments directly to each
+relay along their circuits and indirectly through taxes in exchange for higher
+internet bandwidth and faster download speeds relative to unpaid users. % The
+moneTor tokens themselves can be viewed as wrappers for some
 % external financial asset that is converted at an exchange service.
-The moneTor tokens %assets
-are a form of programmatic money which satisfies the standard properties of
-\textit{scarcity}, \textit{fungibility}, \textit{divisibility},
-\textit{durability}, and
+The moneTor tokens %assets are a form of programmatic money which satisfies the
+standard properties of \textit{scarcity}, \textit{fungibility},
+\textit{divisibility}, \textit{durability}, and
 \textit{transferability}~\cite[p.3]{crump2011phenomenon}.
 
-Aside from the analytically out-of-scope set of legal and
-sociopolitical obstacles which we discuss but not thoroughly investigate, monetary payments in this environment must overcome a
-trifecta of challenging constraints:
+Aside from the analytically out-of-scope set of legal and sociopolitical
+obstacles which we discuss but not thoroughly investigate, monetary payments in
+this environment must overcome a trifecta of challenging constraints:
 
 \begin{itemize}
 \item \emph{Anonymity}: The paramount mission of Tor is user privacy. This
   cannot be compromised or reduced by transparent money transaction trails.
-\item \emph{Payment Security}: Financial transactions within an anonymity system cannot transpire
-  without strong guarantees of cryptographic security.
+\item \emph{Payment Security}: Financial transactions within an anonymity system
+  cannot transpire without strong guarantees of cryptographic security.
 \item \emph{Efficiency}: Tor services millions of concurrent users, all of whom
   maintain largely short-term relationships. A robust payment system must handle
   extremely lightweight and scalable payments so as to accommodate the dynamic
@@ -73,16 +74,41 @@ trifecta of challenging constraints:
 
 \label{sec:Contributions}
 \textbf{Contributions} The moneTor scheme is a novel full-stack framework for
-Tor incentives. We Introduce new highly-efficient nanopayment protocols which satisfy all \emph{Anonymity}, \emph{Payment Security} and \emph{Efficiency} constraints.
- Our construction called moneTor bridges the theoretical advance in the cryptocurrency space with the concrete requirements of a complex and advanced distributed system such as the Tor network. Concretly, we offer:
+Tor incentives. We Introduce new highly-efficient nanopayment protocols which
+satisfy all \emph{Anonymity}, \emph{Payment Security} and \emph{Efficiency}
+constraints. Our construction called moneTor bridges the theoretical advance in
+the cryptocurrency space with the concrete requirements of a complex and
+advanced distributed system such as the Tor network. Concretly, we offer:
  
  \begin{itemize}
- 	\item Payment protocols that shift away the heavy cryptography from the critical path when performing payments. That is, during data exchange, the payment processing logic only require computionnaly benign operations (1 hash operation per payment), and shift away the heavy operation outside of the data exchange. Our design allows to reach an unpreceding  granularity of secure and anonymous payments, enabling \textit{fair exchange} between premium users and relays without damaging the expected download time of content (that is, the payment layer overhead does not impact the data exchange).
- 	\item Payment protocols that scale on trustless entities (called Intermediaries). Only a few intermediaries are required to handle the heavy cryptography of the payment layer. Their presence are incentivized by monetary rewards through payment fees, and they are only tasked to run the payment protocols (that is, those relays are not selected by clients to process user streams).
+ 	\item Payment protocols that shift away the heavy cryptography from the
+          critical path when performing payments. That is, during data exchange,
+          the payment processing logic only require computionnaly benign
+          operations (1 hash operation per payment), and shift away the heavy
+          operation outside of the data exchange. Our design allows to reach an
+          unpreceding granularity of secure and anonymous payments, enabling
+          \textit{fair exchange} between premium users and relays without
+          damaging the expected download time of content (that is, the payment
+          layer overhead does not impact the data exchange).
+ 	\item Payment protocols that scale on trustless entities (called
+          Intermediaries). Only a few intermediaries are required to handle the
+          heavy cryptography of the payment layer. Their presence are
+          incentivized by monetary rewards through payment fees, and they are
+          only tasked to run the payment protocols (that is, those relays are
+          not selected by clients to process user streams).
  	
- 	\item An implementation prototype of our payment layer, extending the Tor Routing protocol, resulting in approximately 15k lines of new code in C. Our networking experiments handle thousands of transactions per second, and could scale to hundred thousands of transactions per second for the real Tor network.
+ 	\item An implementation prototype of our payment layer, extending the
+          Tor Routing protocol, resulting in approximately 15k lines of new code
+          in C. Our networking experiments handle thousands of transactions per
+          second, and could scale to hundred thousands of transactions per
+          second for the real Tor network.
  	
- 	\item Experimental analysises showing how previous scheduling approaches~\cite{dovrolis1999case, tang2010improved} used in previous Tor incentives systems fail to offer the expected priority under the current state of the Tor network. We propose an alternative route combining previous approaches with a new method based on control-flow windows to prioritize premium flows.
+ 	\item Experimental analysises showing how previous scheduling
+          approaches~\cite{dovrolis1999case, tang2010improved} used in previous
+          Tor incentives systems fail to offer the expected priority under the
+          current state of the Tor network. We propose an alternative route
+          combining previous approaches with a new method based on control-flow
+          windows to prioritize premium flows.
  \end{itemize}
  
 
@@ -122,17 +148,16 @@ payment channels.
 %Our contributions begin formally with Section~\ref{sec:economic}, where we first
 %describe a high-level economic model for the flow of money through the
 %network.
-In Section~\ref{sec:payment}, we outline economical considerations, and the technical construction of
-our nanopayment scheme at the payment protocol level. Section~\ref{sec:network}
-expands the technical construction of moneTor to cover modifications at the
-network level. In section~\ref{sec:analysis} we justify our design decisions
-with real-world data collection from live Tor users. We continue in
-Section~\ref{sec:experimentations} with a validation of our technical design,
-carried out through experiments performed on a native proof-of-concept
-implementation.
- Section~\ref{sec:related_work} presents the related work and compare them to our approach.
-Finally, we reference our source code in
-Section~\ref{sec:code}, and present concluding remarks in
+In Section~\ref{sec:payment}, we outline economical considerations, and the
+technical construction of our nanopayment scheme at the payment protocol level.
+Section~\ref{sec:network} expands the technical construction of moneTor to cover
+modifications at the network level. In section~\ref{sec:analysis} we justify our
+design decisions with real-world data collection from live Tor users. We
+continue in Section~\ref{sec:experimentations} with a validation of our
+technical design, carried out through experiments performed on a native
+proof-of-concept implementation. Section~\ref{sec:related_work} presents the
+related work and compare them to our approach. Finally, we reference our source
+code in Section~\ref{sec:code}, and present concluding remarks in
 Section~\ref{sec:conclusion}.
 
 %%% Local Variables:
