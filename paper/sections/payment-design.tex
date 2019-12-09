@@ -129,30 +129,13 @@ following roles: $C$ (client), $R$ (relay), $E$ (end user: either a client or
 relay), $I$ (intermediary), and $L$ (ledger). All communications between end
 users and Intermediaries or the ledger are routed through Tor circuits.
 
-The moneTor payment scheme is an extension of Bolt's three-party bidirectional
-micropayment channels. In Bolt, multiple payments happens off-chain and cannot
-be linked together, even if the parties collide. Inspired from the Lightning
-Network~\cite{poon2016bitcoin}, payments can be routed through a third-party in
-a trustless fashion. In our design, we introduce an Intermediary relay which is
-only tasked to provide \emph{atomic} payment channel services between clients
-and relays and does not participate in routing user streams. These choices are
-argued from the following benefits: 1) it escapes the naive setting whereby each
-Tor client maintains a micropayment channel with each relay would incur an
-$O(n*m)$ cost with respect to channel management complexity, with $n$ the number
-of Tor clients and $m$ the number of relays. By engineering an additional
-intermediary layer, the complexity of moneTor channel connections is reduced to
-$O(n+m)$; 2) CPU-intensive tasks are shifted by our protocol design to those
-intermediaries, allowing a payment system far more efficient than previous work
-in critical positions (i.e., relays, Tor authorities and clients). We detail it
-in related work Section~\ref{sec:related_work}; 3) the intermediaries can be
-incrementally deployed to match the right trade-off between performance of
-channel establishments and partition of premium users anonymity set (i.e.,
-typically a premium user uses a same intermediary during a long time, we will
-see why later). We adopt Bolt's nomenclature where possible but adapt it to our
-concepts of ledgers, clients, and relays. The following is brief outline of the
-prerequisite micropayment channel procedures defined in Bolt. We refer the
-reader to the original paper for more detailed
-specifications~\cite{green2017bolt}.
+\textbf{Bolt} The moneTor payment scheme is an extension of Bolt's three-party
+bidirectional micropayment channels, which itself is a privacy-focused
+adaptation of the Lighting Network concept~\cite{poon16bitcoin}. As such, we
+adopt its nomenclature where possible but adapt it to our concepts of ledgers,
+clients, and relays. The following is brief outline of the prerequisite
+micropayment channel procedures defined in Bolt. We refer the reader to the
+original paper for more detailed specifications~\cite{green2017bolt}.
 
 \begin{itemize}
 \item \textbf{KeyGen}: Any party generates a cryptographic keypair
@@ -171,17 +154,68 @@ specifications~\cite{green2017bolt}.
   each party.
 \end{itemize}
 
-Bolt's micropayment channels suffer from relatively heavy cryptography
-($37-100\ ms$) and communication (7 message legs)~\cite{green2017bolt} is a
-prohibitive expense for Tor relay payments. Indeed, using Bolt would not permit
-a fair exchange (i.e., a high payment rate) between a client and a relay since
-we would need several \textit{RTTs} to complete a payment while ``consuming''
-premium bandwidth and not being able to keep up with payments (in Bolt, the
-previous Pay needs to be finished to start the next one). Moreover, in terms of
-CPU overhead, it is also desirable to keep the barrier of entry low for smaller
-relay operators. To overcome these concerns, we present a new payment layer
-design enabling far more efficient nanopayments that will satisfy our fair
-exchange problem and our overhead problem.
+While anonymous micropayment channels present a tremendous advance for many
+applications, the relatively heavy cryptography ($37-100\ ms$) and communication
+(7 message legs) is a prohibitive expense for Tor relay payments.\footnote{In
+  addition to concerns regarding global network overhead, it is also desirable
+  to keep the barrier of entry low for smaller relay operators.} To overcome
+this barrier, we present a new payment layer design enabling far more efficient
+\emph{nanopayments} that will satisfy our constraints.
+
+%% The moneTor payment scheme is an extension of Bolt's three-party bidirectional
+%% micropayment channels. In Bolt, multiple payments happens off-chain and cannot
+%% be linked together, even if the parties collide. Inspired by the Lightning
+%% Network~\cite{poon2016bitcoin}, payments can be routed through a third-party in
+%% a trustless fashion. In our design, we make use of an Intermediary relay which
+%% is only tasked to provide \emph{atomic} payment channel services between clients
+%% and relays and does not participate in routing user streams. These choices are
+%% argued from the following benefits: 1) it escapes the naive setting whereby each
+%% Tor client maintains a micropayment channel with each relay would incur an
+%% $O(n*m)$ cost with respect to channel management complexity, with $n$ the number
+%% of Tor clients and $m$ the number of relays. By engineering an additional
+%% intermediary layer, the complexity of moneTor channel connections is reduced to
+%% $O(n+m)$; 2) CPU-intensive tasks are shifted by our protocol design to those
+%% intermediaries, allowing a payment system far more efficient than previous work
+%% in critical positions (i.e., relays, Tor authorities and clients). We detail it
+%% in related work Section~\ref{sec:related_work}; 3) the intermediaries can be
+%% incrementally deployed to match the right trade-off between performance of
+%% channel establishments and partition of premium users anonymity set (i.e.,
+%% typically a premium user uses a same intermediary during a long time, we will
+%% see why later). We adopt Bolt's nomenclature where possible but adapt it to our
+%% concepts of ledgers, clients, and relays. The following is brief outline of the
+%% prerequisite micropayment channel procedures defined in Bolt. We refer the
+%% reader to the original paper for more detailed
+%% specifications~\cite{green2017bolt}.
+
+%% \begin{itemize}
+%% \item \textbf{KeyGen}: Any party generates a cryptographic keypair
+%% \item \textbf{Init-E}: $E$ initializes half of a micropayment channel by
+%%   escrowing funds on $L$
+%% \item \textbf{Init-I}: $I$ initializes half of a micropayment channel by
+%%   escrowing funds on $L$
+%% \item \textbf{Establish}: $E$ and $I$ interact to establish a new micropayment
+%%   channel from their respective halves
+%% \item \textbf{Pay}: $C$ interacts with $I$ and $R$ to send a single micropayment
+%%   to $R$
+%% \item \textbf{Refund}: $E$ closes a channel on $L$ and makes a claim on the
+%%   escrowed funds.
+%% \item \textbf{Refute}: $I$ closes a channel on $L$ and makes a claim on the
+%%   escrowed funds.
+%% \item \textbf{Resolve}: $L$ determines the final balance of funds awarded to
+%%   each party.
+%% \end{itemize}
+
+%% Bolt's micropayment channels suffer from relatively heavy cryptography
+%% ($37-100\ ms$) and communication (7 message legs)~\cite{green2017bolt} is a
+%% prohibitive expense for Tor relay payments. Indeed, using Bolt would not permit
+%% a fair exchange (i.e., a high payment rate) between a client and a relay since
+%% we would need several \textit{RTTs} to complete a payment while ``consuming''
+%% premium bandwidth and not being able to keep up with payments (in Bolt, the
+%% previous Pay needs to be finished to start the next one). Moreover, in terms of
+%% CPU overhead, it is also desirable to keep the barrier of entry low for smaller
+%% relay operators. To overcome these concerns, we present a new payment layer
+%% design enabling far more efficient nanopayments that will satisfy our fair
+%% exchange problem and our overhead problem.
 
 \textbf{moneTor} The moneTor construction makes use of the existing anonoymous
 micropayment structure to build \emph{locally transparent nanopayments}. In this
