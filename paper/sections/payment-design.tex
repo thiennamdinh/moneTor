@@ -17,17 +17,17 @@
 Given the delicate nature of this research area, a key motivation in the design
 of our scheme is to explicitly accommodate some of the more consequential
 economic considerations. For instance, to ensure that tokens maintain real-world
-value, the Tor Project has two choices. One option is to reserve total monetary
-policy, allowing moneTor tokens to mirror some external value signal such as the
-USD or the Euro. Alternatively, by making use of such inter-ledger
+value, the Tor Project has two choices. One option is to maintain total
+centralized control over monetary policy, perhaps to index moneTor tokens to
+existing fiat currencies. Alternatively, by making use of such inter-ledger
 protocols~\cite{back2014enabling}~\cite{poon2017plasma}, tokens can act as
 wrapper for an external cryptocurrency such as Bitcoin or Ethereum. This choice
-represents a tradeoff between financial stability and responsibility and our
-technical scheme allows for either option.
+represents a fundamental trade-off between control and liability. Our technical
+scheme allows for either option.
 
 The shape of the network that will emerge in a purely profit-seeking environment
 may not perfectly correspond with the central goals of the Tor Project: to
-advance human rights and freedoms. To this end, we introduce a taxation element,
+advance human rights and freedoms. To this end, we allow for a taxation element,
 enabling a tunable control mechanism for The Tor Project to shape the topology
 of the network towards some notion of desirable diversity and performance. Taxes
 in moneTor are anonymously diverted into a shared global fund and eventually
@@ -87,10 +87,16 @@ simply introduce a new ledger authority role to maintain the global payment
 state on a public tamper-evident database~\cite{crosby2009efficient}. To
 maximize availability, this ledger may also be distributed across several
 authorities with, for example, the architecture proposed by
-RSCoin~\cite{danezis2015centrally}. This work focuses on payment protocol
-designs and evaluation. Therefore, we consider the investigation and choice of
-the right ledger technology as an independent problem out of scope of this
-paper.
+RSCoin~\cite{danezis2015centrally}. In principle, the ledger architecture is a
+largely orthogonal engineering problem. We leave this challenge to the
+implementor and instead focus on the more critical design of off-ledger payment
+channels.
+
+% \td{commenting this out b/c we seem to say "out of scope" a lot, so this
+% should be implied}
+% Therefore, we consider the investigation and choice of
+% the right ledger technology as an independent problem out of scope of this
+% paper.
 
 %\op{Maybe add that RScoin might be a good ledger architecture on which our protocols rely?}
 
@@ -156,12 +162,11 @@ specifications~\cite{green2017bolt}.
   escrowing funds on $L$
 \item \textbf{Establish}: $E$ and $I$ interact to establish a new micropayment
   channel from their respective halves
-\item \textbf{Pay}: $C$ interacts with $I$ and $R$ to send a single micropayment
-  to $R$
-\item \textbf{Refund}: $E$ closes a channel on $L$ and makes a claim on the
-  escrowed funds.
-\item \textbf{Refute}: $I$ closes a channel on $L$ and makes a claim on the
-  escrowed funds.
+\item \textbf{Pay}: $C$ interacts with $I$ and $R$ to send a single micropayment to $R$
+\item \textbf{Refund}: $E$ closes a channel on $L$ and makes a claim on
+  the escrowed funds.
+\item \textbf{Refute}: $I$ closes a channel on $L$ and makes a claim on
+  the escrowed funds.
 \item \textbf{Resolve}: $L$ determines the final balance of funds awarded to
   each party.
 \end{itemize}

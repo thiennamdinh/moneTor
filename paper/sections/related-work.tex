@@ -1,15 +1,14 @@
-We classify the previously proposed incentivization schemes into three groups:
+This section categorizes previously proposed incentivization schemes into three
+groups.
 
 \noindent \emph{1. Non-transferable benefits:} these proposals aim to recruit
 relays by offering some privileged status intended for personal use which cannot
 be \emph{securely} sold for reimbursement of financial
 investment~\cite{dingledine2010building,jansen2010recruiting, jansen2013lira}.
-Current state-of-the art schemes for Tor incentives are in this category and the
-next one, and we focus our comparison to them.
 	  
-\noindent \emph{2. Transferable benefits:} these schemes offer privileges or
-products intended to hold value in a secondary resale market. These indirect
-financial incentives presume to attract a broader demand than in the
+\noindent \emph{2. Transferable benefits:} these schemes offer privileged
+service or products intended to hold value on a secondary resale market. These
+indirect financial incentives presume to attract a broader demand than in the
 non-transferable case. Partial proof-of-work tokens that can then be redeemed by
 relays for profit in real cryptocurrency mining pools~\cite{biryukov2015proof}
 and exchangeable shallots in TEARS~\cite{jansen2014onions} are part of this
@@ -55,7 +54,11 @@ previous approaches.
 %of gold star relays~\cite{dingledine2010building}, since gold star is by design
 %non-transferable.
 
-We now review these approaches in more details.
+By leveraging recent advances in cryptocurrency, our scheme offers
+straightforward improvements to prior similar works in the last category,
+primarily by reducing trust and improving scalability. In contrast, the
+trade-offs with state-of-the-art solutions in the first two categories is more
+nuanced. We will highlight some select considerations here.
 
 \paragraph*{Non-transferable benefits - BRAIDS/LIRA} The BRAIDS scheme
 introduces \emph{tickets} to represent premium status. Users may wish to
@@ -64,20 +67,18 @@ trusted-third party. Small numbers of ephemeral tickets are freely distributed
 by a central \emph{bank} to any client upon request or to relays that have
 accumulated tickets spent by clients. Crucially, tickets can only be spent at a
 single relay defined at the time of their minting, in order to circumvent the
-double spending problem~\cite{jansen2010recruiting}, yet those tickets can be
-exchanged at the bank for others bound to a new relay assuming that the exchange
-happens within the allowed time interval. BRAIDS raises four major concerns:
-1)~everyone connects to a central bank through Tor, which raises scalability
-issues; 2) the bank is not trustless: by design the bank can issue valid tickets
-for anyone, and guard relays can steal tickets in the distribution process; 3)
-verifying a blind signature on relay side for each payment is computationally
-intensive if the rate of payment is high, and current high-bandwidth Tor relays
-are already CPU-bound; 4) interactions with the bank is increased by the fact
-that tickets are designed to be relay-specific. As a consequence, BRAIDS can
-hardly scale as a result of an economic appeal: as the size of the network
-increases, users must either stockpile an increasing number of tickets for all
-the relays they may use or need to interact more and more frequently with the
-bank to exchange them.
+double spending problem~\cite{jansen2010recruiting}. However, users may exchange
+accumulated tickets for tickets from other relays through a central bank within
+a set time interval. BRAIDS raises four major concerns: 1)~everyone connects to
+a central bank through Tor, which raises scalability issues; 2) the bank is not
+trustless: by design the bank can issue valid tickets for anyone, and guard
+relays can steal tickets in the distribution process; 3) verifying a blind
+signature on relay side for each payment is computationally intensive if the
+rate of payment is high, and current high-bandwidth Tor relays are already
+CPU-bound; 4) the fact that tickets are relay-specific means that users must
+interact frequently with the bank. Consequently, users have two costly options
+as the network increases: stockpile a large number of tickets for each relay or
+interact frequently with the central bank.
 
 LIRA is an ideological successor to BRAIDS which reduces scalability issues and
 improves the efficiency of the relay side verification of tickets by a factor
@@ -86,14 +87,14 @@ any interaction with the bank. While LIRA improves the efficiency of BRAIDS, and
 could even offer high fairness (by supporting high payment rates), it suffers
 from a \textit{client} cheating incentive to continuously build circuits to try
 to win premium tickets~\cite{jansen2013lira, jansenblogpost}. Depending on the
-chosen value for the payment rate, this problem by itself could prevent the
-scheme from offering a realistic option. If the payment rate is too low, then
-the incentive to cheat is increased because a large priority bandwidth would be
-rewarded between guesses to the cheater. If a high payment rate is chosen, then
-guessers would have difficulties to maintain good guesses through their circuit
-lifetime (as the probability to maintain priority through guesses exponentially
-decreases). As a result, the LIRA idea to have increasing buyer anonymity
-through successful guessers is losing its efficacy. Moreover, LIRA does not
+chosen value for the payment rate, this problem alone could prevent the scheme
+from offering a realistic option. If the payment rate is too low, then the
+incentive to cheat increases as a the scheme awards a large priority bandwidth
+between guesses to the cheater. If the payment rate is too high, then guessers
+would have difficulties maintaining good guesses through their circuit lifetime
+since the probability of maintaining winning guesses exponentially decreases
+with payment rate. As a result, LIRA's goal of increasing buyer anonymity
+through successful guessers loses its efficacy. Moreover, LIRA does not
 address Concerns 2) and 4) inherited from BRAIDS.
 
 Compared to BRAIDS and LIRA, moneTor offers the ability to prevent
@@ -130,34 +131,36 @@ are not as easily exchanged as true currency. We expect our ecosystem to be more
 user friendly, offering arbitrarily high transferability and divisibility of
 priority tokens without changing the underlying Tor architecture, while also
 scaling on trustless entities (our intermediaries) instead of a distribution of
-semi-trusted banks that must be operated by trusted people. The moneTor scheme
-is also designed for fair-exchange with Bolt's ZKP construction to open and
-close the nanopayment channels but offering $n$ nanopayments for which the relay
-only has to perform $1$ $\hash$ operation to validate. This is a strong contrast
-to TEARS requiring a blind signature for each payment. We also expect the
-fair-exchange property to be of critical importance to enable short-bandwidth
-and short-lived premium Tor circuits, which were the majority among observed
-active circuits of our measurement study. Finally, a major difference with
-previous work (TEARS, LIRA, BRAIDS) is that moneTor does not require to audit
-relay's bandwidth to distribute tokens. Relays receive currency directly from
-client from the rate of provided bandwidth and potentially more from the Tor
-authorities after tax redistribution. The tax redistribution mechanism may
-involve bandwidth audits, yet this is not mandatory. The counterpart of
-moneTor's direct payments to the relays is that it offers an opportunity for the
-exit relay to inject junk traffic (e.g., padding cells) or to conspire with the
-destination to inject useless data in order to receive more nanopayments. Note
-that a monitoring system to check for junk traffic could be part of the already
-existing measurement system, by running premium and non-premium circuits through
-measured relays. Junk traffic produced solely by the exit node is already a
-severe issue~\cite{rochet2018dropping}, and the Tor project produced several
-patches to observe bogus traffic and react to it. The conspirator problem is
-however intractable by nature since the junk data would appear legit to the Tor
-circuit layer, however our channel establishment procedure offers up to $n$
-nanopayments which can be tuned to account for this problem. A conspirator can
-then be reduced to non-fair exchange problem, which is what previous works offer
-as a basis. Moreover, websites might not be incentivized to coerce and insert
-junk traffic, given the impact it could produce on the website rendering, and to
-its reactivity to user events.
+semi-trusted banks that must be operated by reputable parties. The moneTor
+scheme is also designed for fair-exchange with Bolt's ZKP construction to open
+and close the nanopayment channels but offering $n$ nanopayments for which the
+relay only has to perform $1$ $\hash$ operation to validate. This is a strong
+contrast to TEARS, which requires a blind signature for each payment. We also
+expect the fair-exchange property to be of critical importance to enable
+short-bandwidth and short-lived premium Tor circuits, which were the majority
+among observed active circuits of our measurement study. Finally, a major
+difference with previous work (TEARS, LIRA, BRAIDS) is that moneTor does not
+depend on a relay's bandwidth audit to distribute tokens. Relays receive
+currency directly from client from the rate of provided bandwidth and
+potentially more from the Tor authorities after tax redistribution. Although the
+tax redistribution phase will require bandwidth audits, the importance of this
+step is a tunable function of the tax rate itself. Note, however, that direct
+payments do introduce a separate mode of abuse. In principle, exit relay in
+moneTor have an incentive to inflate network traffic by injecting junk traffic
+(e.g. padding cells) or even conspiring with the destination server to send
+useless data to the client. We would propose to mitigate this risk by
+implementing junk traffic monitoring into the existing measurement
+infrastructure by running premium and non-premium circuits through measured
+relays. Currently junk traffic produced by the exit node is already a severe
+issue~\cite{rochet2018dropping} that has prompted the release of several patches
+by the Tor project. However, the conspirator problem appears to be intractable
+by nature since the junk data would appear legitimate to the Tor circuit layer.
+As a coarse-grain mitigation strategy, we can cap the number of nanopayments
+available to each circuit. A conspirator can then be reduced to non-fair
+exchange problem, which is what previous works offer as a basis. Moreover,
+websites might not be incentivized to coerce and insert junk traffic, given the
+impact it could produce on the website rendering, and to its reactivity to user
+events.
 
 
 

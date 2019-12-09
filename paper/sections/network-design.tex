@@ -91,35 +91,31 @@ confirmation time matching the round-trip-time of the client-relay connection.
 %in order to avoid partitioning of the anonymity set. 
 Traffic scheduling is perhaps the most intuitive mechanism with which to
 implement prioritization. However, we found that local scheduling decisions on
-each relay for priority do not work well anymore with the current state of the
-Tor network, which precludes previous works scheduling approaches based on
-DiffServ~\cite{dovrolis1999case} and EWMA~\cite{tang2010improved} to offer the
-expected priority if used without a new technique. A more detailed discussion of
-our findings can be found in Appendix~\ref{sec:scheduling}, and raises interest
-for future work to comprehensively understand when priority mechanisms,
-including the one we suggest here, fail to provide the expected priority. Yet,
-the intuition to understand why previous priority mechanism fail today lays in
-the evolution of the Tor network capacity since a few years: the capacity for
-guard bandwidth and middle bandwidth has raised to a magnitude where we now
-observe most of the congestion happening between the exit relay and the
-destination address. Apart from performance improvement thanks to the added
-bandwidth, this evolution affects Tor's performance because Tor's internal
-control-flow window sizes tend to be more accurate with less congestion inside
-the Tor network~\cite{archive-2009-mail, kiraly2008solving}. As a downside, it
-affects schedulers' impact since most of the relays in our experiments were able
-to flush all queues at once at each write event, which makes inefficient any
-form of queue priority locally at a particular relay.
+each relay for priority do not work well with the current state of the Tor
+network, which precludes out-of-the-box scheduling approaches based on
+DiffServ~\cite{dovrolis1999case} and EWMA~\cite{tang2010improved}. Intuitively,
+this is a direct result of the evolution of the Tor network capacity over recent
+years. Due to the growth in bandwidth across guard and middle relays, the
+network now sees the most congestion between the exit relay and final
+destination. In our analysis of scheduling under a simulated modern Tor
+topology, we found that relays were able to instantaneously flush their queues
+at each write event, rendering any attempt at local scheduling to be
+ineffective. We believe that these results, detailed in
+Appendix~\ref{sec:scheduling}, may suggest a need for a separate comprehensive
+study of network prioritization mechanisms.
 
-However, Tor's overlay flow control mechanism provides an alternative route than
-local scheduling policies to implement our desired priority functionality.
-Indeed, since local decisions inside the scheduler at a particular relay may
-fail to achieve priority, designing priority as a global function of the circuit
-may help. Recall that edge nodes regulate the traffic flux in either direction
-using a set of flow control windows. Roughly speaking, these windows determine
-space allotted to each circuit on a relay's scheduling queue, which in turn is
-positively correlated with effective bandwidth. We implement our prioritization
-scheme by statically readjusting the window maximum sizes once according to the
-following formula (both Circ window and Stream window).
+Consequently, we turn the alternative strategy of prioritizing traffic through
+Tor's internal control-flow window sizes, which conversely tends to be more
+accurate with lower internal congestion~\cite{archive-2009-mail,
+  kiraly2008solving}. Indeed, since local decisions inside the scheduler at a
+particular relay may fail to achieve priority, designing priority as a global
+function of the circuit may help. Recall that edge nodes regulate the traffic
+flux in either direction using a set of flow control windows. Roughly speaking,
+these windows determine space allotted to each circuit on a relay's scheduling
+queue, which in turn is positively correlated with effective bandwidth. We
+implement our prioritization scheme by statically readjusting the window maximum
+sizes once according to the following formula (both Circ window and Stream
+window).
 \begin{equation}
   window' = window(1+ \alpha(premium / pr\% - 1))
   \label{eq:flow}
@@ -128,15 +124,14 @@ Here, a circuit is marked as prioritized by the bit $premium \in \{0, 1\}$. The
 tunable priority benefit $\alpha \in [0, 1]$ defines the proportion of the
 non-premium capacity that we wish to transfer to premium clients. By accounting
 for $pr\% \in [0,1]$, the fraction of premium to nonpremium clients, we can keep
-the total flow capacity constant. Keeping the total flow capacity constant means
-that the memory consumption at relays induced by processing cells should stay
-constant as well.
+the total flow capacity constant. This design decision means that the memory
+consumption at relays induced by processing cells should stay constant as well.
 
-Even if most relays are able to flush all queues at each write event, some relay
-may still be congested within the Tor network. In this case, modifying Tor's
-overlay flow control would not achieve priority since the cells are stuck within
-the congested relay's queues. To overcome this issue, we modify EWMA with a
-simpler linear scaling factor that would favor paid circuits.
+Even if most relays are able to flush all queues at each write event, some
+relays may still be congested within the Tor network. In this case, modifying
+Tor's overlay flow control would not achieve priority since the cells are stuck
+within the congested relay's queues. To overcome this issue, we modify EWMA with
+a simpler linear scaling factor that favors paid circuits.
 
 \begin{equation}
   A_{t + \Delta t} = A_t \times 0.5^{\Delta t/H}
@@ -144,6 +139,7 @@ simpler linear scaling factor that would favor paid circuits.
 \begin{equation}
   A'_{t + \Delta t} = A_{t + \Delta t} / \beta + C_{t, t + \Delta t}
 \end{equation}
+
 Defined in Tang and Goldeberg's original paper~\cite{tang2010improved}, $A$ is a
 variable score used to sort circuits such that the circuit with the lowest $A$
 is always next on the scheduling queue. $C$ is the number of cells relayed
