@@ -114,9 +114,7 @@ of bulk/web premium users in the network, and cites the appropriate papers.
 
 We cover the concern in the end of the related work section, and in the
 discussion section. Those incentives can be under control with system parameter
-choices, and with monitoring. In regards to adjusting \alpha and \beta, we think
-the most reassuring (if not necessarily satisfying) argument is simply that they
-would have no incentive to do so since circuit selection remains random.
+choices, and with monitoring.
 
 > The change to windowing prioritization is motivated by the assumption that
 > most congestion happens between exit and destination. The authors do not
@@ -134,7 +132,7 @@ would have no incentive to do so since circuit selection remains random.
 No, we did not consider priority for internal circuits in this paper. Our
 current design and implementation is not incompatible but could yield weird
 effects from syncronization between halves of the onion service circuit
-(depending if both pay or not). To solve this problem, we considered designng a
+(depending if both pay or not). To solve this problem, we considered designing a
 set of protocols that would allow the onion service to pay for both halves of
 the 6-hops onion circuit. The motivation was to design incentives for companies
 (like facebook) to reach out to some of their userbase, like Chinese citizens,
@@ -180,7 +178,7 @@ setup, the taxes are much more important than the value of the direct payments.
 > without any consideration of these concerns is misleading.
 
 This is certainly not the message we want to convey; the relative work section
-has been slightly edited to try to remove this misunderstanding, but if you can
+has been slightly edited to try to remove what could be misleading, but if you can
 point out sentences that are responsible for this feeling, please help us fix
 them!
 
@@ -397,7 +395,7 @@ It is 25% of both total web and bulk (so, yes we have premium bulk users)
 > there’s no way to prevent all the other clients from purchasing premium
 > bandwidth.
 
-It is not necesserly the "best suitable" -- from an ifrastructure perspective,
+It is not necesserly the "best suitable" -- from an infrastructure perspective,
 we can support any number of premium users. The actual number of users would
 most likely be a soft target enforced by the Tor project - simply adjust the
 benefit and price for premium circuits until the users settle at an equilibrium.
@@ -435,5 +433,5 @@ the premium userbase, and try to find a correct equilibrium
 > to address this issue.
 
 In the discussion section, we cover the possibility to instanciate moneTor to
-only support reimbursement of the cost of relays. It radically different than
-the direct market approach; yet both are possible applications of the scheme. :
+only support reimbursement of the cost of relays. It is radically different than
+the direct market approach; yet both are possible applications of the scheme.
