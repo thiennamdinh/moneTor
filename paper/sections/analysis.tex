@@ -29,28 +29,25 @@ or circuit should be written on disk).
 
 Data from five old and very stable exit relays with a total bandwidth of 50
 MiB/s was collected, stripped of origin metadata, and aggregated on a central
-server. The data collected from each relay is itself an aggregation which we
-perform inside the relay's memory. The aggregation is done only for ``active
-circuits'' from the exit relay perspective. We consider a circuit active when it
-has received a connection request to an IP address on the internet.
+server. The data collected from each relay is itself aggregated in memory. We
+only collect data for circuits which are ``active'' from the perspective of the
+exit relay, in other words, circuits which have received a connection request to
+an IP address on the internet.
 %The data collection is probabilistic; only 30\% of the circuits processed by our
 %relays were considered in order to maintain plausible deniability on the
 %clients' behalf.
-The aggregation is done inside bins of configurable size for every different
-traffic family we consider. Once we collected enough data from a single family
-(1600 circuits of a same family), we dump the aggregated information on the
-disk, clear the relay memory, and resume a new session. The final information
-obtained contains sessions of aggregation of 1600 circuits over an unspecified
-time frame that is implicitly determined by the rate of user activity. The
-following data was considered:
+Data is aggregated into bins of configurable size for every different traffic
+family we consider. Once we collected enough data (1600 circuits) from a single
+family, we dump the information on the disk, clear the relay memory, and resume
+a new session. The final result is aggregated data containing the follow two
+pieces of information for each pool:
 
 \begin{itemize}
-\item \textbf{Time Profile}: The number of cells in each time interval
-  (configured to be 5 seconds) since the success of the DNS request. This
-  information sums inbound and outbound cells, and is aggregated over circuits
-  by addition.
+\item \textbf{Time Profile}: The number summing inbound and outbound cells in each
+  5-second time interval since the success of the DNS request.
+
 \item \textbf{Total Counts}: The total amount of cells processed by a circuit.
-  This information is aggregated by taking the mean of fixed-size nearest
+  We aggregate this information by taking the mean of fixed-size nearest
   neighbor bins.
 \end{itemize}
 
@@ -91,14 +88,13 @@ do not carry data and less than $17\%$ of them carry at least one web page. The
 remaining $18\%$ would appear to be better candidates for moneTor.
 
 It is also evident from Figure~\ref{fig:statsa} that most of the traffic is
-usually carried within the first few tens of seconds, and that all types of
-traffic we collected seems to follow the same rule. From that result, we believe
-that the reliability of payment is critical within the first few seconds,
-especially from a relay viewpoint. This result highlight our choice to extend
-Bolt to offer high fairness. Our payment channels should ideally be established
-and ready before the user begins to use the circuit. While this result cannot be
-guaranteed for an unbounded number of circuits, a well-designed preemptive
-circuit build strategy should do a sufficient job of eliminating channel
+usually carried within the first few tens of seconds regardless of traffic type.
+From that result, we believe that the reliability of payment is critical within
+the first few seconds, especially from a relay viewpoint. This result highlights
+our choice to extend Bolt to offer high fairness. Furthermore, the front-loaded
+distribution curve indicates a need to establish available payment channels as
+soon as the user opens a circuit. As a result, we base our design upon a
+preemptive circuit build strategy which serves to effectively eliminate channel
 setup/establish latency in the average case.
 
 %% In another area of research, it may be interesting to point out that since %
@@ -221,16 +217,16 @@ characteristic of the scheme.
 \paragraph*{Global Overhead}
 First, we attempt to show the total cost of the moneTor scheme in terms of total
 network throughput. To highlight worst-case performance, we configured a medium
-scale experiment consisting of 100\% of premium clients and compare to a
-baseline trial with 0\% premium clients. The payment protocols run but the
-control-flow and EWMA stay unchanged to only compare the CPU cost of the payment
-scheme (that is, we do not apply any priority function). Since our algorithms
-makes use of some concurrent crytpographic operations, we are concerned with the
-number of CPU cores available to most relays. This information is not publicly
-available. As a result, we provide two trials with moneTor: one where we assume
-all nodes are running on multi-core hardware and one in which all nodes are
-running on single-core hardware. The results are summarized in
-Figure~\ref{fig:overhead}.
+scale experiment consisting of 100\% of premium clients which we compared to a
+baseline trial with 0\% premium clients. The purpose of this experiment to
+understand the worst-case overhead imposed by the payment scheme \emph{without}
+applying any network prioritization in either control-flow or EWMA. Since our
+protocol can benefit from concurrently executed cryptographic operations, a key
+parameter to the simulation is the number of CPU cores available on each relay.
+Unfortunately, this information is not publicly available. As a result, we
+conducted two trials: one in which all nodes are running on multi-core hardware
+and one in which all nodes are running on single-core hardware.
+Figure~\ref{fig:overhead} summarizes the results of both trials.
 
 % Add information about how we simulate singlecore and multicore hardware
 % That gonna overflow 12 pages, though :/
@@ -268,13 +264,15 @@ Figure~\ref{fig:overhead}.
 Our findings indicate that even in the worst case scenario, our system incurs
 statistically negligible overhead at these scales across the two measures of
 download time (e.g., less than 2\% increase on the mean web download for the
-singlecore experiment), throughput, and memory usage. This in line with the raw
-bandwidth observations in which a small fraction ($< 1\%$) of the network
-traffic is attributable to moneTor payment messages. This is true for all of our
-trials which feature a payment rate of 1 payment (1 cell) every 1000 data cells
-exchanged in either direction. It is also possible to increase the payment rate
-for more fairness if needed, as long as the total overhead induced from control
-cells is kept under an acceptable fraction of the overall data bandwidth.
+singlecore experiment), throughput, and memory usage. When examining the raw
+network messages, we found corroborating evidence that moneTor only contributes
+to a small fraction, less than $1\%$, of the total network traffic in our
+experiment, a result which holds true across all of our trials. By default, we
+configured a payment rate of one payment cell for every 1000 data cells
+exchanged in either direction. If the network requires more fairness, it is also
+possible to increase the payment rate with negligible CPU cost as long as the
+network overhead introduced by the control cells remains under an acceptable
+fraction of the overall bandwidth.
 %%%
 % Reading this sentence appears to be unclear to me
 %%%
@@ -306,27 +304,27 @@ highlight the effects of native latency in the Tor network, we show payments
 split across each relay role of guard, middle, and exit. Recall that moneTor
 makes use of high-overhead, low-marginal cost payment channels (i.e., the
 channels take time to build but the client needs them long after they are
-built). The bulk of the cost in our scheme lies in the conduction of the
-nanopayment channel \emph{establish} and \emph{close} protocols as shown in
-Figure~\ref{fig:payments_establish} and Figure~\ref{fig:payments_close}. Notice
-that close operations are about twice as time consuming as establish operations
-reflecting the need for the relay to close his half of the nanopayment channel
-before the client can complete hers. Figure~\ref{fig:ttfp} illustrates time to
-first payment, our most revealing latency metric. This measure includes the
-overhead in channel establishment when we do not have available preemptive
-channels. In the best case scenario, when all three payment channels have been
-correctly pre-built for the circuit, this measure is equivalent to a single trip
-toward each relay. Comparing this Figure~\ref{fig:ttfp} to
-Figure~\ref{fig:payments_establish}, we observe the effectiveness of preemptive
-channel building. The other observation sustaining the effectiveness of the
-pre-built strategy is the recorded time for the ``call'' versus ``send'': if no
-delay is observed, the pre-built was a success.
+built). In other words, the bulk of the cost in our scheme lies in the
+conduction of the nanopayment channel \emph{establish} and \emph{close}
+protocols as shown in Figure~\ref{fig:payments_establish} and
+Figure~\ref{fig:payments_close}. Notice that close operations take roughly twice
+as long to complete as the establish operations due to the need for the relay to
+close his half of the nanopayment channel before the client can complete hers.
+Figure~\ref{fig:ttfp} illustrates time to first payment, our most revealing
+latency metric. This measure includes the overhead in channel establishment when
+we do not have available preemptive channels. In the best case scenario, when
+all three payment channels have been correctly pre-built for the circuit, this
+measure is equivalent to a single trip toward each relay. Comparing this
+Figure~\ref{fig:ttfp} to Figure~\ref{fig:payments_establish}, we observe the
+effectiveness of preemptive channel building. The other observation sustaining
+the effectiveness of the pre-built strategy is the recorded time for the
+``call'' versus ``send'': if no delay is observed, the pre-built was a success.
 
 In all protocol phases, we observe that latency for guard relays are negligible
-in comparison to the middle and exit relays, further validating our design
-decision to implement special directly paid guard channels (that is, since a
-guard is not expected to see all Tor clients in the entry position, it may
-allocate itself micropayment channels for the subset of clients it serves).
+in comparison to the middle and exit relays, which is an result of our design
+decision to implement special directly paid guard channels. Again, this is a
+Tor-specific optimization made possible by the fact that guards maintain a
+semi-persistent, transparent relationship with only a small subset of clients.
 
 \paragraph*{Network Priority}
 \label{sec:priority_exp}
@@ -334,28 +332,26 @@ Our final set of experiments studies the success of our scheme in delivering
 prioritized traffic for premium users. To perform this analysis, we prepared
 sets of three small experiments with varying modifier priorities $\alpha \in
 \{0, 0.25, 0.5\}$ and $\beta \in \{1, 5, 10\}$, where $\alpha = 0, \beta = 1$
-represents vanilla Tor when payments are off. In our set of experiments, we
-assume 25\% of premium users. From Figures \ref{fig:modifier_pr25_web},
+represents vanilla Tor when payments are off. In these experiments, we assume
+25\% of premium users. From Figures \ref{fig:modifier_pr25_web},
 \ref{fig:modifier_pr25_bulk}, and \ref{fig:modifier_pr25_all}, we observe
 interesting information. First, variations in our network-wide tunable
 parameters do offer differentiation in download speed. Yet, as we detail in
-appendix~\ref{sec:scheduling}, offering bandwidth differentiation for the Tor
-network is more complex than previously exposed. Indeed, the current state of
-the Tor network (congestion in the exit interface) makes local scheduling
-priority ineffective for most circuits, while this method worked fine with
-previous work when the Tor network was in a very different shape. Second, the
-differentiation in bandwidth for $\alpha = .25, \beta=5$ ``averages out'' to
-approximately mirror the baseline experiment, indicating little loss in overall
-network performance, and confirming our overhead experiment (recall 25\% of
-premium users). Nevertheless, our result for $\alpha = 0.5, \beta=10$ indicates
-that the performance degrades faster for nonpremium the closer we are to the
-maximum gain we could obtain for the premium users. This result also highlight
-the complexity within the choice of the right set of parameters or techniques to
-offer efficient prioritization which, since a poor choice of parameters can lead
-to an overall decrease of throughput. One of the take-out message of our
-research and results, is that we believe the prioritization scheme to be more
-complex to get right and fulfill its goal in practice than the design of the
-anonymous payment layer itself.
+Appendix~\ref{sec:scheduling}, offering bandwidth differentiation for the Tor
+network is more complex than previously assumed. Indeed, local scheduling
+priority, which was historically effective for past Tor topologies, appears to
+have no effective under current conditions where congestion is concentrated at
+the exit interface. Second, the differentiation in bandwidth for $\alpha = .25,
+\beta=5$ ``averages out'' to approximately mirror the baseline experiment,
+indicating little loss in overall network performance, and confirming our
+overhead experiment (recall 25\% of premium users). Nevertheless, our result for
+$\alpha = 0.5, \beta=10$ indicates that the performance degrades faster for
+nonpremium users the closer when we become too aggressive in procuring gains for
+premium users. The data also highlights the complexity in selecting a set of
+parameters and techniques to offer efficient prioritization without degrading
+the overall throughput of the network. The overarching takeaway is that the
+network prioritization mechanism appears to be an even more complex challenge
+than the design of the anonymous payment layer itself.
 
 %Note, one difference of the edge window-based priority mechanism over a scheduling 
 %approach is
@@ -368,13 +364,13 @@ anonymous payment layer itself.
 %shown in Figure~\ref{fig:modifier}.
 
 Note that our analysis of the scheme holds the total network capacity static.
-However Tor incentives build on the premise that everybody would benefit from
-new relays added in new locations. We believe that in the worst-case scenario
-from a performance viewpoint, we would obtain similar performance than the
-static analysis since it might be possible that Tor usage grows proportionally
-to the added relays. That is the main reason why we did not experiment with
-simulated added capacity: globally better performance for everyone could be
-misleading.
+However, the motivation for any Tor incentivization scheme is to attract new
+relays to grow the network which would, in principle, improve anonymity and
+censorship resistance for all users. The effect on performance is less clear.
+Although adding new relays will increase the throughput, a faster Tor would
+likely attract more users as a well. In the absence of a reliable economic
+model, it is unclear how incentives would affect the experience of the average
+user, and so we opted to forgo the modeling of added capacity.
 %However, even in such case, all users would benefit from better anonymity from the new distribution of relays. Moreover, advancing human rights and freedoms to more people would be achieved, which outweighs performance benefit from any simulated static user base with higher Tor network capacity experiment. 
 
 
