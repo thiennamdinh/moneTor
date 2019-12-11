@@ -473,17 +473,22 @@ another account owned by $C$.
 
 Secondly, in the event of a dispute resolution on the ledger, the two parties on
 either end of the micropayment channel ($C$-$I$ or $I$-$R$), must disclose their
-on-ledger identities. This appears to be a fundamental limitation of anonymous
-micropayment channel design. However, for our specific use case (namely, to
-protect the anonymity of $C$), we argue that this is risk is far from
-prohibitive. Since $I$ or $R$ acting alone cannot link $C$'s payment activity
-with her network activity, the only viable attack on $C$'s anonymity is for $I$,
-in collusion with $R$, to abort the protocol by refusing to carry out the
-$C$-$I$ leg of \textbf{Nano-Close}. This action would force $C$ to post $nrt$
-and reveal her on-ledger identity to the world, which $R$ can then link to a
-particular circuit. However, given an adequately privacy-preserving choice of an
+on-ledger identities. 
+%This appears to be a fundamental limitation of anonymous
+%micropayment channel design. 
+%However, for our specific use case (namely, to
+%protect the anonymity of $C$), we argue that this is risk is far from
+%prohibitive. Since $I$ or $R$ acting alone cannot link $C$'s payment activity
+%with her network activity, the only viable attack on $C$'s anonymity is for $I$,
+%in collusion with $R$, to abort the protocol by refusing to carry out the
+%$C$-$I$ leg of \textbf{Nano-Close}. This action would force $C$ to post $nrt$
+%and reveal her on-ledger identity to the world, which $R$ can then link to a
+%particular circuit.
+However, given an adequately privacy-preserving choice of an
 on-ledger transaction protocol such as Zerocash, even this result would be
-meaningless for $R$~\cite{sasson2014zerocash}.
+meaningless for $R$~\cite{sasson2014zerocash} (that is, $R$ can only link the ledger 
+interaction to its circuit, but not the client's identity protected by the built-in ledger 
+privacy).
 
 Having accounted for all privacy considerations both during and after the
 protocol, we informally state the following anonymity guarantees relative to
