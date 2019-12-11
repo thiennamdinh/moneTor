@@ -75,45 +75,33 @@ following trifecta of constraints:
 %practical next-generation incentivization strategy for Tor.
 
 \label{sec:Contributions}
-\textbf{Contributions} The moneTor scheme is a novel full-stack framework for
-Tor incentives. We introduce new highly-efficient nanopayment protocols which
-satisfy all \emph{Anonymity}, \emph{Payment Security} and \emph{Efficiency}
-constraints. Our construction, called \emph{moneTor}, bridges the theoretical
-advance in the cryptocurrency space with the concrete requirements of a complex
-and advanced distributed system such as the Tor network. Concretely, we offer:
- 
- \begin{itemize}
- 	\item Payment protocols which shift away the heavy cryptography from the
-          critical path when performing payments. That is, during data exchange,
-          the payment processing logic only require computationally benign
-          operations (1 hash operation per payment), and shift away the heavy
-          operation outside of the data exchange. Our design allows to reach an
-          unpreceding granularity of secure and anonymous payments, enabling
-          \textit{fair exchange} between premium users and relays without
-          damaging the expected download time of content (that is, the payment
-          layer overhead does not impact the data exchange).
+\textbf{Contributions} This work describes a full-stack framework for Tor
+incentives through fully fungible and transactable tokens. Our construction,
+called \emph{moneTor}, assumes the challenge of applying theoretical advances in
+cryptocurrency research to the concrete constraints and complexities of the live
+Tor network. Concretely, we introduce highly-efficient payment protocols which
+extends recent work to facilitate the novel concept of \emph{locally transparent
+  nanopayment channels}. During data exchange, our distributed payment
+processing procedure completely shifts expensive CPU operations off of the
+critical path, incurring negligible computational costs (a single hash
+operation) per payment and enabling fair exchange between premium users and
+relays. State-of-the-art throughput is made possible by a global payment
+infrastructure which utilizes trustless \emph{Intermediaries} to handle the
+added CPU load potentially in exchange for monetary rewards. The moneTor scheme
+adheres to the standard Tor security model and conforms to our domain-specific
+constraints of \emph{Anonymity}, \emph{Payment Security}, and \emph{Efficiency}.
 
- 	\item Payment protocols that scale on trustless entities (called
-          Intermediaries). Only a few intermediaries are required to handle the
-          heavy cryptography of the payment layer. Their presence is
-          incentivized by monetary rewards through payment fees, and they are
-          only tasked to run the payment protocols (that is, those relays are
-          not selected by clients to process user streams).
- 	
- 	\item An implementation prototype of our payment layer, extending the
-          Tor Routing protocol, resulting in approximately 15k lines of new code
-          in C. Our networking experiments handle thousands of transactions per
-          second, and could scale to hundred thousands of transactions per
-          second for the real Tor network.
- 	
- 	\item Experimental analysis showing how previous scheduling
-          approaches~\cite{dovrolis1999case, tang2010improved} used in previous
-          Tor incentives systems fail to offer the expected priority under the
-          current state of the Tor network. We propose an alternative route
-          combining previous approaches with a new method based on control-flow
-          windows to prioritize premium flows.
- \end{itemize}
- 
+We provide a prototype of our payment layer and an extension the existing
+routing protocol, resulting in approximately 15k lines of new code in C within
+the Tor code base. Our networking experiments demonstrates thousands of
+transactions per second without any appreciable issue and achieves optimal
+latency through engineered mechanisms like preemptive channel creation. Finally,
+we discover through experimental analysis that scheduling
+approaches~\cite{dovrolis1999case, tang2010improved} used in previous Tor
+incentives systems will likely fail to offer the expected priority under the
+current state of the network. Our response is to design and analyze an
+alternative network prioritization strategy which combines scheduling
+modifications with a new method based on control-flow windows.
 
 %\begin{enumerate}
 %\item Discuss economic considerations for the Tor network % to favor network
