@@ -116,14 +116,14 @@ The core cryptocurrency component featured in moneTor is the tripartite
 bidirectional micropayment channel. Base layer cryptocurrency protocols are
 typically capped on the order of tens of transactions per
 seconds~\cite{team2018blockchain}. The most actively pursued path toward better
-scalability thus far is work in off-chain payment channel
-networks~\cite{poon2016bitcoin}. In this setup, a single ledger transaction is
-used to escrow funds by two parties $A$ and $B$. These parties may then proceed
-to make bidirectional micropayments to each other \emph{without ledger
-  interaction} through the exchange of signed ``I Owe You'' tokens. By
-themselves, channels are useful for reducing the number of ledger interactions
-for parties with reoccurring interactions. More consequential for the
-scalability problem is the tripartite channel paradigm in which $A$ pays $B$
+scalability thus far is work in off-chain payment channel networks popularly
+known as ``Lightning Networks''~\cite{poon2016bitcoin}. In this setup, a single
+ledger transaction is used to escrow funds by two parties $A$ and $B$. These
+parties may then proceed to make bidirectional micropayments to each other
+\emph{without ledger interaction} through the exchange of signed ``I Owe You''
+tokens. By themselves, channels are useful for reducing the number of ledger
+interactions for parties with reoccurring interactions. More consequential for
+the scalability problem is the tripartite channel paradigm in which $A$ pays $B$
 through some \emph{intermediary} party $I$ with which they both maintain active
 channels. In practice, $A$ and $B$ might occupy the roles of a customer and
 merchant who are registered with a well-known financial service provider $I$.
