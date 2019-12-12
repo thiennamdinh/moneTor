@@ -85,12 +85,11 @@ keys
     that is directly integrated into the existing Tor architecture. This work
     describes a full-stack strategy that covers economic policy, novel payment
     algorithms, and networking implementation. Through live empirical data
-    co-llection and analysis of our emulated prototype, we argue that moneTor,
+    collection and analysis of our emulated prototype, we argue that moneTor,
     based on short-lived channels on the top of a long-lived channel, is a
     feasible and flexible monetary incentive scheme for Tor, offering upwards of
     100\% improvements in differentiated bandwidth for paying users at
-    near-optimal throughput and latency overhead.
-  }
+    near-optimal throughput and latency overhead. }
 \end{abstract}
 
   \keywords{Tor, cryptocurrency, payment channels}
@@ -134,9 +133,9 @@ keys
 \label{sec:network}
 \input{sections/network-design.tex}
 
-\section{Empirical Analysis}
-\label{sec:analysis}
-\input{sections/analysis.tex}
+\section{Experimental Validation}
+\label{sec:experimentations}
+\input{sections/exp_validation.tex}
 
 \section{Related Work}
 \label{sec:related_work}
@@ -148,6 +147,7 @@ keys
 
 \section{Discussion}
 \input{sections/discussion_meta.tex}
+\label{sec:discussion}
 
 \section{Data Reproducibility}
 \label{sec:code}
@@ -167,6 +167,10 @@ keys
 %\textbf{Sandia National Laboratories is a multimission laboratory managed and operated by National Technology \& Engineering Solutions of Sandia, LLC, a wholly owned subsidiary of Honeywell International Inc., for the U.S. Department of Energy’s National Nuclear Security Administration under contract DE-NA0003525.}
 %
 \appendix
+\section{Empirical Analysis}
+\label{sec:analysis}
+\input{sections/analysis.tex}
+
 \section{Algorithms}
 \label{sec:algorithms}
 \input{sections/algorithms.tex}
