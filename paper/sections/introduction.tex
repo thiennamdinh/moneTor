@@ -25,36 +25,37 @@ the anonymity and performance of the network are both proportional to the number
 of nodes and users. From this perspective, the problem becomes a largely
 economic question: how can we incentivize more relay participation?
 
-We chose monetary incentives as a participation incentivization, and we design
-moneTor: a monetary incentive scheme which allows for relays to offer a
-\emph{premium bandwidth} product to Tor users in exchange for monetary payments.
-Under this framework, financially willing users send payments directly to each
-relay along their circuits and indirectly through taxes in exchange for higher
-internet bandwidth and faster download speeds relative to unpaid users. % The
-moneTor tokens themselves can be viewed as wrappers for some
-% external financial asset that is converted at an exchange service.
-The moneTor tokens %assets are a form of programmatic money which satisfies the
-standard properties of \textit{scarcity}, \textit{fungibility},
-\textit{divisibility}, \textit{durability}, and
-\textit{transferability}~\cite[p.3]{crump2011phenomenon}.
-
-Such a scheme would demand consideration of a nontrivial set of legal and
-sociopolitical which we consider to be out-of-scope, but do offer some
-discussion. Instead, the purpose of this paper is to consider the considerable
-technical challenge in implementing a feasible payment scheme given the
-following trifecta of constraints:
+To this end, we propose to deploy a flexible tokenization strategy and present
+moneTor: a monetary incentive scheme which allows relays to offer a
+\emph{premium bandwidth} product to Tor users in exchange for tokens. Under this
+framework, financially willing users send payments directly to each relay along
+their circuits and indirectly through ``taxes'' to the Tor Project in exchange
+for higher internet bandwidth and faster download speeds relative to unpaid
+users. Notionally, we design moneTor tokens to serve as a bona fide form of
+currency which satisfy standard definitions of \textit{scarcity},
+\textit{fungibility}, \textit{divisibility}, \textit{durability}, and
+\textit{transferability}~\cite[p.3]{crump2011phenomenon}. Our work aims to solve
+the nontrivial technical of applying this strategy in light of the following
+compulsory constraints:
 
 \begin{itemize}
-\item \emph{Anonymity}: The paramount mission of Tor is user privacy. This
-  cannot be compromised or reduced by transparent money transaction trails.
-\item \emph{Payment Security}: Financial transactions within an anonymity system
+\item \emph{Anonymity}: The payment scheme may not, in any way, compromise Tor's
+  primary mission to protect user privacy.
+\item \emph{Payment Security}: Financial transactions within an semi-trusted system
   cannot transpire without strong guarantees of cryptographic security.
 \item \emph{Efficiency}: Tor services millions of concurrent users, all of whom
   maintain largely short-term relationships. A robust payment system must handle
-  extremely lightweight and scalable payments so as to accommodate the dynamic
-  and often short-lived activities of these clients, which may include web
-  browsing and large file transfers.
+  extremely lightweight, low-latency, and scalable payments so as to accommodate
+  the dynamic and often short-lived activities of these clients.
 \end{itemize}
+
+Importantly, we acknowledge that the addition of monetary incentives into Tor
+would involve delicate legal, economic, and sociopolitical considerations. Final
+policy recommendations are out of scope for our work, but we do provide some
+discussion in Section~\ref{sec:discussion} on the risk, merits, and versatility
+of tokenization. Our essential contribution, therefore, is to offer a flexible
+and value-agnostic technical design which expands the art of the possible for
+Tor incentivization.
 
 %\textbf{Present Landscape} While a number of prior works satisfy some subset of
 %these constraints, no single proposal has thus far been sufficiently convincing
@@ -75,21 +76,21 @@ following trifecta of constraints:
 %practical next-generation incentivization strategy for Tor.
 
 \label{sec:Contributions}
-\textbf{Contributions} This work describes a full-stack framework for Tor
-incentives through fully fungible and transactable tokens. Our construction,
-called \emph{moneTor}, assumes the challenge of applying theoretical advances in
-cryptocurrency research to the concrete constraints and complexities of the live
-Tor network. Concretely, we introduce highly-efficient payment protocols which
-extends recent work to facilitate the novel concept of \emph{locally transparent
-  nanopayment channels}. During data exchange, our distributed payment
-processing procedure completely shifts expensive CPU operations off of the
-critical path, incurring negligible computational costs (a single hash
-operation) per payment and enabling fair exchange between premium users and
-relays. State-of-the-art throughput is made possible by a global payment
-infrastructure which utilizes trustless \emph{Intermediaries} to handle the
-added CPU load potentially in exchange for monetary rewards. The moneTor scheme
-adheres to the standard Tor security model and conforms to our domain-specific
-constraints of \emph{Anonymity}, \emph{Payment Security}, and \emph{Efficiency}.
+\textbf{Contributions} This work describes a full-stack framework for tokenized
+Tor incentives. Our construction, called \emph{moneTor}, assumes the challenge
+of applying theoretical advances in cryptocurrency research to the concrete
+constraints and complexities of the live Tor network. Concretely, we introduce
+highly-efficient payment protocols which extends recent work to facilitate the
+novel concept of \emph{locally transparent nanopayment channels}. During data
+exchange, our distributed payment processing procedure completely shifts
+expensive CPU operations off of the critical path, incurring negligible
+computational costs (a single hash operation) per payment and enabling fair
+exchange between premium users and relays. State-of-the-art throughput is made
+possible by a global payment infrastructure which utilizes trustless
+\emph{Intermediaries} to handle the added CPU load potentially in exchange for
+monetary rewards. The moneTor scheme adheres to the standard Tor security model
+and conforms to our domain-specific constraints of \emph{Anonymity},
+\emph{Payment Security}, and \emph{Efficiency}.
 
 We provide a prototype of our payment layer and an extension to the existing
 routing protocol, resulting in approximately 15k lines of new code in C within

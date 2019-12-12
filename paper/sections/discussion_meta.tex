@@ -9,68 +9,162 @@
 % Comparing Tor incentives with incentives for studenship
 % Big difference between providing premium service -- and setting % the relay in the network in a good place
 
-Tor is a distributed network based on volunteered contribution: physical
-machines are bought or rented by people all around the world and connected
-through the Tor routing protocol. Those people are taking time and spending part
-of their income contributing to Tor for various kind of reasons, among
-philosophical, political and philantropical intrinsic motivations. That is,
-relay operators do not expect to make money from their contributions. An
-important consideration to have is to maintain the strength of intrinsic
-motivations of the current community and to prevent monetary rewards to harm it.
-In this spirit, several questions~\cite{jansenblogpost} were raised covering
-potential social issues from previous attempts to design incentives, and among
-them the ``crowding out'' effect~\cite{10.1257/jep.25.4.191}, showing how
-explicit incentives such as monetary rewards can lead to a decrease of intrinsic
-motivations. Social experimentation in the literature covering prosocial
-behaviours~\cite{10.1257/aer.96.5.1652} has shown that rewarding the behaviour
-could backfire and decrease the amount of participants to the task instead of
-the expected increase, due to psychological effects on self-representation, on
-the image we want to send to others, or to mismatching expectation on what the
-reward should be.
+In this final discussion, we attempt to frame the social nuances of
+incentivization describe the applicablity of our technical framework. Today, the
+Tor network owes its success to voluntary contributors. These relay operators
+incur tangible hardware and labor expenses to participate in the Tor network for
+largely intrinsic reasons, among them political, philosophical, and
+philanthropic. In implementing a system like moneTor, the Tor Project must
+consider the consequences of financial incentives on these these potentially
+fragile value systems. Several critical questions have been raised concerning
+the social design of incentives~\cite{jansenblogpost}. For instance, the
+``crowding out effect'', describes a psychological mechanism whereby the
+introduction of extrinsic motivations displaces previously dependable intrinsic
+motivations~\cite{10.1257/jep.25.4.191}. At the sociological level, empirical
+studies on prosocial behaviour~\cite{10.1257/aer.96.5.1652} have shown that
+explicit incentives can have an adverse effect on participation. This phenomena
+suggests that introducing incentives would risk of degrading the average social
+quality of Tor nodes without necessarily growing the network. Nevertheless, the
+literature does not reject the natural intuition that incentives at least have
+the potential to be effective when careful consideration is given to the nuances
+of multi-faceted motivational factors~\cite{10.1257/aer.96.5.1652}. Our work
+does not presume to offer an authoritative opinion of the best social incentive
+design. Instead, we show that the versatility of our token-centric technical
+design is sufficient to support a wide diversity of potential strategies.
 
-Rewards in the prosocial studies were usually linked to profit or to
-compensation. However, monetary incentives does not necessarly need to be about
-that. A conservative approach could be taken by not rewarding relays for
-relaying bandwidth, but by offering an in-kind support with moneTor tokens --
-that is, the expected value of the received tokens cannot exceed the cost of
-running relays, and is expected to support the estimated cost of the relay. In
-this reasoning, every relay operator could act as nonprofit and not suffer from
-potential liability of what running relays for profit could create. The received
-money would not compensate the cost of running the infrastructure, which is
-fueled by the operator's intrinsic motivations. In practice, moneTor could
-support this design by ajusting the global price for direct payments such that
-the direct incomes of the cheapest place in the Internet to run relays does not
-exceed the cost of running a relay at this place, also weakening the incentives
-of exit relays to inject junk traffic. Then, the tax redistribution could be a
-function accounting for relay location and relay bandwidth that would try to
-reimburse the marginal cost of running the relays in the network. Many more
-questions are tied to tax redistribution, such as preventing operators to game
-the system (security), evaluating the right price for a given location
-(economic) or protecting the trust relationship~\cite{10.1257/aer.96.5.1611}
-between Tor authorities and relays (social). Could the tax redistribution be a
-community decision? Answering those questions would yield interesting further
-work, with the goal to incentive operators with intrinsic motivations to deploy
-more relays, and potentially at more diverse locations (usually more costly). It
-has been shown in incentives for Education~\cite{10.1257/jep.25.4.191,
-10.1086/431263}, that when some support was offered for a concrete task (e.g.,
-course enrollment), the social experiment was showing positive results. We
-expect that offering support for operators with intrinsic motivation to run
-relays should yield similar results than offering support to student with
-intrinsic motivation to complete studies.
+By design, we have left many variables to be decided either directly or
+indirectly by the Tor Project. Chief among these are the premium bandwidth
+price, premium bandwidth advantage, tax rate, monetary policy, and
+redistribution policy. Methods to enforce these choices involve network
+monitoring, network parameter broadcasting, ledger constraints, and
+organizational policy. Together, these components comprise a hypothetical
+control panel for the Tor Project to implement one of an essentially limitless
+array of incentivzation options, a few of which are described below.
 
-Applying an in-kind support should not mix operators attracted by extrinsic
-values with operators holding intrinsic motivation, yet this remains to be
-verfied in a concrete experimentation. However, it could be interesting to
-motivate the Intermediary role with extrinsic value. The Tor network would
-require in practice a limited amount of Intermediaries, but they must offer
-strong availability to maintain the micropayment channel states for all peers
-and enable robustness in the payment layer. Running Intermediary nodes requires
-the operator to have more CS abilities than operators running classical Tor
-relays. It is likely that observing, understanding and helping the Tor project
-with technical limitations of the implementation would be an important task for
-a limited amount of operators handling a new role within the network. However,
-an Intermediary does not require a trustworthy operator, but someone
-incentivized to provide good services. Those intermediaries are by design not
-tasked to relay user streams, hence those operators are not to be mixed with the
-relay operator community.
+\begin{enumerate}
+
+\item \textbf{Crypto-Libertarian}: On one extreme, perhaps the simplest naive
+approach is to implement moneTor as perfectly unregulated market where bandwidth
+is exchanged for money, perhaps trustlessly backed by a cryptocurrecny like
+Bitcoin or Ethereum.
+
+\item \textbf{Benevolent Ruler}: On the other end of the spectrum, the Tor
+Project is itself a nonprofit with altruistic organization intentions. In this
+extreme view, the authorities can simply set the tax rate to 100\% to turn
+moneTor into a revenue stream for centralized efforts to improve the network.
+
+\item \textbf{In-Kind Only}: If financial rewards turn out to be prohibitive, we can
+mimic several of the purely in-kind nature of non-transferable and transferable
+benefits described in Section~\ref{sec:related_work} by limiting the number of
+on-ledger transactions to zero or one, respectively. For instance, at zero
+allowed transactions, relays would be unable to use their tokens for any purpose
+other than to buy premium traffic from other relays in a model that is
+superficially reminiscent of BRAIDS~\cite{jansen2010recruiting}.
+
+\item \textbf{Subsistence Relaying}: A conservative monetary approach is to limit the
+expected value of the tokens to the cost of running a relay. In this paradigm,
+every relay operator would effectively act as a individual NGO to avoid
+potential liabilities that come with financial profit. In practice, moneTor
+could support this design by adjusting global parameters such that the direct
+incomes of any relay does not exceed the cost of relay operation in the cheapest
+geographic region. Any descrepancy from this income floor due to location and
+bandwidth would be covered in the tax redistribution policy. Previously, studies
+have indicated that incentives can be effective when limited support is offered
+for a ``concrete'' task~\cite{10.1257/jep.25.4.191, 10.1086/431263}. Provided
+careful publication communication of intent, we might expect the same results
+here.
+
+\item \textbf{Decentralized Grant-making}: Finally, the Tor Project can
+implement moneTor tokens as a form of \emph{altruistic money} to contribute to a
+curated list of proposed projects. Relay operators who accumulate tokens might
+chose to contribute a program to increase the number of relays in country $X$,
+to fund Tor research on topic $Y$, or to increase advocacy for a pro-privacy
+issue $Z$. Concretely, the Tor Project would implement this strategy by
+witholding the original collatoral value collected by clients and let relays
+vote by burning coins on the ledger. The result is a fungible asset that is
+extrinsically worthless to profit-driven entities but intrinsically meaningful
+to parties interested in the future direction of Tor.
+
+\end{enumerate}
+
+These toy examples are extreme strategies meant to illustrate the flexibility of
+moneTor as a technical intrastruture. In practice, the Tor Project would be free
+to implement essentially any combination of these approaches. The picture we
+wish to illustrate is this: in the absence of a clear consensus on the right
+mode of social incentivization, it is far more practical to build a versatile
+system and constrain it afterwards than it is to design a constrained system
+from the beginning.
+
+Much future work remains to implement some of these methods. On the technical
+side, robust monitoring must be implemented to mitigate inflated bandwidth for
+tax redistribution and junk traffic insertion for direct payments. Economically,
+we require a better understanding of topics such as location-based incentives
+and the elasticity of supply and demand for various types of relay incentives
+and client premium bandwidth, respectively.
+
+%% ---------------------------------------------
+%% Tor is a distributed network based on volunteered contribution: physical
+%% machines are bought or rented by people all around the world and connected
+%% through the Tor routing protocol. Those people are taking time and spending part
+%% of their income contributing to Tor for various kind of reasons, among
+%% philosophical, political and philantropical intrinsic motivations. That is,
+%% relay operators do not expect to make money from their contributions. An
+%% important consideration to have is to maintain the strength of intrinsic
+%% motivations of the current community and to prevent monetary rewards to harm it.
+%% In this spirit, several questions~\cite{jansenblogpost} were raised covering
+%% potential social issues from previous attempts to design incentives, and among
+%% them the ``crowding out'' effect~\cite{10.1257/jep.25.4.191}, showing how
+%% explicit incentives such as monetary rewards can lead to a decrease of intrinsic
+%% motivations. Social experimentation in the literature covering prosocial
+%% behaviours~\cite{10.1257/aer.96.5.1652} has shown that rewarding the behaviour
+%% could backfire and decrease the amount of participants to the task instead of
+%% the expected increase, due to psychological effects on self-representation, on
+%% the image we want to send to others, or to mismatching expectation on what the
+%% reward should be.
+
+%% Rewards in the prosocial studies were usually linked to profit or to
+%% compensation. However, monetary incentives does not necessarly need to be about
+%% that. A conservative approach could be taken by not rewarding relays for
+%% relaying bandwidth, but by offering an in-kind support with moneTor tokens --
+%% that is, the expected value of the received tokens cannot exceed the cost of
+%% running relays, and is expected to support the estimated cost of the relay. In
+%% this reasoning, every relay operator could act as nonprofit and not suffer from
+%% potential liability of what running relays for profit could create. The received
+%% money would not compensate the cost of running the infrastructure, which is
+%% fueled by the operator's intrinsic motivations. In practice, moneTor could
+%% support this design by ajusting the global price for direct payments such that
+%% the direct incomes of the cheapest place in the Internet to run relays does not
+%% exceed the cost of running a relay at this place, also weakening the incentives
+%% of exit relays to inject junk traffic. Then, the tax redistribution could be a
+%% function accounting for relay location and relay bandwidth that would try to
+%% reimburse the marginal cost of running the relays in the network. Many more
+%% questions are tied to tax redistribution, such as preventing operators to game
+%% the system (security), evaluating the right price for a given location
+%% (economic) or protecting the trust relationship~\cite{10.1257/aer.96.5.1611}
+%% between Tor authorities and relays (social). Could the tax redistribution be a
+%% community decision? Answering those questions would yield interesting further
+%% work, with the goal to incentive operators with intrinsic motivations to deploy
+%% more relays, and potentially at more diverse locations (usually more costly). It
+%% has been shown in incentives for Education~\cite{10.1257/jep.25.4.191,
+%% 10.1086/431263}, that when some support was offered for a concrete task (e.g.,
+%% course enrollment), the social experiment was showing positive results. We
+%% expect that offering support for operators with intrinsic motivation to run
+%% relays should yield similar results than offering support to student with
+%% intrinsic motivation to complete studies.
+
+%% Applying an in-kind support should not mix operators attracted by extrinsic
+%% values with operators holding intrinsic motivation, yet this remains to be
+%% verfied in a concrete experimentation. However, it could be interesting to
+%% motivate the Intermediary role with extrinsic value. The Tor network would
+%% require in practice a limited amount of Intermediaries, but they must offer
+%% strong availability to maintain the micropayment channel states for all peers
+%% and enable robustness in the payment layer. Running Intermediary nodes requires
+%% the operator to have more CS abilities than operators running classical Tor
+%% relays. It is likely that observing, understanding and helping the Tor project
+%% with technical limitations of the implementation would be an important task for
+%% a limited amount of operators handling a new role within the network. However,
+%% an Intermediary does not require a trustworthy operator, but someone
+%% incentivized to provide good services. Those intermediaries are by design not
+%% tasked to relay user streams, hence those operators are not to be mixed with the
+%% relay operator community.
 
