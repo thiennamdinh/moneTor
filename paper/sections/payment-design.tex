@@ -139,15 +139,16 @@ Notably, the number of active intermediaries can be adjusted to attain an
 acceptable balance between the performance of the payment infrastructure and the
 size of the anonymity set for connected premium users.
 
-\textbf{Bolt} This basis of our scheme is an extension of Bolt's anonymous micropayment
-channel protocol which is itself a privacy-focused adaption of the ``Lightning
-Network''~\cite{poon2016bitcoin}. Due to its importance as a starting point for
-our work, we first provide a brief outline of the prerequisite micropayment
-channel procedures defined in Bolt. All protocols are either two or three party
-interactions between a subset of the following roles: $C$ (client), $R$ (relay),
-$E$ (end user: either a client or relay), $I$ (intermediary), and $L$ (ledger).
-For our use case, the reader can assume that all communications are anonymously
-routed through Tor circuits~\cite{green2017bolt}.
+\textbf{Bolt} This basis of our scheme is an extension of Bolt's anonymous
+micropayment channel protocol which is itself a privacy-focused adaption of the
+``Lightning Network''~\cite{poon2016bitcoin}. Due to its importance as a
+starting point for our work, we first provide a brief outline of the
+prerequisite micropayment channel procedures defined in Bolt. All protocols are
+either two or three party interactions between a subset of the following roles:
+$C$ (client), $R$ (relay), $E$ (end user: either a client or relay), $I$
+(intermediary), and $L$ (ledger). For our use case, the reader can assume that
+all communications are anonymously routed through Tor
+circuits~\cite{green2017bolt}.
 
 \begin{itemize}
 \item \textbf{KeyGen}: Any party generates a cryptographic keypair
@@ -484,11 +485,11 @@ on-ledger identities.
 %$C$-$I$ leg of \textbf{Nano-Close}. This action would force $C$ to post $nrt$
 %and reveal her on-ledger identity to the world, which $R$ can then link to a
 %particular circuit.
-However, given an adequately privacy-preserving choice of an
-on-ledger transaction protocol such as Zerocash, even this result would be
-meaningless for $R$~\cite{sasson2014zerocash} (that is, $R$ can only link the ledger 
-interaction to its circuit, but not the client's identity protected by the built-in ledger 
-privacy).
+However, given an adequately privacy-preserving choice of an on-ledger
+transaction protocol such as Zerocash, even this result would be meaningless for
+$R$~\cite{sasson2014zerocash}. In this event, $R$ can only link the ledger
+interaction to its circuit, but not the client's real-world identity which is
+protected by the built-in ledger privacy.
 
 Having accounted for all privacy considerations both during and after the
 protocol, we informally state the following anonymity guarantees relative to
@@ -529,12 +530,12 @@ depends on the number of users concurrently building channels to the same
 intermediary. If we require an anonymity set of size $N$, then the maximum
 number of Intermediaries allowed in the network is $\frac{\mathbb{E}[W]}{N}$
 where $W$ is a discrete random variable holding the number of payment events
-between any $t_i$, the time at \textbf{Nano-Close} and $t_{i+1}$, the time of the
-next \textbf{Nano-Setup} or \textbf{Nano-Establish}. Consequently, the number of
-active Intermediaries should be a parameter of the system that the Tor project
-determines based on the activity of premium users. Furthermore, clients should
-maintain channels with an number of different intermediaries to further mitigate
-any other unexpected side-channel leaks.
+between any $t_i$, the time at \textbf{Nano-Close} and $t_{i+1}$, the time of
+the next \textbf{Nano-Setup} or \textbf{Nano-Establish}. Consequently, the
+number of active Intermediaries should be a parameter of the system that the Tor
+project determines based on the activity of premium users. Furthermore, clients
+should maintain channels with an number of different intermediaries to further
+mitigate any other unexpected side-channel leaks.
 
 % \td{I would have thought this is obvious. Was this in response to a particular
 % review that I missed?}
