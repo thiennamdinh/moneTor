@@ -1,29 +1,34 @@
 Anonymous traffic routing through Tor remains one of the most popular
 low-latency methods for censorship evasion and privacy protection
-~\cite{dingledine2004tor}. In this setup, clients protect their TCP/IP metadata
-and content by routing their traffic through an onion encrypted path with three
-randomly selected volunteer relay nodes, referred to as a circuit. The network
-presently consists of $\approx 6,400$ relays contributing over 160 Gbit/s of
-bandwidth globally~\cite{portal2018tormetrics}. While Tor has proven to be a
+~\cite{dingledine2004tor}. In this setup, clients protect their TCP/IP
+metadata and content by routing their traffic through an onion
+encrypted path with three randomly selected volunteer relay nodes,
+referred to as a circuit. The network presently consists of
+$\approx 6,400$ relays contributing over 160 Gbit/s of bandwidth
+globally~\cite{portal2018tormetrics}. While Tor has proven to be a
 highly effective option for privacy-seeking users, it suffers from two
-orthogonal issues that are relevant to this work. The first is the broad family
-of collusion attacks. These threats are relevant in scenarios where an attacker,
-who controls multiple nodes or network vantage points, is probabilistically
-placed in key roles along a single circuit, opening a much easier path to client
-deanonymization~\cite{wright2004predecessor,murdoch2005low}. The second problem
-is performance. Although the overlay protocol itself generates an inherent
-overhead in network resources, Tor suffers from additional traffic congestion
-that leads to suboptimal network performance~\cite{portal2018tormetrics,
+orthogonal issues that are relevant to this work. The first is the
+broad family of collusion attacks. These threats are relevant in
+scenarios where an attacker, who controls multiple nodes or network
+vantage points, is probabilistically placed in key roles along a
+single circuit, opening a much easier path to client
+deanonymization~\cite{wright2004predecessor,murdoch2005low}. The
+second problem is performance. Independently of the overlay protocol
+itself, which generates an inherent overhead in network resources, Tor
+suffers from  traffic congestion that leads to suboptimal
+network performance~\cite{portal2018tormetrics,
   alsabah2016performance}.
 
-One approach to mitigate these problems is to address them separately from a
-networking standpoint. Indeed, a significant portion of recent research in Tor
-proposes modifications to the core protocol itself, such as reengineering the
-TCP+TLS part of the stack~\cite{reardon2009improving} or designing a better
-kernel-aware scheduler~\cite{jansen2014never}. A second approach observes that
-the anonymity and performance of the network are both proportional to the number
-of nodes and users. From this perspective, the problem becomes a largely
-economic question: how can we incentivize more relay participation?
+One approach to mitigate these problems is to address them separately
+from a networking standpoint. Indeed, a significant portion of recent
+research in Tor proposes modifications to the core protocol itself,
+such as reengineering the TCP+TLS part of the
+stack~\cite{reardon2009improving} or designing a better kernel-aware
+scheduler~\cite{jansen2014never}. A second approach, complementary to
+the first one, observes that the anonymity and performance of the
+network are both proportional to the number of nodes and users. From
+this perspective, the problem becomes a largely economic question: how
+can we incentivize more relay participation?
 
 To this end, we propose to deploy a flexible tokenization strategy and present
 moneTor: a monetary incentive scheme which allows relays to offer a
@@ -32,7 +37,7 @@ framework, financially willing users send payments directly to each relay along
 their circuits and indirectly through ``taxes'' to the Tor Project in exchange
 for higher internet bandwidth and faster download speeds relative to unpaid
 users. Notionally, we design moneTor tokens to serve as a bona fide form of
-currency which satisfy standard definitions of \textit{scarcity},
+currency which satisfies standard definitions of \textit{scarcity},
 \textit{fungibility}, \textit{divisibility}, \textit{durability}, and
 \textit{transferability}~\cite[p.3]{crump2011phenomenon}. Our work aims to solve
 the nontrivial technical of applying this strategy in light of the following
@@ -40,13 +45,14 @@ compulsory constraints:
 
 \begin{itemize}
 \item \emph{Anonymity}: The payment scheme may not, in any way, compromise Tor's
-  primary mission to protect user privacy.
-\item \emph{Payment Security}: Financial transactions within an semi-trusted system
+  primary mission to protect user anonymity.
+\item \emph{Payment Security}: Financial transactions within a semi-trusted system
   cannot transpire without strong guarantees of cryptographic security.
-\item \emph{Efficiency}: Tor services millions of concurrent users, all of whom
-  maintain largely short-term relationships. A robust payment system must handle
-  extremely lightweight, low-latency, and scalable payments so as to accommodate
-  the dynamic and often short-lived activities of these clients.
+\item \emph{Efficiency}: A robust payment system must handle extremely
+  lightweight, low-latency, and scalable payments so as to accommodate
+  the dynamic and often short-lived activities of these clients: Tor
+  services millions of concurrent users, all of whom maintain largely
+  short-term relationships.
 \end{itemize}
 
 Importantly, we acknowledge that the addition of monetary incentives into Tor
@@ -152,7 +158,8 @@ comparison of related work to our scheme. Finally, we reference our source code
 in Section~\ref{sec:code} and offer concluding remarks in
 Section~\ref{sec:conclusion}.
 
+
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "../main"
+%%% TeX-master: "../popets_monetor"
 %%% End:
