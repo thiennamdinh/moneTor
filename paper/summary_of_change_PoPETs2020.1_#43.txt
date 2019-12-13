@@ -89,7 +89,7 @@ Finally, answers to each review are provided hereafter.
 > would expect the priority scheme to interact with incentives, raised by
 > reviewers A and D
   
-  We have explored in bit in the discussion section (e.g., discussing incentives
+  We have explored this in the discussion section (e.g., discussing incentives
 to insert junk traffic w.r.t. direct payment price, and how could a particular
 instance of moneTor (choices of parameters) is expected behave in lights of
 known social issues)
@@ -100,7 +100,7 @@ known social issues)
 
 We have fully rewritten the contribution section, which is now more inline with
 what we believe to be the strong contributions of our work. We no longer claim
-taxation as a hard contribution, but do attempt to provide some soft insights
+taxation as a hard contribution, but do attempt to provide some insights
 about it in the discussion section.
 
 > - The paper mentions but does not provide a method to solve the wallet
@@ -193,9 +193,7 @@ the 6-hops onion circuit. The motivation was to design incentives for companies
 or people they know they're using VPNs, offering them premium circuits and
 contributing to Tor indirectly. Facebook could have many internal incentives
 doing that such as image brand, and getting more users, among others. At the end
-of the day we decided it was not sufficiently relevant to the core of our paper.
-We also chose not to talk about it, in case it precludes other researchers from
-giving it the thorough attention it deserves.
+of the day we decided it was not sufficiently relevant to the core of our paper (which is essentially technical and quite long already), leaving the space fully open to researchers who would give it the full attention it deserves.
 
 Regarding the switch of congestion from external to internal: yes we don't
 expect that this would never happen; our priority scheme now uses local
@@ -231,8 +229,8 @@ setup, the taxes are much more important than the value of the direct payments.
 > Simply grouping together incentive designs that provide transferable benefits
 > without any consideration of these concerns is misleading.
 
-This is certainly not the message we want to convey; the relative work section
-has been slightly edited to try to remove what could be misleading, but if you can
+This is certainly not the message we want to convey; the related work section
+has been edited to try to remove what could be misleading, but if you can
 point out sentences that are responsible for this feeling, please help us fix
 them!
 
@@ -259,7 +257,7 @@ We cover in the discussion section possible applications of the scheme.
 > needing an audit mechanism, its performance and overhead costs must be
 > considered.
 
-We have added some discussion :) Although monitoring is important, we only need
+We now have added some discussion! Although monitoring is important, we only need
 additional strong accounting only if moneTor is instanciated with a direct
 payment approach (that is, only when the fraction of direct payments are more
 important than the taxes).
@@ -290,8 +288,7 @@ payment. The relay then downgrades the circuit to non-premium.
 > first two, but numerous other typos, capitalization and other errors occur
 > throughout the references and should be fixed.
 
-Thanks! We fixed several problems, but we may have missed some of them. Please
-let us know!
+Thanks! We fixed several problems, and hope that the reference section is good now. 
 
 
 > Review #43C
@@ -328,7 +325,7 @@ users with tokens spend the same amount of tokens for a given bandwidth).
 
 And also, this design does not preclude the Tor project from issuing Tokens to
 users in poor countries for less money, if desired (assuming we can anonymously
-authenticating users from a given country and that arbitrage).
+authenticate users from a given country).
 
 > How to handle failures? Would a crashed node be punished by the system and
 > obliged to pay a fee?
@@ -339,7 +336,7 @@ funds, and the ledger built-in privacy prevents a relay to link a user identity 
 its circuit from the ledger event resulting of the resolve mechanism. If an
 intermediary crashes, the implementation can handle it simply by storing states
 and recovering at reboot. Tor is actually doing this for many of its internal
-subsystems. If an Itermediary is unreliable too often, then he may just loose
+subsystems. If an intermediary is too unreliable, then he may just loose
 its flag given by the Tor authorities: client and relays would recover their
 frozen micro channel funds, and open a channel to another intermediary.
 
@@ -399,8 +396,7 @@ Thanks!
 We added a discussion as part of your recommendation. Yet, as you say, it is
 impracticable to fully address it in this paper. So, we laid a possible
 direction for this incentive mechanism to work, and linked the discussion to
-several social science papers
-
+several social science papers.
 
 > - There are some confusing parts about the design, see comments below.
 > Comments: Overall, I think it’s a well written paper that designs and
@@ -450,7 +446,7 @@ It is 25% of both total web and bulk (so, yes we have premium bulk users)
 > there’s no way to prevent all the other clients from purchasing premium
 > bandwidth.
 
-It is not necesserly the "best suitable" -- from an infrastructure perspective,
+It is not necessarily the "best suitable" -- from an infrastructure perspective,
 we can support any number of premium users. The actual number of users would
 most likely be a soft target enforced by the Tor project - simply adjust the
 benefit and price for premium circuits until the users settle at an equilibrium.
@@ -458,7 +454,7 @@ benefit and price for premium circuits until the users settle at an equilibrium.
 In a initial version of the paper, we displayed 25% and 50% premium users, to
 show that we have to adjust the parameters. However, we removed these graphs due
 to critical review comments and to gain space to have a paper that fit the
-conference format (15 pages). For a complex system, 15 pages isn't easy :(
+conference format (15 pages). 
 
 >  - Finally, potential discussion on social aspects of this issue. Many
 > previous works give out “ticket/pass/token” (or other names) for higher
@@ -477,8 +473,8 @@ it to a number of sociopolitical goals as mentioned in our discussion.
 > even slower speed because the bandwidth is allocated to the other premium
 > users?
 
-That is a right concern, and the scheme can adapt to give a small priority to
-the premium userbase, and try to find a correct equilibrium
+We share this concern, and the scheme can adapt to give a small priority to
+the premium userbase, and try to find a correct equilibrium.
 
 > Then if everyone is paying, I’m assuming they won’t be better off compared to
 > now (this part of network performance evaluation is missing), then they’re
