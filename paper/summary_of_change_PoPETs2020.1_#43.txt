@@ -12,6 +12,9 @@ the tax system, and how it interacts with the incentive and its potential
 sociological issues. This section is located at the end of the paper, to wrap
 up the incentive design.
 
+We improved the introduction, accounting reviewers' concern about stated
+contributions. This part of the paper is now more precise.
+
 We improved the economic considerations section 3.1, and linking the explanation
 there with the wraping up discussion section.
 
@@ -484,6 +487,6 @@ the premium userbase, and try to find a correct equilibrium
 > getting paid. This is why I find the tax integration scheme very interesting
 > to address this issue.
 
-In the discussion section, we cover the possibility to instanciate moneTor to
-only support reimbursement of the cost of relays. It is radically different than
-the direct market approach; yet both are possible applications of the scheme.
+In the discussion section, we cover several possible instantiations of the
+scheme, each have different properties and are expected to behave differently with
+sociological concerns. The tax integration is indeed of core importance.
