@@ -8,7 +8,7 @@ $\approx 6,400$ relays contributing over 160 Gbit/s of bandwidth
 globally~\cite{portal2018tormetrics}. While Tor has proven to be a
 highly effective option for privacy-seeking users, it suffers from two
 orthogonal issues that are relevant to this work. The first is the
-broad family of collusion attacks. These threats are relevant in
+broad family of traffic correlation attacks. These threats are relevant in
 scenarios where an attacker, who controls multiple nodes or network
 vantage points, is probabilistically placed in key roles along a
 single circuit, opening a much easier path to client
@@ -100,7 +100,7 @@ and conforms to our domain-specific constraints of \emph{Anonymity},
 
 We provide a prototype of our payment layer and an extension to the existing
 routing protocol, resulting in approximately 15k lines of new code in C within
-the Tor code base. Our networking experiments demonstrates thousands of
+the Tor code base. Our networking experiments demonstrate thousands of
 transactions per second without any appreciable issue and achieves optimal
 latency through engineered mechanisms like preemptive channel creation. Finally,
 we discover through experimental analysis that scheduling
@@ -149,7 +149,7 @@ payment channels.
 In Section~\ref{sec:payment}, we outline economical considerations and the
 technical construction of our nanopayment scheme at the payment protocol level.
 Section~\ref{sec:network} expands the technical construction of moneTor to cover
-modifications at the network level. In section~\ref{sec:analysis}, we justify
+modifications at the network level. In Section~\ref{sec:analysis}, we justify
 our design decisions with real-world data collection from live Tor users. We
 continue in Section~\ref{sec:experimentations} with a validation of the
 technical design, carried out through experiments performed on a native

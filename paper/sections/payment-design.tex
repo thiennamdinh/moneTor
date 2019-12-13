@@ -14,37 +14,58 @@
 %  \label{fig:economic}
 %\end{figure}
 
-Given the delicate nature of this research area, a key motivation in the design
-of our scheme is to explicitly accommodate some of the more consequential
-economic considerations. For instance, to ensure that tokens maintain real-world
-value, the Tor Project has two choices. One option is to maintain total
-centralized control over monetary policy, perhaps to index moneTor tokens to
-existing fiat currencies. Alternatively, by making use of such inter-ledger
-protocols~\cite{back2014enabling}~\cite{poon2017plasma}, tokens can act as
-wrapper for an external cryptocurrency such as Bitcoin or Ethereum. This choice
-represents a fundamental trade-off between control and liability. Our technical
-scheme allows for either option.
+Given the delicate nature of this research area, a key motivation in
+the technical design of our scheme is to explicitly accommodate some
+of the more consequential economic considerations.
 
-The shape of the network that will emerge in a purely profit-seeking environment
-may not perfectly correspond with the central goals of the Tor Project: to
-advance human rights and freedoms. To this end, we allow for a taxation element,
-enabling a tunable control mechanism for The Tor Project to shape the topology
-of the network towards some notion of desirable diversity and performance. Taxes
-in moneTor are anonymously diverted into a shared global fund and eventually
-redistributed to relays via a transparent policy, for instance, to support areas
-where anonymity is needed but financial resources are scarce. The exact content
-of such policy is an active subject of research that is orthogonal to our
-paper.~\footnote{E.g., Waterfilling~\cite{waterfilling-pets2017} argues for
-  security by maximum diversity in endpoints of user paths, and
+For instance, in case of deployment, the Tor project would have to
+decide how to assign value to the moneTor tokens and there are various
+options here. \emph{(i)} The token value remains independent of any
+other currency, and the Tor freely assigns a possibly fluctuating
+market value to the tokens in order to maximize the targeted network
+growth that would result from it. This solution has the advantage of
+maximizing the possibilities for the Tor network to put incentives
+where the goals of the Tor project are best served. \emph{(ii)} At the
+other extreme, tokens could be assigned a fixed value from an existing
+fiat currency.  This has the advantage of offering some stable value
+to the tokens, but the downside of potentially increasing the legal
+implications and liabilities associated to these tokens. \emph{iii} An
+intermediary choice might be to make use of such inter-ledger
+protocols~\cite{back2014enabling}~\cite{poon2017plasma}, tokens can
+act as wrapper for an external cryptocurrency such as Bitcoin or
+Ethereum. This choice represents a fundamental trade-off between
+control and liability. Our technical scheme allows for either option.
+
+While these options options can create a fluctuating value for the
+moneTor coins, there should not be such freedom in the pricing
+mechanism for premium bandwidth: any price differentiation between
+clients or relays would inevitably leak information. This leakage
+becomes more severe with higher granularity payment options as
+adversaries begin to use price to link payment channels and circuits.
+We therefore impose the constraint that all users should pay a single
+uniform price for premium bandwidth at any time $t$.
+
+It is of course central to make sure that moneTor serves the goals of
+advances of human rights and freedom of the Tor project, which may be
+quite different of those that would result from a purely
+profit-seeking environment (e.g., that setting could transform Tor
+into a service that is best shaped for people with good financial
+resources who seek to protect their Bittorrent traffic, which is
+unlikely to support the emergence of relays in areas where Tor is most
+important for humanitrian reasons).
+
+To this purpose, moneTor includes a tax mechanism, which makes it
+possible to anonymously collect a chosen fraction of the premium
+trafic income of relays into a shared global fund. This fund would
+make it possible to create a tunable incentive mechanism for The Tor
+Project to shape the topology of the network towards some notion of
+desirable diversity and performance, via a transparent policy. The
+exact content of such policy is an active subject of research that is
+orthogonal to our paper.~\footnote{E.g.,
+  Waterfilling~\cite{waterfilling-pets2017} argues for security by
+  maximum diversity in endpoints of user paths, and
   TAPS~\cite{taps-ndss2017} argues for security by trust policies.}
-
-The final consideration is the issue of price determination. While it would be
-tempting to enlist some market-based mechanisms to set premium bandwidth prices,
-any price differentiation between clients or relays inevitably leaks more
-information. This leakage becomes more severe with higher granularity payment
-options as adversaries begin to use price to link payment channels and circuits.
-We therefore impose the constraint that all users should pay a single uniform
-price for premium bandwidth at any time $t$.
+We further elaborate on these question in Section~\ref{sec:discussion}.
 
 %This price may be set
 %through a centralized calculation by the authorities or a more dynamical
