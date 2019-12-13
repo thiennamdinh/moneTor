@@ -4,7 +4,56 @@ Nanopayment channels)
 
 ## Summary
 
-This major revision covers ... blablah (waiting Olivier's change)
+This major revision covers concerns raised in the Meta-review and within each
+reviewer's personal review. A large part of the paper has been re-written and
+improved. Among the major change, we now have a new section dedicated to discuss
+potential liability, potential crowding out, discussion of the integration of
+the tax system, and how it interacts with the incentive and its potential
+sociological issues. This section is located at the end of the paper, to wrap
+up the incentive design.
+
+We improved the privacy and security section 3.5, adding side-channel concerns
+within it, per Reviewer A advicesa.
+
+To gain space to address the reviews, we moved the section discussing the
+empirical data collection within the real Tor network to the Appendix, and added
+a summary of its conclusions in the core of the paper.
+
+Finally, answers to each review are provided hereafter.
+
+> Meta-Review
+> -----------
+> The reviewers all felt the paper was well-written and a substantial
+> design effort. There was also significant improvement over the
+> previously submitted version of the paper. The submission makes a
+> research contribution that can lead to better understanding of
+> incentives and prioritization in Tor and potentially to practical,
+> deployed systems. There remain, however, substantial issues to address.
+> We thus recommend the authors make the following Major Revisions
+> to the paper.
+> 
+> - The specific remaining issues from Reviews of submission to PoPETs
+>   2019, Issue 3 as identified by Reviewer A. Some of these are also
+>   raised by reviewers of the current submission. Additional new changes
+>   as noted here.
+> 
+> - Discuss the potential impact on usability, impact on size and
+>   distribution of population of Tor users, if higher quality
+>   (prioritization) is only available for pay.
+> 
+> - Discuss the potential incentives for relay operators to game the
+>   system by adding moneTor to Tor.
+> 
+> - Discuss potential liability impact on incentives to run relays if
+>   moneTor provides payment to relays for (prioritized) Tor services.
+>   And, discuss potential for "crowding out" of volunteer motivated
+>   relay operators and impact on capacity.
+> 
+> - Provide discussion of auditing, taxation, and payment distribution
+>   mechanisms.
+> 
+> - And of course address other reviewer comments made in the specific reviews.
+
 
 
  TODO: meta-review goes here, with answers
@@ -186,15 +235,15 @@ them!
 > is likely much higher for moneTor's highly fungible payments with no faucet on
 > the currency issuance/purchase outside of actual provided service.
 
-I am not we understand. moneTor allows the Tor project to operate a faucet; The
-minting of tokens may happen at the Tor project, and be distributed with the
-taxes according to any policy they want.
+We're not sure to understand the faucet concern. moneTor allows the Tor project
+to operate a faucet; The minting of tokens may happen at the Tor project, and be
+distributed with the taxes according to any policy they want.
 
 > Some discussion and analysis of these and related factors is thus important
 > and in scope when considering the technical incentive viability of moneTor's
 > design.
 
-We cover in the discussion section a possible application of the scheme.
+We cover in the discussion section possible applications of the scheme.
 
 > There is only brief mention that auditability could be added as part of the
 > tax redistribution mechanism, but without monitoring there is no way to know
@@ -281,12 +330,13 @@ authenticating users from a given country and that arbitrage).
 
 Relays may crash and users are transparently re-directed to another payment
 channel over another circuit. The balance property ensures that no one looses
-funds. If an intermediary crashes, the implementation can handle it simply by
-storing states and recovering at reboot. Tor is actually doing this for many of
-its internal subsystems. If an Itermediary is unreliable too often, then he may
-just loose its flag given by the Tor authorities: client and relays would
-recover their frozen micro channel funds, and open a channel to another
-intermediary.
+funds, and the ledger built-in privacy prevents a relay to link a user identity to
+its circuit from the ledger event resulting of the resolve mechanism. If an
+intermediary crashes, the implementation can handle it simply by storing states
+and recovering at reboot. Tor is actually doing this for many of its internal
+subsystems. If an Itermediary is unreliable too often, then he may just loose
+its flag given by the Tor authorities: client and relays would recover their
+frozen micro channel funds, and open a channel to another intermediary.
 
 (note, there is no incentives to abort the payment protocol)
 
@@ -365,11 +415,11 @@ several social science papers
 In this figure, the direct connection between the client and the exit is an
 abstract representation at the payment layer. At the Tor layer, to reach the
 exit and send the payment, Tor simply uses the circuit in which some content is
-being transferred and send the payment message through it. To reach the middle
+being transferred and sends the payment message through it. To reach the middle
 or the guard relay, it works by doing less onion-encryption such that, when for
 example, the payment is decrypted at the middle node, it is recognized as a
 payment cell and is handled there instead of being forwarded to the exit. (Note
-that, in the original Tor paper, this behaviour is referred as the "leaked-pipe
+that, in the original Tor paper, this behaviour is referred as the "leaky-pipe
 design")
 
 > Well one way could be to use Tor circuit to reach the exit, but I don’t think
