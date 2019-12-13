@@ -17,7 +17,8 @@
 %architecture by adding two new roles needed for our monetary relay
 %incentivization: $intermediary$ and $ledger$.
 
-\paragraph*{Traffic Analysis}
+%\paragraph*{Traffic Analysis}
+\textbf{Traffic Analysis.}
 Tor's threat model assumes a local adversary who can observe some fraction of
 the network and can operate or compromise a number of onion routers. Tor also
 assumes a local adversary who can manipulate user streams by inserting,
@@ -35,11 +36,12 @@ induce more diversity to the Tor network, which would make such traffic analysis
 against a large fraction of Tor users more costly. One such solution is
 presented in this paper.
 
-\paragraph*{Circuit handling on Tor clients}
+% \paragraph*{Circuit handling on Tor clients}
+\noindent
+\textbf{Circuit handling on Tor clients.}
 %
 %\td{TODO: This section will provide a more detailed explanation of how circuits are
 %created and how that affects moneTor's high initial latency and overhead design}
-
 The key element of the Tor protocol is the Tor circuit, which is a randomly
 constructed 3-hop routing path through the overlay network. Within a circuit,
 Tor multiplexes one or more streams to handle application traffic. In order to
@@ -67,7 +69,10 @@ dramatically improve the time to first payment.
 
 %\subsubsection{Tor's Scheduling}
 
-\paragraph*{Flow Control} Tor seeks to maintain an optimal flow of cells in
+%\paragraph*{Flow Control}
+
+\noindent\textbf{Flow Control}
+Tor seeks to maintain an optimal flow of cells in
 each circuit by capping the rate of transmission to fixed-sized windows.
 %The
 %CIRCWINDOWSTART value dictates flow for the overall circuit while
@@ -84,7 +89,9 @@ strong impact on network conditions as shown by AlSabah \textit{et
 performance. In the design of moneTor, we will adapt these flow control windows
 toward our somewhat different objective to prioritize paid traffic.
 
-\paragraph*{Payment Channels}
+%\paragraph*{Payment Channels}
+
+
 
 %\textbf{Secure Payments} The modern generation of decentralized digital
 %currencies traces its roots to Nakamoto's Bitcoin
@@ -112,6 +119,7 @@ toward our somewhat different objective to prioritize paid traffic.
 %configured \emph{child chains} that inherit many security properties from the
 %original blochain.
 
+\noindent\textbf{Payment Channels.}
 The core cryptocurrency component featured in moneTor is the tripartite
 bidirectional micropayment channel. Base layer cryptocurrency protocols are
 typically capped on the order of tens of transactions per
@@ -257,7 +265,9 @@ requirements are met.
 %not prohibitively problematic for our later treatment of anonymous
 %payment channels.
 
+
+
 %%% Local Variables:
 %%% mode: latex
-%%% TeX-master: "../main"
+%%% TeX-master: "../popets_monetor"
 %%% End:

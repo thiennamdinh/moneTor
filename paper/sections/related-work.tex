@@ -60,7 +60,11 @@ primarily by reducing trust and improving scalability. In contrast, the
 trade-offs with state-of-the-art solutions in the first two categories is more
 nuanced. We will highlight some select considerations here.
 
-\paragraph*{Non-transferable benefits - BRAIDS/LIRA} The BRAIDS scheme
+%\paragraph*{Non-transferable benefits - BRAIDS/LIRA}
+
+\medskip\noindent \textbf{Non-transferable benefits - BRAIDS/LIRA.}
+%
+The BRAIDS scheme
 introduces \emph{tickets} to represent premium status. Users may wish to
 transfer tickets to other users, but this transfer must be done through a
 trusted-third party. Small numbers of ephemeral tickets are freely distributed
@@ -75,7 +79,7 @@ trustless: by design the bank can issue valid tickets for anyone, and guard
 relays can steal tickets in the distribution process; 3) verifying a blind
 signature on relay side for each payment is computationally intensive if the
 rate of payment is high, and current high-bandwidth Tor relays are already
-CPU-bound; 4) the fact that tickets are relay-specific means that users must
+CPU-bound; 4) tickets are relay-specific means that users must
 interact frequently with the bank. Consequently, users have two costly options
 as the network increases: stockpile a large number of tickets for each relay or
 interact frequently with the central bank.
@@ -122,7 +126,10 @@ does not suffer from concern 2).%  and moneTor tokens can act as a wrapper from 
 %money, that can be transferred or used to buy premium bandwidth directly (while
 %in LIRA and BRAIDS, an exchange process with the bank is needed).
 
-\paragraph*{Transferable benefits - TEARS} TEARS introduces a two-layer approach
+%  \paragraph*{Transferable benefits - TEARS}
+
+\medskip\noindent\textbf{Transferable benefits - TEARS.}
+  TEARS introduces a two-layer approach
 whereby \emph{shallots} token are awarded by a distributed semi-trusted bank to
 participating relays. These shallots, which are securely exchanged tokens, can
 then be redeemed for BRAIDS-style \emph{Priority Passes}. While fully
