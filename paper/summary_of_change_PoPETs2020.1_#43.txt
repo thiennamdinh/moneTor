@@ -13,7 +13,7 @@ sociological issues. This section is located at the end of the paper, to wrap
 up the incentive design.
 
 We improved the privacy and security section 3.5, adding side-channel concerns
-within it, per Reviewer A advicesa.
+within it, per Reviewer A advices.
 
 To gain space to address the reviews, we moved the section discussing the
 empirical data collection within the real Tor network to the Appendix, and added
