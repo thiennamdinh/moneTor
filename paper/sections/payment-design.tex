@@ -19,24 +19,26 @@ the technical design of our scheme is to explicitly accommodate some
 of the more consequential economic considerations.
 
 For instance, in case of deployment, the Tor project would have to
-decide how to assign value to the moneTor tokens and there are various
-options here. \emph{(i)} The token value remains independent of any
-other currency, and the Tor freely assigns a possibly fluctuating
-market value to the tokens in order to maximize the targeted network
-growth that would result from it. This solution has the advantage of
-maximizing the possibilities for the Tor network to put incentives
-where the goals of the Tor project are best served. \emph{(ii)} At the
-other extreme, tokens could be assigned a fixed value from an existing
-fiat currency.  This has the advantage of offering some stable value
-to the tokens, but the downside of potentially increasing the legal
-implications and liabilities associated to these tokens. \emph{iii} An
-intermediary choice might be to make use of such inter-ledger
-protocols~\cite{back2014enabling}~\cite{poon2017plasma}, tokens can
-act as wrapper for an external cryptocurrency such as Bitcoin or
-Ethereum. This choice represents a fundamental trade-off between
-control and liability. Our technical scheme allows for either option.
+decide how to assign value to the moneTor tokens, and we would like to
+be able to accommodate for various options, including: \emph{(i)} The
+token value remains independent of any other currency, and the Tor
+project freely assigns a possibly fluctuating market value to the
+tokens in order to maximize the targeted security or social
+outcome. This solution has the advantage of maximizing the
+possibilities for the Tor network to put incentives where the goals of
+the Tor project are best served; \emph{(ii)} At the other extreme,
+tokens could be assigned a fixed value from an existing fiat currency.
+This has the advantage of offering a stable value to the tokens, but
+the downside of potentially increasing the legal implications and
+liabilities associated to these tokens; \emph{(iii)} An intermediary
+choice would have tokens acting as wrapper for an external
+cryptocurrency such as Bitcoin or Ethereum, and use some inter-ledger
+protocols~\cite{back2014enabling}~\cite{poon2017plasma}. These choices
+come with fundamental trade-offs between control, liability, and
+social perception. Our technical scheme allows for any of these
+options, and others.
 
-While these options options can create a fluctuating value for the
+While these options can create a fluctuating value for the
 moneTor coins, there should not be such freedom in the pricing
 mechanism for premium bandwidth: any price differentiation between
 clients or relays would inevitably leak information. This leakage
@@ -49,23 +51,23 @@ It is of course central to make sure that moneTor serves the goals of
 advances of human rights and freedom of the Tor project, which may be
 quite different of those that would result from a purely
 profit-seeking environment (e.g., that setting could transform Tor
-into a service that is best shaped for people with good financial
-resources who seek to protect their Bittorrent traffic, which is
-unlikely to support the emergence of relays in areas where Tor is most
-important for humanitrian reasons).
+into a network that is best shaped for servicing people with financial
+resources, which is unlikely to support the emergence of relays in
+areas where Tor is most important for humanitarian reasons).
 
 To this purpose, moneTor includes a tax mechanism, which makes it
 possible to anonymously collect a chosen fraction of the premium
 trafic income of relays into a shared global fund. This fund would
-make it possible to create a tunable incentive mechanism for The Tor
+make it possible to create a tunable incentive mechanism for the Tor
 Project to shape the topology of the network towards some notion of
 desirable diversity and performance, via a transparent policy. The
 exact content of such policy is an active subject of research that is
-orthogonal to our paper.~\footnote{E.g.,
+orthogonal to our paper.\footnote{E.g.,
   Waterfilling~\cite{waterfilling-pets2017} argues for security by
   maximum diversity in endpoints of user paths, and
   TAPS~\cite{taps-ndss2017} argues for security by trust policies.}
-We further elaborate on these question in Section~\ref{sec:discussion}.
+We further elaborate on these questions and other related ones in
+Section~\ref{sec:discussion}.
 
 %This price may be set
 %through a centralized calculation by the authorities or a more dynamical
