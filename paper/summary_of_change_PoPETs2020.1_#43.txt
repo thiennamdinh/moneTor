@@ -6,14 +6,19 @@ Nanopayment channels)
 
 This major revision covers concerns raised in the Meta-review and within each
 reviewer's personal review. A large part of the paper has been re-written and
-improved. Among the major change, we now have a new section dedicated to discuss
+improved. Among the major changes, we now have a new section dedicated to discuss
 potential liability, potential crowding out, discussion of the integration of
 the tax system, and how it interacts with the incentive and its potential
 sociological issues. This section is located at the end of the paper, to wrap
 up the incentive design.
 
+We improved the economic considerations section 3.1, and linking the explanation
+there with the wraping up discussion section.
+
 We improved the privacy and security section 3.5, adding side-channel concerns
 within it, per Reviewer A advices.
+
+We made changes throughout all the paper to improve general quality.
 
 To gain space to address the reviews, we moved the section discussing the
 empirical data collection within the real Tor network to the Appendix, and added
@@ -54,9 +59,6 @@ Finally, answers to each review are provided hereafter.
 > 
 > - And of course address other reviewer comments made in the specific reviews.
 
-
-
- TODO: meta-review goes here, with answers
 
 ## Answers to reviews from PoPETs 2020.1, paper 43
 
