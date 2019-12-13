@@ -221,7 +221,7 @@ measure is equivalent to a single trip toward each relay. Comparing this
 Figure~\ref{fig:ttfp} to Figure~\ref{fig:payments_establish}, we observe the
 effectiveness of preemptive channel building. The other observation sustaining
 the effectiveness of the pre-built strategy is the recorded time for the
-``call'' versus ``send'': if no delay is observed, the pre-built was a success.
+``call'' versus ``send'' lines: if no discrepancy is observed between them, it means that the pre-built was a success leading to fully established pre-built channels.
 
 In all protocol phases, we observe that latency for guard relays are negligible
 in comparison to the middle and exit relays, which is an result of our design
@@ -243,13 +243,13 @@ parameters do offer differentiation in download speed. Yet, as we detail in
 Appendix~\ref{sec:scheduling}, offering bandwidth differentiation for the Tor
 network is more complex than previously assumed. Indeed, local scheduling
 priority, which was historically effective for past Tor topologies, appears to
-have no effective under current conditions where congestion is concentrated at
+be no effective under current conditions where congestion is concentrated at
 the exit interface. Second, the differentiation in bandwidth for $\alpha = .25,
 \beta=5$ ``averages out'' to approximately mirror the baseline experiment,
 indicating little loss in overall network performance, and confirming our
 overhead experiment (recall 25\% of premium users). Nevertheless, our result for
 $\alpha = 0.5, \beta=10$ indicates that the performance degrades faster for
-nonpremium users the closer when we become too aggressive in procuring gains for
+nonpremium users when we become too aggressive in procuring gains for
 premium users. The data also highlights the complexity in selecting a set of
 parameters and techniques to offer efficient prioritization without degrading
 the overall throughput of the network. The overarching takeaway is that the
