@@ -169,16 +169,14 @@ requirements are met.
  We show in Section~\ref{sec:payment_overview} how an extension to
  Bolt~\cite{green2017bolt}, a tripartite anonymous channel protocol based on
  zero-knowledge proofs proposed by Green and Miers, is applicable to Tor
- incentives and provides the technical promise of anonymity, efficiency and
- payment security.
- %Our construction called moneTor bridges the theoretical advance in the
- %cryptocurrency space with the concrete requirements of a complex and advanced
- %distributed system such as the Tor network.
- One of the reasons which influenced our choice of Bolt as a starting point is the
- potential that we saw in designing and building a payment system that shifts
- away the heavy cryptography from the critical path when performing payments
- (i.e., when exchanging data, the cost of processing payments is reduced to only
- one hash operation with moneTor).
+ incentives while providing technical guarantees of anonymity, efficiency, and
+ payment security. This framework defines the anonymity set with respect to the
+ collection of users connected to the same intermediary. In other words, given a
+ set of end users $E_{all} = \{E_1, E_2, ... E_n\}$ who each have an active
+ channel with $I$, $E_a$ should be able to send a secure payment to $E_b$ such
+ that $I$ cannot identify $E_a$ or $E_b$ from $E_{all}$ nor can $I$ infer the
+ payment value. Of course, $I$ must still be able to verify that the payment is
+ valid and that its internal channel states have been updated accordingly.
 
 %\paragraph*{Anonymous Payment Channels} The micropayment channel concept has
 %since been extended to support anonymity design goals. In particular, the
