@@ -22,7 +22,7 @@
 Tor's threat model assumes a local passive adversary who can observe some fraction of
 the network and can operate or compromise a number of onion routers. Tor also
 assumes a local active adversary who can manipulate user streams by inserting,
-modifying, deleting or delaying data to create observable perturbations.
+modifying, deleting, or delaying data to create observable perturbations.
 Typically, by observing both ends of an anonymous stream, an attacker can infer
 the participating parties using statistical correlation. The adversary's
 precision can be further improved by adding traffic flow
@@ -73,7 +73,7 @@ first payment.
 %\paragraph*{Flow Control}
 
 \medskip
-\noindent\textbf{Flow Control}
+\noindent\textbf{Flow Control.}
 Tor seeks to maintain an optimal flow of cells in
 each circuit by capping the rate of transmission to fixed-sized windows.
 %The
@@ -85,7 +85,7 @@ each circuit by capping the rate of transmission to fixed-sized windows.
 %cells going in each direction are tracked separately.
 In effect, the protocol attempts to keep the flow of cells on each circuit as
 full as possible while ensuring fairness between streams and that the number of
-cells in transition do not exceed a limit default of 1000. Flow control has a
+cells in transition do not exceed a default limit. Flow control has a
 strong impact on network conditions as shown by AlSabah \textit{et
   al.}~\cite{pets2011-defenestrator} in work toward improving total global
 performance. In the design of moneTor, we will adapt these flow control windows
@@ -123,10 +123,10 @@ toward our somewhat different objective to prioritize paid traffic.
 
 \medskip
 \noindent\textbf{Payment Channels.} The core cryptocurrency component featured
-in moneTor is the tripartite bidirectional micropayment channel. Base layer
-cryptocurrency protocols are typically capped on the order of tens of
-transactions per seconds~\cite{team2018blockchain}. The post actively studied
-solution is form of off-chain payment channel networks popularly known as
+in moneTor is the tripartite bidirectional micropayment channel. Many
+common cryptocurrency protocols are can support only tens of
+transactions per seconds (see, e.g.,~\cite{team2018blockchain}). One
+popular workaround is an off-chain payment channel networks popularly known as
 ``Lightning Networks''~\cite{poon2016bitcoin}. In this setup, a single ledger
 transaction is used to escrow funds by two parties $A$ and $B$. These parties
 may then proceed to make bidirectional micropayments to each other \emph{without
@@ -138,13 +138,13 @@ through some \emph{intermediary} party $I$ with which they both maintain active
 channels. In practice, $A$ and $B$ might occupy the roles of a customer and
 merchant who are registered with a well-known financial service provider $I$.
 $A$, $B$, and $I$ need only interact with the ledger periodically to deposit and
-withdraw large sums of money, improving the network capacity by multiple orders
+withdraw larger sums of money, improving the network capacity by multiple orders
 of magnitude. Informally, tripartite channels are secure if the following
-requirements are met.
+requirements are met:
 
 \begin{enumerate}
 \item At every step of the protocol, all parties possess proof of execution of
-  the last finalized payment state
+  the last finalized payment.
 \item Given two proofs of payment state, the network can unambiguously identify
   the more recent state.
 \item When $A$ agrees to pay $B$ through $I$, the payment is atomic. That is,

@@ -40,7 +40,7 @@ users. Notionally, we design moneTor tokens to serve as a bona fide form of
 currency which satisfies standard definitions of \textit{scarcity},
 \textit{fungibility}, \textit{divisibility}, \textit{durability}, and
 \textit{transferability}~\cite[p.3]{crump2011phenomenon}. Our work aims to solve
-the nontrivial technical of applying this strategy in light of the following
+the nontrivial challenge of applying this strategy in light of the following
 compulsory constraints:
 
 \begin{itemize}
@@ -50,7 +50,7 @@ compulsory constraints:
   cannot transpire without strong guarantees of cryptographic security.
 \item \emph{Efficiency}: A robust payment system must handle extremely
   lightweight, low-latency, and scalable payments so as to accommodate
-  the dynamic and often short-lived activities of these clients: Tor
+  the dynamic and often short-lived activities of these clients. Tor
   services millions of concurrent users, all of whom maintain largely
   short-term relationships.
 \end{itemize}
@@ -59,9 +59,8 @@ Importantly, we acknowledge that the addition of monetary incentives into Tor
 would involve delicate legal, economic, and sociopolitical considerations. Final
 policy recommendations are out of scope for our work, but we do provide some
 discussion in Section~\ref{sec:discussion} on the risk, merits, and versatility
-of tokenization. Instead, our goal is to construct an adaptable and
-value-agnostic design that pushes the envelope on what is technologically
-feasible.
+of tokenization. Our goal is to construct an adaptable and
+value-agnostic design that shows how incentives can improve Tor.
 
 %\textbf{Present Landscape} While a number of prior works satisfy some subset of
 %these constraints, no single proposal has thus far been sufficiently convincing
@@ -102,7 +101,7 @@ and conforms to our domain-specific constraints of \emph{Anonymity},
 We provide a prototype of our payment layer and an extension to the existing
 routing protocol, resulting in approximately 15k lines of new code in C within
 the Tor code base. Our networking experiments demonstrate thousands of
-transactions per second without any appreciable issue and achieves optimal
+transactions per second without any appreciable issue and achieve optimal
 latency through engineered mechanisms like preemptive channel creation. Finally,
 we discover through experimental analysis that scheduling
 approaches~\cite{dovrolis1999case, tang2010improved} used in previous Tor
@@ -112,8 +111,9 @@ alternative network prioritization strategy which combines scheduling
 modifications with a new method based on control-flow windows.
 
 The code developed during this research and needed to reproduce our
-graphical results can be found in various repositories at @Monetor
+graphical results can be found in various repositories at our
 Github account~\cite{monetor-github}.
+% dwallach Q: double-blind anonymity issues?
 
 
 %\begin{enumerate}

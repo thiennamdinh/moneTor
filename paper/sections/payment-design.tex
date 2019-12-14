@@ -33,7 +33,7 @@ the downside of potentially increasing the legal implications and
 liabilities associated to these tokens; \emph{(iii)} An intermediary
 choice would have tokens acting as wrapper for an external
 cryptocurrency such as Bitcoin or Ethereum, and use some inter-ledger
-protocols~\cite{back2014enabling}~\cite{poon2017plasma}. These choices
+protocols~\cite{back2014enabling,poon2017plasma}. These choices
 come with fundamental trade-offs between control, liability, and
 social perception. Our technical scheme allows for any of these
 options, and others.
@@ -197,10 +197,11 @@ circuits~\cite{green2017bolt}.
 \end{itemize}
 
 While anonymous micropayment channels present a tremendous advance for many
-applications, the relatively heavy cryptography ($37-100\ ms$) and communication
-(7 message legs) is a prohibitive expense for Tor relay payments.\footnote{In
+applications, the relatively heavy cryptography (37-100 ms) and communication
+(7 messages) is a prohibitive expense, especially if we want to do it
+for every message transmission\footnote{In
   addition to concerns regarding global network overhead, it is also desirable
-  to keep the barrier of entry low for smaller relay operators.} To overcome
+  to keep the barrier of entry low for smaller relay operators.}. To overcome
 this barrier, we present a new payment layer design enabling far more efficient
 \emph{nanopayments} that will satisfy our constraints.
 
@@ -263,9 +264,9 @@ this barrier, we present a new payment layer design enabling far more efficient
 \medskip
 \noindent\textbf{moneTor} The moneTor construction makes use of the existing anonymous
 micropayment structure to build \emph{locally transparent nanopayments}. In this
-model, clients and relays extend single micropayment operations into contiuant
+model, clients and relays extend single micropayment operations into % contiuant
 \emph{nanopayment channels} through an intermediary (Figure~\ref{fig:parties}).
-These highly lightweight channels allow the client to send $n$ number of
+These highly lightweight channels allow the client to send $n$ % number of
 unidirectional nanopayments to the relay through the established Tor circuit.
 Each payment represents a fixed value $\delta$, established at the start of the
 channel. By \emph{locally transparent}, we mean that each nanopayment in the
@@ -276,12 +277,12 @@ fits with Tor's existing circuit framework and security model, which similarly
 stipulates that messages within circuits are linkable internally but not
 externally to other circuits~\footnote{In contrast, as discussed in
   Section~\ref{sec:related_work} some prior works implemented circuits which
-  were needlessly unlinkable from relay's viewpoint.}. In essence, the
+  were needlessly unlinkable from the relay's viewpoint.}. In essence, the
 overarching motivation of our work is to relax the costly anonymity guarantees
 provided by Bolt toward the design of a new set of protocols that we optimize
 for Tor. Finally, note that the establishments and closures of nanopayment
 channels do not require the clients or relay to interact with the ledger,
-resulting in a far more scalable design than some previous works which depend on
+resulting in a far more scalable design than any system which depends on
 resource-intensive centralized entities.
 
  We now briefly describe our new set of protocols.
@@ -298,19 +299,19 @@ resource-intensive centralized entities.
   \label{fig:parties}
 \end{figure}
 Any two parties $C$ and $R$ can construct a nanopayment channel once both have
-completed Bolt $Establish$ with a common intermediary $I$. We define the
-following set of protocols needed to manage nanopayments.
+completed Bolt's $Establish$ with a common intermediary $I$. We define the
+following set of protocols needed to manage nanopayments:
 
 \begin{itemize}
-\item \textbf{Nano-Setup} $C$ and $I$ interact to prepare an incomplete half of
+\item \textbf{Nano-Setup:} $C$ and $I$ interact to prepare an incomplete half of
   a nanopayment channel on top of their existing micropayment channel.
-\item \textbf{Nano-Establish} $C$ sends her nanopayment channel information to
+\item \textbf{Nano-Establish:} $C$ sends her nanopayment channel information to
   $R$, who interacts with $I$ to complete the second half of the nanopayment
   channel on top of their own existing micropayment channel.
-\item \textbf{Nano-Pay} $C$ sends a single nanopayment to $R$. This is
+\item \textbf{Nano-Pay:} $C$ sends a single nanopayment to $R$. This is
   repeatable for up to $n$ operations.
-\item \textbf{Nano-Close-R} $R$ closes his nanopayment channel with $I$.
-\item \textbf{Nano-Close-C} $C$ closes her nanopayment channel with $I$. Note
+\item \textbf{Nano-Close-R:} $R$ closes his nanopayment channel with $I$.
+\item \textbf{Nano-Close-C:} $C$ closes her nanopayment channel with $I$. Note
   that this must happen after \emph{Nano-Close-R}.
 \end{itemize}
 
@@ -321,9 +322,9 @@ anything thanks to the dispute resolution on the ledger. It is important to note
 that the following algorithms run only in case of misbehaviour.
 
 \begin{itemize}
-\item \textbf{Nano-Refund} $E$ closes the channel on $L$.
-\item \textbf{Nano-Refute} $I$ closes the channel on $L$.
-\item \textbf{Nano-Resolve} $L$ makes final determination on both micropayment
+\item \textbf{Nano-Refund:} $E$ closes the channel on $L$.
+\item \textbf{Nano-Refute:} $I$ closes the channel on $L$.
+\item \textbf{Nano-Resolve:} $L$ makes final determination on both micropayment
   and outstanding nanopayment balances.
 \end{itemize}
 
@@ -392,7 +393,7 @@ against double spending by $C$ and can safely inform $C$ that the nanopayment
 channel has been set up successfully.
 
 \medskip
-\noindent\textbf{Nano-Establish} At this point, $C$ sends $R$ the same $nT$ token used to
+\noindent\textbf{Nano-Establish:} At this point, $C$ sends $R$ the same $nT$ token used to
 setup the channel with $I$. $R$ uses the token to initiate her end of the
 nanopayment channel with $I$ by executing essentially the same procedure that
 $C$ used in \emph{Nano-Setup}. The nanopayment channel is now fully established
@@ -400,7 +401,7 @@ and ready to be used. A key observation is that both ends of the channel
 ($C$-$I$ and $R$-$I$) are rooted at the same hash chain root $hc_0$.
 
 \medskip
-\noindent\textbf{Nano-Pay} To make the next $i^{th}$ payment, $C$ simply sends the next
+\noindent\textbf{Nano-Pay:} To make the $i^{th}$ payment, $C$ simply sends the next
 hash preimage $hc_i$ to $R$. Knowledge of this preimage $hc_i$ is sufficient for
 $R$ to prove possession of a nanopayment. At any given time, $R$ can broadcast
 the tuple ($nrt$, $hc_i$) to $L$ to prove ownership of the correct balance of
@@ -410,7 +411,7 @@ satisfies a correct-by-construction property of \emph{atomicity} whereby both
 legs of the protocol are finalized at the same time.
 
 \medskip
-\noindent\textbf{Nano-Close} After some number of payments $k < n$ has transpired and $C$
+\noindent\textbf{Nano-Close:} After some number of payments $k < n$ has transpired and $C$
 wants to close the Tor circuit, both $C$ and $R$ will generally prefer to close
 their nanopayment channels through $I$. In this process, the $R$-$I$ leg must be
 closed before the $C$-$I$ leg. This is due to the unidirectional nature of
@@ -422,9 +423,9 @@ zero-knowledge proof of the following statements:
 
 \begin{enumerate}
 \item $w'$ is well-formed from $w$ ($w$ was either created by Bolt's establish
-  phase or by a previous moneTor Nano-Close)
+  phase or by a previous moneTor Nano-Close).
 \item The balance of $w'$ is equal to the sum of the balance from the previous
-  wallet $w$ and $\delta * k$
+  wallet $w$ and $\delta * k$.
 \end{enumerate}
 
 Once verified, $I$ issues a refund token $rt'$ on the new funds. $R$ agrees to
@@ -438,11 +439,11 @@ original state they occupied prior to \emph{Nano-Setup} save for a securely
 updated balance.
 
 \medskip
-\noindent\textbf{Nano-Refund, Nano-Refute, Nano-Resolve} Honest parties will not
+\noindent\textbf{Nano-Refund, Nano-Refute, Nano-Resolve:} Honest parties will not
 typically close active nanopayment channels on the ledger, opting instead to run
 Bolt micropayment closure procedures when they wish to cash out. However, in the
 event of malicious behavior or premature abortion, \emph{Nano-Refund} and
-\emph{Nano-Refute} outlines procedures for $E$ and $I$ to withdraw funds on the
+\emph{Nano-Refute} outline procedures for $E$ and $I$ to withdraw funds on the
 ledger at any given step with the latest payment information. After a set amount
 of time allowing for the counterparty to reciprocate, the ledger runs
 \emph{Nano-Resolve} to make a final publicly verifiable determination on the
@@ -461,7 +462,7 @@ nanopayment channel at any given time, we can guarantee that relays and
 intermediaries cannot link two nanopayment channels with the same user.
 Furthermore, all communication in the tripartite nanopayment protocol is
 protected by Tor circuits. Hence, relationship between client to intermediary,
-client to ledger, relay to intermediary and relay to ledger are themselves
+client to ledger, relay to intermediary, and relay to ledger are themselves
 anonymized. Formal definitions and proofs are provided in
 Appendix~\ref{sec:proof} for the following theorem:
 
@@ -496,8 +497,8 @@ channel in conjunction with the globally fixed nanopayment cost, $I$ may
 potentially link all of $C$'s nanopayment channels.\footnote{This attack is best
   illustrated with a trivial example. Suppose that $I$ facilitates a number of
   nanopayment channels with the following number of payments, each of which is
-  known to represent one unit of money: $[58, 839, 356, 881, 23, 89, 561]$ Now
-  that $C$ closes her micropayment channel and terminates with exactly 404 units
+  known to represent one unit of money: $[58, 839, 356, 881, 23, 89, 561]$. Now
+  $C$ closes her micropayment channel and terminates with exactly 404 units
   of money. Once the micropayment channel is closed, $I$ must necessary gain
   knowledge of the final balance of funds and can easily link the first and
   third nanopayment channels as belonging to the same $C$.} To mitigate this
@@ -531,7 +532,7 @@ protocol, we informally state the following anonymity guarantees relative to
 unmodified Tor:
 
 \begin{enumerate}
-\item Additional parties needed to operate the moneTor system (i.e. ledgers and
+\item Additional parties needed to operate the moneTor system (i.e., ledgers and
   intermediaries) cannot extract any more information about a given client than
   any middle relay.
 \item Excluding side channels, circuits do not leak any more information than
@@ -547,8 +548,8 @@ Our threat model for payment security is similar to those found in prior works
 in blockchain micropayment channels~\cite{poon2016bitcoin}. In such models, the
 user is protected from malicious intermediaries by the ability to prove
 misbehavior to a global ledger. Our protocols also guarantee that the client
-would not be claimed more money than initially agreed (Balance property
-\ref{def:balance}).
+would not risk more money than initially agreed (Balance property, see
+Section~\ref{def:balance}).
 
 %\subsubsection{Side-channels on Micropayment events}
 
