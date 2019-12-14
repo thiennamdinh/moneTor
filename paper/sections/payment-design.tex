@@ -156,7 +156,7 @@ infrastructure. As first discussed Section~\ref{sec:background}, our chosen
 model is an implementation of the tripartite anonymous payment channel paradigm.
 Compared to purely centralized schemes, payment channels are a critical method
 for scaling, allowing for a theoretically unbounded number of off-ledger
-transactions between any two parties. However, in a naive two-party
+transactions between any two parties. However, in a na\"{i}ve two-party
 implementation, the total channel management complexity is on the order of
 $O(n*m)$ where $n$ is the number of Tor clients and $m$ is the number of relays.
 Our solution is to introduce the Intermediary Relay, a Tor node whose only role
@@ -212,7 +212,7 @@ this barrier, we present a new payment layer design enabling far more efficient
 %% a trustless fashion. In our design, we make use of an Intermediary relay which
 %% is only tasked to provide \emph{atomic} payment channel services between clients
 %% and relays and does not participate in routing user streams. These choices are
-%% argued from the following benefits: 1) it escapes the naive setting whereby each
+%% argued from the following benefits: 1) it escapes the na\"{i}ve setting whereby each
 %% Tor client maintains a micropayment channel with each relay would incur an
 %% $O(n*m)$ cost with respect to channel management complexity, with $n$ the number
 %% of Tor clients and $m$ the number of relays. By engineering an additional
@@ -498,7 +498,7 @@ potentially link all of $C$'s nanopayment channels.\footnote{This attack is best
   illustrated with a trivial example. Suppose that $I$ facilitates a number of
   nanopayment channels with the following number of payments, each of which is
   known to represent one unit of money: $[58, 839, 356, 881, 23, 89, 561]$. Now
-  $C$ closes her micropayment channel and terminates with exactly 404 units
+  $C$ closes her micropayment channel and terminates with exactly $58 + 356 = 414$ units
   of money. Once the micropayment channel is closed, $I$ must necessary gain
   knowledge of the final balance of funds and can easily link the first and
   third nanopayment channels as belonging to the same $C$.} To mitigate this
@@ -556,7 +556,7 @@ Section~\ref{def:balance}).
 \medskip
 \noindent\textbf{Side-channels on Micropayment events.}
 The moneTor protocol prescribes unlinkable micropayment events by protocol
-design. However, a naive implementation of this scheme may be susceptible to
+design. However, a na\"{\i}ve implementation of this scheme may be susceptible to
 side-channel vulnerabilities, most notably, timing attacks. For instance, a
 channel-creation policy that immediately mints a new nanopayment channel after
 the closing of the previous channel would allow $I$ to trivial link all channels
@@ -600,11 +600,11 @@ symmetric for both the client and relay leg. In practice, it requires only a
 trivial modification to specify separate values of $\delta_C$ and $\delta_R$
 such that the following equality is satisfied.
 \begin{equation}
-  \delta_C - \delta_R = tax + fee
+  \delta_C - \delta_R = \mathit{tax} + \mathit{fee}
   \label{eq:payment}
 \end{equation}
-Here, $tax$ is the portion of every payment that is redirected to the Tor tax
-authority while $fee$ represents compensation for $I$'s services. $I$ gradually
+Here, $\mathit{tax}$ is the portion of every payment that is redirected to the Tor tax
+authority while $\mathit{fee}$ represents compensation for $I$'s services. $I$ gradually
 accumulates these overhead charges in his balance over the course of running
 many nanopayment channels. When it is time for $I$ to cash out the full
 micropayment channel, $L$ simply divides the funds between the $I$ and the tax
@@ -625,8 +625,8 @@ timescale of several months. We optimize toward this setup by enabling
 transparent and direct payment channels between the client and guard,
 considerably reducing the time to establish or close the payment channel with
 the guard relay. Direct payment channels on middle or exit relays would not
-scale because those relays are expected to eventually serve all Tor users in the
-worst case.
+scale because those payment channels must scale to potentially serve all Tor
+users. % in the worst case.
 
 
 %the anonymity set of micro-wallets is split within the number of 

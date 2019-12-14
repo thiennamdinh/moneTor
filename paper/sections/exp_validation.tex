@@ -1,5 +1,5 @@
-Understanding typical Tor usage and assessing if they can benefit from the
-priority scheme is a key requirement of such an incentive design.
+Understanding typical Tor usage and assessing if it can benefit from
+our priority scheme is a key requirement of our an incentive design.
 Appendix~\ref{sec:analysis} covers a real Tor measurement study which
 illustrates the importance of token exchange within the first few seconds of the
 data stream. In our design, reliability is obtained from the pre-built payment
@@ -42,7 +42,7 @@ implementation within the native Tor codebase.
 	\label{fig:overhead}
 \end{figure*}
 
-A substantial contribution of the research is embedded within our implementation
+A substantial contribution of our research is embedded within our implementation
 of the moneTor framework. The modifications, applied to Tor release version
 0.3.2.10, cover approximately fifteen thousand added lines of code across Tor's
 core C software. We emphasize that the implementation is engineered solely for
@@ -67,15 +67,15 @@ that our prototype does not implement anything that does not help us to answer
 our research goals, such as coin/wallet management, extension of the Tor control
 protocol to manage the asset and various options, Intermediary information
 recovery in case of crash, etc. The prototype serves the following purposes in
-our study.
+our study:
 \begin{enumerate}
-\item An implementation covering nuances not explicitly covered in the protocol
-  designs: we show that there are no unexpected and
+\item Our implementation necessarily handles nuances missing from
+  our protocol designs; we show that there are no unexpected and
   prohibitive practical conflicts with the existing Tor design.
-\item A platform to study the feasibility of premium circuit prioritization from
+\item Our platform allows us to study the feasibility of premium circuit prioritization from
   a networking perspective.
-\item A platform to obtain a rough factor-of-two approximation for all
-  bandwidth, computation, and memory requirements of the system, both globally
+\item Our platform allows us to obtain a rough factor-of-two approximation for all
+  bandwidth, computation, and memory requirements of a real deployment, both globally
   and at individual nodes.
 \end{enumerate}
 
@@ -98,9 +98,9 @@ featured 250 relays, 2500 clients, 25 intermediaries, 80 minutes of total run
 time, and was used to measure the performance benefits conferred to premium
 clients. In both cases, simulated traffic features 8\% \emph{bulk} clients who
 continuously download 5 MiB files and 92\% \emph{web} clients who periodically
-download 2 MiB files~\footnote{While 5 MiB bulk files are a common standard in
+download 2 MiB files.\footnote{While 5 MiB bulk files are a common standard in
   Tor benchmarking~\cite{portal2018tormetrics}, 2 MiB web files reflect the
-  approximate size of modern web pages~\cite{team2018httparchive}}. The number
+  approximate size of modern web pages~\cite{team2018httparchive}.} The number
 and behavior of clients were chosen to satisfy (A) realistic congestion rates
 measured by a transfer timeout percentage around 4\%~\cite{portal2018tormetrics}
 and a historical bulk/web global traffic ratio of about
@@ -213,12 +213,12 @@ split across each relay role of guard, middle, and exit. Recall that moneTor
 makes use of high-overhead, low-marginal cost payment channels (i.e., the
 channels take time to build but the client needs them long after they are
 built). In other words, the bulk of the cost in our scheme lies in the
-conduction of the nanopayment channel \emph{establish} and \emph{close}
+execution of the nanopayment channel \emph{establish} and \emph{close}
 protocols as shown in Figure~\ref{fig:payments_establish} and
 Figure~\ref{fig:payments_close}. Notice that close operations take roughly twice
 as long to complete as the establish operations due to the need for the relay to
 close his half of the nanopayment channel before the client can complete hers.
-Figure~\ref{fig:ttfp} illustrates time to first payment, our most revealing
+Figure~\ref{fig:ttfp} illustrates the time to first payment, our most revealing
 latency metric. This measure includes the overhead in channel establishment when
 we do not have available preemptive channels. In the best case scenario, when
 all three payment channels have been correctly pre-built for the circuit, this
@@ -226,11 +226,11 @@ measure is equivalent to a single trip toward each relay. Comparing this
 Figure~\ref{fig:ttfp} to Figure~\ref{fig:payments_establish}, we observe the
 effectiveness of preemptive channel building. The other observation sustaining
 the effectiveness of the pre-built strategy is the recorded time for the
-``call'' versus ``send'' lines: if no discrepancy is observed between them, it means that the pre-built was a success leading to fully established pre-built channels.
+``call'' versus ``send'' lines; if no discrepancy is observed between them, it means that the pre-built was a success leading to fully established pre-built channels.
 
-In all protocol phases, we observe that latency for guard relays are negligible
-in comparison to the middle and exit relays, which is an result of our design
-decision to implement special directly paid guard channels. Again, this is a
+In all protocol phases, we observe that latencies for guard relays are negligible
+in comparison to the middle and exit relays, which is a result of our design
+decision to implement directly-paid guard channels. Again, this is a
 Tor-specific optimization made possible by the fact that guards maintain a
 semi-persistent, transparent relationship with only a small subset of clients.
 
@@ -246,13 +246,14 @@ sets of three small experiments with varying modifier priorities $\alpha \in
 \{0, 0.25, 0.5\}$ and $\beta \in \{1, 5, 10\}$, where $\alpha = 0, \beta = 1$
 represents vanilla Tor when payments are off. In these experiments, we assume
 25\% of premium users. From Figures \ref{fig:modifier_pr25_web},
-\ref{fig:modifier_pr25_bulk}, and \ref{fig:modifier_pr25_all}, we observe
-interesting information. First, variations in our network-wide tunable
+\ref{fig:modifier_pr25_bulk}, and \ref{fig:modifier_pr25_all}, we
+observe that,
+first, variations in our network-wide tunable
 parameters do offer differentiation in download speed. Yet, as we detail in
 Appendix~\ref{sec:scheduling}, offering bandwidth differentiation for the Tor
 network is more complex than previously assumed. Indeed, local scheduling
 priority, which was historically effective for past Tor topologies, appears to
-be no effective under current conditions where congestion is concentrated at
+be ineffective under current conditions where congestion is concentrated at
 the exit interface. Second, the differentiation in bandwidth for $\alpha = .25,
 \beta=5$ ``averages out'' to approximately mirror the baseline experiment,
 indicating little loss in overall network performance, and confirming our

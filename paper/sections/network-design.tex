@@ -35,11 +35,11 @@ protocol. We therefore exploit the same strategy currently used in circuit
 establishment by allowing payment channels to be preemptively set up and
 established on clean pre-built circuits. This dramatically reduces the effective
 time to first payment. Unfortunately, excessive establishment of preemptive
-channels will eventually afflict the network with unused overhead. Our
+channels will eventually afflict the network with overhead. Our
 implementation features a rudimentary prediction strategy that attempts to
 balance this trade-off by anticipating the number of needed channels using
-historical usage information in a similar way Tor anticipates the need for a
-fresh circuit. The effectivness of preemptively established channels is analyzed
+historical usage information in a similar way to how Tor anticipates the need for a
+fresh circuit. The effectiveness of preemptively established channels is analyzed
 in Section~\ref{sec:experimentations}, and is expected to make the payment
 confirmation time matching the round-trip-time of the client-relay connection.
 
@@ -140,13 +140,13 @@ a simpler linear scaling factor that favors paid circuits.
   A'_{t + \Delta t} = A_{t + \Delta t} / \beta + C_{t, t + \Delta t}
 \end{equation}
 
-Defined in Tang and Goldeberg's original paper~\cite{tang2010improved}, $A$ is a
+Defined in Tang and Goldberg's original paper~\cite{tang2010improved}, $A$ is a
 variable score used to sort circuits such that the circuit with the lowest $A$
 is always next on the scheduling queue. $C$ is the number of cells relayed
 within $\Delta t$, the time since the previous observation, and $H$ is a global
 representing the half-life decay interval in the score. Our added term, $\beta
-\in [1, \inf)$, is a tunable parameter such that $Bandwidth_{premium} =
-  Bandwidth_{nonpremium} \times \beta$ for any given circuit under ideal
+\in [1, \inf)$, is a tunable parameter such that $\mathit{Bandwidth}_{\mathit{premium}} =
+  \mathit{Bandwidth}_{\mathit{nonpremium}} \times \beta$ for any given circuit under ideal
   conditions.
 
 %Our policy may be implemented in one of two ways. First, each node could track
