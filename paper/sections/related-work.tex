@@ -128,47 +128,46 @@ does not suffer from concern 2).%  and moneTor tokens can act as a wrapper from 
 
 %  \paragraph*{Transferable benefits - TEARS}
 
-\medskip\noindent\textbf{Transferable benefits - TEARS.}
-  TEARS introduces a two-layer approach
-whereby \emph{shallots} token are awarded by a distributed semi-trusted bank to
-participating relays. These shallots, which are securely exchanged tokens, can
-then be redeemed for BRAIDS-style \emph{Priority Passes}. While fully
-exchangeable shallots represent an economic improvement over non-transferable
-privileges, these tokens are conceptually discrete and indivisible assets that
-are not as easily exchanged as true currency. We expect our ecosystem to be more
-user friendly, offering arbitrarily high transferability and divisibility of
-priority tokens without changing the underlying Tor architecture, while also
-scaling on trustless entities (our intermediaries) instead of a distribution of
-semi-trusted banks that must be operated by reputable parties. The moneTor
-scheme is also designed for fair-exchange with Bolt's ZKP construction to open
-and close the nanopayment channels but offering $n$ nanopayments for which the
-relay only has to perform $1$ $\hash$ operation to validate. This is a strong
-contrast to TEARS, which requires a blind signature for each payment. We also
-expect the fair-exchange property to be of critical importance to enable
-short-bandwidth and short-lived premium Tor circuits, which were the majority
-among observed active circuits of our measurement study. Finally, a major
+\medskip\noindent\textbf{Transferable benefits - TEARS.} TEARS introduces a
+two-layer approach whereby \emph{shallots} token are awarded by a distributed
+semi-trusted bank to participating relays. These shallots, which are securely
+exchanged tokens, can then be redeemed for BRAIDS-style \emph{Priority Passes}.
+While fully exchangeable shallots represent an economic improvement over
+non-transferable privileges, these tokens are conceptually discrete and
+indivisible assets that are not as easily exchanged as true currency. We expect
+our ecosystem to be more user friendly, offering arbitrarily high
+transferability and divisibility of priority tokens without changing the
+underlying Tor architecture, while also scaling on trustless entities (our
+intermediaries) instead of a distribution of semi-trusted banks that must be
+operated by reputable parties. Compared to TEARS, which requires a blind
+signature for each payment, our nanopayment constructions allows for
+fair-exchange, a critical property for the short-bandwidth and short-lived
+premium Tor circuits documented in Appendix~{sec:analysis}. Finally, a major
 difference with previous work (TEARS, LIRA, BRAIDS) is that moneTor does not
 depend on a relay's bandwidth audit to distribute tokens. Relays receive
 currency directly from client from the rate of provided bandwidth and
 potentially more from the Tor authorities after tax redistribution. Although the
 tax redistribution phase will require bandwidth audits, the importance of this
-step is a tunable function of the tax rate itself. Note, however, that direct
+step is a tunable function of the tax rate itself.
+
+Note, however, that direct
 payments do introduce a separate mode of abuse. In principle, exit relay in
 moneTor have an incentive to inflate network traffic by injecting junk traffic
 (e.g. padding cells) or even conspiring with the destination server to send
 useless data to the client. We would propose to mitigate this risk by
 implementing junk traffic monitoring into the existing measurement
 infrastructure by running premium and non-premium circuits through measured
-relays. Currently junk traffic produced by the exit node is already a severe
+relays. Currently, junk traffic produced by the exit node is already a severe
 issue~\cite{rochet2018dropping} that has prompted the release of several patches
-by the Tor project. However, the conspirator problem appears to be intractable
+by the Tor project. However, the conspirator problem seems intractable
 by nature since the junk data would appear legitimate to the Tor circuit layer.
 As a coarse-grain mitigation strategy, we can cap the number of nanopayments
 available to each circuit. A conspirator can then be reduced to non-fair
-exchange problem, which is what previous works offer as a basis. Moreover,
-websites might not be incentivized to coerce and insert junk traffic, given the
-impact it could produce on the website rendering, and to its reactivity to user
-events.
+exchange problem, which is what previous works offer as a basis.
+
+%% Moreover, websites might not be incentivized to coerce and insert junk traffic,
+%% given the impact it could produce on the website rendering, and to its
+%% reactivity to user events.
 
 
 

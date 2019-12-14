@@ -19,9 +19,9 @@
 
 %\paragraph*{Traffic Analysis}
 \textbf{Traffic Analysis.}
-Tor's threat model assumes a local adversary who can observe some fraction of
+Tor's threat model assumes a local passive adversary who can observe some fraction of
 the network and can operate or compromise a number of onion routers. Tor also
-assumes a local adversary who can manipulate user streams by inserting,
+assumes a local active adversary who can manipulate user streams by inserting,
 modifying, deleting or delaying data to create observable perturbations.
 Typically, by observing both ends of an anonymous stream, an attacker can infer
 the participating parties using statistical correlation. The adversary's
@@ -37,12 +37,13 @@ against a large fraction of Tor users more costly. One such solution is
 presented in this paper.
 
 % \paragraph*{Circuit handling on Tor clients}
+\medskip
 \noindent
 \textbf{Circuit handling on Tor clients.}
 %
 %\td{TODO: This section will provide a more detailed explanation of how circuits are
 %created and how that affects moneTor's high initial latency and overhead design}
-The key element of the Tor protocol is the Tor circuit, which is a randomly
+The key element of the Tor protocol is the circuit, a randomly
 constructed 3-hop routing path through the overlay network. Within a circuit,
 Tor multiplexes one or more streams to handle application traffic. In order to
 reduce latency in the user experience, Tor attempts to build circuits
@@ -51,8 +52,8 @@ Once a stream is created by a user application, it can be immediately routed
 through the idle circuit, dramatically improving latency. The anticipated number
 of required preemptive circuits is dynamically calculated every second by the
 Tor client. We exploit this same strategy for moneTor's circuit channel setup
-routine by building preemptive payment channels and show that it too can
-dramatically improve the time to first payment.
+routine by building preemptive payment channels to dramatically improve time to
+first payment.
 
 %\paragraph*{Evaluating Tor's performance}
 %Shadow~\cite{jansen2011shadow} is a discrete event networking simulator that
@@ -71,6 +72,7 @@ dramatically improve the time to first payment.
 
 %\paragraph*{Flow Control}
 
+\medskip
 \noindent\textbf{Flow Control}
 Tor seeks to maintain an optimal flow of cells in
 each circuit by capping the rate of transmission to fixed-sized windows.
@@ -119,19 +121,19 @@ toward our somewhat different objective to prioritize paid traffic.
 %configured \emph{child chains} that inherit many security properties from the
 %original blochain.
 
-\noindent\textbf{Payment Channels.}
-The core cryptocurrency component featured in moneTor is the tripartite
-bidirectional micropayment channel. Base layer cryptocurrency protocols are
-typically capped on the order of tens of transactions per
-seconds~\cite{team2018blockchain}. The most actively pursued path toward better
-scalability thus far is work in off-chain payment channel networks popularly
-known as ``Lightning Networks''~\cite{poon2016bitcoin}. In this setup, a single
-ledger transaction is used to escrow funds by two parties $A$ and $B$. These
-parties may then proceed to make bidirectional micropayments to each other
-\emph{without ledger interaction} through the exchange of signed ``I Owe You''
-tokens. By themselves, channels are useful for reducing the number of ledger
-interactions for parties with reoccurring interactions. More consequential for
-the scalability problem is the tripartite channel paradigm in which $A$ pays $B$
+\medskip
+\noindent\textbf{Payment Channels.} The core cryptocurrency component featured
+in moneTor is the tripartite bidirectional micropayment channel. Base layer
+cryptocurrency protocols are typically capped on the order of tens of
+transactions per seconds~\cite{team2018blockchain}. The post actively studied
+solution is form of off-chain payment channel networks popularly known as
+``Lightning Networks''~\cite{poon2016bitcoin}. In this setup, a single ledger
+transaction is used to escrow funds by two parties $A$ and $B$. These parties
+may then proceed to make bidirectional micropayments to each other \emph{without
+  ledger interaction} through the exchange of signed ``I Owe You'' tokens. By
+themselves, channels are useful for reducing the number of ledger interactions
+for parties with reoccurring interactions. More consequential for the
+scalability problem is the tripartite channel paradigm in which $A$ pays $B$
 through some \emph{intermediary} party $I$ with which they both maintain active
 channels. In practice, $A$ and $B$ might occupy the roles of a customer and
 merchant who are registered with a well-known financial service provider $I$.

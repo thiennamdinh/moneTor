@@ -32,34 +32,32 @@ does not presume to offer an authoritative opinion of the best social incentive
 design. Instead, we show that the versatility of our token-centric technical
 design is sufficient to support a wide diversity of potential strategies.
 
-By design, we have left many variables to be decided either directly or
-indirectly by the Tor Project. Chief among these are the premium bandwidth
-price, premium bandwidth advantage, tax rate, monetary policy, and
-redistribution policy. Methods to enforce these choices involve network
-monitoring, network parameter broadcasting, ledger constraints, and
-organizational policy. Together, these components comprise a hypothetical
-control panel for the Tor Project to implement one of an essentially limitless
-array of incentivzation options, a few of which are described below.
+By design, we have left many variables to be decided by the Tor Project. Chief
+among these are the premium bandwidth price, premium bandwidth advantage, tax
+rate, monetary policy, and redistribution policy. These are enforced using a
+combination of network monitoring, parameter broadcast, ledger constraints, and
+organizational policy. Together, these options give the Tor Project the freedom
+to implement a large variety of incentivization strategies. We present a few
+hypothetical paradigms below.
 
 \begin{enumerate}
 
-\item \textbf{Crypto-Libertarian}: On one extreme, perhaps the simplest naive
-approach is to implement moneTor as perfectly unregulated market where bandwidth
-is exchanged for money, perhaps trustlessly backed by a cryptocurrecny like
-Bitcoin or Ethereum.
+\item \textbf{Benevolent Ruler}: The Tor Project is a nonprofit with
+altruistic organizational intentions. In this extreme approach, the
+authorities set the tax rate to 100\%, turning moneTor into a revenue stream for
+purely centralized efforts to improve the network.
 
-\item \textbf{Benevolent Ruler}: On the other end of the spectrum, the Tor
-Project is itself a nonprofit with altruistic organization intentions. In this
-extreme view, the authorities can simply set the tax rate to 100\% to turn
-moneTor into a revenue stream for centralized efforts to improve the network.
+\item \textbf{Crypto-Libertarian}: On the other end of the spectrum, a simple
+naive strategy is to implement moneTor as unregulated market where bandwidth is
+exchanged for money, perhaps trustlessly backed by a cryptocurrency like Bitcoin
+or Ethereum.
 
-\item \textbf{In-Kind Only}: If financial rewards turn out to be
-  prohibitive, we can mimic several of the purely in-kind nature of
-  non-transferable and transferable benefits described in
-  Section~\ref{sec:related_work} by limiting the number of on-ledger
-  transactions to zero or one, respectively. For instance, at zero
-  allowed transactions, relays would be unable to use their tokens for
-  any purpose other than to buy premium traffic from other relays. in a
+\item \textbf{In-Kind Rewards}: If financial rewards turn out to be
+  prohibitive, we can mimic several of the purely in-kind non-transferable and
+  transferable schemes described in Section~\ref{sec:related_work} by limiting
+  the number of on-ledger transactions to zero or one, respectively. For
+  instance, at zero allowed transactions, relays would be unable to use their
+  tokens for any purpose other than to buy premium traffic from other relays.
   % model that is superficially reminiscent of
   % BRAIDS~\cite{jansen2010recruiting}
   %. % An expected limitation of this
@@ -68,20 +66,18 @@ moneTor into a revenue stream for centralized efforts to improve the network.
   % probably scarce) and would not be able to afford running relays
   % without  partial financial support.
 
-\item \textbf{Subsistence Relaying}: Here, we would limit the expected
-  value of the tokens to the cheapest relay cost to bandwidth
-  ratio. In this paradigm, every relay operator would effectively act
-  as a individual NGO to avoid potential liabilities that come with
-  financial profit. In practice, moneTor could support this design by
-  adjusting global parameters such that the direct incomes of any
-  relay does not exceed the cost of relay operation in the cheapest
-  geographic region. Any descrepancy from this income floor due to
-  location and bandwidth would be covered in the tax redistribution
-  policy. Previously, studies have indicated that incentives can be
-  effective when limited support is offered for a ``concrete''
-  task~\cite{10.1257/jep.25.4.191, 10.1086/431263}. Provided careful
-  publication communication of intent, we might expect the same
-  results here.
+\item \textbf{Subsistence Relaying}: Here, although relays would receive real money,
+  we would limit the expected value rewards to the break-even cost of running a
+  relay. In this paradigm, every relay operator would effectively act as a
+  individual NGO to avoid the potential liabilities that come with financial
+  profit. In practice, moneTor could support this design by adjusting global
+  parameters such that the incomes of any relay does not exceed the
+  cost-to-bandwidth ratio in the cheapest geographic region. Any discrepancy
+  from this income floor due to location or other factors could be covered in
+  the tax redistribution policy. Previously, studies have indicated that
+  incentives can be effective when limited support is offered for a ``concrete''
+  task~\cite{10.1257/jep.25.4.191, 10.1086/431263}. Provided careful public
+  communication of intent, we might expect the same results here.
 
 \item \textbf{Decentralized Grant-making}: Finally, the Tor Project can
 implement moneTor as a form of \emph{altruistic money} which may be donated to
@@ -99,20 +95,20 @@ in the core mission of Tor.
 
 \end{enumerate}
 
-These toy examples are extreme strategies meant to illustrate the flexibility of
-moneTor as a technical intrastruture. In practice, the Tor Project would be free
-to implement essentially any combination of these approaches. The picture we
-wish to illustrate is this: in the absence of a clear consensus on the right
-mode of social incentivization, it is far more practical to build a versatile
-system and constrain it afterwards than it is to design a constrained system
-from the beginning.
-
 Much future work remains to implement some of these methods. On the technical
 side, robust monitoring must be implemented to mitigate inflated bandwidth for
 tax redistribution and junk traffic insertion for direct payments. Economically,
 we require a better understanding of topics such as location-based incentives
 and the elasticity of supply and demand for various types of relay incentives
 and client premium bandwidth, respectively.
+
+The purpose of these extreme paradigms is simply to illustrate the versatility
+moneTor as a technical infrastructure. In practice, the Tor Project can
+implement essentially any combination of our listed approaches, and many others
+as well. The mindset we wish to instill is this: an overly flexible design can
+always be constrained afterward. Until we have a consensus for the right social
+approach to incentivization, the most useful technical base is one that can be
+adapted to many models of human behavior.
 
 %% ---------------------------------------------
 %% Tor is a distributed network based on volunteered contribution: physical
