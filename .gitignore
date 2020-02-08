@@ -1,3 +1,7 @@
 *.pdf
 *.aux
 *.log
+*.bbl
+*.idx
+*.out
+*.blg

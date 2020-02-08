@@ -1,116 +1,54 @@
-%While we cover as much ground as possible, it has been evident from the initial
-%stages that a production-ready construction of any monetary incentive scheme for
-%Tor would be a monumental collaborative effort. In this final chapter, we
-%discuss the promise and limitations of our results and speculate on the many
-%interesting research avenues going forward.
+In this final discussion, we attempt to frame the social nuances of incentivization describe the applicablity of our technical framework.
+Today, the Tor network owes its success to voluntary contributors.
+These relay operators incur tangible hardware, bandwidth, and labor expenses to participate in the Tor network for largely intrinsic reasons, among them political, philosophical, and philanthropic.
+In implementing a system like moneTor, the Tor Project must consider the consequences of financial incentives on these potentially fragile value systems.
+Several critical questions have been raised concerning the social design of incentives~\cite{jansenblogpost}.
+For instance, the ``crowding out effect'', describes a psychological mechanism whereby the introduction of extrinsic motivations displaces previously dependable intrinsic motivations~\cite{10.1257/jep.25.4.191}.
+At the sociological level, empirical studies on prosocial behaviour~\cite{10.1257/aer.96.5.1652} have shown that explicit incentives can have an adverse effect on participation.
+This phenomena suggests that introducing incentives would risk of degrading the average social quality of Tor nodes without necessarily growing the network.
+Nevertheless, the literature does not reject the natural intuition that incentives at least have the potential to be effective when careful consideration is given to the nuances of multi-faceted motivational factors~\cite{10.1257/aer.96.5.1652}.
+Our work does not presume to offer an authoritative opinion of the best social incentive design.
+Instead, we show that the versatility of our token-centric technical design is sufficient to support a wide diversity of potential strategies.
 
-%\subsection{Evaluation}
-%\label{subsec:evaluation}
-%Recall from Chapter~\ref{chap:Intro} that we are broadly concerned with three
-%constraints: anonymity, economic security, and efficiency. As described in
-%Chapter~\ref{chap:payment} and Chapter~\ref{chap:network}, moneTor was
-%deliberately constructed to account for anonymity and economic security. We did
-%not uncover any notable design flaws relating to these constraints during our
-%extensive implementation phase.
-%
-%The results from Chapter~\ref{chap:simulation} indicate that moneTor performs
-%overwhelmingly well in all efficiency measurements. This true for both global
-%throughput and effective user latency where moneTor appears to achieve
-%near-optimal performance in both measures. Unfortunately, we cannot produce
-%meaningful comparisons with related works dealing in monetary Tor payments, as
-%in all other case the researchers choose to analyze their respective algorithms
-%in isolation rather than as part of a simulated Tor network. Meanwhile,
-%performance comparisons with non-transferable benefit schemes and transferable
-%benefits are not necessarily meaningful either, as they employ vastly different
-%tokens models and should be evaluated in context. We nevertheless note that our
-%decision to coordinate payments through third-party intermediaries implies that
-%moneTor is conceptually more scalable than most previous proposals. A
-%back-of-the-envelope calculation shows that moneTor can theoretically
-%accommodate on the order of 10 million paying clients, if
-%necessary.\footnote{This simple analysis conservatively assumes that the moneTor
-%  ledger can handle 200 channel initiations per second (one order of magnitude
-%  greater than inefficient decentralized cryptocurrencies), users are willing to
-%  escrow one month's worth of payments, and users need no more than 10 concurrent
-%  channels at any given time}. We are careful to acknowledge that scales
-%of this this magnitude may pose any number of unseen complications which we fail
-%to anticipate at the theoretical level.
-%
-%Finally, the paper describing LIRA is, to the best of our knowledge, the most
-%recent related work that explores similar concepts of traffic prioritization in
-%Tor. While it is difficult to make definitive claims comparing different
-%networking simulations, we observe that our flow-control method achieves similar
-%levels of traffic differentiation for the median user at lower traffic
-%load~\cite{jansen2013lira}.
+By design, we have left many variables to be decided by the Tor Project.
+Chief among these are the premium bandwidth price, premium bandwidth advantage, tax rate, monetary policy, and redistribution policy.
+These are enforced using a combination of network monitoring, parameter broadcast, ledger constraints, and organizational policy.
+Together, these options give the Tor Project the freedom to implement a large variety of incentivization strategies.
+We present a few hypothetical paradigms below.
 
-\subsection{Limitations}
-\label{subsec:limitations}
+\begin{enumerate}
 
-The moneTor framework faces a number of technical and economic limitations.
-Firstly, the mere presence of paid traffic leaks at least a single bit of
-information to relays and intermediaries regarding the browsing habit of the
-user. In practice, we expect that this information might be positively
-correlated with certain user applications such as bittorrent or video streaming.
-Secondly, our nanopayment protocols leak the number and value of payments made
-to the intermediary. While this information cannot by itself be used to identify
-clients or relays, we expect that it could provide useful contextual knowledge
-when combined with other inputs. Finally, although we ensure payment privacy
-within the Tor ecosystem, we can make no such guarantees at the token exchange
-interface. Users who practice inadequate operational security risk leaking
-information about the net value of payments they make in Tor with their
-real-world identities. This problem may be of greatest concern for users
-residing in political regimes that are politically opposed to the access of Tor
-altogether.
+\item \textbf{Benevolent Ruler}: The Tor Project is a nonprofit with altruistic organizational intentions.
+  In this extreme approach, the authorities set the tax rate to 100\%, turning moneTor into a revenue stream for purely centralized efforts to improve the network.
 
-A separate financial limitation arises from our our tripartite payment channel
-architecture and the need for intermediaries to escrow large amounts of funds.
-This opportunity cost of the frozen capital in terms of forgone investments will
-be passed on as financial overhead to paying users in the form of intermediary
-fees.
+\item \textbf{Crypto-Libertarian}: On the other end of the spectrum, a simple na\"{\i}ve strategy is to implement moneTor as unregulated market where bandwidth is exchanged for money, perhaps trustlessly backed by a cryptocurrency like Bitcoin or Ethereum.
 
-\subsection{Future Work}
-\label{subsec:future_work}
+\item \textbf{In-Kind Rewards}: If financial rewards turn out to be prohibitive, we can mimic several of the purely in-kind non-transferable and transferable schemes described in Section~\ref{sec:related_work} by limiting the number of on-ledger transactions to zero or one, respectively.
+  For instance, at zero allowed transactions, relays would be unable to use their tokens for any purpose other than to buy premium traffic from other relays.
 
-%\paragraph*{Prioritized Traffic} Although we were able to successfully demonstrate
-%clear prioritized premium traffic using flow control windows, there is
-%considerable room to analyze prioritization under more realistic settings. Among
-%the possibilities, we maintain that scheduling provides the most conceptually
-%elegant way to achieve our goals. In the absence of effective scheduling,
-%extension and further analysis of our flow-control technique provides an
-%alternative path forward. This future work might study methods for ensuring a
-%more robust response to local variations in the fraction of premium users as
-%well total network load.
+\item \textbf{Subsistence Relaying}: Here, although relays would receive real money, we would limit the expected value rewards to the break-even cost of running a relay.
+In this paradigm, every relay operator would effectively act as a individual NGO to avoid the potential liabilities that come with financial profit.
+In practice, moneTor could support this design by adjusting global parameters such that the incomes of any relay does not exceed the cost-to-bandwidth ratio in the cheapest geographic region.
+Any discrepancy from this income floor due to location or other factors could be covered in the tax redistribution policy.
+Previously, studies have indicated that incentives can be effective when limited support is offered for a ``concrete'' task~\cite{10.1257/jep.25.4.191, 10.1086/431263}.
+Provided careful public communication of intent, we might expect the same results here.
 
-\paragraph*{Side-channel Attacks} We assumed that our protocol construction would
-not give more information to an observer than the single bit needed to
-differentiate a premium user. However in practice, the protocol may leak
-information through side-channels, such as the time needed to exchange cells in
-order to open/close channels. An intermediary, or an exit relay may reason about
-the client's location by evaluating the round-trip-times of the multi-rounds
-protocol. Although often easily mitigated once discovered, these side channels
-pose an interesting problem to our expanded attack surface.
+\item \textbf{Decentralized Grant-making}: Finally, the Tor Project can implement moneTor as a form of \emph{altruistic money} which may be donated to an approved list of prosocial projects, reminiscent of participatory budgeting in local governments~\cite{cabannes2004participatory}.
+Rather than cashing out tokens, the ledger would only allow relays to contribute to their choice of special programs that, for instance, increase the number of relays in region $X$, fund research on topic $Y$, or advocate for privacy-related issue $Z$.
+The result is a fully fungible asset that is extrinsically worthless to profit-driven entities but intrinsically rewarding for parties who are invested in the core mission of Tor.
 
-\paragraph*{Tax Redistribution and Adversary Reactions}
-The understanding of the right policies for tax redistribution is an ongoing
-research question and is out of scope of this paper. Further, likely
-interdisciplinary, research might seek to discover the best incentivization
-strategies for desired user behaviors and while mitigating adversarial abuse.
+\end{enumerate}
 
-\paragraph*{Channel Management} Given the dynamic activity of payment
-channels that we have shown, further research might explore more sophisticated
-policies to manage moneTor payment channels. Such policies would make decisions
-concerning micropayment channel initial value, nanopayment channel size,
-preemptive channel creation, and the selection of available channels to apply to
-each new circuit. An ideal policy would be responsive to network load and
-predicted user behavior. In addition to the classical optimization objectives of
-computation, memory, and bandwidth, this research effectively considers a brand
-new vector as it attempts to streamline the flow of money through the network.
+Much future work remains to implement some of these methods.
+On the technical side, robust monitoring must be implemented to mitigate inflated bandwidth for tax redistribution and junk traffic insertion for direct payments.
+Economically, we require a better understanding of topics such as location-based incentives and the elasticity of supply and demand for various types of relay incentives and client premium bandwidth, respectively.
 
-\paragraph*{Extended Applications} Existing privacy-centric currencies are
-limited in that they are only effective when used in conjunction with an
-anonymizing network such as Tor~\cite{sasson2014zerocash}. Our currency scheme
-more explicitly integrates the two layers and. This, combined with the featured
-efficiency and scalability in particular makes moneTor an attractive option for
-such applications as metered video viewing, metered video gaming, and
-pay-per-page websites. The study and implementation of these applications in an
-anonymous setting provides another interesting opportunity for multidisciplinary
-research.
+The purpose of these extreme paradigms is simply to illustrate the versatility moneTor as a technical infrastructure.
+In practice, the Tor Project can implement essentially any combination of our listed approaches, and many others as well.
+The mindset we wish to instill is this: an overly flexible design can always be constrained afterward.
+Until we have a consensus for the right social approach to incentivization, the most useful technical base is one that can be adapted to many models of human behavior.
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "../popets_monetor"
+%%% End:
