@@ -1,12 +1,12 @@
 This section categorizes previously proposed incentivization schemes into three groups.
 
-\noindent \emph{1. Non-transferable benefits:} these proposals aim to recruit relays by offering some privileged status intended for personal use which cannot be \emph{securely} sold for reimbursement of financial investment~\cite{dingledine2010building,jansen2010recruiting, jansen2013lira}.
+\medskip\noindent\textbf{Non-transferable benefits.} these proposals aim to recruit relays by offering some privileged status intended for personal use which cannot be \emph{securely} sold for reimbursement of financial investment~\cite{dingledine2010building,jansen2010recruiting, jansen2013lira}.
 
-\noindent \emph{2. Transferable benefits:} these schemes offer privileged service or products intended to hold value on a secondary resale market.
+\medskip\noindent\textbf{Transferable benefits.} these schemes offer privileged service or products intended to hold value on a secondary resale market.
 These indirect financial incentives presume to attract a broader demand than in the non-transferable case.
 Partial proof-of-work tokens that can then be redeemed by relays for profit in real cryptocurrency mining pools~\cite{biryukov2015proof} and exchangeable shallots in TEARS~\cite{jansen2014onions} are part of this category.
 
-\noindent \emph{3. Monetary payments:} these schemes offer rewards with what might be considered real money that holds external value.
+\medskip\noindent\textbf{Monetary payments.} these schemes offer rewards with what might be considered real money that holds external value.
 PAR~\cite{androulaki2008payment} allows clients to send direct payments to relays in a hybrid payment scheme which makes use of inefficient but anonymous Chaumian e-cash protocols~\cite{chaum1988untraceable} and efficient but transparent probabilistic micropayments.
 PAR introduces the \emph{honest but curious} bank paradigm in which the bank cannot deanonymize clients but is in control of their deposited financial assets.
 PAR suffers from scalability issues owing to its strongly centralized architecture.
@@ -17,7 +17,7 @@ By leveraging recent advances in cryptocurrency, our scheme offers straightforwa
 In contrast, the trade-offs with state-of-the-art solutions in the first two categories is more nuanced.
 We will highlight some select considerations here.
 
-\medskip\noindent \textbf{Non-transferable benefits - BRAIDS/LIRA.}
+\medskip\noindent\textbf{BRAIDS.}
 The BRAIDS scheme introduces \emph{tickets} to represent premium status.
 Users may wish to transfer tickets to other users, but this transfer must be done through a trusted-third party.
 Small numbers of ephemeral tickets are freely distributed by a central \emph{bank} to any client upon request or to relays that have accumulated tickets spent by clients.
@@ -26,6 +26,7 @@ However, users may exchange accumulated tickets for tickets from other relays th
 BRAIDS raises four major concerns: 1)~everyone connects to a central bank through Tor, which raises scalability issues; 2) the bank is not trustless: by design the bank can issue valid tickets for anyone, and guard relays can steal tickets in the distribution process; 3) verifying a blind signature on relay side for each payment is computationally intensive if the rate of payment is high, and current high-bandwidth Tor relays are already CPU-bound; 4) tickets are relay-specific means that users must interact frequently with the bank.
 Consequently, users have two costly options as the network increases: stockpile a large number of tickets for each relay or interact frequently with the central bank.
 
+\medskip\noindent\textbf{LIRA.}
 LIRA is an ideological successor to BRAIDS which improves scalability as well as improving the efficiency of the relay side verification of tickets by a factor $\approx 80$.
 Clients in LIRA probabilistically ``win'' premium tickets without any interaction with the bank.
 While LIRA improves the efficiency of BRAIDS, and could even offer high fairness (by supporting high payment rates), it suffers from a \textit{client} cheating incentive to continuously build circuits to try to win premium tickets~\cite{jansen2013lira, jansenblogpost}.
@@ -41,7 +42,7 @@ This does not account for opening and closing the nanopayment channel, happening
 Also, moneTor does not suffer from concern 2).
 Finally and more important, moneTor tokens are not relay-specific, which solves the scalability problem on the economic appeal
 
-\medskip\noindent\textbf{Transferable benefits - TEARS.}
+\medskip\noindent\textbf{TEARS.}
 TEARS introduces a two-layer approach whereby \emph{shallot} tokens are awarded by a distributed semi-trusted bank to participating relays.
 These shallots can then be redeemed for BRAIDS-style \emph{Priority Passes}.
 While fully exchangeable shallots represent an economic improvement over non-transferable privileges, these tokens are conceptually discrete and indivisible assets that are not as easily exchanged as true currency.
