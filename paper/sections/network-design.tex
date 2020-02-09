@@ -41,6 +41,10 @@ Defined in Tang and Goldberg's original paper~\cite{tang2010improved}, $A$ is a 
 $C$ is the number of cells relayed within $\Delta t$, the time since the previous observation, and $H$ is a global representing the half-life decay interval in the score.
 Our added term, $\beta \in [1, \inf)$, is a tunable parameter such that $\mathit{Bandwidth}_{\mathit{premium}} = \mathit{Bandwidth}_{\mathit{nonpremium}} \times \beta$ for any given circuit under ideal conditions.
 
+Finally, note that our current design focuses on the conditions of the current Tor network, where the vast majority of traffic exits the network and congestion occurs primarily at exits.
+It is not designed for onion services, which do not pass through exits (though it is not inherently incompatible with these).
+We leave consideration of prioritization for internal circuits as future work.
+
 \medskip \noindent \textbf{Interlude.}
 This concludes the design of the moneTor framework.
 In the proceeding sections, we describe steps taken to iteratively select and validate key parameters as well as the scheme as a whole.
