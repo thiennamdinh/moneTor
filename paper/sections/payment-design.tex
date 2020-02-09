@@ -12,7 +12,7 @@ While these options can create a fluctuating value for the moneTor coins, there 
 This leakage becomes more severe with higher granularity payment options as adversaries begin to use price to link payment channels and circuits.
 We therefore impose the constraint that all users should pay a single uniform price for premium bandwidth at any time $t$.
 
-It is of course central to make sure that moneTor serves the goals of advances of human rights and freedom of the Tor project, which may be quite different of those that would result from a purely profit-seeking environment (e.g., that setting could transform Tor into a network that is best shaped for servicing people with financial resources, which is unlikely to support the emergence of relays in areas where Tor is most important for humanitarian reasons).
+It is of course central to make sure that moneTor serves the goals of advances of human rights and freedom of the Tor project, which may be quite different from those that would result from a purely profit-seeking environment (e.g., that setting could transform Tor into a network that is best shaped for servicing people with financial resources, which is unlikely to support the emergence of relays in areas where Tor is most important for humanitarian reasons).
 
 To this purpose, moneTor includes a tax mechanism, which makes it possible to anonymously collect a chosen fraction of the premium trafic income of relays into a shared global fund.
 This fund would make it possible to create a tunable incentive mechanism for the Tor Project to shape the topology of the network towards some notion of desirable diversity and performance, via a transparent policy.
@@ -37,7 +37,7 @@ We leave this challenge to the implementor and instead focus on the more critica
 In this section, we specify formal protocols that comprise the moneTor payment infrastructure.
 As first discussed Section~\ref{sec:background}, our chosen model is an implementation of the tripartite anonymous payment channel paradigm.
 Compared to purely centralized schemes, payment channels are a critical method for scaling, allowing for a theoretically unbounded number of off-ledger transactions between any two parties.
-However, in a na\"{i}ve two-party implementation, the total channel management complexity is on the order of $O(n*m)$ where $n$ is the number of Tor clients and $m$ is the number of relays.
+However, in a na\"{i}ve two-party implementation, the total channel management complexity is on the order of $O(n \times m)$ where $n$ is the number of Tor clients and $m$ is the number of relays.
 Our solution is to introduce the Intermediary Relay, a Tor node whose only role is to provide \emph{atomic} payment channel services between clients and relays.
 By acting as trustless payment hubs maintaining persistent channels to many users, Intermediaries critical reduce the channel complexity to $0(n+m)$.
 Notably, the number of active intermediaries can be adjusted to attain an acceptable balance between the performance of the payment infrastructure and the size of the anonymity set for connected premium users.
@@ -132,7 +132,7 @@ $C$ sends $I$ a commitment to a fresh nanopayment channel parametrized by $nT$ a
 
 \begin{enumerate}
 \item The nanopayment wallet $nw$ is well-formed from $w$
-\item $C$ has ownership of a micropayment channel containing at least $n * \delta$ funds.
+\item $C$ has ownership of a micropayment channel containing at least $n \times \delta$ funds.
 \end{enumerate}
 
 $I$ verifies these messages and supplies $C$ with a new signed refund token $nrt$ that entitles $C$ to cash out the full balance of the micropayment channel using \textbf{Nano-Refund} if needed.
@@ -159,7 +159,7 @@ $R$ first sends to $I$ a commitment to a new micropayment wallet $w'$ and a zero
 
 \begin{enumerate}
 \item $w'$ is well-formed from $w$ ($w$ was either created by Bolt's establish phase or by a previous moneTor Nano-Close).
-\item The balance of $w'$ is equal to the sum of the balance from the previous wallet $w$ and $\delta * k$.
+\item The balance of $w'$ is equal to the sum of the balance from the previous wallet $w$ and $\delta \times k$.
 \end{enumerate}
 
 Once verified, $I$ issues a refund token $rt'$ on the new funds.

@@ -40,14 +40,14 @@ Compared to BRAIDS and LIRA, moneTor offers the ability to prevent double-spendi
 Moreover, moneTor offers high fairness with on-the-fly payment verification improved by a factor $\approx 6$ compared to LIRA (one $\hash$ operation instead of six $\hash$ + a few XORs and multiplications) and $\approx 500$ to BRAIDS.
 This does not account for opening and closing the nanopayment channel, happening outside of the data transfer time window and for which the relay's costly operation is to perform one ZKP (opening) and generating one blind signature (closing).
 Also, moneTor does not suffer from concern 2).
-Finally and more important, moneTor tokens are not relay-specific, which solves the scalability problem on the economic appeal
+Finally and more importantly, moneTor tokens are not relay-specific, which solves the scalability problem of either stockpiling or interacting more with the central bank as the network size increases.
 
 \medskip\noindent\textbf{TEARS.}
 TEARS introduces a two-layer approach whereby \emph{shallot} tokens are awarded by a distributed semi-trusted bank to participating relays.
 These shallots can then be redeemed for BRAIDS-style \emph{Priority Passes}.
 While fully exchangeable shallots represent an economic improvement over non-transferable privileges, these tokens are conceptually discrete and indivisible assets that are not as easily exchanged as true currency.
 We expect our ecosystem to be more user friendly, offering arbitrarily high transferability and divisibility of priority tokens without changing the underlying Tor architecture, while also scaling on trustless entities (our intermediaries) instead of a distribution of semi-trusted banks that must be operated by reputable parties.
-Compared to TEARS, which requires a blind signature for each payment, our nanopayment constructions allows for fair-exchange, a critical property for the short-bandwidth and short-lived premium Tor circuits documented in Appendix~{sec:analysis}.
+Compared to TEARS, which requires a blind signature for each payment, our granular nanopayment constructions approximates fair-exchange, a critical property for the short-bandwidth and short-lived premium Tor circuits documented in Appendix~\ref{sec:analysis}.
 Finally, a major difference with previous work (TEARS, LIRA, BRAIDS) is that moneTor does not depend on a relay's bandwidth audit to distribute tokens.
 Relays receive currency directly from client from the rate of provided bandwidth and potentially more from the Tor authorities after tax redistribution.
 Although the tax redistribution phase will require bandwidth audits, the importance of this step is a tunable function of the tax rate itself.

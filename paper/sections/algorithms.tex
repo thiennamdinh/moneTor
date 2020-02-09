@@ -78,10 +78,10 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
   \begin{algorithmic}[1]
     \Procedure{Client}{$pp, pk_I, w_C, \delta_C, n$}
     \State{parse $w_C$ as $(B_C, wpk_C, wsk_C, r_C, \sigma^w_C)$}
-    \If{$B_{C} + (\delta_C * n) < 0$}
+    \If{$B_{C} + (\delta_C \times n) < 0$}
     \State{Abort$()$ \Comment{consider new micropayment channel}}
     \EndIf{}
-    \State{$\epsilon_C \gets \delta_C * n$}
+    \State{$\epsilon_C \gets \delta_C \times n$}
     \State{$(nwpk_C, nwsk_C, nwCom_C, n\pi_C) \gets $Wal$(pp, pk_I, w_C, \epsilon_C)$}
     \State{$\delta_R \gets -(\delta_C  + tax)$} \Comment{the tax is a net profit for $I$}
     \State{$HC \gets $MakeHC$($Random$(), n)$}
@@ -140,10 +140,10 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
     \State{$nT \gets $Client.Receive$()$}
     \State{parse $w_R$ as $(B_R, wpk_R, wsk_R, r_R, \sigma^w_R)$}
     \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
-    \If{$B_{I:B} - (\delta_B * n) < 0$}
+    \If{$B_{I:B} - (\delta_B \times n) < 0$}
     \State{Abort$()$ \Comment{consider new micropayment channel}}
     \EndIf{}
-    \State{$\epsilon_R \gets \delta_R * n$}
+    \State{$\epsilon_R \gets \delta_R \times n$}
     \State{$(nwpk_R, nwsk_R, nwCom_R, n\pi_R) \gets $Wal$(pp, pk_I, w_R, \epsilon_R)$}
     \State{Intermediary.Send$(wpk_R, nwpk_R, nwCom_R, n\pi_R, nT)$}
     \EndProcedure{}
@@ -211,7 +211,7 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
     \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
     \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E, \_)$}
     \State{parse $nS_E$ as $(k, hc^k)$}
-    \State{$\epsilon_E \gets \delta_C * k$ if (EndUser = Client) else $ \delta_R * k$}
+    \State{$\epsilon_E \gets \delta_C \times k$ if (EndUser = Client) else $ \delta_R \times k$}
     \State{$(wpk'_E, wsk'_E, wCom'_E, \pi'_E) \gets$ $Wal(pp, pk_I, wpk_B, \sigma^w_E, B_E, \epsilon_E$)}
     \State{Intermediary.Send$(wpk_E, wCom'_E, \pi'_E, nT, \epsilon_E, k, hc^k)$}
     \EndProcedure{}
@@ -270,7 +270,7 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
     \State{parse $ncsk_E$ as $(nwpk_E, \_, \_)$}
     \State{parse $nS_E$ as $(k, hc^k)$}
     \State{$\delta_E \gets \delta_C$ if (EndUser = Client) else $ \delta_R$}
-    \State{$m_E \gets (refund || nT || nwpk_E || B_E + \delta_E * n, nrt_E, hc^k_E, k_E)$}
+    \State{$m_E \gets (refund || nT || nwpk_E || B_E + \delta_E \times n, nrt_E, hc^k_E, k_E)$}
     \State{$nrc_E \gets (m_E, Sign(sk_E, m_E))$}
     \State{\Return{$nrc_E$}}
     \EndFunction{}
@@ -341,13 +341,13 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
     \State{parse $m_I$ as $(accepted, k_I, hc^0_I)$}
     \If{$k_I \leq k_E \leq n \wedge $VerifyHC$(hc^0, k_E, hc^k_E) )$}
     \State{\Comment{$E$ has the highest hash preimage}}
-    \State{$B^{final}_E = B^{full}_E - \delta_E * (n-k_E)$}
-    \State{$B^{final}_I = B_{total} - B^{full}_E + \delta_E * (n-k_E)$}
+    \State{$B^{final}_E = B^{full}_E - \delta_E \times (n-k_E)$}
+    \State{$B^{final}_I = B_{total} - B^{full}_E + \delta_E \times (n-k_E)$}
     \EndIf{}
     \If{$k_E \leq k_I \leq n \wedge $VerifyHC$(hc^0, k_I, hc^k_I) )$}
     \State{\Comment{$I$ has the highest hash preimage}}
-    \State{$B^{final}_E = B^{full}_E - \delta_E * (n-k_I)$}
-    \State{$B^{final}_I = B_{total} - B^{full}_E + \delta_E * (n-k_I)$}
+    \State{$B^{final}_E = B^{full}_E - \delta_E \times (n-k_I)$}
+    \State{$B^{final}_I = B_{total} - B^{full}_E + \delta_E \times (n-k_I)$}
 
     \EndIf{}
     \State{\Return{$(B^{final}_E, B^{final}_I)$}}
