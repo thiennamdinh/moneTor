@@ -1,39 +1,3 @@
-\subsection{Economic considerations}
-
-Given the delicate nature of this research area, a key motivation in the technical design of our scheme is to explicitly accommodate some of the more consequential economic considerations.
-For instance, in case of deployment, the Tor project would have to decide how to assign value to the moneTor tokens, a choice which entails fundamental trade-offs between control, liability, and social perception.
-We enumerate three broad categories and briefly comment on the technical implementations as follows:
-
-\begin{enumerate}
-
-\item The Tor Project reserves control of monetary supply for the purpose of enforcing a publicly declared policy, for instance, to peg the value of tokens against one or more fiat currencies it that it holds in reserve.
-This option would require the Tor Project to reserve a privileged signing key for minting new moneTor tokens (e.g.
-when a user makes fiat deposit).
-\item The moneTor tokens are instantiated as a standard cryptocurrency whose value fluctuates as a function of market pressures and the chosen distribution schedule.
-As an any cryptocurrency, a node that rejects the distribution mechanism (e.g.
-mining in Bitcoin) would be violating the protocol.
-\item The moneTor tokens act as a secure wrapper for an external cryptocurrency such as Bitcoin, Ethereum, or a future state-backed currency.
-This option is made possible by ongoing work in the field of ledger interoperability protocols~\cite{back2014enabling,poon2017plasma}.
-
-\end{enumerate}
-
-In all three cases, note that the mechanism required implement the police takes place entirely on the ledger.
-Consequently, the off-ledger moneTor payment layer, which is the main contribution of this work, is compatible with any of these three options. 
-
-Whereas the Tor Project has several acceptable options for monetary policy, there should not be such freedom in the pricing mechanism for premium bandwidth: any price differentiation between clients or relays would inevitably leak information.
-This leakage becomes more severe with higher granularity payment options as adversaries begin to use price to link payment channels and circuits.
-We therefore impose the constraint that all users should pay a single uniform price for premium bandwidth at any time $t$.
-
-It is of course central to make sure that moneTor serves the goals of advances of human rights and freedom of the Tor project, which may be quite different from those that would result from a purely profit-seeking environment (e.g., that setting could transform Tor into a network that is best shaped for servicing people with financial resources, which is unlikely to support the emergence of relays in areas where Tor is most important for humanitarian reasons).
-
-To this purpose, moneTor includes a tax mechanism, which makes it possible to anonymously collect a chosen fraction of the premium trafic income of relays into a shared global fund.
-This fund would make it possible to create a tunable incentive mechanism for the Tor Project to shape the topology of the network towards some notion of desirable diversity and performance, via a transparent policy.
-The exact content of such policy is an active subject of research that is orthogonal to our paper.\footnote{E.g., Waterfilling~\cite{waterfilling-pets2017} argues for security by maximum diversity in endpoints of user paths, and TAPS~\cite{taps-ndss2017} argues for security by trust policies.}
-The taxation mechanism also limits the risks that people create relays and generate dummy traffic in order to collect coins: such behavior would at the same time generate taxes that would reduce the potential profitability of such an approach.
-
-We further elaborate on these questions and other related ones in
-Section~\ref{sec:discussion}.
-
 \subsection{Ledger}
 
 In our payment design, we follow the Bitcoin paradigm in which all users maintain full and exclusive control of their monetary wealth through use of public key cryptography~\cite{nakamoto2008bitcoin}.
@@ -236,7 +200,43 @@ If we require an anonymity set of size $N$, then the maximum number of Intermedi
 Consequently, the number of active Intermediaries should be a parameter of the system that the Tor project determines based on the activity of premium users.
 Furthermore, clients should maintain channels with an number of different intermediaries to further mitigate any other unexpected side-channel leaks.
 
+\subsection{Economic considerations}
+
+Given the delicate nature of this research area, a key motivation in the technical design of our scheme is to explicitly accommodate some of the more consequential economic considerations.
+For instance, in case of deployment, the Tor project would have to decide how to assign value to the moneTor tokens, a choice which entails fundamental trade-offs between control, liability, and social perception.
+We enumerate three broad categories and briefly comment on the technical implementations as follows:
+
+\begin{enumerate}
+
+\item The Tor Project reserves control of monetary supply for the purpose of enforcing a publicly declared policy, for instance, to peg the value of tokens against one or more fiat currencies it that it holds in reserve.
+This option would require the Tor Project to reserve a privileged signing key for minting new moneTor tokens (e.g.
+when a user makes fiat deposit).
+\item The moneTor tokens are instantiated as a standard cryptocurrency whose value fluctuates as a function of market pressures and the chosen distribution schedule.
+As an any cryptocurrency, a node that rejects the distribution mechanism (e.g.
+mining in Bitcoin) would be violating the protocol.
+\item The moneTor tokens act as a secure wrapper for an external cryptocurrency such as Bitcoin, Ethereum, or a future state-backed currency.
+This option is made possible by ongoing work in the field of ledger interoperability protocols~\cite{back2014enabling,poon2017plasma}.
+
+\end{enumerate}
+
+In all three cases, note that the mechanism required implement the police takes place entirely on the ledger.
+Consequently, the off-ledger moneTor payment layer, which is the main contribution of this work, is compatible with any of these three options. 
+
+Whereas the Tor Project has several acceptable options for monetary policy, there should not be such freedom in the pricing mechanism for premium bandwidth: any price differentiation between clients or relays would inevitably leak information.
+This leakage becomes more severe with higher granularity payment options as adversaries begin to use price to link payment channels and circuits.
+We therefore impose the constraint that all users should pay a single uniform price for premium bandwidth at any time $t$.
+
+It is of course central to make sure that moneTor serves the goal of advancing of human rights and freedom of the Tor project, which may be quite different from those that would result from a purely profit-seeking environment.
+To this end, moneTor includes an explicit taxation mechanism, which we describe technically in Section~\ref{sec:tax_integration}.
+Under this scheme, any time a payment takes place within the moneTor layer, a tunable fraction of the revenue is diverted into a special account controlled by the Tor Project.
+This is analogous to a secure and automatic sales tax on premium traffic payments.
+Tor Project can then use this fund to shape the topology of the network towards some notion of desirable diversity and performance, via a transparent policy.
+The exact content of such policy is an active subject of research that is orthogonal to our paper.\footnote{E.g., Waterfilling~\cite{waterfilling-pets2017} argues for security by maximum diversity in endpoints of user paths, and TAPS~\cite{taps-ndss2017} argues for security by trust policies.}
+The taxation mechanism also limits the risks that people create relays and generate dummy traffic in order to collect coins: such behavior would at the same time generate taxes that would reduce the potential profitability of such an approach.
+We further elaborate on these questions and other related ones in Section~\ref{sec:discussion}.
+
 \subsection{Tax Integration}
+\label{sec:tax_integration}
 
 The zero-knowledge setup allows an elegant way to anonymously handle the tax collection policy.
 Thus far, we have treated the nanopayment value $\delta$ as symmetric for both the client and relay leg.
@@ -246,7 +246,6 @@ In practice, it requires only a trivial modification to specify separate values 
   \delta_C - \delta_R = \mathit{tax} + \mathit{fee}
   \label{eq:payment}
 \end{equation}
-
 
 \medskip \noindent Here, $\mathit{tax}$ is the portion of every payment that is redirected to the Tor tax authority while $\mathit{fee}$ represents compensation for $I$'s services.
 $I$ gradually accumulates these overhead charges in his balance over the course of running many nanopayment channels.
