@@ -1,5 +1,3 @@
-This appendix formally describes the algorithms presented in Section~\ref{sec:nanopaymentdetails} and implemented in our prototype.
-
 \subsection{Conventions}
 
 We adopt the following conventions in our algorithms.
@@ -9,17 +7,17 @@ We adopt the following conventions in our algorithms.
 \item New nanopayment variables have the character (n) as a prefix.
   All other variables reference a value from the original Bolt scheme, although the name might be altered somewhat.
 \item Payment values ($\epsilon, \delta$) are signed integers with respect to the end-user.
-  For example, $\delta_C$ is negative and $\delta_R$ is positive in the typical case where a client is paying a relay.
+  For example, $\delta_C$ is negative and $\delta_R$ is positive when a client is paying a relay.
 \end{itemize}
 
 \subsection{Variable Index}
 
 This section describes the symbols we use to define our algorithms.
 In the following list, the left-hand symbol names a ``high-level'' bundle of logically related values that the nodes keep in persistent storage to maintain control of their assets.
-All other symbols (including ones in the proceeding right-hand-side definitions), name ``low-level'' values, which serve as inputs to cryptographic and accounting operations.
+All other symbols name ``low-level'' values, which serve as inputs to cryptographic and accounting operations.
 
 $nT = (\delta_C, \delta_R, n, hc^0)$ --- Nanopayment Channel Token --- Stores static, public information that defines a nanopayment channel including the payment values on both legs, the maximum number of payments, and the hashchain head.
-This can be passed around freely by all parties.
+This can be passed around publicly.
 
 $ncsk_C = (nwpk_C, nwsk_C, HC)$ --- Client Nanopayment Secrets --- Includes a public/private key pair which allows the client to setup and close a nanopayment channel.
 It also includes a pre-computed hash chain to make incremental nanopayments
@@ -34,19 +32,10 @@ $nrc_C$ --- Client Channel Closure Message --- This is the final message that th
 It includes any completed nanopayments.
 
 $nS_I = \{nT: nanopayment\_state\}$ --- Intermediary Nanopayment State --- Map of all past and present nanopayment channels and the corresponding channel state.
-Possible states are:
-
-\begin{itemize}
-\item $\bot$ --- failed attempt at setting up a nanopayment channel
-\item $setup$ --- channel has been set up by $C$
-\item $established$ --- channel has been established with $R$
-\item $closed||hc^k$ --- channel has been closed and no further payments
-  are allowed
-\end{itemize}
+Possible states are: $\bot$ (failed attempt to setup a nanopayment channel), $setup$ (channel has been set up by $C$), $established$ (channel has been established with $R$), or $closed||hc^k$ (channel has been closed and no further payments are allowed).
 
 $ncsk_R = (nwpk_C, nwsk_C, \bot)$ --- Relay Nanopayment Secrets --- Includes a public/private key pair allowing the relay to setup and close a nanopayment channel.
-We structure this value as a three-item tuple to mirror $ncsk_C$.
-However, since relays cannot make payments in this moneTor, it leaves the last field blank.
+Similar to $ncsk_C$ except the last field is blank, since relays cannot make payments.
 
 $nS_R = (k, hc^k)$ --- Relay Nanopayment State --- See $nS_C$
 
@@ -54,7 +43,7 @@ $nrt_R$ --- Relay Nanopayment Refund --- See $nrt_C$
 
 $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 
-$S_I = \{ [wpk_E | nwpk_E] : micropayment_state\}$ --- Intermediary Micropayment State --- Map of all past and present micropayment channels. This variable is identical to a variable in the unmodified Bolt scheme except that the map values can correspond to either a single micropayment wallet or an active nanopayment channel.
+$S_I = \{ [wpk_E | nwpk_E] : micropayment_state\}$ --- Intermediary Micropayment State --- Map of all past and present micropayment channels.
 
 \subsection{Algorithms}
 \begin{algorithm}

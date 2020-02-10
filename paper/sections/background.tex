@@ -15,44 +15,47 @@ Within a circuit, Tor multiplexes one or more streams to handle application traf
 To reduce latency in the user experience, Tor attempts to build circuits preemptively as soon as the client obtains the necessary directory information.
 Once a user application creates a stream, it can be immediately routed through the idle circuit, dramatically improving latency.
 The anticipated number of required preemptive circuits is dynamically calculated every second by the Tor client.
-We exploit this same strategy for moneTor's circuit channel setup routine by building preemptive payment channels to ensure a minimal time-to-first-payment.
+We exploit this same strategy for moneTor's circuit channel setup routine by building \emph{preemptive payment channels} to ensure a minimal time-to-first-payment.
 
 \medskip \noindent\textbf{Flow Control.}
 Tor seeks to maintain an optimal flow of cells in each circuit by capping the rate of transmission to fixed-sized windows.
-In effect, the protocol attempts to keep the flow of cells on each circuit as full as possible while ensuring fairness between streams and that the number of cells in transition do not exceed a default limit.
+The protocol attempts to keep the flow of cells on each circuit as full as possible while ensuring fairness between streams and that the number of cells in transition do not exceed a default limit.
 Flow control has a substantial impact on network conditions, as shown by AlSabah \textit{et al.}~\cite{pets2011-defenestrator} in work toward improving total global performance.
 In the design of moneTor, we adapt these flow control windows toward our somewhat different objective to prioritize paid traffic.
 
 \medskip \noindent\textbf{Payment Channels.}
 The core cryptocurrency component featured in moneTor is the tripartite bidirectional micropayment channel.
-Many common cryptocurrency protocols can support only tens of transactions per second (see, e.g.,~\cite{team2018blockchain}).
+Many common cryptocurrency protocols can support only tens of transactions per second~\cite{team2018blockchain}.
 One popular workaround is an off-chain payment channel approach popularly known as ``Lightning Networks''~\cite{poon2016bitcoin}.
 In this setup, a single ledger transaction is used to escrow funds by two parties $A$ and $B$.
 These parties may then proceed to make bidirectional micropayments to each other \emph{without ledger interaction} through the exchange of signed ``I Owe You'' tokens.
 By themselves, channels are useful for reducing the number of ledger interactions for parties with reoccurring interactions.
-More consequential for the scalability problem is the tripartite channel paradigm in which $A$ pays $B$ through some \emph{intermediary} party $I$ with which they both maintain active channels.
+More consequential for the scalability problem is the tripartite channel paradigm.
+Here, $A$ pays $B$ through an \emph{intermediary} party $I$ with which they both maintain active channels.
 In practice, $A$ and $B$ might occupy the roles of a customer and merchant who are registered with a well-known financial service provider $I$.
 $A$, $B$, and $I$ need only interact with the ledger periodically to deposit and withdraw larger sums of money, improving the network capacity by multiple orders of magnitude.
-Informally, tripartite channels are secure if it meets the following requirements:
+Informally, tripartite channels are secure if the scheme satisfies the following requirements:
 
 \begin{enumerate}
 \item At every step of the protocol, all parties possess proof of execution of the last finalized payment.
 \item Given two proofs of payment state, the network can unambiguously identify the more recent state.
-\item When $A$ agrees to pay $B$ through $I$, the payment is atomic.
-  That is, there is never a situation in which $I$ pays $B$ but is unable to extract the agreed-upon payment from $A$.
+\item When $A$ pays $B$ through $I$, the payment is atomic.
+  Once $I$ pays $B$ it must be able to extract the
 \end{enumerate}
 
 More recent works have since extended the micropayment channel concept to support anonymity design goals.
-Tumblebit is a channel-like mixing protocol designed for Bitcoin that allows fast and anonymous off-chain payments~\cite{heilman2017tumblebit}.
-Malvavolta~\textit{et al.}~\cite{malavolta2017concurrency} describe a variant on payment channels that provides Tor-like privacy in the sense that the sender/receiver preserves their privacy under the assumption of at least one trusted intermediary.
+Tumblebit is a channel-like mixing protocol for Bitcoin that allows fast and anonymous off-chain payments~\cite{heilman2017tumblebit}.
+Malvavolta~\textit{et al.}~\cite{malavolta2017concurrency} describe a variant on payment channels providing Tor-like privacy.
+Their scheme preserves sender/receiver privacy assuming at least one trusted intermediary.
 However, these schemes are not ideal for our purposes as Tumblebit requires unrealistic synchronization between payment parties for the Tor environment while Malvavolta~\textit{et al.}
 introduces additional potentially malicious parties.
 
-We show in Section~\ref{sec:payment_overview} how an extension to Bolt~\cite{green2017bolt}, a tripartite anonymous channel protocol based on zero-knowledge proofs proposed by Green and Miers, applies to Tor incentives while providing technical guarantees of anonymity, efficiency, and payment security.
+In Section~\ref{sec:payment_overview}, we describe an extension to Bolt~\cite{green2017bolt}, a tripartite anonymous channel protocol based on zero-knowledge proofs proposed by Green and Miers.
+The modified scheme enables Tor incentives that satisfy technical guarantees of anonymity, efficiency, and payment security.
 This framework defines the anonymity set as the collection of users connected to the same intermediary.
 In other words, given a set of end-users $E_{all} = \{E_1, E_2, ...
 E_n\}$ who each have an active channel with $I$, $E_a$ should be able to send a secure payment to $E_b$ such that $I$ cannot identify $E_a$ or $E_b$ from $E_{all}$ nor can $I$ infer the payment value.
-Of course, $I$ must still be able to verify that the payment is valid and that it updates its internal channel states accordingly.
+However, $I$ must still be able to verify that the payment is valid.
 
 %%% Local Variables:
 %%% mode: latex

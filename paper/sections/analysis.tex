@@ -1,32 +1,12 @@
 \subsection{Data Collection}
 \label{subsec:datacollection}
 
-We deployed during two weeks a data collection system to look for empirical temporal information about lifetime and bandwidth consumption in Tor circuits.
+Over two weeks, we deployed a data collection system to look for empirical temporal information about lifetime and bandwidth consumption in Tor circuits.
 Our objective was to have a deeper understanding of typical Tor usage and whether such usage can benefit from our channel-based payment system.
 For example, these measurements might capture some notion about the type and magnitude of potential premium traffic.
 We classify the traffic type based on the service connection port.
 In addition to the standard ports 80 and 443 used for web traffic, we aggregate data from some other families, including the WHOIS protocol~\cite{daigle2004whois} and RWHOIS~\cite{williamson1994referral} from ports 43 and 4321, respectively.
-Using complete list of families, constructed from our reduced exist policies, we can reason based on application-specific traffic.
-
-\paragraph*{Efforts to preserve users privacy}
-
-To ensure ethical experimentation, we contacted the Tor research safety board~\cite{torsafety} and used their feedback to inform our data collection process.~\footnote{E.g.
-avoid writing metadata from any specific flow or circuit to disk.}
-
-We collected data from five old and stable exit relays with a total bandwidth of 50 MiB/s, stripped the origin metadata, aggregated it in memory, and store it on a central server into bins of configurable size for each traffic family.
-The data only covers circuits that are ``active'' from the perspective of the exit relay, in other words, circuits that have received a connection request to an IP address on the internet.
-Once we collected enough data (1600 circuits) from a single family, we dump the information on the disk, clear the relay memory, and resume a new session.
-The final result contains only aggregated data containing the following two pieces of information for each pool:
-
-\begin{itemize}
-\item \textbf{Time Profile}: The number summing inbound and outbound cells in each 5-second time interval since the success of the DNS request.
-\item \textbf{Total Counts}: The total amount of cells processed by a circuit.
-  We aggregate this information by taking the mean of fixed-size nearest neighbor bins.
-\end{itemize}
-
-Crucially, we do not record information linked to any single particular user flow on disk.
-
-\paragraph*{Observations}
+Using complete list of families from our reduced exist policies, we can reason based on application-specific traffic.
 
 \begin{figure*}[t] \centering
   \begin{subfigure}[t]{0.47\textwidth} \centering\centering
@@ -42,6 +22,24 @@ Crucially, we do not record information linked to any single particular user flo
   \caption{Data collection from 5 old and stable exit relays with a cumulative bandwidth of $\approx$50 MiB/s}
   \label{fig:stats}
 \end{figure*}
+
+\paragraph*{Efforts to preserve users privacy}
+
+To ensure ethical experimentation, we contacted the Tor research safety board~\cite{torsafety} and used their feedback to inform our data collection process.~\footnote{E.g.
+avoid writing metadata from any specific flow or circuit to disk.}
+We collected data from five old and stable exit relays with a total bandwidth of 50 MiB/s, stripped the origin metadata, aggregated it in memory, and stored it on a central server into bins of configurable size for each traffic family.
+The data only covers circuits that are ``active'' from the perspective of the exit relay, in other words, circuits that have received a connection request to an IP address on the internet.
+Once we collected enough data (1600 circuits) from a single family, we dump the information on the disk, clear the relay memory, and resume a new session.
+Crucially, we do not record information linked to any single particular user flow on disk.
+The final result contains only aggregated data containing the following two pieces of information for each pool:
+
+\begin{itemize}
+\item \textbf{Time Profile}: The number summing inbound and outbound cells in each 5-second time interval since the success of the DNS request.
+\item \textbf{Total Counts}: The total amount of cells processed by a circuit.
+  We aggregate this information by taking the mean of fixed-size nearest neighbor bins.
+\end{itemize}
+
+\paragraph*{Observations}
 
 Our measurements successfully captured several essential pieces of information for the design and justification of moneTor.
 For example, one crucial task is to determine the number of potential users that could benefit from paid traffic.
