@@ -1,8 +1,7 @@
-Understanding typical Tor usage and assessing if it can benefit from our priority scheme is a key requirement of our an incentive design.
-Appendix~\ref{sec:analysis} covers a real Tor measurement study which illustrates the importance of token exchange within the first few seconds of the data stream.
-In our design, reliability is obtained from the pre-built payment channel setup and from negligible payment verification cost, potentially supporting the majority of observed short-lived and bursty Tor circuits in a fair-exchange setting.
-
+Understanding typical Tor usage and assessing if it can benefit from our priority scheme is a crucial requirement.
+Appendix~\ref{sec:analysis} covers a real Tor measurement study illustrating the importance of token exchange within the first few seconds of the data stream.
 Having established the empirical context for a channel payment scheme, we validated our technical design via experiments performed on a prototype software implementation within the native Tor codebase.
+This section illustrates that, due to the pre-built payment channel setup and low payment verification cost, our scheme potentially supports the majority of observed short-lived and bursty Tor circuits in a near-fair-exchange setting.
 
 \subsection{Prototype}
 
@@ -26,15 +25,15 @@ Having established the empirical context for a channel payment scheme, we valida
   \label{fig:overhead}
 \end{figure*}
 
-A substantial contribution of our research is embedded within our implementation of the moneTor framework.
+The implementation of moneTor embeds a substantial portion of our research contributions.
 The modifications, applied to Tor release version 0.3.2.10, cover approximately fifteen thousand added lines of code across Tor's core C software.
 We emphasize that the implementation is engineered solely for our experiments.
-Most notably, expensive cryptographic operations such as ZKPs and commitments were simulated using methods that account for Shadow's unique virtual time management~\cite{jansen2011shadow}.
-We consider both scenarios in which the simulated Tor process is running on a multicore or singlecore processor.
+Most notably, we simulated expensive cryptographic operations such as ZKPs and commitments using methods that account for Shadow's unique virtual time management~\cite{jansen2011shadow}.
+We consider both scenarios in which the simulated Tor process is running on a multicore or a singlecore processor.
 In the multicore case, the cryptographic operations are replaced by an ``idle'' command that allows the virtual node to complete other tasks in parallel.
 In the singlecore case, cryptographic operations are simulated by looping through a series of dummy SHA256 Hash operations.
-Using these methods, duration of the delays were tuned to conservatively reflect real measurements in prior background work~\cite{green2017bolt}.\footnote{Extracted values are conservative in the sense that our zero-knowledge proofs require proving only a subset of the statements required in each corresponding Bolt zero-knowledge proof.}
-Note that our prototype does not implement anything that does not help us to answer our research goals, such as coin/wallet management, extension of the Tor control protocol to manage the asset and various options, Intermediary information recovery in case of crash, etc.
+Using these methods, we conservatively tuned the delays to reflect real measurements from prior background work~\cite{green2017bolt}.\footnote{Extracted values are conservative in the sense that our zero-knowledge proofs require proving only a subset of the statements required in each corresponding Bolt zero-knowledge proof.}
+Note that our prototype does not implement anything that does not help us to answer our research goals, such as coin/wallet management, an extension of the Tor control protocol to manage the asset, and various options, Intermediary information recovery in case of a crash, etc.
 The prototype serves the following purposes in our study:
 
 \begin{enumerate}
@@ -43,33 +42,31 @@ The prototype serves the following purposes in our study:
 \item Our platform allows us to obtain a rough factor-of-two approximation for all bandwidth, computation, and memory requirements of a real deployment, both globally and at individual nodes.
 \end{enumerate}
 
-The first design purpose is clearly qualitative and we briefly note that we did not discover any insurmountable logical flaws in the design.
+The first design purpose is qualitative, and we briefly note that we did not discover any insurmountable logical flaws in the design.
 To analyze the networking dynamics and resource consumption, we studied our implementations through the following experiments.
 
 \subsection{Methodology}
 \label{subsec:methodology}
 
-Experiments were conducted using the Tor shadow simulator tool~\cite{jansen2011shadow, tracey2018high}.
-We ran two sets of experiments at different scales from a consensus document published in early February 2018.
-The first set featured 100 relays, 1000 clients, 10 intermediaries, and ran for a total of 90 minutes.
-These experiments were used to gather information concerning the system overhead and protocol execution times.
-The second set featured 250 relays, 2500 clients, 25 intermediaries, 80 minutes of total run time, and was used to measure the performance benefits conferred to premium clients.
-In both cases, simulated traffic features 8\% \emph{bulk} clients who continuously download 5 MiB files and 92\% \emph{web} clients who periodically download 2 MiB files.\footnote{While 5 MiB bulk files are a common standard in Tor benchmarking~\cite{portal2018tormetrics}, 2 MiB web files reflect the approximate size of modern web pages~\cite{team2018httparchive}.}
+We used the Tor shadow simulator tool~\cite{jansen2011shadow, tracey2018high} to conduct experiments at two different network scales obtained from a consensus document published in early February 2018.
+The first scale features 100 relays, 1000 clients, 10 intermediaries, and ran for a total of 90 minutes, which is sufficient to gather information concerning the system overhead and protocol execution times.
+The second scale features 250 relays, 2500 clients, 25 intermediaries, 80 minutes of total run time, and more accurately models the networking performance benefits conferred to premium clients.
+In both cases, simulated traffic included 8\% \emph{bulk} clients who continuously download 5 MiB files and 92\% \emph{web} clients who periodically download 2 MiB files.\footnote{While 5 MiB bulk files are a common standard in Tor benchmarking~\cite{portal2018tormetrics}, 2 MiB web files reflect the approximate size of modern web pages~\cite{team2018httparchive}.}
 The number and behavior of clients were chosen to satisfy (A) realistic congestion rates measured by a transfer timeout percentage around 4\%~\cite{portal2018tormetrics} and a historical bulk/web global traffic ratio of about 25\%/75\%~\cite{privcount-ccs2016, learning-ccs2018}.
-Neither the scale of our experiments nor the precise configuration of client nodes are intended to be precise replicas of real-world conditions.
-Tor networking is itself a complex area of research and we are content to adopt the simplest model that will highlight the relatively crude networking needs of our incentivization scheme.
+We do not intend for the scale of our experiments the exact configuration of client nodes to precisely replicate real-world conditions.
+Tor networking is itself a complex area of research, and we are content to adopt the simplest model that broadly highlights the networking dynamics of our incentivization scheme.
 
 \subsection{Experiments}
 
-\label{subsec:experiments} Our experiments are separated into three groups each capturing a separate characteristic of the scheme.
+\label{subsec:experiments} Our experiments fall into one of three groups each capturing a separate characteristic of the scheme.
 
 \medskip \noindent \textbf{Global Overhead.}
 First, we attempt to show the total cost of the moneTor scheme in terms of total network throughput.
-To highlight worst-case performance, we configured a medium scale experiment consisting of 100\% of premium clients which we compared to a baseline trial with 0\% premium clients.
+To highlight worst-case performance, we configured a medium-scale experiment consisting of 100\% of premium clients, which we compared to a baseline trial with 0\% premium clients.
 The purpose of this experiment to understand the worst-case overhead imposed by the payment scheme \emph{without} applying any network prioritization in either control-flow or EWMA.
 Since our protocol can benefit from concurrently executed cryptographic operations, a key parameter to the simulation is the number of CPU cores available on each relay.
 Unfortunately, this information is not publicly available.
-As a result, we conducted two trials: one in which all nodes are running on multi-core hardware and one in which all nodes are running on single-core hardware.
+As a result, we conducted two trials: one in which all nodes are running on multicore hardware and one in which all nodes are running on singlecore hardware.
 Figure~\ref{fig:overhead} summarizes the results of both trials.
 
 \begin{figure*}[t] \centering
@@ -93,23 +90,23 @@ Figure~\ref{fig:overhead} summarizes the results of both trials.
   \label{fig:latencymeasurements}
 \end{figure*}
 
-Our findings indicate that even in the worst case scenario, our system incurs statistically negligible overhead at these scales across the two measures of download time (e.g., less than 2\% increase on the mean web download for the singlecore experiment), throughput, and memory usage.
-When examining the raw network messages, we found corroborating evidence that moneTor only contributes to a small fraction, less than $1\%$, of the total network traffic in our experiment, a result which holds true across all of our trials.
+Our findings indicate that even in the worst-case scenario, our system incurs statistically negligible overhead at these scales across the two measures of download time (e.g., less than 2\% increase on the mean web download for the singlecore experiment), throughput, and memory usage.
+When examining the raw network messages, we found corroborating evidence that moneTor only contributes to a small fraction, less than $1\%$, of the total network traffic in our experiment, a result which holds across all of our trials.
 By default, we configured a payment rate of one payment cell for every 1000 data cells exchanged in either direction.
 If the network requires more fairness, it is also possible to increase the payment rate with negligible CPU cost as long as the network overhead introduced by the control cells remains under an acceptable fraction of the overall bandwidth.
 
 \medskip \noindent \textbf{Payment Latency.}
 Given results from our data collection, we surmise that payment latency is a crucial factor in servicing our front-loaded clients.
 To this end, we measure the distribution of completion times for various steps in the protocol.
-To highlight the effects of native latency in the Tor network, we show payments split across each relay role of guard, middle, and exit.
-Recall that moneTor makes use of high-overhead, low-marginal cost payment channels (i.e., the channels take time to build but the client needs them long after they are built).
+To highlight the effects of inherent latency in the Tor network, we show payments split across each relay role of guard, middle, and exit.
+Recall that moneTor makes use of high-overhead, low-marginal cost payment channels (i.e., the channels take time to build, but the client needs them long after they are built).
 In other words, the bulk of the cost in our scheme lies in the execution of the nanopayment channel \emph{establish} and \emph{close} protocols as shown in Figure~\ref{fig:payments_establish} and Figure~\ref{fig:payments_close}.
 Notice that close operations take roughly twice as long to complete as the establish operations due to the need for the relay to close his half of the nanopayment channel before the client can complete hers.
-Figure~\ref{fig:ttfp} illustrates the time to first payment, our most revealing latency metric.
+Figure~\ref{fig:ttfp} illustrates the time-to-first-payment, our most revealing latency metric.
 This measure includes the overhead in channel establishment when we do not have available preemptive channels.
-In the best case scenario, when all three payment channels have been correctly pre-built for the circuit, this measure is equivalent to a single trip toward each relay.
+In the best-case scenario, when all three payment channels have been correctly pre-built for the circuit, this measure is equivalent to a single trip toward each relay.
 Comparing this Figure~\ref{fig:ttfp} to Figure~\ref{fig:payments_establish}, we observe the effectiveness of preemptive channel building.
-The other observation sustaining the effectiveness of the pre-built strategy is the recorded time for the ``call'' versus ``send'' lines; if no discrepancy is observed between them, it means that the pre-built was a success leading to fully established pre-built channels.
+The other observation sustaining the effectiveness of the pre-built strategy is the recorded time for the ``call'' versus ``send'' lines; if there is no discrepancy between them, it means that the pre-built was a success leading to fully established pre-built channels.
 
 In all protocol phases, we observe that latencies for guard relays are negligible in comparison to the middle and exit relays, which is a result of our design decision to implement directly-paid guard channels.
 Again, this is a Tor-specific optimization made possible by the fact that guards maintain a semi-persistent, transparent relationship with only a small subset of clients.
@@ -120,16 +117,16 @@ To perform this analysis, we prepared sets of three small experiments with varyi
 In these experiments, we assume 25\% of premium users.
 From Figures \ref{fig:modifier_pr25_web}, \ref{fig:modifier_pr25_bulk}, and \ref{fig:modifier_pr25_all}, we observe that, first, variations in our network-wide tunable parameters do offer differentiation in download speed.
 Yet, as we detail in Appendix~\ref{sec:scheduling}, offering bandwidth differentiation for the Tor network is more complex than previously assumed.
-Indeed, local scheduling priority, which was historically effective for past Tor topologies, appears to be ineffective under current conditions where congestion is concentrated at the exit interface.
+Indeed, local scheduling priority, which was historically effective for past Tor topologies, appears to be ineffective under current conditions where congestion concentrates at the exit interface.
 Second, the differentiation in bandwidth for $\alpha = .25, \beta=5$ ``averages out'' to approximately mirror the baseline experiment, indicating little loss in overall network performance, and confirming our overhead experiment (recall 25\% of premium users).
 Nevertheless, our result for $\alpha = 0.5, \beta=10$ indicates that the performance degrades faster for nonpremium users when we become too aggressive in procuring gains for premium users.
 The data also highlights the complexity in selecting a set of parameters and techniques to offer efficient prioritization without degrading the overall throughput of the network.
 The overarching takeaway is that the network prioritization mechanism appears to be an even more complex challenge than the design of the anonymous payment layer itself.
 
 Note that our analysis of the scheme holds the total network capacity static.
-However, the motivation for any Tor incentivization scheme is to attract new relays to grow the network which would, in principle, improve anonymity and censorship resistance for all users.
-The effect on performance is less clear.
-Although adding new relays will increase the throughput, a faster Tor would likely attract more users as a well.
+However, the motivation for any Tor incentivization scheme is to attract new relays to grow the network, which would, in principle, improve anonymity and censorship resistance for all users.
+The effect on performance is unclear.
+Although attracting new relays would increase the throughput, a faster Tor would likely appear to more users as a well.
 In the absence of a reliable economic model, it is unclear how incentives would affect the experience of the average user, and so we opted to forgo the modeling of added capacity.
 
 \begin{figure*} \centering

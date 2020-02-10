@@ -20,7 +20,7 @@ Notably, the number of active intermediaries can be adjusted to attain an accept
 
 \medskip \noindent\textbf{Bolt} This basis of our scheme is an extension of Bolt's anonymous micropayment channel protocol which is itself a privacy-focused adaption of the ``Lightning Network''~\cite{poon2016bitcoin}.
 Due to its importance as a starting point for our work, we first provide a brief outline of the prerequisite micropayment channel procedures defined in Bolt.
-All protocols are either two or three party interactions between a subset of the following roles: $C$ (client), $R$ (relay), $E$ (end user: either a client or relay), $I$ (intermediary), and $L$ (ledger).
+All protocols are either two or three party interactions between a subset of the following roles: $C$ (client), $R$ (relay), $E$ (end-user: either a client or relay), $I$ (intermediary), and $L$ (ledger).
 For our use case, the reader can assume that all communications are anonymously routed through Tor circuits~\cite{green2017bolt}.
 
 \begin{itemize}
@@ -57,7 +57,7 @@ Finally, note that the establishments and closures of nanopayment channels do no
   \includegraphics[trim={0.5cm, 0.5cm, 0.5cm, 0.5cm}, clip,
     scale=0.6]{images/party_diagram.png}
   \caption[Payment Roles]{Payment Roles --- Dashed lines represent periodic transactions (rare), thin double lines indicate micropayment channels (used at the beginning and end of circuits lifetime), and thick double lines indicate a nanopayment channel (handling nanopayments during the lifetime of the circuit).
-    The dashed outline around the intermediary represents a notion of payment anonymity for the end users.
+    The dashed outline around the intermediary represents a notion of payment anonymity for the end-users.
     Connections to the ledger and to the intermediary are protected by an internal Tor circuit.}
   \label{fig:parties}
 \end{figure}

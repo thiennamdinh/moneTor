@@ -30,7 +30,7 @@ Users may wish to transfer tickets to other users, but this transfer must be don
 Small numbers of ephemeral tickets are freely distributed by a central \emph{bank} to any client upon request or to relays that have accumulated tickets spent by clients.
 Crucially, tickets can only be spent at a single relay defined at the time of their minting, in order to circumvent the double spending problem~\cite{jansen2010recruiting}.
 However, users may exchange accumulated tickets for tickets from other relays through a central bank within a set time interval.
-In addition to the aforementioned general concerns, BRAIDS raises two more: 3) verifying a blind signature on relay side for each payment is computationally intensive if the rate of payment is high, and current high-bandwidth Tor relays are already CPU-bound; 4) tickets are relay-specific means that users must interact frequently with the bank.
+In addition to the general concerns listed earlier, BRAIDS raises two more: 3) verifying a blind signature on relay side for each payment is computationally intensive if the rate of payment is high, and current high-bandwidth Tor relays are already CPU-bound; 4) tickets are relay-specific means that users must interact frequently with the bank.
 Consequently, users have two costly options as the network increases: stockpile a large number of tickets for each relay or interact frequently with the central bank.
 
 \medskip\noindent\textbf{LIRA.}

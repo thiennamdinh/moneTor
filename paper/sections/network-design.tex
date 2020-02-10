@@ -1,10 +1,10 @@
-\subsection{Pre-built Channels} By default, Tor attempts to pre-build circuits in order to reduce latency once a user wishes to create a data stream.
+\subsection{Pre-built Channels} By default, Tor attempts to pre-build circuits to reduce latency once a user wishes to create a data stream.
 Much like circuits, moneTor payment channels are high in initial latency because of the many in-out messages in the protocol.
-We therefore exploit the same strategy currently used in circuit establishment by allowing payment channels to be preemptively set up and established on clean pre-built circuits.
-This dramatically reduces the effective time to first payment.
-Unfortunately, excessive establishment of preemptive channels will eventually afflict the network with overhead.
-Our implementation features a rudimentary prediction strategy that attempts to balance this trade-off by anticipating the number of needed channels using historical usage information in a similar way to how Tor anticipates the need for a fresh circuit.
-The effectiveness of preemptively established channels is analyzed in Section~\ref{sec:experimentations}, and is expected to make the payment confirmation time matching the round-trip-time of the client-relay connection.
+We exploit the same strategy currently used in circuit establishment by allowing payment channels to be preemptively set up and established on clean pre-built circuits.
+This approach dramatically reduces the time-to-first-payment.
+Unfortunately, excessive establishment of preemptive channels introduces network overhead.
+Our implementation features a basic prediction strategy that attempts to balance this trade-off by anticipating the number of needed channels using historical usage information in a similar way to how Tor anticipates the need for a fresh circuit.
+We analyze the preemptive channels approach in Section~\ref{sec:experimentations} and show that the payment confirmation time matches the round-trip-time of the client-relay connection.
 
 \subsection{Prioritized Traffic}
 \label{subsub:prioritized}
@@ -12,23 +12,23 @@ The effectiveness of preemptively established channels is analyzed in Section~\r
 Traffic scheduling is perhaps the most intuitive mechanism with which to implement prioritization.
 However, we found that local scheduling decisions on each relay for priority do not work well with the current state of the Tor network, which precludes out-of-the-box scheduling approaches based on DiffServ~\cite{dovrolis1999case} and EWMA~\cite{tang2010improved}.
 Intuitively, this is a direct result of the evolution of the Tor network capacity over recent years.
-Due to the growth in bandwidth across guard and middle relays, the network now sees the most congestion between the exit relay and final destination.
-In our analysis of scheduling under a simulated modern Tor topology, we found that relays were able to instantaneously flush their queues at each write event, rendering any attempt at local scheduling to be ineffective.
+Due to the growth in bandwidth across guard and middle relays, the network now sees the most congestion between the exit relay and the final destination.
+In our analysis of scheduling under a simulated modern Tor topology, we found that relays were able to instantaneously flush their queues at each ``write'' event, rendering any attempt at local scheduling to be ineffective.
 We believe that these results, detailed in Appendix~\ref{sec:scheduling}, may suggest a need for a separate comprehensive study of network prioritization mechanisms.
 
 Consequently, we turn the alternative strategy of prioritizing traffic through Tor's internal control-flow window sizes, which conversely tends to be more accurate with lower internal congestion~\cite{archive-2009-mail, kiraly2008solving}.
 Indeed, since local decisions inside the scheduler at a particular relay may fail to achieve priority, designing priority as a global function of the circuit may help.
 Recall that edge nodes regulate the traffic flux in either direction using a set of flow control windows.
-Roughly speaking, these windows determine space allotted to each circuit on a relay's scheduling queue, which in turn is positively correlated with effective bandwidth.
+Roughly speaking, these windows determine space allotted to each circuit on a relay's scheduling queue, which in turn positively correlates with effective bandwidth.
 We implement our prioritization scheme by statically readjusting the window maximum sizes once according to the following formula (both Circ window and Stream window).
 \begin{equation} window' = window(1+ \alpha(premium / pr\% - 1)) \label{eq:flow} \end{equation} Here, a circuit is marked as prioritized by the bit $premium \in \{0, 1\}$.
 The tunable priority benefit $\alpha \in [0, 1]$ defines the proportion of the non-premium capacity that we wish to transfer to premium clients.
 By accounting for $pr\% \in [0,1]$, the fraction of premium to nonpremium clients, we can keep the total flow capacity constant.
 This design decision means that the memory consumption at relays induced by processing cells should stay constant as well.
 
-Even if most relays are able to flush all queues at each write event, some relays may still be congested within the Tor network.
+Even if most relays can flush all queues at each ``write'' event, some relays may still suffer from congestion within the Tor network.
 In this case, modifying Tor's overlay flow control would not achieve priority since the cells are stuck within the congested relay's queues.
-To overcome this issue, we modify EWMA with a simpler linear scaling factor that favors paid circuits.
+To overcome this issue, we modify EWMA with a linear scaling factor that favors paid circuits.
 
 \begin{equation}
   A_{t + \Delta t} = A_t \times 0.5^{\Delta t/H}
@@ -42,14 +42,13 @@ $C$ is the number of cells relayed within $\Delta t$, the time since the previou
 Our added term, $\beta \in [1, \inf)$, is a tunable parameter such that $\mathit{Bandwidth}_{\mathit{premium}} = \mathit{Bandwidth}_{\mathit{nonpremium}} \times \beta$ for any given circuit under ideal conditions.
 
 Finally, note that our current design focuses on the conditions of the current Tor network, where the vast majority of traffic exits the network and congestion occurs primarily at exits.
-It is not designed for onion services, which do not pass through exits (though it is not inherently incompatible with these).
-We leave consideration of prioritization for internal circuits as future work.
+Although it is not inherently incompatible with our scheme, we leave the prioritization of internal onion services, which do not pass through exits, for future work.
 
 \medskip \noindent \textbf{Interlude.}
-This concludes the design of the moneTor framework.
+This section concludes the design of the moneTor framework.
 In the proceeding sections, we describe steps taken to iteratively select and validate key parameters as well as the scheme as a whole.
-Such parameters include: payment frequency, preemptive channel creation, and prioritization amounts ($\alpha, \beta$).
-Throughout this process, the underlying objective is to prove that we can confer qualitatively ``significant'' advantage to paid premium users while incurring minimal overhead costs with respect to throughput, memory usage, and latency within a realistic network environment.
+Such parameters include payment frequency, preemptive channel creation, and prioritization amounts ($\alpha, \beta$).
+Throughout this process, the underlying objective is to prove that we can confer qualitatively ``significant'' advantage to paid premium users while incurring minimal overhead costs for throughput, memory usage, and latency within a realistic network environment.
 
 %%% Local Variables:
 %%% mode: latex

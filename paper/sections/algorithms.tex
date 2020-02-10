@@ -1,4 +1,4 @@
-This appendix formally describes the algorithms presented in Section~\ref{sec:nanopaymentdetails} which have been implemented in our proof-of-concept. 
+This appendix formally describes the algorithms presented in Section~\ref{sec:nanopaymentdetails} and implemented in our prototype.
 
 \subsection{Conventions}
 
@@ -6,32 +6,34 @@ We adopt the following conventions in our algorithms.
 
 \begin{itemize}
 \item Variable subscripts denote a party or role ((I)ntermediary, (C)lient, (R)elay, (E)nd user).
-\item New nanopayment variables are prefixed with the character (n).
+\item New nanopayment variables have the character (n) as a prefix.
   All other variables reference a value from the original Bolt scheme, although the name might be altered somewhat.
-\item Payment values ($\epsilon, \delta$) are signed integers with respect to the end user.
+\item Payment values ($\epsilon, \delta$) are signed integers with respect to the end-user.
   For example, $\delta_C$ is negative and $\delta_R$ is positive in the typical case where a client is paying a relay.
 \end{itemize}
 
 \subsection{Variable Index}
 
-The follow itemizes variables used in the algorithm design.
-The first level of variables are used for actual cryptographic and accounting operations.
-These are bundled into groups of higher level variable names meant to represent abstraction concepts such as payment channels and party states.
-Only these high level variables are stored between protocol executions.
+This section describes the symbols we use to define our algorithms.
+In the following list, the left-hand symbol names a ``high-level'' bundle of logically related values that the nodes keep in persistent storage to maintain control of their assets.
+All other symbols (including ones in the proceeding right-hand-side definitions), name ``low-level'' values, which serve as inputs to cryptographic and accounting operations.
 
-$nT = (\delta_C, \delta_R, n, hc^0)$ --- Nanopayment Channel Token --- Stores static, public information that defines a nanopayment channel including the payment values on both legs, the max number of payments, and the hashchain head.
+$nT = (\delta_C, \delta_R, n, hc^0)$ --- Nanopayment Channel Token --- Stores static, public information that defines a nanopayment channel including the payment values on both legs, the maximum number of payments, and the hashchain head.
 This can be passed around freely by all parties.
 
-$ncsk_C = (nwpk_C, nwsk_C, HC)$ --- Client Nanopayment Secrets --- Includes a Public/private key pair which allows the client to setup and close a nanopayment channel and a precomputed hash chain to make incremental nanopayments
+$ncsk_C = (nwpk_C, nwsk_C, HC)$ --- Client Nanopayment Secrets --- Includes a public/private key pair which allows the client to setup and close a nanopayment channel.
+It also includes a pre-computed hash chain to make incremental nanopayments
 
-$nS_C = (k, hc^k)$ --- Client Nanopayment State --- Mutable state of the nanopayment; includes the count of payments made so far and the latest sent hash pre-image
+$nS_C = (k, hc^k)$ --- Client Nanopayment State --- Stores the mutable, public state of the nanopayment.
+Includes the current number of completed nanopayments and the latest sent hash preimage
 
-$nrt_C$ --- Client Nanopayment Refund --- Allows the client to make a claim to the ledger on escrowed money at any time.
-This refund is signed by the intermediary and conditioned on revealing the latest hash pre-image that the client claims to have sent.
+$nrt_C$ --- Client Nanopayment Refund --- Allows the client to make a claim to the ledger at any time for the escrowed money.
+This refund is signed by the intermediary and conditioned on revealing the latest hash preimage that the client claims to have sent.
 
-$nrc_C$ --- Client Channel Closure Message --- Final message that is posted to the ledger by the client to claim all funds of the micropayment channel including any completed nanopayments.
+$nrc_C$ --- Client Channel Closure Message --- This is the final message that the client posts to the ledger to claim all funds of the micropayment channel.
+It includes any completed nanopayments.
 
-$nS_I = \{nT: channel\_state\}$ --- Intermediary Nanopayment State --- Map of all past and present nanopayment channels and the corresponding channel state.
+$nS_I = \{nT: nanopayment\_state\}$ --- Intermediary Nanopayment State --- Map of all past and present nanopayment channels and the corresponding channel state.
 Possible states are:
 
 $S_I$ --- State of the Intermediary.
@@ -45,8 +47,9 @@ Used to avoid multiple creations of nanopayment channels over the same micropaym
   are allowed
 \end{itemize}
 
-$ncsk_R (nwpk_C, nwsk_C, \bot)$ --- Relay Nanopayment Secrets --- Includes a public/private key pair allows the relay to setup and close a nanopayment channel.
-Since relays cannot make payments in this setup, the last field is left blank.
+$ncsk_R = (nwpk_C, nwsk_C, \bot)$ --- Relay Nanopayment Secrets --- Includes a public/private key pair allowing the relay to setup and close a nanopayment channel.
+We structure this value as a three-item tuple to mirror $ncsk_C$.
+However, since relays cannot make payments in this moneTor, it leaves the last field blank.
 
 $nS_R = (k, hc^k)$ --- Relay Nanopayment State --- See $nS_C$
 
@@ -203,7 +206,7 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Close]{\textbf{Nano-Close} Protocol between an end user and an intermediary to close a channel.}
+  \caption[Nano-Close]{\textbf{Nano-Close} Protocol between an end-user and an intermediary to close a channel.}
   \begin{algorithmic}[1]
     \State{$\forall E \in \{Client, Relay\}$}
     \Procedure{EndUser}{$pp, pk_I, w_E, nT, ncsk_E, nS_E$}
@@ -260,7 +263,7 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Refund]{\textbf{Nano-Refund} Algorithm by an end user to close a micropayment channel and claim ledger funds.}
+  \caption[Nano-Refund]{\textbf{Nano-Refund} Algorithm by an end-user to close a micropayment channel and claim ledger funds.}
   \begin{algorithmic}[1]
     \State{$\forall E \in \{Client, Relay\}$}
     \Function{EndUser}{$pp, csk_E, w_E, nT, ncsk_E, nS_E, nrt_E$}
@@ -278,7 +281,7 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Refute]{\textbf{Nano-Refute} Algorithm by an intermediary to respond to an end user's refund claim by posting its own channel closure message to the ledger}
+  \caption[Nano-Refute]{\textbf{Nano-Refute} Algorithm by an intermediary to respond to an end-user's refund claim by posting its own channel closure message to the ledger}
   \begin{algorithmic}[1]
     \State{$\forall E \in \{Client, Relay\}$}
     \Function{Intermediary}{$pp, T_E, S_I, nS_I, nrc_E$}
