@@ -58,7 +58,7 @@ $S_I = \{ [wpk_E | nwpk_E] : micropayment_state\}$ --- Intermediary Micropayment
     \State{\hskip\algorithmicindent{} $wCom' = $~Commit$(wpk', B + \epsilon, r')\ \wedge$}
     \State{\hskip\algorithmicindent{} Verify$(pk_{payee}, (wpk, B), \sigma^w) = 1\ \wedge$}
     \State{\hskip\algorithmicindent{} $B + \epsilon \geq 0\}$}
-    \State{\Return{$(wsk', wpk', wCom', \pi)$}
+    \State{\Return{$(wsk', wpk', wCom', \pi)$}}
     \EndFunction{}
   \end{algorithmic}
 \end{algorithm}
