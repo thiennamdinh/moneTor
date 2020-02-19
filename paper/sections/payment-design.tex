@@ -561,6 +561,7 @@ side-channel vulnerabilities, most notably, timing attacks. For instance, a
 channel-creation policy that immediately mints a new nanopayment channel after
 the closing of the previous channel would allow $I$ to trivial link all channels
 belong to $C$. To mitigate this particular risk, we require a random delay $t_r$
+uniform $\in [0, r]$
 between nanopayment channels. Since our scheme specifies the availability of
 preemptive channels, such a delay should not perversely impact user experience.
 User privacy with respect to side channels and other statistical techniques
@@ -569,7 +570,8 @@ intermediary. If we require an anonymity set of size $N$, then the maximum
 number of Intermediaries allowed in the network is $\frac{\mathbb{E}[W]}{N}$
 where $W$ is a discrete random variable holding the number of payment events
 between any $t_i$, the time at \textbf{Nano-Close} and $t_{i+1}$, the time of
-the next \textbf{Nano-Setup} or \textbf{Nano-Establish}. Consequently, the
+the next \textbf{Nano-Setup} or \textbf{Nano-Establish}. This number of events
+should be counted within a sliding time window of size $r$. Consequently, the
 number of active Intermediaries should be a parameter of the system that the Tor
 project determines based on the activity of premium users. Furthermore, clients
 should maintain channels with an number of different intermediaries to further
