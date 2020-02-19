@@ -15,9 +15,7 @@
 \usepackage[utf8]{inputenc}%(only for the pdftex engine)
 %\RequirePackage[no-math]{fontspec}%(only for the luatex or the xetex engine)
 
-
 \usepackage[big]{dgruyter_NEW}
-
 
 % Don't use non-existant fonts for labels in footnotes.
 \def\@makefnmark{\hbox{\@textsuperscript{\normalfont\@thefnmark}}}
@@ -74,23 +72,14 @@ keys
 \runningtitle{Scaling Up Anonymous Communication with Efficient Nanopayment Channels}
 
   %\subtitle{...}
-\begin{abstract}
-  { Tor, the most widely used and well-studied traffic anonymization network in
-    the world, suffers from orthogonal limitations in network diversity and
-    performance. We propose to mitigate both problems simultaneously through the
-    introduction of a premium bandwidth market between clients and relays. To
-    this end, we present moneTor: a relay incentivization scheme featuring
-    anonymous, efficient, and economically robust nanopayments. Our approach
-    leverages the latest advances in cryptocurrency research toward a design
-    that is directly integrated into the existing Tor architecture. This work
-    describes a full-stack strategy that covers economic policy, novel payment
-    algorithms, and networking implementation. Through live empirical data
-    collection and analysis of our emulated prototype, we argue that moneTor,
-    based on short-lived channels on the top of a long-lived channel, is a
-    feasible and flexible monetary incentive scheme for Tor, offering upwards of
-    100\% improvements in differentiated bandwidth for paying users at
-    near-optimal throughput and latency overhead. }
-\end{abstract}
+\begin{abstract} {
+    Tor, the most widely used and well-studied traffic anonymization network in the world, suffers from orthogonal limitations in network diversity and performance.
+    We propose to mitigate both problems simultaneously through the introduction of a premium bandwidth market between clients and relays.
+    To this end, we present moneTor: a relay incentivization scheme featuring anonymous, efficient, and economically robust nanopayments.
+    Our approach leverages advances in the cryptocurrency field toward a design that directly integrates into the existing Tor architecture.
+    This work is a multi-faceted contribution that includes the specification of a novel payment algorithm, analysis of the network integration, and discussion of economic and social considerations.
+    Through live empirical data collection and evaluation of our emulated prototype, we argue that moneTor, based on short-lived channels on the top of a long-lived channel, is a feasible and flexible monetary incentive scheme for Tor, offering upwards of 100\% improvements in differentiated bandwidth for paying users at near-optimal throughput and latency overhead.
+} \end{abstract}
 
   \keywords{Tor, cryptocurrency, payment channels}
 %  \classification[PACS]{}
@@ -120,11 +109,6 @@ keys
 \label{sec:background}
 \input{sections/background.tex}
 
-%
-%\section{Economic Design}
-%\label{sec:economic}
-%\input{sections/economic-design.tex}
-
 \section{Payment Design}
 \label{sec:payment}
 \input{sections/payment-design.tex}
@@ -141,17 +125,9 @@ keys
 \label{sec:related_work}
 \input{sections/related-work.tex}
 
-%\section{Limitations and Future Work}
-%\label{sec:limitations_futurework}
-%\input{sections/discussion.tex}
-
 \section{Discussion}
-\input{sections/discussion_meta.tex}
+\input{sections/discussion.tex}
 \label{sec:discussion}
-
-% \section{Data Reproducibility}
-% \label{sec:code}
-% \input{sections/codeinfo.tex}
 
 \section{Conclusion}
 \label{sec:conclusion}
@@ -186,7 +162,5 @@ keys
 
 \input{sections/scheduling.tex}
 %Full paper available at http://u6qr2zmt2bhiw5tm.onion/gender-jubilant, using Tor Browser (total of 21 pages with extensive analysis on why a scheduling-based priority does not work well).
-%Full paper available at http://u6qr2zmt2bhiw5tm.onion/gender-jubilant, using Tor Browser (total of 21 pages with extensive analysis on why a scheduling-based priority does not work well).
-
 
 \end{document}

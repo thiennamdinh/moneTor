@@ -1,71 +1,41 @@
-This appendix formally describes the algorithms presented in Section~\ref{sec:nanopaymentdetails} which have been implemented in our proof-of-concept. 
-
 \subsection{Conventions}
 
 We adopt the following conventions in our algorithms.
 
 \begin{itemize}
-%% \item All variable names in this section except those in $Create Wallet$ are
-%%   globally unique.
-\item Variable subscripts denote a party or role ((I)ntermediary, (C)lient,
-  (R)elay, (E)nd user).
-\item New nanopayment variables are prefixed with the character (n). All other
-  variables reference a value from the original Bolt scheme, although the name
-  might be altered somewhat.
-\item Payment values ($\epsilon, \delta$) are signed integers with respect to
-  the end user. For example, $\delta_C$ is negative and $\delta_R$ is positive
-  in the typical case where a client is paying a relay.
+\item Variable subscripts denote a party or role ((I)ntermediary, (C)lient, (R)elay, (E)nd user).
+\item New nanopayment variables have the character (n) as a prefix.
+  All other variables reference a value from the original Bolt scheme, although the name might be altered somewhat.
+\item Payment values ($\epsilon, \delta$) are signed integers with respect to the end-user.
+  For example, $\delta_C$ is negative and $\delta_R$ is positive when a client is paying a relay.
 \end{itemize}
 
 \subsection{Variable Index}
 
-The follow itemizes variables used in the algorithm design. The first level of
-variables are used for actual cryptographic and accounting operations. These are
-bundled into groups of higher level variable names meant to represent
-abstraction concepts such as payment channels and party states. Only these high
-level variables are stored between protocol executions.
+This section describes the symbols we use to define our algorithms.
+In the following list, the left-hand symbol names a ``high-level'' bundle of logically related values that the nodes keep in persistent storage to maintain control of their assets.
+All other symbols name ``low-level'' values, which serve as inputs to cryptographic and accounting operations.
 
-$nT = (\delta_C, \delta_R, n, hc^0)$ --- Nanopayment Channel Token --- Stores
-static, public information that defines a nanopayment channel including the
-payment values on both legs, the max number of payments, and the hashchain head.
-This can be passed around freely by all parties.
+$nT = (\delta_C, \delta_R, n, hc^0)$ --- Nanopayment Channel Token --- Stores static, public information that defines a nanopayment channel including the payment values on both legs, the maximum number of payments, and the hashchain head.
+This can be passed around publicly.
 
-$ncsk_C = (nwpk_C, nwsk_C, HC)$ --- Client Nanopayment Secrets --- Includes a
-Public/private key pair which allows the client to setup and close a nanopayment
-channel and a precomputed hash chain to make incremental nanopayments
+$ncsk_C = (nwpk_C, nwsk_C, HC)$ --- Client Nanopayment Secrets --- Includes a public/private key pair which allows the client to setup and close a nanopayment channel.
+It also includes a pre-computed hash chain to make incremental nanopayments
 
-$nS_C = (k, hc^k)$ --- Client Nanopayment State --- Mutable state of the
-nanopayment; includes the count of payments made so far and the latest sent hash
-pre-image
+$nS_C = (k, hc^k)$ --- Client Nanopayment State --- Stores the mutable, public state of the nanopayment.
+Includes the current number of completed nanopayments and the latest sent hash preimage
 
-$nrt_C$ --- Client Nanopayment Refund --- Allows the client to make a claim to
-the ledger on escrowed money at any time. This refund is signed by the
-intermediary and conditioned on revealing the latest hash pre-image that the
-client claims to have sent.
+$nrt_C$ --- Client Nanopayment Refund --- Allows the client to make a claim to the ledger at any time for the escrowed money.
+This refund is signed by the intermediary and conditioned on revealing the latest hash preimage that the client claims to have sent.
 
-$nrc_C$ --- Client Channel Closure Message --- Final message that is posted to
-the ledger by the client to claim all funds of the micropayment channel
-including any completed nanopayments.
+$nrc_C$ --- Client Channel Closure Message --- This is the final message that the client posts to the ledger to claim all funds of the micropayment channel.
+It includes any completed nanopayments.
 
-$nS_I = \{nT: channel\_state\}$ --- Intermediary Nanopayment State --- Map of
-all past and present nanopayment channels and the corresponding channel state.
-Possible states are:
+$nS_I = \{nT: nanopayment\_state\}$ --- Intermediary Nanopayment State --- Map of all past and present nanopayment channels and the corresponding channel state.
+Possible states are: $\bot$ (failed attempt to setup a nanopayment channel), $setup$ (channel has been set up by $C$), $established$ (channel has been established with $R$), or $closed||hc^k$ (channel has been closed and no further payments are allowed).
 
-$S_I$ --- State of the Intermediary. Used to avoid multiple creations of
-nanopayment channels over the same micropayment wallet in parallel.
-
-\begin{itemize}
-\item $\bot$ --- failed attempt at setting up a nanopayment channel
-\item $setup$ --- channel has been set up by $C$
-\item $established$ --- channel has been established with $R$
-\item $closed||hc^k$ --- channel has been closed and no further payments
-  are allowed
-\end{itemize}
-
-$ncsk_R (nwpk_C, nwsk_C, \bot)$ --- Relay Nanopayment Secrets --- Includes a
-public/private key pair allows the relay to setup and close a nanopayment
-channel. Since relays cannot make payments in this setup, the last field is left
-blank.
+$ncsk_R = (nwpk_C, nwsk_C, \bot)$ --- Relay Nanopayment Secrets --- Includes a public/private key pair allowing the relay to setup and close a nanopayment channel.
+Similar to $ncsk_C$ except the last field is blank, since relays cannot make payments.
 
 $nS_R = (k, hc^k)$ --- Relay Nanopayment State --- See $nS_C$
 
@@ -73,224 +43,215 @@ $nrt_R$ --- Relay Nanopayment Refund --- See $nrt_C$
 
 $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 
+$S_I = \{ [wpk_E | nwpk_E] : micropayment_state\}$ --- Intermediary Micropayment State --- Map of all past and present micropayment channels.
+
 \subsection{Algorithms}
 \begin{algorithm}
-	\caption[Create Wallet]{\textbf{Create Wallet} Helper function for creating a new 	wallet}
+  \caption[Create Wallet]{\textbf{Create Wallet} Helper function for creating a new wallet}
   \begin{algorithmic}[1]
     \Function{Wal}{$pp, pk_{payee}, w, \epsilon$}
     \State{parse $w$ as $(B, wpk, wsk, r, \sigma^w)$}
     \State{$(wsk', wpk') \gets $KeyGen$(pp)$}
     \State{$r' \gets $Random$()$}
     \State{$wCom' \gets $Commit$(wpk', B + \epsilon, r')$}
-    \State{$\pi \gets PK\{(wpk', B, r', \sigma^w)$: \par})
+    \State{$\pi \gets PK\{(wpk', B, r', \sigma^w)$: \par}
     \State{\hskip\algorithmicindent{} $wCom' = $~Commit$(wpk', B + \epsilon, r')\ \wedge$}
     \State{\hskip\algorithmicindent{} Verify$(pk_{payee}, (wpk, B), \sigma^w) = 1\ \wedge$}
     \State{\hskip\algorithmicindent{} $B + \epsilon \geq 0\}$}
-    \State{\Return{$(wsk', wpk', wCom', \pi)\}$}}
+    \State{\Return{$(wsk', wpk', wCom', \pi)$}}
     \EndFunction{}
   \end{algorithmic}
 \end{algorithm}
 
-
 \begin{algorithm}
-  \caption[Nano-Setup]{\textbf{Nano-Setup} Protocol
-    between a client and intermediary to create a new nanopayment channel from an
-    existing micropayment wallet. Run prior to circuit setup.}
+  \caption[Nano-Setup]{\textbf{Nano-Setup} Protocol between a client and intermediary to create a new nanopayment channel from an existing micropayment wallet.
+    Run prior to circuit setup.}
   \begin{algorithmic}[1]
     \Procedure{Client}{$pp, pk_I, w_C, \delta_C, n$}
-      \State{parse $w_C$ as $(B_C, wpk_C, wsk_C, r_C, \sigma^w_C)$}
-      \If{$B_{C} + (\delta_C * n) < 0$}
-        \State{Abort$()$ \Comment{consider new micropayment channel}}
-      \EndIf{}
-      \State{$\epsilon_C \gets \delta_C * n$}
-      \State{$(nwpk_C, nwsk_C, nwCom_C, n\pi_C) \gets $Wal$(pp, pk_I, w_C, \epsilon_C)$}
-      \State{$\delta_R \gets -(\delta_C  + tax)$} \Comment{the tax is a net profit for $I$}
-      \State{$HC \gets $MakeHC$($Random$(), n)$}
-      \State{$nT \gets (\delta_C, \delta_R, n, HC[0])$}
-      \State{Intermediary.Send$(wpk_C, nwpk_C, nwCom_C, n\pi_C, nT)$}
+    \State{parse $w_C$ as $(B_C, wpk_C, wsk_C, r_C, \sigma^w_C)$}
+    \If{$B_{C} + (\delta_C \times n) < 0$}
+    \State{Abort$()$ \Comment{consider new micropayment channel}}
+    \EndIf{}
+    \State{$\epsilon_C \gets \delta_C \times n$}
+    \State{$(nwpk_C, nwsk_C, nwCom_C, n\pi_C) \gets $Wal$(pp, pk_I, w_C, \epsilon_C)$}
+    \State{$\delta_R \gets -(\delta_C  + tax)$} \Comment{the tax is a net profit for $I$}
+    \State{$HC \gets $MakeHC$($Random$(), n)$}
+    \State{$nT \gets (\delta_C, \delta_R, n, HC[0])$}
+    \State{Intermediary.Send$(wpk_C, nwpk_C, nwCom_C, n\pi_C, nT)$}
     \EndProcedure{}
 
     \Procedure{Intermediary}{$pp, sk_I, S_I, nS_I$}
-      \State{$(wpk_C, nwpk_C, nwCom_C, n\pi_C, nT) \gets $Client.Receive$()$}
-      \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
-      \If{$wpk_C \in S_I \vee nwpk_c \in S_I \vee \neg $Verify$(n\pi_C)$}
-        \State{Abort$()$ \Comment{invalid wallets}}
-      \EndIf{}
-      \If{$-\delta_C \ne price \vee \delta_R + \delta_C + tax \ne 0$}
-        \State{Abort$()$ \Comment{incorrect payment prices}}
-      \EndIf{}
-      \State{$S_I \gets S_I \cup \{wpk_C : \bot, nwpk_C: \bot\}$}
-      \State{$nS_I \gets nS_I \cup \{nT : \bot\}$}
-      \State{$nrt_C \gets $Sign$(sk_I, refund || nT || nwCom_C)$}
-      \State{Client.Send$(nrt_C)$}
+    \State{$(wpk_C, nwpk_C, nwCom_C, n\pi_C, nT) \gets $Client.Receive$()$}
+    \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
+    \If{$wpk_C \in S_I \vee nwpk_c \in S_I \vee \neg $Verify$(n\pi_C)$}
+    \State{Abort$()$ \Comment{invalid wallets}}
+    \EndIf{}
+    \If{$-\delta_C \ne price \vee \delta_R + \delta_C + tax \ne 0$}
+    \State{Abort$()$ \Comment{incorrect payment prices}}
+    \EndIf{}
+    \State{$S_I \gets S_I \cup \{wpk_C : \bot, nwpk_C: \bot\}$}
+    \State{$nS_I \gets nS_I \cup \{nT : \bot\}$}
+    \State{$nrt_C \gets $Sign$(sk_I, refund || nT || nwCom_C)$}
+    \State{Client.Send$(nrt_C)$}
     \EndProcedure{}
 
     \Procedure{Client}{}
-      \State{$nrt_C \gets $Intermediary.Receive$()$}
-      \If{$\neg $Verify$(pk_I, refund||nT||nwCom_C, nrt_C) = 1$}
-      \State{Abort$()$ \Comment{invalid refund token}}
-      \EndIf{}
-      \State{$nS_C \gets (0, HC[0])$}
-      \State{$ncsk_C \gets (nwpk_C, nwsk_C, HC)$}
-      \State{$\sigma^{rev(w)}_C \gets $Sign$(wsk_C, revoke||wpk_C)$}
-      \State{Intermediary.Send$(\sigma^{recv(w)}_C$)}
+    \State{$nrt_C \gets $Intermediary.Receive$()$}
+    \If{$\neg $Verify$(pk_I, refund||nT||nwCom_C, nrt_C) = 1$}
+    \State{Abort$()$ \Comment{invalid refund token}}
+    \EndIf{}
+    \State{$nS_C \gets (0, HC[0])$}
+    \State{$ncsk_C \gets (nwpk_C, nwsk_C, HC)$}
+    \State{$\sigma^{rev(w)}_C \gets $Sign$(wsk_C, revoke||wpk_C)$}
+    \State{Intermediary.Send$(\sigma^{recv(w)}_C$)}
     \EndProcedure{}
 
     \Procedure{Intermediary}{}
-      \State{$\sigma^{recv(w)}_C \gets $Client.Receive$()$}
-      \If{$\neg $Verify$(wpk, revoke||wpk_C, \sigma^{recv(w)}_C) = 1$}
-        \State{Abort$()$ \Comment{invalid revocation token}}
-      \EndIf{}
-      \State{$S_I[wpk_C] \gets \sigma^{recv(w)}_C$}
-      \State{$nS_I[nT] \gets setup$}
-      \State{Client.Send$(established)$}
+    \State{$\sigma^{recv(w)}_C \gets $Client.Receive$()$}
+    \If{$\neg $Verify$(wpk, revoke||wpk_C, \sigma^{recv(w)}_C) = 1$}
+    \State{Abort$()$ \Comment{invalid revocation token}}
+    \EndIf{}
+    \State{$S_I[wpk_C] \gets \sigma^{recv(w)}_C$}
+    \State{$nS_I[nT] \gets setup$}
+    \State{Client.Send$(established)$}
     \EndProcedure{}
 
   \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Establish]{\textbf{Nano-Establish}
-    Protocol between a client, intermediary, and relay to establish the
-    nanopayment channel between the client and relay. Run at the start of
-    circuit setup.}
+  \caption[Nano-Establish]{\textbf{Nano-Establish} Protocol between a client, intermediary, and relay to establish the nanopayment channel between the client and relay.
+    Run at the start of circuit setup.}
   \begin{algorithmic}[1]
-
     \Procedure{Client}{$nT$}
-      \State{Relay.Send$(nT)$}
+    \State{Relay.Send$(nT)$}
     \EndProcedure{}
 
     \Procedure{Relay}{$pp, pk_I, B_{I:B}, w_R$}
-      \State{$nT \gets $Client.Receive$()$}
-      \State{parse $w_R$ as $(B_R, wpk_R, wsk_R, r_R, \sigma^w_R)$}
-      \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
-      \If{$B_{I:B} - (\delta_B * n) < 0$}
-        \State{Abort$()$ \Comment{consider new micropayment channel}}
-      \EndIf{}
-      \State{$\epsilon_R \gets \delta_R * n$}
-      \State{$(nwpk_R, nwsk_R, nwCom_R, n\pi_R) \gets $Wal$(pp, pk_I, w_R, \epsilon_R)$}
-      \State{Intermediary.Send$(wpk_R, nwpk_R, nwCom_R, n\pi_R, nT)$}
+    \State{$nT \gets $Client.Receive$()$}
+    \State{parse $w_R$ as $(B_R, wpk_R, wsk_R, r_R, \sigma^w_R)$}
+    \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
+    \If{$B_{I:B} - (\delta_B \times n) < 0$}
+    \State{Abort$()$ \Comment{consider new micropayment channel}}
+    \EndIf{}
+    \State{$\epsilon_R \gets \delta_R \times n$}
+    \State{$(nwpk_R, nwsk_R, nwCom_R, n\pi_R) \gets $Wal$(pp, pk_I, w_R, \epsilon_R)$}
+    \State{Intermediary.Send$(wpk_R, nwpk_R, nwCom_R, n\pi_R, nT)$}
     \EndProcedure{}
 
     \Procedure{Intermediary}{$pp, sk_I, S_I, nS_I$}
-      \State{$(wpk_R, nwpk_R, nwCom_R, n\pi_R, nT) \gets $Relay.Receive$()$}
-      \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
-      \If{$wpk_R \in S_I \vee nwpk_R \in S_I \vee \neg $Verify$(n\pi_R)$}
-        \State{Abort$()$ \Comment{invalid wallets}}
-      \EndIf{}
-      \If{$nS_I[nT] \ne setup$}
-        \State{Abort (unregistered nanopayment channel)}
-      \EndIf{}
-      \State{$S_I \gets S_I \cup \{nwpk_R, \bot\}$}
-      \State{$nS_I[nT] \gets established$}
-      \State{$nrt_R \gets $Sign$(sk_I, refund || nT || nwCom_R)$}
-      \State{Relay.Send$(nrt_R)$}
+    \State{$(wpk_R, nwpk_R, nwCom_R, n\pi_R, nT) \gets $Relay.Receive$()$}
+    \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
+    \If{$wpk_R \in S_I \vee nwpk_R \in S_I \vee \neg $Verify$(n\pi_R)$}
+    \State{Abort$()$ \Comment{invalid wallets}}
+    \EndIf{}
+    \If{$nS_I[nT] \ne setup$}
+    \State{Abort (unregistered nanopayment channel)}
+    \EndIf{}
+    \State{$S_I \gets S_I \cup \{nwpk_R: \bot\}$}
+    \State{$nS_I[nT] \gets established$}
+    \State{$nrt_R \gets $Sign$(sk_I, refund || nT || nwCom_R)$}
+    \State{Relay.Send$(nrt_R)$}
     \EndProcedure{}
 
     \Procedure{Relay}{}
-      \State{$nrt_R \gets $Intermediary.Receive$()$}
-      \If{$\neg $Verify$(pk_I, refund||nT||nwCom_R, nrt_R) = 1$}
-      \State{Abort$()$ \Comment{invalid refund token}}
-      \EndIf{}
-      \State{$ncsk_R \gets (nwpk_R, nwsk_R, \bot)$} \Comment{match client format}
-      \State{$nS_R \gets (0, hc^0)$}
+    \State{$nrt_R \gets $Intermediary.Receive$()$}
+    \If{$\neg $Verify$(pk_I, refund||nT||nwCom_R, nrt_R) = 1$}
+    \State{Abort$()$ \Comment{invalid refund token}}
+    \EndIf{}
+    \State{$ncsk_R \gets (nwpk_R, nwsk_R, \bot)$} \Comment{match client format}
+    \State{$nS_R \gets (0, hc^0)$}
     \EndProcedure{}
   \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Pay]{\textbf{Nano-Pay} Protocol
-    between the client and relay to forward a single nanopayment. Run
-    periodically throughout the lifetime of the circuit.}
+  \caption[Nano-Pay]{\textbf{Nano-Pay} Protocol between the client and relay to forward a single nanopayment.
+    Run periodically throughout the lifetime of the circuit.}
   \begin{algorithmic}[1]
-
     \Procedure{Client}{$nT, ncsk_C, nS_C$}
-      \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
-      \State{parse $ncsk_C$ as $(nwpk_C, nwsk_C, HC)$}
-      \State{parse $nS_C$ as $(k, hc^k)$}
+    \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
+    \State{parse $ncsk_C$ as $(nwpk_C, nwsk_C, HC)$}
+    \State{parse $nS_C$ as $(k, hc^k)$}
 
-      \If{$k >= n$}
-        \State{Abort$()$ \Comment{out of nanopayments, setup a new channel}}
-      \EndIf{}
+    \If{$k >= n$}
+    \State{Abort$()$ \Comment{out of nanopayments, setup a new channel}}
+    \EndIf{}
 
-      \State{$nS_C \gets (k+1, HC[k+1])$}
-      \State{Relay.Send$(HC[k+1])$}
+    \State{$nS_C \gets (k+1, HC[k+1])$}
+    \State{Relay.Send$(HC[k+1])$}
     \EndProcedure{}
 
     \Procedure{Relay}{$nT, nS_R$}
-      \State{$hc^{k+1} \gets $Client.Receive$()$}
-      \State{parse $nS_R$ as $(k, hs^k)$}
-      \If{$k+1 >= n \vee Hash(hc^{k+1}) \ne hc^k$}
-        \State{Abort$()$ \Comment{invalid nanopayment}}
-      \EndIf{}
-      \State{$nS_R \gets (hs^{k+1}, k+1)$}
+    \State{$hc^{k+1} \gets $Client.Receive$()$}
+    \State{parse $nS_R$ as $(k, hs^k)$}
+    \If{$k+1 >= n \vee Hash(hc^{k+1}) \ne hc^k$}
+    \State{Abort$()$ \Comment{invalid nanopayment}}
+    \EndIf{}
+    \State{$nS_R \gets (hs^{k+1}, k+1)$}
     \EndProcedure{}
   \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Close]{\textbf{Nano-Close} Protocol between an end
-    user and an intermediary to close a channel.}
-
+  \caption[Nano-Close]{\textbf{Nano-Close} Protocol between an end-user and an intermediary to close a channel.}
   \begin{algorithmic}[1]
     \State{$\forall E \in \{Client, Relay\}$}
     \Procedure{EndUser}{$pp, pk_I, w_E, nT, ncsk_E, nS_E$}
-      \State{parse $w_E$ as $(B_E, wpk_E, wsk_E, r, \sigma^w_E)$}
-      \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
-      \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E, \_)$}
-      \State{parse $nS_E$ as $(k, hc^k)$}
-      \State{$\epsilon_E \gets \delta_C * k$ if (EndUser = Client) else $ \delta_R * k$}
-      \State{$(wpk'_E, wsk'_E, wCom'_E, \pi'_E) \gets$ $Wal(pp, pk_I, wpk_B, \sigma^w_E, B_E, \epsilon_E$)}
-      \State{Intermediary.Send$(wpk_E, wCom'_E, \pi'_E, nT, \epsilon_E, k, hc^k)$}
+    \State{parse $w_E$ as $(B_E, wpk_E, wsk_E, r, \sigma^w_E)$}
+    \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
+    \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E, \_)$}
+    \State{parse $nS_E$ as $(k, hc^k)$}
+    \State{$\epsilon_E \gets \delta_C \times k$ if (EndUser = Client) else $ \delta_R \times k$}
+    \State{$(wpk'_E, wsk'_E, wCom'_E, \pi'_E) \gets$ $Wal(pp, pk_I, wpk_B, \sigma^w_E, B_E, \epsilon_E$)}
+    \State{Intermediary.Send$(wpk_E, wCom'_E, \pi'_E, nT, \epsilon_E, k, hc^k)$}
     \EndProcedure{}
 
     \Procedure{Intermediary}{$pp, sk_I, S_I, nS_I$}
-      \State{$(wpk_E, wCom'_E, \pi_E, nT, \epsilon_E, k, hc^k) \gets $EndUser.Receive$()$}
-      \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
-      \If{$\epsilon_E < 0 \wedge closed \not\in nS_I[nT]$}
-        \State{Abort$()$ \Comment{client attempting to close before relay}}
-      \EndIf{}
-      \If{$\neg$Verify$(\pi_E) \vee nS_I[nT] \ne established$}
-        \State{Abort$()$ \Comment{invalid wallet or channel}}
-      \EndIf{}
-      \If{$k > n \vee \neg $VerifyHC$(hc^0, k, hc^k)$}
-        \State{Abort$()$ \Comment{invalid payment hash chain}}
-      \EndIf{}
-      \State{$nS_I[nT] \gets closed||hc^k$}
-      \State{$rt'_E \gets $Sign$(sk_I, refund || wCom'_E)$}
-      \State{EndUser.Send$(rt'_E)$}
+    \State{$(wpk_E, wCom'_E, \pi_E, nT, \epsilon_E, k, hc^k) \gets $EndUser.Receive$()$}
+    \State{parse $nT$ as $(\delta_C, \delta_R, n, hc^0)$}
+    \If{$\epsilon_E < 0 \wedge closed \not\in nS_I[nT]$}
+    \State{Abort$()$ \Comment{client attempting to close before relay}}
+    \EndIf{}
+    \If{$\neg$Verify$(\pi_E) \vee nS_I[nT] \ne established$}
+    \State{Abort$()$ \Comment{invalid wallet or channel}}
+    \EndIf{}
+    \If{$k > n \vee \neg $VerifyHC$(hc^0, k, hc^k)$}
+    \State{Abort$()$ \Comment{invalid payment hash chain}}
+    \EndIf{}
+    \State{$nS_I[nT] \gets closed||hc^k$}
+    \State{$rt'_E \gets $Sign$(sk_I, refund || wCom'_E)$}
+    \State{EndUser.Send$(rt'_E)$}
     \EndProcedure{}
 
     \Procedure{EndUser}{}
-      \State{$rt'_E \gets $Intermediary.Receive$()$}
-      \If{$\neg $Verify$(pk_I, refund||wCom'_E, rt'_E) = 1$}
-      \State{Abort$()$ \Comment{invalid refund token}}
-      \EndIf{}
-      \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E, \bot)$}
-      \State{$\sigma^{rev(nrt)}_E \gets $Sign$(nwsk_E, revoke||nwpk_E)$}
-      \State{Intermediary.Send$(nwpk_E, \sigma^{rev(nrt)})$}
+    \State{$rt'_E \gets $Intermediary.Receive$()$}
+    \If{$\neg $Verify$(pk_I, refund||wCom'_E, rt'_E) = 1$}
+    \State{Abort$()$ \Comment{invalid refund token}}
+    \EndIf{}
+    \State{parse $ncsk_E$ as $(nwpk_E, nwsk_E, \bot)$}
+    \State{$\sigma^{rev(nrt)}_E \gets $Sign$(nwsk_E, revoke||nwpk_E)$}
+    \State{Intermediary.Send$(nwpk_E, \sigma^{rev(nrt)})$}
     \EndProcedure{}
 
     \Procedure{Intermediary}{}
-      \State{$(nwpk_E, \sigma^{rev(nrt)}_E) \gets $EndUser.Receive$()$}
-      \If{$nwpk_E \in S_I \vee \neg $Verify$(nwpk_E, \sigma^{rev(nrt)})$}
-        \State{Abort$()$ \Comment{unregistered channel or revocation token}}
-      \EndIf{}
-      \State{$S_I[nwpk_E] \gets \sigma^{rev(nrt)}$}
-      \State{EndUser.Send$(verified)$}
+    \State{$(nwpk_E, \sigma^{rev(nrt)}_E) \gets $EndUser.Receive$()$}
+    \If{$nwpk_E \in S_I \vee \neg $Verify$(nwpk_E, \sigma^{rev(nrt)})$}
+    \State{Abort$()$ \Comment{unregistered channel or revocation token}}
+    \EndIf{}
+    \State{$S_I[nwpk_E] \gets \sigma^{rev(nrt)}$}
+    \State{EndUser.Send$(verified)$}
     \EndProcedure{}
 
     \Procedure{EndUser}{}
-      \State{$ver \gets $Intermediary.Receive$()$}
-      \State{$w'_E \gets $Intermediary.Blindsig$(ver, wpk_E'||B_E + \epsilon_E)$}
+    \State{$ver \gets $Intermediary.Receive$()$}
+    \State{$w'_E \gets $Intermediary.Blindsig$(ver, wpk_E'||B_E + \epsilon_E)$}
     \EndProcedure{}
-
   \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Refund]{\textbf{Nano-Refund} Algorithm by an end user to close a
-    micropayment channel and claim ledger funds.}
+  \caption[Nano-Refund]{\textbf{Nano-Refund} Algorithm by an end-user to close a micropayment channel and claim ledger funds.}
   \begin{algorithmic}[1]
     \State{$\forall E \in \{Client, Relay\}$}
     \Function{EndUser}{$pp, csk_E, w_E, nT, ncsk_E, nS_E, nrt_E$}
@@ -300,17 +261,15 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
     \State{parse $ncsk_E$ as $(nwpk_E, \_, \_)$}
     \State{parse $nS_E$ as $(k, hc^k)$}
     \State{$\delta_E \gets \delta_C$ if (EndUser = Client) else $ \delta_R$}
-    \State{$m_E \gets (refund || nT || nwpk_E || B_E + \delta_E * n, nrt_E, hc^k_E, k_E)$}
+    \State{$m_E \gets (refund || nT || nwpk_E || B_E + \delta_E \times n, nrt_E, hc^k_E, k_E)$}
     \State{$nrc_E \gets (m_E, Sign(sk_E, m_E))$}
     \State{\Return{$nrc_E$}}
     \EndFunction{}
-\end{algorithmic}
+  \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Refute]{\textbf{Nano-Refute} Algorithm by an intermediary to
-    respond to an end user's refund claim by posting its own channel closure
-    message to the ledger}
+  \caption[Nano-Refute]{\textbf{Nano-Refute} Algorithm by an intermediary to respond to an end-user's refund claim by posting its own channel closure message to the ledger}
   \begin{algorithmic}[1]
     \State{$\forall E \in \{Client, Relay\}$}
     \Function{Intermediary}{$pp, T_E, S_I, nS_I, nrc_E$}
@@ -320,15 +279,15 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
     % however we get nrc_E... need to decide
     \State{parse $T_E$ as $(pk_E, \_)$}
     \If{$\neg$Verify$(pk_E, m_E, \sigma^m_E)$}
-      \State{Abort$()$ \Comment{bad signature, well be rejeced by ledger}}
+    \State{Abort$()$ \Comment{bad signature, well be rejeced by ledger}}
     \EndIf{}
     \If{$\neg$Verify$(pk_I, (refund || nT || nwpk_E || B^{full}_E), nrt_E)$}
-      \State{Abort$()$ \Comment{unapproved refund token}}
+    \State{Abort$()$ \Comment{unapproved refund token}}
     \EndIf{}
     \If{$S_I[nwpk_E] \ne \bot$}
-      \State{\Comment{$E$ is posting an old token, $I$ should refute}}
-      \State{$\sigma^{rev(nrt)}_E \gets S_I[nwpk_E]$}
-      \State{$nrc_I \gets ((revoked, \sigma^{rev(nrt)}_E), Sign((revoked, \sigma^{rev(nrt)})))$}
+    \State{\Comment{$E$ is posting an old token, $I$ should refute}}
+    \State{$\sigma^{rev(nrt)}_E \gets S_I[nwpk_E]$}
+    \State{$nrc_I \gets ((revoked, \sigma^{rev(nrt)}_E), Sign((revoked, \sigma^{rev(nrt)})))$}
     \EndIf{}
     \State{\Comment{Everything checks out; accept the closure}}
     \State{$hc^k \gets nS_I[nT]$}
@@ -339,9 +298,7 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
 \end{algorithm}
 
 \begin{algorithm}
-  \caption[Nano-Resolve]{\textbf{Nano-Resolve} Algorithm run by the ledger (and
-    everyone verifying the ledger) to resolve all channel closure messages and
-    allocate the appropriate final balances}
+  \caption[Nano-Resolve]{\textbf{Nano-Resolve} Algorithm run by the ledger (and everyone verifying the ledger) to resolve all channel closure messages and allocate the appropriate final balances}
   \begin{algorithmic}[1]
     \State{\Comment{Returns the tuple $(B^{final}_E, B^{final}_I)$}}
     \Function{Ledger}{$pp, T_E, T_I, nrc_E, nrc_I$}
@@ -354,34 +311,34 @@ $nrc_C$ --- Relay Channel Closure Message --- See $nrc_C$
     \State{$\delta_E \gets \delta_C$ if (EndUser = Client) else $ \delta_R$}
 
     \If{$nrc_E = \bot$}
-      \State{\Comment{$E$ failed to respond closure request in time}}
-      \State{\Return{$(0, B_{total})$}}
+    \State{\Comment{$E$ failed to respond closure request in time}}
+    \State{\Return{$(0, B_{total})$}}
     \EndIf{}
     \If{$\neg $Verify$(pk_E, m_E, \sigma^m_E) \vee \neg $Verify$(pk_I, m_I, \sigma^m_I)$}
-      \State{\Return{$\bot$} \Comment{messages could not be authenticated}}
+    \State{\Return{$\bot$} \Comment{messages could not be authenticated}}
     \EndIf{}
     \If{$\neg $Verify$(pk_I, refund || nT || nwpk_E || B^{full}_E, nrt_E)$}
-      \State{\Return{$(0, B_{total})$} \Comment{$E$ is attempting to use invalid token}}
+    \State{\Return{$(0, B_{total})$} \Comment{$E$ is attempting to use invalid token}}
     \EndIf{}
     \If{$revoked \in m_I$}
-      \State{parse $m_I$ as $(revoked, \sigma^{rev(nrt)}_E)$}
-      \If{Verify$(nwpk_E, \sigma^{rev(nrt)}_E)$}
-        \State{\Return{$(0, B_{total})$} \Comment{$E$ is trying to use old channel}}
-        \Else{}
-        \State{\Return{$(B_{total}, 0)$} \Comment{invalid revocation from $I$}}
-      \EndIf{}
+    \State{parse $m_I$ as $(revoked, \sigma^{rev(nrt)}_E)$}
+    \If{Verify$(nwpk_E, \sigma^{rev(nrt)}_E)$}
+    \State{\Return{$(0, B_{total})$} \Comment{$E$ is trying to use old channel}}
+    \Else{}
+    \State{\Return{$(B_{total}, 0)$} \Comment{invalid revocation from $I$}}
+    \EndIf{}
     \EndIf{}
     \State{\Comment{micropayments settled, now resolve nanopayments}}
     \State{parse $m_I$ as $(accepted, k_I, hc^0_I)$}
     \If{$k_I \leq k_E \leq n \wedge $VerifyHC$(hc^0, k_E, hc^k_E) )$}
-      \State{\Comment{$E$ has the highest hash preimage}}
-      \State{$B^{final}_E = B^{full}_E - \delta_E * (n-k_E)$}
-      \State{$B^{final}_I = B_{total} - B^{full}_E + \delta_E * (n-k_E)$}
+    \State{\Comment{$E$ has the highest hash preimage}}
+    \State{$B^{final}_E = B^{full}_E - \delta_E \times (n-k_E)$}
+    \State{$B^{final}_I = B_{total} - B^{full}_E + \delta_E \times (n-k_E)$}
     \EndIf{}
     \If{$k_E \leq k_I \leq n \wedge $VerifyHC$(hc^0, k_I, hc^k_I) )$}
-      \State{\Comment{$I$ has the highest hash preimage}}
-      \State{$B^{final}_E = B^{full}_E - \delta_E * (n-k_I)$}
-      \State{$B^{final}_I = B_{total} - B^{full}_E + \delta_E * (n-k_I)$}
+    \State{\Comment{$I$ has the highest hash preimage}}
+    \State{$B^{final}_E = B^{full}_E - \delta_E \times (n-k_I)$}
+    \State{$B^{final}_I = B_{total} - B^{full}_E + \delta_E \times (n-k_I)$}
 
     \EndIf{}
     \State{\Return{$(B^{final}_E, B^{final}_I)$}}
