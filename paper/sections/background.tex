@@ -40,7 +40,7 @@ Informally, tripartite channels are secure if the scheme satisfies the following
 \item At every step of the protocol, all parties possess proof of execution of the last finalized payment.
 \item Given two proofs of payment state, the network can unambiguously identify the more recent state.
 \item When $A$ pays $B$ through $I$, the payment is atomic.
-  Once $I$ pays $B$ it must be able to extract the
+      That is, there is never a situation in which I pays B but is unable to extract the agreed-upon payment from A.
 \end{enumerate}
 
 More recent works have since extended the micropayment channel concept to support anonymity design goals.

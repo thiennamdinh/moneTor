@@ -13,7 +13,7 @@ PAR introduces the \emph{honest but curious} bank paradigm in which the bank can
 PAR suffers from scalability issues owing to its strongly centralized architecture.
 Other monetary payments schemes such as XPay~\cite{chen2009xpay} and the proposal of Carbunar~\textit{et al.}~\cite{carbunar2012tipping}, which combine an e-cash base with bipartite hashchains, are limited by the same centralized banking requirements.
 
-In general, most prior works in this field, including BRAIDS, LIRA, TEARS, and each of the cited monetary payment protocols, suffer from two concerns:
+In general, most prior works in this field, including BRAIDS, LIRA, and each of the cited monetary payment protocols, suffer from two concerns:
 
 \begin{enumerate}
 \item Scalability limits arising from the need for all nodes to connect to a single central bank
@@ -44,7 +44,7 @@ Consequently, users have two costly options as the network increases: stockpile 
 \medskip\noindent\textbf{LIRA.}
 LIRA is an ideological successor to BRAIDS which improves scalability as well as the efficiency on the relay-side verification of tickets by a factor $\approx 80$.
 Clients in LIRA probabilistically ``win'' premium tickets without any interaction with the bank.
-While LIRA improves the efficiency of BRAIDS, and could even offer high fairness (by supporting high payment rates), incentives\textit{client} cheating by continuously building circuits to try to win premium tickets~\cite{jansen2013lira, jansenblogpost}.
+While LIRA improves the efficiency of BRAIDS, and could even offer high fairness (by supporting high payment rates), it incentives \textit{client} cheating by continuously building circuits to try to win premium tickets~\cite{jansen2013lira, jansenblogpost}.
 Depending on the chosen value for the payment rate, this problem alone could prevent the scheme from offering a realistic option.
 If the payment rate is too low, then the incentive to cheat increases as a the scheme awards a large priority bandwidth between guesses to the cheater.
 If the payment rate is too high, then guessers would have difficulties maintaining good guesses through their circuit lifetime since the probability of maintaining winning guesses exponentially decreases with payment rate.
