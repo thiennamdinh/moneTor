@@ -94,12 +94,22 @@ keys
 
   %\subtitle{...}
 \begin{abstract} {
-    Tor, the most widely used and well-studied traffic anonymization network in the world, suffers from orthogonal limitations in network diversity and performance.
-    We propose to mitigate both problems simultaneously through the introduction of a premium bandwidth market between clients and relays.
-    To this end, we present moneTor: a relay incentivization scheme featuring anonymous, efficient, and economically robust nanopayments.
-    Our approach leverages advances in the cryptocurrency field toward a design that directly integrates into the existing Tor architecture.
-    This work is a multi-faceted contribution that includes the specification of a novel payment algorithm, analysis of the network integration, and discussion of economic and social considerations.
-    Through live empirical data collection and evaluation of our emulated prototype, we argue that moneTor, based on short-lived channels on the top of a long-lived channel, is a feasible and flexible monetary incentive scheme for Tor, offering upwards of 100\% improvements in differentiated bandwidth for paying users at near-optimal throughput and latency overhead.
+    Tor, the most widely used and well-studied traffic
+    anonymization network in the world, suffers from 
+    limitations in its network diversity and performance. We propose to
+    mitigate both problems simultaneously through the introduction of
+    a premium bandwidth market between clients and relays. To this
+    end, we present moneTor: incentivizing nodes to join and support
+    Tor by giving them anonymous payments from Tor users. Our
+    approach uses efficient cryptographic nanopayments, delivered
+    alongside regular Tor traffic. Our approach also gives a degree of
+    centralized control, allowing Tor's managers to shape the economy
+    created by these payments. In this paper, we present a novel
+    payment algorithm, as well as a data-driven simulation and
+    evaluation of its costs and benefits, allowing us to conclude that
+    moneTor is feasible and flexible, offering upwards of 100\%
+    improvements in differentiated bandwidth for paying users with
+    near-optimal throughput and latency overheads.
 } \end{abstract}
 
   \keywords{Tor, cryptocurrency, payment channels}
