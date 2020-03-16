@@ -1,61 +1,34 @@
-\textbf{Traffic Analysis.}
-Tor's threat model assumes a local passive adversary who can observe some fraction of the network and can operate or compromise a number of onion routers.
-Tor also assumes a local active adversary who can manipulate user streams by inserting, modifying, deleting, or delaying data to create observable perturbations.
-Typically, by observing both ends of an anonymous stream, an attacker can infer the participating parties using statistical correlation.
-The adversary can further improve their precision by adding traffic flow perturbations~\cite{fu2009one}.
-This attack is called \textit{end-to-end correlation}.
-Tor does not implement explicit countermeasures to this attack but does strive to minimize its impact.
-However, Rochet and Pereira recently showed that Tor's essential forward-compatibility feature could be exploited in a silent near-perfect and instantaneous active traffic confirmation attack~\cite{rochet2018dropping}.
-These developments imply a serious need to induce more diversity to the Tor network, which would make such traffic analysis against a large fraction of Tor users more costly.
-One such solution is presented in this paper.
+\textbf{Traffic Analysis.}  
+Tor's threat model assumes an adversary who passively observes some fraction of the encrypted Tor network traffic, as well as operating some fraction of Tor's onion routers, creating opportunities to manipulate user streams by inserting, modifying, deleting, or delaying traffic. Introducing delays, in particular, can give these adversaries significant power to deanonymizing traffic flows (see, e.g.,~\cite{fu2009one,rochet2018dropping}). Tor does not implement explicit countermeasures for this class of attack, since most countermeasures would introduce additional latency.
+
+Increasing the number and diversity of Tor nodes reduces the power of these adversaries. While our work is not explicitly targeted at defending Tor against traffic analysis, if it creates incentives for more nodes to participate, it would additionally improve Tor against this class of attacks.
 
 \medskip \noindent \textbf{Circuit handling on Tor clients.}
-The key element of the Tor protocol is the circuit, a randomly constructed 3-hop routing path through the overlay network.
-Within a circuit, Tor multiplexes one or more streams to handle application traffic.
-To reduce latency in the user experience, Tor attempts to build circuits preemptively as soon as the client obtains the necessary directory information.
-Once a user application creates a stream, it can be immediately routed through the idle circuit, dramatically improving latency.
-The anticipated number of required preemptive circuits is dynamically calculated every second by the Tor client.
-We exploit this same strategy for moneTor's circuit channel setup routine by building \emph{preemptive payment channels} to ensure a minimal time-to-first-payment.
+An important engineering goal of Tor is to reduce latency. In engineering moneTor, we face the same challenge---ensuring that any communication or computation that moneTor has a minimal impact on latency.  Tor, itself, addresses these issues by doing work in advance of when it's needed. For example, Tor will construct its overlay circuits in advance and keep those circuits idle. When a user application wants to communicate, an idle circuit will be ready to go, leading to a fast user experience. MoneTor piggybacks on this design, building {\em preemptive payment channels} to ensure that payments can begin immediately.
 
 \medskip \noindent\textbf{Flow Control.}
-Tor seeks to maintain an optimal flow of cells in each circuit by capping the rate of transmission to fixed-sized windows.
-The protocol attempts to keep the flow of cells on each circuit as full as possible while ensuring fairness between streams and that the number of cells in transition do not exceed a default limit.
-Flow control has a substantial impact on network conditions, as shown by AlSabah \textit{et al.}~\cite{pets2011-defenestrator} in work toward improving total global performance.
-In the design of moneTor, we adapt these flow control windows toward our somewhat different objective to prioritize paid traffic.
+Another engineering goal of Tor is to manage and optimize flow rates to ensure fair sharing of the available bandwidth. Tor uses a sliding-window flow control system, similar to that used by TCP/IP, but the window size is fixed. This helps control Tor's maximum use of bandwidth, but can have a substantial impact on network performance. A variety of research efforts have worked to characterize and improve this situation (see, e.g.,~\cite{pets2011-defenestrator,mind-the-gap-2016}). MoneTor must also make changes to Tor's flow control system to provide prioritized service to paid traffic, yet still preserve fairness.
 
-\medskip \noindent\textbf{Payment Channels.}
-The core cryptocurrency component featured in moneTor is the tripartite bidirectional micropayment channel.
-Many common cryptocurrency protocols can support only tens of transactions per second~\cite{team2018blockchain}.
-One popular workaround is an off-chain payment channel approach popularly known as ``Lightning Networks''~\cite{poon2016bitcoin}.
-In this setup, a single ledger transaction is used to escrow funds by two parties $A$ and $B$.
-These parties may then proceed to make bidirectional micropayments to each other \emph{without ledger interaction} through the exchange of signed ``I Owe You'' tokens.
-By themselves, channels are useful for reducing the number of ledger interactions for parties with reoccurring interactions.
-More consequential for the scalability problem is the tripartite channel paradigm.
-Here, $A$ pays $B$ through an \emph{intermediary} party $I$ with which they both maintain active channels.
-In practice, $A$ and $B$ might occupy the roles of a customer and merchant who are registered with a well-known financial service provider $I$.
-$A$, $B$, and $I$ need only interact with the ledger periodically to deposit and withdraw larger sums of money, improving the network capacity by multiple orders of magnitude.
-Informally, tripartite channels are secure if the scheme satisfies the following requirements:
+\medskip \noindent\textbf{Payment Channels.}  
+MoneTor requires efficient and anonymous micropayment channels, potentially making tiny incremental payments alongside every transmitted network cell. Many common cryptocurrency protocols can support only tens of transactions per second~\cite{team2018blockchain}, which is clearly inadequate for moneTor.  One popular workaround is an off-chain approach popularly known as ``Lightning Networks''~\cite{poon2016bitcoin}.  In this setup, a single ledger transaction is used to escrow funds by two parties $A$ and $B$.  These parties may then proceed to make bidirectional micropayments to each other \emph{without ledger interaction} through the exchange of signed ``I Owe You'' tokens. A related variant, called a ``tripartite payment channel'' adds a mutually-trusted {\em intermediary} $I$, avoiding any need for $A$ to trust $B$ or vice-versa. Such schemes are secure if they satisfy the following requirements:
 
 \begin{enumerate}
 \item At every step of the protocol, all parties possess proof of execution of the last finalized payment.
 \item Given two proofs of payment state, the network can unambiguously identify the more recent state.
 \item When $A$ pays $B$ through $I$, the payment is atomic.
-      That is, there is never a situation in which I pays B but is unable to extract the agreed-upon payment from A.
+      That is, there is never a situation in which $I$ pays $B$ but is unable to extract the agreed-upon payment from $A$.
 \end{enumerate}
 
-More recent works have since extended the micropayment channel concept to support anonymity design goals.
-Tumblebit is a channel-like mixing protocol for Bitcoin that allows fast and anonymous off-chain payments~\cite{heilman2017tumblebit}.
-Malvavolta~\textit{et al.}~\cite{malavolta2017concurrency} describe a variant on payment channels providing Tor-like privacy.
-Their scheme preserves sender/receiver privacy assuming at least one trusted intermediary.
-However, these schemes are not ideal for our purposes as Tumblebit requires unrealistic synchronization between payment parties for the Tor environment while Malvavolta~\textit{et al.}
-introduces additional potentially malicious parties.
+Lightning network designs have useful scalability properties, but moneTor also needs anonymity, since the Tor relay and exit nodes should have no way to leverage the payment system to identify the payer associated with each Tor circuit. 
 
-In Section~\ref{sec:payment_overview}, we describe an extension to Bolt~\cite{green2017bolt}, a tripartite anonymous channel protocol based on zero-knowledge proofs proposed by Green and Miers.
-The modified scheme enables Tor incentives that satisfy technical guarantees of anonymity, efficiency, and payment security.
-This framework defines the anonymity set as the collection of users connected to the same intermediary.
-In other words, given a set of end-users $E_{all} = \{E_1, E_2, ...
-E_n\}$ who each have an active channel with $I$, $E_a$ should be able to send a secure payment to $E_b$ such that $I$ cannot identify $E_a$ or $E_b$ from $E_{all}$ nor can $I$ infer the payment value.
-However, $I$ must still be able to verify that the payment is valid.
+Several recent cryptocurrency designs have both scalability and anonymity features. Tumblebit is a channel-like mixing protocol for Bitcoin that allows fast and anonymous off-chain payments~\cite{heilman2017tumblebit}.  Malvavolta et al.~\cite{malavolta2017concurrency} also describe a variant on payment channels providing Tor-like privacy. Their scheme preserves both sender and receiver privacy, assuming at least one trusted intermediary.  
+
+Neither of these schemes is ideal for our purposes. Tumblebit requires unrealistic synchronization between payment parties for the Tor environment. Malvavolta et al. introduces additional parties who, if malicious, could break the protocol.
+% dwallach note: is this a correct reading of Malvavolta's limitations?
+
+To satisfy the needs of moneTor, we instead started with Green and Miers's Bolt protocol~\cite{green2017bolt}. Bolt is a tripartite anonymous channel with efficient zero-knowledge proofs, so it starts off with the scalability and anonymity features we need. See Section~\ref{sec:payment_overview} for details.
+
+% In Section~\ref{sec:payment_overview}, we describe an extension to Bolt~\cite{green2017bolt}, a tripartite anonymous channel protocol based on zero-knowledge proofs proposed by Green and Miers.  The modified scheme enables Tor incentives that satisfy technical guarantees of anonymity, efficiency, and payment security.  This framework defines the anonymity set as the collection of users connected to the same intermediary.  In other words, given a set of end-users $E_{all} = \{E_1, E_2, ...  E_n\}$ who each have an active channel with $I$, $E_a$ should be able to send a secure payment to $E_b$ such that $I$ cannot identify $E_a$ or $E_b$ from $E_{all}$ nor can $I$ infer the payment value.  However, $I$ must still be able to verify that the payment is valid.
 
 %%% Local Variables:
 %%% mode: latex
