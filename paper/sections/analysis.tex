@@ -1,12 +1,12 @@
 \subsection{Data Collection}
 \label{subsec:datacollection}
 
-Over two weeks, we deployed a data collection system to look for empirical temporal information about lifetime and bandwidth consumption in Tor circuits.
-Our objective was to have a deeper understanding of typical Tor usage and whether such usage can benefit from our channel-based payment system.
-For example, these measurements might capture some notion about the type and magnitude of potential premium traffic.
+For over two weeks, we deployed a data collection system to observe empirical temporal information about lifetime and bandwidth consumption in Tor circuits.
+Our objective was to have a deeper understanding of typical Tor usage and whether such usage could benefit from our channel-based payment system.
+For example, these measurements might capture the distribution of type and magnitude of potential premium traffic.
 We classify the traffic type based on the service connection port.
-In addition to the standard ports 80 and 443 used for web traffic, we aggregate data from some other families, including the WHOIS protocol~\cite{daigle2004whois} and RWHOIS~\cite{williamson1994referral} from ports 43 and 4321, respectively.
-Using complete list of families from our reduced exist policies, we can reason based on application-specific traffic.
+In addition to the standard ports 80 and 443 used for web traffic, we aggregated data from some other families, including the WHOIS protocol~\cite{daigle2004whois} and RWHOIS~\cite{williamson1994referral} from ports 43 and 4321, respectively.
+By specifying a reduced exit policy, we can identify traffic patterns according to known types.
 
 \begin{figure*}[t] \centering
   \begin{subfigure}[t]{0.47\textwidth} \centering\centering
@@ -27,14 +27,14 @@ Using complete list of families from our reduced exist policies, we can reason b
 
 To ensure ethical experimentation, we contacted the Tor research safety board~\cite{torsafety} and used their feedback to inform our data collection process.~\footnote{E.g.
 avoid writing metadata from any specific flow or circuit to disk.}
-We collected data from five old and stable exit relays with a total bandwidth of 50 MiB/s, stripped the origin metadata, aggregated it in memory, and stored it on a central server into bins of configurable size for each traffic family.
+We collected data from five old and stable exit relays with a total bandwidth of 50 MiB/s, stripped the origin metadata, aggregated it in memory, and stored it on a central server into bins of configurable size for each traffic type.
 The data only covers circuits that are ``active'' from the perspective of the exit relay, in other words, circuits that have received a connection request to an IP address on the internet.
-Once we collected enough data (1600 circuits) from a single family, we dump the information on the disk, clear the relay memory, and resume a new session.
-Crucially, we do not record information linked to any single particular user flow on disk.
-The final result contains only aggregated data containing the following two pieces of information for each pool:
+Once we collected enough data (1600 circuits) from a single type, we saved the information on the disk, cleared the relay memory, and resumed a new session.
+Crucially, we did not record information linked to any single particular user flow on disk.
+The final result contained only aggregated data with following two pieces of information for each pool:
 
 \begin{itemize}
-\item \textbf{Time Profile}: The number summing inbound and outbound cells in each 5-second time interval since the success of the DNS request.
+\item \textbf{Time Profile}: The total number of inbound and outbound cells in each 5-second time interval. Tracking begins after the conclusion of a successful DNS request.
 \item \textbf{Total Counts}: The total amount of cells processed by a circuit.
   We aggregate this information by taking the mean of fixed-size nearest neighbor bins.
 \end{itemize}
@@ -48,7 +48,7 @@ While we cannot deduce any statements about users, we can speak to the fraction 
 The remaining $18\%$ would appear to be better candidates for moneTor.
 
 It is also evident from Figure~\ref{fig:statsa} that most of the traffic is usually carried within the first few tens of seconds regardless of traffic type.
-From that result, we believe that the reliability of payment is critical within the first few seconds, especially from a relay viewpoint.
+From that result, we believe that the reliability of payment is critical within the first few seconds, especially from a relay perspective.
 This result highlights our choice to extend Bolt to offer high fairness.
 Furthermore, the front-loaded distribution curve indicates a need to establish available payment channels as soon as the user opens a circuit.
-As a result, we base our design upon a preemptive circuit build strategy, which serves to effectively eliminate channel setup/establish latency in the average case.
+As a result, we base our design upon a preemptive circuit build strategy, which effectively eliminates channel setup/establish latency in the average case.
