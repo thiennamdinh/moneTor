@@ -1,10 +1,24 @@
-Anonymous traffic routing through Tor remains one of the most popular low-latency methods for censorship evasion and privacy protection~\cite{dingledine2004tor}. In this setup, clients protect both their TCP/IP metadata and content by routing their traffic through an onion-encrypted path with three randomly selected volunteer relay nodes, referred to as a circuit. The Tor network presently consists of $\approx 6,400$ relays contributing over 160 Gbit/s of bandwidth globally~\cite{portal2018tormetrics}. While Tor has proven to be a highly effective option for privacy-seeking users, it suffers from two important issues that are relevant to this work.  First, Tor is vulnerable to a broad variety of traffic correlation attacks~\cite{wright2004predecessor,murdoch2005low}, where an attacker, controlling multiple nodes or network vantage points, will have a significant chance of occupying key roles in a circuit, making deanonymization possible. Second, Tor has scalability issues, leading to traffic congestion~\cite{portal2018tormetrics, alsabah2016performance}.
+Anonymous traffic routing through Tor remains one of the most popular low-latency methods for censorship evasion and privacy protection~\cite{dingledine2004tor}.
+In this setup, clients protect both their TCP/IP metadata and content by routing their traffic through an onion-encrypted path with three randomly selected volunteer relay nodes, referred to as a circuit.
+The Tor network presently consists of $\approx 6,400$ relays contributing over 160 Gbit/s of bandwidth globally~\cite{portal2018tormetrics}.
+While Tor has proven to be a highly effective option for privacy-seeking users, it suffers from two important issues that are relevant to this work.
+First, Tor is vulnerable to a broad variety of traffic correlation attacks~\cite{wright2004predecessor,murdoch2005low}, where an attacker, controlling multiple nodes or network vantage points, will have a significant chance of occupying key roles in a circuit, making deanonymization possible.
+Second, Tor has scalability issues, leading to traffic congestion~\cite{portal2018tormetrics, alsabah2016performance}.
 
-While it may be possible to improve the engineering of Tor's cryptographic protocols~\cite{reardon2009improving} or scheduling~\cite{jansen2014never}, such measures are only a stopgap if the Tor network cannot add capacity fast enough to support its users' growing demands. Consequently, it's straightforward to see Tor's issues as an economic question: how do we {\em incentivize} people to add more servers to the Tor network? Running a network server fundamentally entails real-world costs for the hardware, electricity, and bandwidth. That money has to come from somewhere.
+While it may be possible to improve the engineering of Tor's cryptographic protocols~\cite{reardon2009improving} or scheduling~\cite{jansen2014never}, such measures are only a stopgap if the Tor network cannot add capacity fast enough to support its users' growing demands.
+Consequently, it's straightforward to see Tor's issues as an economic question: how do we {\em incentivize} people to add more servers to the Tor network?
+Running a network server fundamentally entails real-world costs for the hardware, electricity, and bandwidth.
+That money has to come from somewhere.
 
-To address this, we present {\em moneTor}: a monetary design which allows relays to offer a \emph{premium bandwidth} product to Tor users in exchange for cryptographic currency tokens. These payments create incentives for operators to add additional capacity to the Tor network. Of course, the whole concept of onion routing requires Tor relay and exit nodes not to know the identity of the sender, so moneTor adds mechanisms to maintain the anonymity of these payments. We will demonstrate that this is possible while maintaining standard properties that should be expected of any cryptocurrency (e.g., scarcity, fungibility, divisibility, durability, and transferability)~\cite[p.3]{crump2011phenomenon}.
+To address this, we present {\em moneTor}: a monetary design which allows relays to offer a \emph{premium bandwidth} product to Tor users in exchange for cryptographic currency tokens.
+These payments create incentives for operators to add additional capacity to the Tor network.
+Of course, the whole concept of onion routing requires Tor relay and exit nodes not to know the identity of the sender, so moneTor adds mechanisms to maintain the anonymity of these payments.
+We will demonstrate that this is possible while maintaining standard properties that should be expected of any cryptocurrency (e.g., scarcity, fungibility, divisibility, durability, and transferability)~\cite[p.3]{crump2011phenomenon}.
 
-Tor also has the curious property that it's not fully decentralized. Even though Tor nodes, themselves, are located around the world and operated by many different organizations, The Tor Project centrally tracks the health of the Tor network, provides software distributions, and publishes lists of active Tor nodes. This partial centralization creates opportunities for a ``fiscal policy'' to manage these cryptographic payments. For example, the Tor Project could impose ``taxes'' for a variety of purposes, such as providing a baseline of financial support to all Tor node operators, and could evolve these rules over time in response to changing needs.
+Tor also has the curious property that it's not fully decentralized.
+Even though Tor nodes, themselves, are located around the world and operated by many different organizations, The Tor Project centrally tracks the health of the Tor network, provides software distributions, and publishes lists of active Tor nodes.
+This partial centralization creates opportunities for a ``fiscal policy'' to manage these cryptographic payments.
+For example, the Tor Project could impose ``taxes'' for a variety of purposes, such as providing a baseline of financial support to all Tor node operators, and could evolve these rules over time in response to changing needs.
 
 Our work aims to solve the challenge of building moneTor in the presence of the following constraints:
 
@@ -20,11 +34,21 @@ dynamic and bursty nature of Tor traffic.
 
 \end{itemize}
 
-We recognize that the addition of monetary incentives into Tor would involve sensitive legal, economic, and sociopolitical considerations.  Exact fiscal policy recommendations are beyond the scope of our work, but we do discuss the risk, merits, and versatility that moneTor could provide in Section~\ref{sec:discussion}.
+We recognize that the addition of monetary incentives into Tor would involve sensitive legal, economic, and sociopolitical considerations.
+Exact fiscal policy recommendations are beyond the scope of our work, but we do discuss the risk, merits, and versatility that moneTor could provide in Section~\ref{sec:discussion}.
 
-\label{sec:Contributions} \medskip \noindent \textbf{Contributions.}  This work describes a full-stack framework for tokenized Tor incentives. \emph{moneTor} addresses the challenge of applying theoretical advances in cryptocurrency research to the concrete constraints and complexities of the live Tor network. We introduce highly-efficient payment protocols which facilitate the novel concept of \emph{locally transparent nanopayment channels}.  During data exchange, our distributed payment processing procedure completely shifts expensive CPU operations off of the critical path, incurring negligible computational costs (a single hash operation) per payment.  State-of-the-art throughput is made possible by a global payment infrastructure that utilizes \emph{trustless intermediaries} to handle the added CPU load, potentially in exchange for monetary rewards.  The moneTor scheme adheres to the standard Tor security model and conforms to our domain-specific constraints of \emph{Anonymity}, \emph{Payment Security}, and \emph{Efficiency}.
+\label{sec:Contributions} \medskip \noindent \textbf{Contributions.}
+This work describes a full-stack framework for tokenized Tor incentives.
+\emph{moneTor} addresses the challenge of applying theoretical advances in cryptocurrency research to the concrete constraints and complexities of the live Tor network.
+We introduce highly-efficient payment protocols which facilitate the novel concept of \emph{locally transparent nanopayment channels}.
+During data exchange, our distributed payment processing procedure completely shifts expensive CPU operations off of the critical path, incurring negligible computational costs (a single hash operation) per payment.
+State-of-the-art throughput is made possible by a global payment infrastructure that utilizes \emph{trustless intermediaries} to handle the added CPU load, potentially in exchange for monetary rewards.
+The moneTor scheme adheres to the standard Tor security model and conforms to our domain-specific constraints of \emph{Anonymity}, \emph{Payment Security}, and \emph{Efficiency}.
 
-We provide a prototype of our payment layer and an extension to the existing routing protocol, resulting in approximately 15k lines of new C code within the Tor codebase.  Our networking experiments demonstrate thousands of transactions per second, avoiding any additional latency through mechanisms including preemptive channel creation. We also discovered, through experimental simulations, that scheduling approaches~\cite{dovrolis1999case, tang2010improved} from previous Tor incentives systems do not adequately provide differentiated service for prioritized traffic. We also present a new scheduler, based on changing the size of control-flow windows, that achieves our traffic shaping objectives.
+We provide a prototype of our payment layer and an extension to the existing routing protocol, resulting in approximately 15k lines of new C code within the Tor codebase.
+Our networking experiments demonstrate thousands of transactions per second, avoiding any additional latency through mechanisms including preemptive channel creation.
+We also discovered, through experimental simulations, that scheduling approaches~\cite{dovrolis1999case, tang2010improved} from previous Tor incentives systems do not adequately provide differentiated service for prioritized traffic.
+We also present a new scheduler, based on changing the size of control-flow windows, that achieves our traffic shaping objectives.
 
 Our Github repository~\cite{monetor-github} contains all of the data and code necessary to reproduce our research results.
 
