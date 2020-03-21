@@ -1,15 +1,16 @@
-Like any network, Tor network can benefit from improvements in both performance and diversifying its participants.
-While the idea of introducing incentive mechanisms for relay operators has been studied for almost 10 years, existing implementations leave numerous questions open.
+This work introduces moneTor, a practical system that uses tokenized payments to incentivize participation in the Tor network.
+Like any network, Tor can benefit from improving its performance and diversifying its participants.
+While Tor incentivization has been studied for almost 10 years, existing implementations have many technical limitations.
 
-Our scheme, moneTor, overcomes several technical limitations in the previous proposals.
-We developed new approaches and also integrated recent contributions from payment technologies within the Tor architecture.
-For example, moneTor supports highly efficient anonymous transactions in the absence of a trusted third party, is considerably more scalable than previous works, and offers integrated methods that would support the implementation of a broad range of future incentive policies through its token-centric approach and taxation mechanism.
-We tested the moneTor design through extensive simulation efforts to show the technical efficacy of our solution.
-During this process, we pivoted to challenge and document the inner working of Tor's packet scheduling mechanism.
+Our work directly addresses these shortcomings.
+At the payment level, we leveraged recent advances from the cryptocurrency research space to inform the design of our payment system.
+At the network level, we investigated a critical issue in the existing scheduling mechanism and introduce a new flow-control-based approach for network prioritization.
+The resulting scheme features sufficiently anonymous transactions in the absence of a trusted third party and considerably greater scalability.
+We tested moneTor through extensive simulation efforts to demonstrate its technical feasibility.
 
-An essential set of questions remain open concerning on the legal, political, and social aspects of introducing monetary mechanisms into Tor.
+An essential set of questions remain concerning the legal, political, and social aspects of incentives for Tor.
 We certainly do not dismiss the importance of these issues, which existing literature have discussed at length~\cite{jansenblogpost}.
-Nevertheless, we believe that gaining a good understanding of what \emph{can} be done, in terms of its technical impact on networking and security, is a central part of the debate on what \emph{should} be done.
+Nevertheless, the ability to show what \emph{can} be done, in terms of its technical impact on networking and security, is a central step toward determining what \emph{should} be done.
 
 %%% Local Variables:
 %%% mode: latex

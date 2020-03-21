@@ -22,7 +22,8 @@ In general, most prior works in this field, including BRAIDS, LIRA, and each of 
 
 Our scheme mitigates 1) by making use of payment channel networks, eliminating the need for nodes to connect to the central ledger for every relay interaction.
 The second issue is intrinsic to the standard Chaumian e-cash paradigm adopted by these prior works, in which ``deposit'' operations take the form an unblinded token signed by the trusted bank~\cite{chaum1988untraceable}.
-Even if all interactions were committed to a tamper-proof ledger, the network at large has no way to verify that signed tokens correspond to a valid ``withdrawal'' operation by another user, which means that a malicious bank can mint fraudulent tokens at will.
+Even if all interactions were committed to a tamper-proof ledger, the network at large has no way to verify that signed tokens correspond to a valid ``withdrawal'' operation by another user.
+In other words, a malicious bank can mint fraudulent tokens at will.
 Our system eliminates this concern by replacing the active \emph{honest but curious} bank with the passive public ledger model ubiquitous to modern cryptocurrencies.
 Even in the most centralized configuration described by Option~1 of Section~\ref{sec:economic_considerations}, the Tor Project can only perform minting operations which are transparently verifiable on the ledger.
 
@@ -39,7 +40,7 @@ However, users may exchange accumulated tickets for tickets from other relays th
 In addition to the general concerns listed earlier, BRAIDS raises two more:
 
 \begin{enumerate}[resume]
-\item Verifying a blind signature on relay side for each payment is computationally intensive if the rate of payment is high, and current high-bandwidth Tor relays are already CPU-bound.
+\item Verifying a blind signature on the relay side for each payment is computationally intensive if the rate of payment is high, and current high-bandwidth Tor relays are already CPU-bound.
 \item Tickets are relay-specific, implying that users must frequently exchange them for the right relays.
 \end{enumerate}
 
@@ -49,7 +50,7 @@ Consequently, users have two costly options as the network increases: stockpile 
 LIRA is an ideological successor to BRAIDS which improves scalability as well as the efficiency on the relay-side verification of tickets by a factor $\approx 80$.
 Clients in LIRA probabilistically ``win'' premium tickets without any interaction with the bank.
 While LIRA improves the efficiency of BRAIDS, and could even offer high fairness (by supporting high payment rates), it incentivizes \textit{client} cheating by continuously building circuits to try to win premium tickets~\cite{jansen2013lira, jansenblogpost}.
-Depending on the chosen value for the payment rate, this problem alone could prevent the scheme from offering a realistic option.
+Depending on the chosen value for the payment rate, this problem alone could prevent the scheme from being a realistic option.
 If the payment rate is too low, then the incentive to cheat increases since the scheme awards a large priority bandwidth between guesses to the cheater.
 If the payment rate is too high, then guessers would have difficulty maintaining good guesses through their circuit lifetime, since the probability of maintaining winning guesses exponentially decreases with payment rate.
 As a result, LIRA's goal of increasing buyer anonymity through successful guessers loses its efficacy.
@@ -78,7 +79,6 @@ This can be done by running premium and non-premium circuits through measured re
 Junk traffic produced by the exit node is already a significant issue~\cite{rochet2018dropping} that has prompted the release of several patches by the Tor project.~\footnote{Independently, there may be a need for Tor to centrally monitor exit nodes' behavior, so abusive exit nodes can be detected and removed from the network altogether.}
 However, the conspirator problem seems intractable since the junk data appears legitimate to the Tor circuit layer.
 As a coarse-grain mitigation strategy, we can cap the number of nanopayments available to each circuit.
-A conspirator can then be reduced to a non-fair exchange problem, a topic which has been explored in many prior works.
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "../popets_monetor"

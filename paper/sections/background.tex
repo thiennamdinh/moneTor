@@ -1,14 +1,14 @@
 \textbf{Traffic Analysis.}
-Tor's threat model assumes an adversary who passively observes some fraction of the encrypted Tor network traffic, as well as operating some fraction of Tor's onion routers, creating opportunities to manipulate user streams by inserting, modifying, deleting, or delaying traffic.
+Tor's threat model assumes an adversary who passively observes some fraction of the encrypted Tor network traffic as well as operating some fraction of Tor's onion routers, creating opportunities to manipulate user streams by: inserting, modifying, deleting, or delaying traffic.
 Introducing delays, in particular, can give these adversaries significant power to deanonymizing traffic flows (see, e.g.,~\cite{fu2009one,rochet2018dropping}).
 Tor does not implement explicit countermeasures for this class of attack, since most countermeasures would introduce additional latency.
 
 Increasing the number and diversity of Tor nodes reduces the power of these adversaries.
 While our work is not explicitly targeted at defending Tor against traffic analysis, if it creates incentives for more nodes to participate, it would additionally improve Tor against this class of attacks.
 
-\medskip \noindent \textbf{Circuit handling on Tor clients.}
+\medskip \noindent \textbf{Circuit Handling on Tor Clients.}
 An important engineering goal of Tor is to reduce latency.
-In engineering moneTor, we face the same challenge---ensuring that any communication or computation that moneTor has a minimal impact on latency.
+In engineering moneTor, we face the same challenge---ensuring that any communication or computation added by moneTor has a minimal impact on latency.
 Tor, itself, addresses these issues by doing work in advance of when it's needed.
 For example, Tor will construct its overlay circuits in advance and keep those circuits idle.
 When a user application wants to communicate, an idle circuit will be ready to go, leading to a fast user experience.
@@ -23,9 +23,9 @@ MoneTor must also make changes to Tor's flow control system to provide prioritiz
 
 \medskip \noindent\textbf{Payment Channels.}
 MoneTor requires efficient and anonymous micropayment channels, potentially making tiny incremental payments alongside every transmitted network cell.
-Many common cryptocurrency protocols can support only tens of transactions per second~\cite{team2018blockchain}, which is clearly inadequate for moneTor.
+Many common cryptocurrency protocols can support only tens of transactions per second~\cite{team2018blockchain}, which is clearly inadequate for our use case.
 One popular workaround is an off-chain approach popularly known as ``Lightning Networks''~\cite{poon2016bitcoin}.
-In this setup, a single ledger transaction is used to escrow funds by two parties $A$ and $B$.
+In this setup, two parties---$A$ and $B$---each create a special escrow transactions on the ledger to setup a simple payment channel between them.
 These parties may then proceed to make bidirectional micropayments to each other \emph{without ledger interaction} through the exchange of signed ``I Owe You'' tokens.
 A related variant, called a ``tripartite payment channel'' adds a mutually-trusted {\em intermediary} $I$, avoiding any need for $A$ to trust $B$ or vice-versa.
 Such schemes are secure if they satisfy the following requirements:
@@ -37,21 +37,20 @@ Such schemes are secure if they satisfy the following requirements:
       That is, there is never a situation in which $I$ pays $B$ but is unable to extract the agreed-upon payment from $A$.
 \end{enumerate}
 
-Lightning network designs have useful scalability properties, but moneTor also needs anonymity, since the Tor relay and exit nodes should have no way to leverage the payment system to identify the payer associated with each Tor circuit.
+Lightning network designs have useful scalability properties, but moneTor also needs anonymity, since the Tor middle and exit relays should have no way to leverage the payment system to identify the payer associated with each Tor circuit.
 
 Several recent cryptocurrency designs have both scalability and anonymity features.
 Tumblebit is a channel-like mixing protocol for Bitcoin that allows fast and anonymous off-chain payments~\cite{heilman2017tumblebit}.
 Malvavolta et al.~\cite{malavolta2017concurrency} also describe a variant on payment channels providing Tor-like privacy.
 Their scheme preserves both sender and receiver privacy, assuming at least one trusted intermediary.
-
 Neither of these schemes is ideal for our purposes.
 Tumblebit requires unrealistic synchronization between payment parties for the Tor environment.
-Malvavolta et al. introduces additional parties who, if malicious, could compromise collude to compromise user privacy.
+Malvavolta et al. introduces additional parties who could collude to compromise user privacy.
 % dwallach note: is this a correct reading of Malvavolta's limitations?
 
 To satisfy the needs of moneTor, we instead started with Green and Miers's Bolt protocol~\cite{green2017bolt}.
-Bolt is a tripartite anonymous channel with efficient zero-knowledge proofs, so it starts off with the scalability and anonymity features we need.
-See Section~\ref{sec:payment_overview} for details.
+Bolt is a tripartite anonymous channel with efficient zero-knowledge proofs that provide sufficient privacy and an adequate starting point for scalability.
+As we describe in Section~\ref{sec:payment_overview}, moneTor introduces an additional layer to achieve our full scalability requirements.
 
 % In Section~\ref{sec:payment_overview}, we describe an extension to Bolt~\cite{green2017bolt}, a tripartite anonymous channel protocol based on zero-knowledge proofs proposed by Green and Miers.  The modified scheme enables Tor incentives that satisfy technical guarantees of anonymity, efficiency, and payment security.  This framework defines the anonymity set as the collection of users connected to the same intermediary.  In other words, given a set of end-users $E_{all} = \{E_1, E_2, ...  E_n\}$ who each have an active channel with $I$, $E_a$ should be able to send a secure payment to $E_b$ such that $I$ cannot identify $E_a$ or $E_b$ from $E_{all}$ nor can $I$ infer the payment value.  However, $I$ must still be able to verify that the payment is valid.
 

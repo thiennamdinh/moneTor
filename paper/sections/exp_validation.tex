@@ -1,6 +1,5 @@
 Understanding typical Tor usage and assessing it benefits from our priority scheme is a crucial requirement.
-Appendix~\ref{sec:analysis} covers a real-world Tor measurement study
-that illustrates the importance of token exchange within the first few seconds of the data stream.
+Appendix~\ref{sec:analysis} covers a real-world Tor measurement study that illustrates the importance of token exchange within the first few seconds of the data stream.
 Having established the empirical context for a channel payment scheme, we validated our technical design via experiments performed on a prototype software implementation within the native Tor codebase.
 The objective is to prove that we can deliver a qualitatively ``significant'' advantage to paid premium users while incurring minimal overhead costs for throughput, memory usage, and latency within a realistic network environment.
 Due to the pre-built payment channel setup and low payment verification cost, we determine that our scheme supports the majority of observed short-lived and bursty Tor circuits in a near-fair-exchange setting.
@@ -28,15 +27,13 @@ Due to the pre-built payment channel setup and low payment verification cost, we
 \end{figure*}
 
 A substantial contribution of our research is embedded within our implementation of the moneTor framework.
-The modifications, applied to Tor release version 0.3.2.10, cover
-approximately fifteen thousand lines of new code across Tor's core C software.
+The modifications, applied to Tor release version 0.3.2.10, cover approximately fifteen thousand lines of new code across Tor's core C software.
 We emphasize that the implementation is engineered solely for our experiments.
 Most notably, expensive cryptographic operations such as ZKPs and commitments were simulated using methods that account for Shadow's unique virtual time management~\cite{jansen2011shadow}.
 We consider both scenarios in which the simulated Tor process is running on a multicore or singlecore processor.
 In the multicore case, the cryptographic operations are replaced by an ``idle'' command that allows the virtual node to complete other tasks in parallel.
 In the singlecore case, cryptographic operations are simulated by looping through a series of dummy SHA256 hash operations.
-Using these methods, duration of the delays were tuned to
-conservatively reflect real measurements published in prior background work~\cite{green2017bolt}.\footnote{Extracted values are conservative in the sense that our zero-knowledge proofs require proving only a subset of the statements required in each corresponding Bolt zero-knowledge proof.}
+Using these methods, duration of the delays were tuned to conservatively reflect real measurements published in prior background work~\cite{green2017bolt}.\footnote{Extracted values are conservative in the sense that our zero-knowledge proofs require proving only a subset of the statements required in each corresponding Bolt zero-knowledge proof.}
 Note that our prototype does not implement anything that does not help us to answer our research goals, such as coin/wallet management, extension of the Tor control protocol to manage addition asset and options, Intermediary information recovery in case of crash, etc.
 Instead, the prototype serves the following purposes:
 
@@ -69,8 +66,8 @@ Each captures a separate characteristic of the scheme.
 
 \medskip \noindent \textbf{Global Overhead.}
 First, we attempt to show the total cost of the moneTor scheme in terms of total network throughput.
-To study worst-case performance, we configured a medium scale experiment consisting of 100\% premium clients which we compared to a baseline trial with 0\% premium clients.
-The purpose of this experiment was to measure the worst-case overhead imposed by the payment scheme \emph{without} applying any network prioritization in either control-flow or EWMA.
+To study worst-case performance, we configured a medium-scale experiment consisting of 100\% premium clients which we compared to a baseline trial with 0\% premium clients.
+The purpose of this experiment was to measure overhead imposed by the payment scheme \emph{without} applying any network prioritization in either control-flow or EWMA.
 Since our protocol can benefit from concurrently executed cryptographic operations, a key parameter to the simulation is the number of CPU cores available on each relay.
 Unfortunately, this information is not publicly available.
 As a result, we conducted two trials: one in which all nodes are running on multi-core hardware and one in which all nodes are running on single-core hardware.

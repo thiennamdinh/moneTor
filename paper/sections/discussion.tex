@@ -6,7 +6,7 @@ Critics have called attention to the social consequences of incentives~\cite{jan
 For instance, the ``crowding out effect'', describes a psychological phenomenon whereby the introduction of extrinsic motivations displaces previously dependable intrinsic motivations~\cite{10.1257/jep.25.4.191}.
 At the sociological level, empirical studies of prosocial behaviour~\cite{10.1257/aer.96.5.1652} have shown that explicit incentives can reduce participation.
 This means that in our application, they risk degrading the average social quality of Tor nodes without necessarily growing the network.
-None of this is to say that extrinsic incentives are always ineffective,~\cite{10.1257/aer.96.5.1652}, only that executing the right solution is nontrivial.
+None of this is to say that extrinsic incentives are always ineffective,~\cite{10.1257/aer.96.5.1652}, only that choosing the right solution is nontrivial.
 We do not presume to offer an authoritative opinion on the best social incentive design.
 Instead, we show that the versatility of our token-centric technical design is sufficient to support a wide range of potential strategies.
 
@@ -26,14 +26,12 @@ We present a few theoretical paradigms below.
 \item \textbf{In-Kind Rewards}: If financial rewards turn out to be prohibitive, moneTor can mimic several of the purely in-kind non-transferable and transferable schemes described in Section~\ref{sec:related_work} by limiting the number of on-ledger transactions to zero or one, respectively.
   For instance, at zero allowed transactions, relays would be unable to use their tokens for any purpose other than to buy premium traffic from other relays.
 
-\item \textbf{Subsistence Relaying}: Here, although relays would
-  receive real money, the expected value rewards would be limited to the break-even cost of running a relay.
+\item \textbf{Subsistence Relaying}: Here, although relays would receive real money, the expected value rewards would be limited to the break-even cost of running a relay.
 In this paradigm, every relay operator would effectively act as an individual NGO to avoid the potential liabilities that come with financial profit.
 In practice, moneTor could support this design by adjusting global parameters such that the income of any relay does not exceed the cost-to-bandwidth ratio in the cheapest geographic region.
 The tax redistribution policy could cover any discrepancy from this income floor due to location or other factors.
 Previously, studies have indicated that incentives can be useful when sparingly applied to ``concrete'' task~\cite{10.1257/jep.25.4.191, 10.1086/431263}.
-Provided careful public communication of intent, the same results here
-would be expected.
+Provided careful public communication of intent, the same results would be expected here.
 
 \item \textbf{Decentralized Grant-making}: Finally, the Tor Project can implement moneTor as a form of \emph{altruistic money}, which payees can donate to an approved list of prosocial projects, reminiscent of participatory grant-making and participatory budgeting~\cite{dinh2020universal}.
 Rather than cashing out tokens, the ledger would only allow relays to contribute to their choice of special programs that, for instance, increase the number of relays in region $X$, fund research on topic $Y$, or advocate for privacy-related issue $Z$.

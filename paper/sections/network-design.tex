@@ -14,11 +14,11 @@ Traffic scheduling is perhaps the most intuitive mechanism with which to impleme
 However, our preliminary experiments found that local scheduling decisions on each relay for priority do not work well with the current Tor network, which precludes the use of out-of-the-box scheduling approaches based on DiffServ~\cite{dovrolis1999case} and EWMA~\cite{tang2010improved}.
 Intuitively, this behavior is a direct result of the evolution of the Tor network capacity in recent years.
 The growth in bandwidth across guard and middle relays produces more congestion between the exit relay and the final destination.
-We simulated Tor's topology to analyzing scheduling and found that relays were able to instantaneously flush their queues at each ``write'' event, rendering any attempt at local scheduling to be ineffective.
-These results, detailed in Appendix~\ref{sec:scheduling}, may suggest a need for a separate comprehensive study of network prioritization mechanisms.
+We simulated Tor's topology to analyze scheduling and found that relays were able to instantaneously flush their queues at each ``write'' event, rendering any attempt at local scheduling to be ineffective.
+These results, detailed in Appendix~\ref{sec:scheduling}, may suggest the need for a separate comprehensive study of network prioritization mechanisms.
 
 Consequently, we turn to the alternative strategy of prioritizing traffic through Tor's internal control-flow window sizes.
-Unlike scheduling-based approaches, window-based approaches tend to be more accurate under lower internal congestion conditions~\cite{archive-2009-mail, kiraly2008solving}.
+Unlike scheduling-based approaches, a window-based approach might be more accurate under conditions with lower internal congestion~\cite{archive-2009-mail, kiraly2008solving}.
 Indeed, since local decisions inside the scheduler at a particular relay may fail to achieve priority, we need to design priority as a global function of the circuit.
 Recall that edge nodes regulate the traffic flux in either direction using a set of flow control windows.
 Roughly speaking, these windows determine the space allotted to each circuit on a relay's scheduling queue, which in turn positively correlates with effective bandwidth.
@@ -26,7 +26,7 @@ We implement our prioritization scheme by statically readjusting the window maxi
 \begin{equation} window' = window(1+ \alpha(premium / pr\% - 1)) \label{eq:flow} \end{equation} Here, a circuit is marked as prioritized by the bit $premium \in \{0, 1\}$.
 The tunable priority benefit $\alpha \in [0, 1]$ defines the proportion of the non-premium capacity that we wish to transfer to premium clients.
 By accounting for $pr\% \in [0,1]$, the fraction of premium to nonpremium clients, we can keep the total flow capacity constant.
-It follows that the memory consumption at relays induced by processing cells should stay constant too.
+It follows that the relay memory consumption induced by processing cells should stay constant too.
 
 Even if most relays can flush all queues at each ``write'' event, some relays may still suffer from congestion within the Tor network.
 In this case, modifying Tor's overlay flow control will not achieve priority since the cells are stuck within the congested relay's queues.
