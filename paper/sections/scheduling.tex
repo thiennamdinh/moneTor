@@ -47,7 +47,7 @@ Note that Jansen \textit{et al.}~\cite{jansen2018kist} discovered the same probl
 Our results show that despite the use of KIST, relays may still be able to flush all queues at once, eliminating the effect of the scheduler's choice.
 
 \begin{figure} \centering
-  \includegraphics[width=0.49\textwidth]{images/scheduling_far.png}
+  \includegraphics[width=0.49\textwidth]{images/scheduling_far.pdf}
   \caption[Queue Temporal Profile (60 seconds)]{Queue Temporal Profile (60
     seconds) --- Size of the scheduling buffer over time at a single exit relay
     in terms of number of cells. Colors group cells belonging to the same
@@ -56,7 +56,7 @@ Our results show that despite the use of KIST, relays may still be able to flush
 \end{figure}
 
 \begin{figure} \centering
-  \includegraphics[width=0.49\textwidth]{images/scheduling_close.png}
+  \includegraphics[width=0.49\textwidth]{images/scheduling_close.pdf}
   \caption[Queue Temporal Profile (2 seconds)]{Queue Temporal Profile (2
     seconds) --- Size of the scheduling buffer over time at a single exit relay
     in terms of number of cells. Colors group cells belonging to the same
@@ -103,7 +103,7 @@ Figure~\ref{fig:bw_comp} plots the distribution of bandwidth allocated to each p
 More recent consensus data, which we use in moneTor's experiments, indicate network conditions where exit bandwidth is much scarcer~\cite{waterfilling-pets2017}.
 
 \begin{figure}
-	\centering \includegraphics[scale=0.415]{images/bw_analysis_comp.png}
+	\centering \includegraphics[scale=0.415]{images/bw_analysis_comp.pdf}
   \caption{Bandwidth distribution in consensuses used for BRAIDS, LIRA and moneTor experiments - BRAIDS does not benefit from bandwidth-weights to refill Middle, LIRA benefits from bandwidth-weights to offer balance between all positions, moneTor benefits from bandwidth-weights to balance entry and middle, yet does not have enough exit nodes to achieve the full balance}
   \label{fig:bw_comp}
 \end{figure}
