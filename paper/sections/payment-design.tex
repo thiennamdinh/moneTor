@@ -1,27 +1,28 @@
 \subsection{Ledger}
 
-In our payment design, we follow the Bitcoin paradigm in which all users maintain full and exclusive control of their monetary wealth through use of public key cryptography~\cite{nakamoto2008bitcoin}.
-However, unlike Bitcoin, it is unnecessary for moneTor to rely on an inefficient decentralized consensus mechanism.
-Since Tor already relies on a centralized set of authorities, we simply introduce a new ledger authority role to maintain the global payment state on a public tamper-evident database~\cite{crosby2009efficient}.
-To maximize availability, this ledger may also be distributed across several authorities using, for example, the architecture proposed by RSCoin~\cite{danezis2015centrally}.
-In principle, the ledger architecture is an orthogonal engineering problem.
-We leave this challenge to the implementor and instead focus on the more critical design of off-ledger payment channels.
+In our payment design, we follow the Bitcoin paradigm in which all users produce signed statements, using public key cryptography, as the basis of making operations with their wealth~\cite{nakamoto2008bitcoin}.
+However, our system does not need to rely on Bitcoin's decentralized blockchain, or its energy-intensive proof of work system, to reach a consensus.
+Instead, we note that Tor already relies on a centralized set of authorities to manage Tor, for example publishing a list of Tor nodes that users.
+Our design extends this role, having Tor's central authorities also maintain the global payment state as a public tamper-evident database (see, e.g.,Crosby et al.~\cite{crosby2009efficient}). 
+This design can also be extended in a variety of ways, for example, distributing it across several trusted authorities (see, e.g., RSCoin~\cite{danezis2015centrally}).
+Ultimately, any transition from moneTor (this research effort) to broader use by real Tor users, would be able to adopt any of a variety of different cryptographic payment systems. 
+Instead, the focus of our research is on designing efficient ``off-ledger'' payments, which can be processed at the granularity of data packets flowing through Tor, and only later reconciled against the ``real'' payment system.
 
 \subsection{Payment Protocols Overview}
 \label{sec:payment_overview}
 
-In this section, we specify formal protocols that comprise the moneTor payment infrastructure.
-As first discussed in Section~\ref{sec:background}, our chosen model is an implementation of the tripartite anonymous payment channel paradigm.
-Compared to purely centralized schemes, payment channels are a critical method for scaling, allowing for a theoretically unbounded number of off-ledger transactions between any two parties.
+In this section, we specify the protocols that comprise the moneTor payment infrastructure.
+As first discussed in Section~\ref{sec:background}, our chosen model is an implementation of a ``tripartite anonymous payment channel.''
+Compared to purely centralized schemes, such channels are a critical method for scaling, allowing for a theoretically unbounded number of off-ledger transactions between any two parties.
 However, in a na\"{i}ve two-party implementation, the total channel management complexity is on the order of $O(n \times m)$ where $n$ is the number of Tor clients and $m$ is the number of relays.
-Our solution is to introduce the Intermediary Relay, a Tor node whose only role is to provide \emph{atomic} payment channel services between clients and relays.
-By acting as trustless payment hubs maintaining persistent channels to many users, their services reduce the channel complexity to $O(n+m)$.
+To reduce this to a more manageable size, our solution is to introduce the {\em Intermediary Relay}, a Tor node whose only role is to provide atomic payment channel services between clients and relays.
+By acting as trustless payment hubs maintaining persistent channels to many users, their relay services reduce the channel complexity to $O(n+m)$ (i.e., the number of channels between users and payment relays, plus the number of channels between payment relays and the final Tor nodes).
 Notably, we can adjust the target number of intermediaries to balance the performance of the payment infrastructure and the size of the anonymity set for connected premium users.
 
-\medskip \noindent\textbf{Bolt.} The basis of our scheme is an extension of Bolt's anonymous micropayment channel protocol, which is itself a privacy-focused adaption of the ``Lightning Network''~\cite{poon2016bitcoin}.
+\medskip \noindent\textbf{Bolt.} The basis of our scheme is an extension of Bolt's anonymous micropayment channel protocol, which is itself a privacy-focused adaption of the Lightning Network~\cite{poon2016bitcoin}.
 Due to its importance as a starting point for our work, we first provide a brief outline of the prerequisite micropayment channel procedures defined in Bolt.
 All protocols are either two or three party interactions between a subset of the following roles: $C$ (client), $R$ (relay), $E$ (end-user: either a client or relay), $I$ (intermediary), and $L$ (ledger).
-For our use case, the reader can assume that all communications are anonymously routed through Tor circuits~\cite{green2017bolt}.
+For our use case, assume that all communications are anonymously routed through Tor circuits~\cite{green2017bolt}.
 
 \begin{itemize}[label={}]
 \item \textbf{KeyGen}: Generates a cryptographic keypair.
@@ -40,18 +41,21 @@ For our use case, the reader can assume that all communications are anonymously 
   each party.
 \end{itemize}
 
-While anonymous micropayment channels present a tremendous advance for many applications, the relatively heavy cryptography (37-100 ms) and communication (7 messages) is prohibitively expensive, especially if done for every message transmission\footnote{In addition to concerns regarding global network overhead, it is also desirable to keep the barrier of entry low for smaller relay operators.}.
+While anonymous micropayment channels present a tremendous advance for many applications, the relatively heavy cryptography (37-100 ms) and communication (7 messages) is prohibitively expensive, especially if done for every message transmission\footnote{In addition to concerns regarding global network overhead, it is also desirable to keep the barrier of entry low for smaller Tor relay operators.}.
 To overcome this barrier, we present a new payment layer design enabling far more efficient \emph{nanopayments}.
 
 \medskip \noindent\textbf{moneTor.} The moneTor design uses the existing anonymous micropayment structure to build \emph{locally transparent nanopayments}.
-In this model, clients and relays extend single micropayment operations into \emph{nanopayment channels} through an intermediary (Figure~\ref{fig:parties}).
-These highly lightweight channels allow the client to send $n$ unidirectional nanopayments to the relay through the established Tor circuit.
+In this model, clients and relays extend single micropayment operations into \emph{nanopayment channels} through an intermediary (see Figure~\ref{fig:parties}).
+These lightweight channels allow the client to send $n$ unidirectional nanopayments to the relay through the established Tor circuit.
 Each payment represents a fixed value $\delta$, established at the start of the channel.
-By \emph{locally transparent}, we mean that each nanopayment in the same channel is trivially linked to one another.
+By \emph{locally transparent}, we mean that each nanopayment is trivially linkable to all other payments in the same channel.
 However, the nanopayment channels themselves are unlinkable to other nanopayment channels and micropayment operations.
-It is by design that this channel anonymity guarantee fits with Tor's existing circuit framework and security model, which similarly stipulates that messages within circuits are linkable internally but not externally to other circuits~\footnote{In contrast, as discussed in Section~\ref{sec:related_work}, some prior works implemented payments schemes which were needlessly unlinkable from the relay's viewpoint.}.
-In essence, the overarching motivation of our work is to relax the costly anonymity guarantees provided by Bolt toward the design of a new set of protocols specifically adapted for Tor.
-Finally, note that establishing and closing nanopayment channels do not require the clients or relays to interact with the ledger, resulting in a far more scalable design than systems which depends on resource-intensive centralized entities.
+As such, this channel anonymity guarantee fits with Tor's existing circuit framework and security model, which similarly stipulates that messages within circuits are linkable internally but not externally to other circuits~\footnote{In contrast, as discussed in Section~\ref{sec:related_work}, some prior works implemented payments schemes which were needlessly unlinkable from the relay's viewpoint.}.
+
+The moneTor design has a number of performance benefits.
+Most notably, by relaxing the anonymity guarantees within a stream of nanopayments, moneTor can process these payments with much lower computational overhead.
+Additionally, these nanopayments require no per-payment interaction with the ledger; instead, the ledger is only involved at setup and completion of a Tor circuit.
+Consequently, the moneTor design should be sufficiently cheap to impose little overhead, despite a goal of issuing payments to every Tor relay node alongside every packet.
 
 \begin{figure}[h] \centering
   \includegraphics[trim={0.5cm, 0.5cm, 0.5cm, 0.5cm}, clip,
@@ -68,18 +72,17 @@ We define the following set of protocols needed to manage nanopayments:
 
 \begin{itemize}[label={}]
 \item \textbf{Nano-Setup:} $C$ and $I$ interact to prepare an incomplete half of a nanopayment channel on top of their existing micropayment channel.
-\item \textbf{Nano-Establish:} $C$ sends her nanopayment channel information to $R$, who interacts with $I$ to complete the second half of the nanopayment channel on top of $R$'s existing micropayment channel.
+\item \textbf{Nano-Establish:} $C$ sends its nanopayment channel information to $R$, which interacts with $I$ to complete the second half of the nanopayment channel on top of $R$'s existing micropayment channel.
 \item \textbf{Nano-Pay:} $C$ sends a single nanopayment to $R$.
 This is repeatable for up to $n$ operations.
-\item \textbf{Nano-Close-R:} $R$ closes his nanopayment channel with $I$.
-\item \textbf{Nano-Close-C:} $C$ closes her nanopayment channel with $I$.
+\item \textbf{Nano-Close-R:} $R$ closes its nanopayment channel with $I$.
+\item \textbf{Nano-Close-C:} $C$ closes its nanopayment channel with $I$.
 This step must happen after \emph{Nano-Close-R}.
 \end{itemize}
 
-We also specify the following modified channel conflict resolution procedures to ensure secure closure properties for the nanopayment scheme.
-Note that a
-malicious party can force a closure (i.e., abort), won't be able to steal anything due to the dispute resolution on the ledger.
-Note that the following algorithms run only in cases of misbehaviour.
+We also need a conflict resolution procedure to ensure secure closure properties for the nanopayment scheme, because a malicious party can force a closure (i.e., abort) at any time.
+We must ensure that these actions result in a consistent result (i.e., neither overpaying nor underpaying the parties).
+As such, we must extend our protocol to allow $L$ to resolve disputes:
 
 \begin{itemize}[label={}]
 \item \textbf{Nano-Refund:} $E$ closes the channel on $L$.
@@ -88,17 +91,16 @@ Note that the following algorithms run only in cases of misbehaviour.
   and nanopayment balances.
 \end{itemize}
 
-Our nanopayment scheme is inspired by the classic \emph{Payword} two-party micropayment scheme in which payments are encoded by successively revealed preimages in a precomputed hash chain~\cite{rivest1996payword}.
-
-The challenge in using Payword is to securely integrate the hash chain concept into an existing three-party anonymous micropayment channel setup such that all parties maintain secure cryptographic ownership of their funds at all steps.
-At the same time, we must ensure the scheme does not leak deanonymizing information outside of the nanopayment channel context, a nontrivial task that requires significant restructuring of the Bolt protocol to achieve our constraints.
-Our final solution incurs an overhead penalty of approximately two micropayment operations per nanopayment channel, one at the beginning and one at the end of the channel life cycle.
+Our nanopayment scheme is inspired by the Payword two-party micropayment system~\cite{rivest1996payword}, in which payments are encoded by successively revealed preimages in a precomputed hash chain.
+The challenge we face is to integrate three disparate cryptocurrency concepts: three-party anonymous channels, centralized ledgers, and Payword-style hash preimages.
+At the same time, we must ensure the scheme does not leak deanonymizing information outside of the nanopayment channel context, requiring significant restructuring of the Bolt protocol to achieve our constraints.
+Our final solution incurs an overhead of approximately two micropayment operations per nanopayment channel: one at the beginning and one at the end of the channel life cycle.
 
 \subsection{Nanopayment Protocol Details}
 
 \label{sec:nanopaymentdetails} In this section, we summarize the intuition for the basic steps in the payment protocol.
-A more formal, detailed description of the algorithms is provided in Appendix~\ref{sec:algorithms}.
-Security considerations are detailed next in Section~\ref{subsec:paysecurity} and formally described in Appendix~\ref{sec:proof}.
+A more detailed description of the algorithms is provided in Appendix~\ref{sec:algorithms}.
+Security considerations are described next in Section~\ref{subsec:paysecurity} and described in detail with proofs in Appendix~\ref{sec:proof}.
 
 \medskip \noindent\textbf{Nano-Setup} At the start of this protocol, $C$ has access to a micropayment wallet $w$ obtained from Bolt's \textbf{Establish} that enables her to operate her micropayment channel with the Intermediary $I$ as well as a refund token $rt$ that entitles her to claim her current funds on the ledger $L$ in the event that $I$ misbehave or goes offline.
 To construct a nanopayment channel, $C$ first generates an array of values $hc$ of length $n$ where $hc_i = H(hc_{i+1})$ and $hc_n$ is a random number.
